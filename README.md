@@ -30,8 +30,10 @@ It may be capable of reading the following file formats in the future:
 * .po files for GNU gettext.
 * .string files for iOS Apps.
 
-It may be capable of _writing_ the contents out into the following file formats in the future:
+It can also write contents in the following file formats:
 * TMX file.
+
+It may be capable of _writing_ the contents out into the following file formats in the future:
 * so-called CSV.
 * Office OpenXML WordProcessing document (aka .docx).
 * Microsoft Excel book.

@@ -67,6 +67,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Samples\Xliff1.xliff" />
+    <None Include="Samples\Xliff2.xliff" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\disfr\disfr.csproj">
@@ -75,9 +76,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Content Include="Readme.txt" />
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
