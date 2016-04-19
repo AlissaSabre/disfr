@@ -1,0 +1,110 @@
+﻿<Window x:Class="disfr.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:local="clr-namespace:disfr.UI"
+        mc:Ignorable="d"
+        Title="disfr" Height="600" Width="1000" Closing="this_Closing">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:VisibilityToBooleanConverter x:Key="Visibility"/>
+
+            <Style x:Key="ColumnMenuItem" TargetType="MenuItem">
+                <Setter Property="IsEnabled" Value="{Binding HasItems, RelativeSource={RelativeSource Self}}"/>
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header" Value="{Binding Header, Mode=OneTime}"/>
+                            <Setter Property="IsEnabled" Value="{Binding (local:TableView.ColumnInUse), Mode=OneTime}"/>
+                            <Setter Property="IsCheckable" Value="True"/>
+                            <Setter Property="IsChecked" Value="{Binding Visibility, Mode=TwoWay, Converter={StaticResource Visibility}}"/>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed"/>
+        <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveAs_Executed" CanExecute="SaveAs_CanExecute"/>
+        <CommandBinding Command="local:Commands.Font" Executed="Font_Executed" CanExecute="Font_CanExecute"/>
+        <CommandBinding Command="local:Commands.About" Executed="About_Executed"/>
+        <CommandBinding Command="local:Commands.Debug" Executed="Debug_Executed"/>
+    </Window.CommandBindings>
+
+    <Window.Style>
+        <StaticResource ResourceKey="WaitCursorWhenBusy"/>
+    </Window.Style>
+    <Grid>
+
+        <dragablz:TabablzControl 
+            x:Name="tables" Margin="0,0,0,0"
+            ShowDefaultCloseButton="True" ItemContainerStyle="{StaticResource TrapezoidDragableTabItemStyle}" AdjacentHeaderItemOffset="-10">
+
+            <dragablz:TabablzControl.HeaderPrefixContent>
+                <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,3" Background="Transparent">
+                    <MenuItem Header="_File">
+                        <MenuItem Header="_Open..." Command="ApplicationCommands.Open"/>
+                        <MenuItem Header="Save _As..." Command="ApplicationCommands.SaveAs" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
+                        <MenuItem Header="_Close" Command="{Binding CloseCommand}" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
+                        <MenuItem Header="Close A_ll Others" Command="{Binding CloseExceptCommand}" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
+                        <Separator/>
+                        <MenuItem Header="Complementary TM..." Command="{Binding OpenAltCommand}" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
+                        <MenuItem Header="Compare..." Command="local:Commands.Compare"/>
+                        <Separator/>
+                        <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+                    </MenuItem>
+                    <MenuItem Header="_Edit">
+                        <MenuItem Header="_Find..." Command="{Binding FindCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="_Copy" Command="{x:Static ApplicationCommands.Copy}" CommandTarget="{Binding SelectedItem.Content, ElementName=tables}"/>
+                        <MenuItem Header="Select _All" Command="{x:Static ApplicationCommands.SelectAll}" CommandTarget="{Binding SelectedItem.Content, ElementName=tables}"/>
+                        <MenuItem Header="Select _Nothing" Command="{x:Static local:Commands.UnselectAll}" CommandTarget="{Binding SelectedItem.Content, ElementName=tables}"/>
+                    </MenuItem>
+                    <MenuItem Header="_View">
+                        <MenuItem Header="F_ilter..." Command="{Binding FilterCommand}"/>
+                        <Separator/>
+                        <MenuItem Header="_Columns" Style="{StaticResource ColumnMenuItem}" ItemsSource="{Binding SelectedItem.Columns, ElementName=tables}"/>
+                        <Separator/>
+                        <MenuItem Header="Asset _Local Serial Numbers" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowLocalSerial, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
+                        <MenuItem Header="L_ong Asset Names" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowLongAssetName, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
+                        <MenuItem Header="_No-translate Segments" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowAll, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
+                        <Separator/>
+                        <MenuItem Header="_Tags" IsEnabled="{Binding HasItems, ElementName=tables}">
+                            <local:RadioMenuItem Header="As Local Numbers" Value="{x:Static local:TagShowing.Name}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
+                            <local:RadioMenuItem Header="As Labels" Value="{x:Static local:TagShowing.Disp}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
+                            <local:RadioMenuItem Header="As Codes" Value="{x:Static local:TagShowing.Code}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
+                            <local:RadioMenuItem Header="Hide Tags" Value="{x:Static local:TagShowing.None}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
+                        </MenuItem>
+                        <MenuItem Header="_Special Characters" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowSpecials, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
+                        <MenuItem Header="_Font..." Command="local:Commands.Font"/>
+                    </MenuItem>
+                    <MenuItem Header="_Help">
+                        <MenuItem Header="_About..." Command="local:Commands.About"/>
+                        <Separator/>
+                        <MenuItem Header="Debug" Command="local:Commands.Debug"/>
+                    </MenuItem>
+
+                </Menu>
+            </dragablz:TabablzControl.HeaderPrefixContent>
+
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController InterTabClient="{x:Static local:MainWindow.InterTabClient}"/>
+            </dragablz:TabablzControl.InterTabController>
+
+        </dragablz:TabablzControl>
+
+
+    </Grid>
+
+</Window>

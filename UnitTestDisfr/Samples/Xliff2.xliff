@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file original="v12/messages.xml" source-language="en-US" target-language="fr-FR" datatype="xml">
+    <body>
+      <trans-unit id="1" translate="no">
+	<source>&lt;html&gt;&lt;head&gt;&lt;title&gt;</source>
+      </trans-unit>
+      <trans-unit id="2">
+	<source>Remove entry</source>
+	<alt-trans match-quality="99%" origin="v11/messages.xml">
+	  <source>Remove Entry</source>
+	  <target>Supprimer l'entrée</target>
+	</alt-trans>
+	<alt-trans match-quality="50%" origin="generic.tmx">
+	  <source>Remove the selected entry</source>
+	  <target>Supprimer l'entrée sélectionnée</target>
+	</alt-trans>
+      </trans-unit>
+      <trans-unit id="18" approved="yes">
+        <source>Do not use special CPU acceleration functions</source>
+        <target>N'utilise pas les accélérations propres aux CPU</target>
+      </trans-unit>
+      <trans-unit id="37" approved="yes">
+	<source>The configured filename encoding cannot be converted to <bpt id="38be" rid="1">&lt;em&gt;</bpt>UTF-8<ept id="38c3" rid="1">&lt;/em&gt;</ept>. Please check the value of the environment variable <ph id="38f5">&amp;env1;</ph>.</source>
+	<seg-source><mrk mtype="seg" mid="37a">The configured filename encoding cannot be converted to <bpt id="38be" rid="1">&lt;em&gt;</bpt>UTF-8<ept id="38c3" rid="1">&lt;/em&gt;</ept>.</mrk> <mrk mtype="seg" mid="37b">Please check the value of the environment variable <ph id="38f5">&amp;env1;</ph>.</mrk></seg-source>
+	<target><mrk mtype="seg" mid="37a">Le codage de caractères configuré pour le nom de fichier ne peut pas être converti en <bpt id="38be" rid="1">&lt;em&gt;</bpt>UTF-8<ept id="38c3" rid="1">&lt;/em&gt;</ept>.</mrk> <mrk mtype="seg" mid="37b">Vérifiez la valeur de la variable d'environnement <ph id="38f5">&amp;env1;</ph>.</mrk></target>
+      </trans-unit>
+      <trans-unit id="361">
+	<source>Paste as</source>
+	<target>Coller comme</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+
