@@ -129,7 +129,7 @@ namespace disfr.UI
 
 
 
-        private OpenFileDialog OpenFileDialog = new OpenFileDialog();
+        private OpenFileDialog OpenFileDialog = new OpenFileDialog() { Multiselect = true };
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -143,9 +143,9 @@ namespace disfr.UI
             OpenFileDialog.Filter = Controller.OpenFilterString;
             if (OpenFileDialog.ShowDialog(this) == true)
             {
-                var filename = OpenFileDialog.FileName;
+                var filenames = OpenFileDialog.FileNames;
                 var index = OpenFileDialog.FilterIndex - 1; // Returned index is 1-based but we expect a 0-based index.
-                Controller.OpenCommand.Execute(filename, index);
+                Controller.OpenCommand.Execute(filenames, index);
                 AcceptingNewTable = true;
             }
             else

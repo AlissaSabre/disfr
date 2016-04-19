@@ -68,26 +68,27 @@ namespace disfr.UI
 
         public string OpenFilterString { get { return ReaderManager.FilterString; } }
 
-        public DelegateCommand<string, int> OpenCommand { get; private set; }
+        public DelegateCommand<string[], int> OpenCommand { get; private set; }
 
-        private void OpenCommand_Execute(string filename, int index)
+        private void OpenCommand_Execute(string[] filenames, int index)
         {
             Busy = true;
             var bw = new BackgroundWorker();
             bw.DoWork += OpenCommand_Worker_DoWork;
             bw.RunWorkerCompleted += OpenCommand_Worker_RunWorkerCompleted;
-            bw.RunWorkerAsync(Tuple.Create(filename, index));
+            bw.RunWorkerAsync(Tuple.Create(filenames, index));
         }
 
         private void OpenCommand_Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var parameter = e.Argument as Tuple<string, int>;
-            var filename = parameter.Item1;
+            var parameter = e.Argument as Tuple<string[], int>;
+            var filenames = parameter.Item1;
             var index = parameter.Item2;
-            var table = TableController.LoadBilingualAssets(
-                name: ReaderManager.FriendlyFilename(filename),
-                assets: ReaderManager.Read(filename, index));
-            e.Result = table;
+            var tables = filenames.Select(f =>
+                TableController.LoadBilingualAssets(
+                    name: ReaderManager.FriendlyFilename(f),
+                    assets: ReaderManager.Read(f, index)));
+            e.Result = tables.ToArray();
         }
 
         private void OpenCommand_Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -99,7 +100,8 @@ namespace disfr.UI
             }
             if (e.Result != null)
             {
-                _Tables.Add(e.Result as ITableController);
+                var tables = e.Result as ITableController[];
+                foreach (var t in tables) _Tables.Add(t);
                 RaisePropertyChanged("Tables");
             }
             Busy = false;
