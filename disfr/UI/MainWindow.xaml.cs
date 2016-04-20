@@ -159,13 +159,15 @@ namespace disfr.UI
 
         private void SaveAs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            var table = e.Parameter as ITableController;
             Controller.Busy = true;
             SaveFileDialog.Filter = Controller.SaveAsFilterString;
+            SaveFileDialog.FileName = table.Name;
             if (SaveFileDialog.ShowDialog(this) == true)
             {
                 var filename = SaveFileDialog.FileName;
                 var index = SaveFileDialog.FilterIndex - 1; // Returned index is 1-based but we expect a 0-based index.
-                Controller.SaveAsCommand.Execute(filename, index, e.Parameter as ITableController);
+                Controller.SaveAsCommand.Execute(filename, index, table);
             }
             else
             {
