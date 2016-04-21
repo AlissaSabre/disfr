@@ -18,7 +18,10 @@ namespace disfr.UI
         public MainController()
         {
             DelegateCommandHelper.GetHelp(this);
+            Scheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
+
+        private readonly TaskScheduler Scheduler;
 
         #region INotifyPropertyChanged
 
@@ -73,38 +76,25 @@ namespace disfr.UI
         private void OpenCommand_Execute(string[] filenames, int index)
         {
             Busy = true;
-            var bw = new BackgroundWorker();
-            bw.DoWork += OpenCommand_Worker_DoWork;
-            bw.RunWorkerCompleted += OpenCommand_Worker_RunWorkerCompleted;
-            bw.RunWorkerAsync(Tuple.Create(filenames, index));
-        }
-
-        private void OpenCommand_Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var parameter = e.Argument as Tuple<string[], int>;
-            var filenames = parameter.Item1;
-            var index = parameter.Item2;
-            var tables = filenames.Select(f =>
-                TableController.LoadBilingualAssets(
-                    name: ReaderManager.FriendlyFilename(f),
-                    assets: ReaderManager.Read(f, index)));
-            e.Result = tables.ToArray();
-        }
-
-        private void OpenCommand_Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            ((IDisposable)sender).Dispose();
-            if (e.Error != null)
+            Task.Run(() =>
+                filenames.Select(f =>
+                    TableController.LoadBilingualAssets(
+                        name: ReaderManager.FriendlyFilename(f),
+                        assets: ReaderManager.Read(f, index))
+                ).ToArray()
+            ).ContinueWith(worker =>
             {
-                // Make some feedback.
-            }
-            if (e.Result != null)
-            {
-                var tables = e.Result as ITableController[];
-                foreach (var t in tables) _Tables.Add(t);
-                RaisePropertyChanged("Tables");
-            }
-            Busy = false;
+                if (worker.Exception != null)
+                {
+                    // Make some feedback.
+                }
+                if (worker.Result != null)
+                {
+                    _Tables.AddRange(worker.Result);
+                    RaisePropertyChanged("Tables");
+                }
+                Busy = false;
+            }, Scheduler);
         }
 
         #endregion
@@ -120,29 +110,17 @@ namespace disfr.UI
         private void SaveAsCommand_Execute(string filename, int index, ITableController table)
         {
             Busy = true;
-            var bw = new BackgroundWorker();
-            bw.DoWork += SaveAsCommand_Worker_DoWork;
-            bw.RunWorkerCompleted += SaveAsCommand_RunWorkerCompleted;
-            bw.RunWorkerAsync(Tuple.Create(filename, index, table));
-        }
-
-        private void SaveAsCommand_Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var parameter = e.Argument as Tuple<string, int, ITableController>;
-            var filename = parameter.Item1;
-            var index = parameter.Item2;
-            var table = parameter.Item3;
-            WriterManager.Write(filename, index, table.Rows, null);
-        }
-
-        private void SaveAsCommand_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            ((IDisposable)sender).Dispose();
-            if (e.Error != null)
+            Task.Run(() =>
             {
-                // Make some feedback.
-            }
-            Busy = false;
+                WriterManager.Write(filename, index, table.Rows, null);
+            }).ContinueWith(worker =>
+            {
+                if (worker.Exception != null)
+                {
+                    // Make some feedback.
+                }
+                Busy = false;
+            }, Scheduler);
         }
 
         private bool SaveAsCommand_CanExecute(string filename, int index, ITableController table)
@@ -200,32 +178,21 @@ namespace disfr.UI
         private void OpenAltCommand_Execute(ITableController table)
         {
             Busy = true;
-            var bw = new BackgroundWorker();
-            bw.DoWork += OpenAltCommand_Worker_DoWork;
-            bw.RunWorkerCompleted += OpenAltCommand_Worker_RunWorkerCompleted;
-            bw.RunWorkerAsync(table);
-        }
-
-        private void OpenAltCommand_Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var base_table = e.Argument as ITableController;
-            var alt_table = base_table.LoadAltAssets();
-            e.Result = alt_table;
-        }
-
-        private void OpenAltCommand_Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            ((IDisposable)sender).Dispose();
-            if (e.Error != null)
+            Task.Run(() =>
+                table.LoadAltAssets()
+            ).ContinueWith(worker =>
             {
-                // Make some feedback.
-            }
-            if (e.Result != null)
-            {
-                _Tables.Add(e.Result as ITableController);
-                RaisePropertyChanged("Tables");
-            }
-            Busy = false;
+                if (worker.Exception != null)
+                {
+                    // Make some feedback.
+                }
+                if (worker.Result != null)
+                {
+                    _Tables.Add(worker.Result);
+                    RaisePropertyChanged("Tables");
+                }
+                Busy = false;
+            });
         }
 
         private bool OpenAltCommand_CanExecute(ITableController table)
