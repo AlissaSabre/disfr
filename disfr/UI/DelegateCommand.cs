@@ -314,13 +314,14 @@ namespace disfr.UI
     /// </summary>
     /// <typeparam name="T1">Type of first command parameter object.</typeparam>
     /// <typeparam name="T2">Type of second command parameter object.</typeparam>
+    /// <typeparam name="T3">Type of third command parameter object.</typeparam>
     /// <remarks>
-    /// <see cref="DelegateCommand{T1,T2}"/> provides delegate based implementation
+    /// <see cref="DelegateCommand{T1,T2,T3}"/> provides delegate based implementation
     /// as well as a type-safe parameter marshaling feature over the standard ICommand system.
-    /// The two parameters are passed as a single array of objects per ICommand methods.
+    /// The three parameters are passed as a single array of objects per ICommand methods.
     /// If you passed null or an object of type other than an array of objects
     /// to either of the <see cref="ICommand"/> methods,
-    /// or the array has less than two elements,
+    /// or the array has less than three elements,
     /// an <see cref="Exception"/> is thrown.
     /// Extra elements are silently ignored.
     /// </remarks>
@@ -408,6 +409,112 @@ namespace disfr.UI
             if (parameter == null) throw new NullReferenceException();
             var array = (object[])parameter;
             return CanExecute((T1)array[0], (T2)array[1], (T3)array[2]);
+        }
+    }
+
+    /// <summary>
+    /// A delegate based implementation of <see cref="ICommand"/> with two parameters.
+    /// </summary>
+    /// <typeparam name="T1">Type of first command parameter object.</typeparam>
+    /// <typeparam name="T2">Type of second command parameter object.</typeparam>
+    /// <typeparam name="T3">Type of third command parameter object.</typeparam>
+    /// <typeparam name="T4">Type of fourth command parameter object.</typeparam>
+    /// <remarks>
+    /// <see cref="DelegateCommand{T1,T2,T3,T4}"/> provides delegate based implementation
+    /// as well as a type-safe parameter marshaling feature over the standard ICommand system.
+    /// The four parameters are passed as a single array of objects per ICommand methods.
+    /// If you passed null or an object of type other than an array of objects
+    /// to either of the <see cref="ICommand"/> methods,
+    /// or the array has less than four elements,
+    /// an <see cref="Exception"/> is thrown.
+    /// Extra elements are silently ignored.
+    /// </remarks>
+    public class DelegateCommand<T1, T2, T3, T4> : DelegateCommandBase, ICommand
+    {
+        private readonly Action<T1, T2, T3, T4> _Execute;
+
+        private readonly Func<T1, T2, T3, T4, bool> _CanExecute;
+
+        /// <summary>
+        /// Creates an ICommand object from two delegates.
+        /// </summary>
+        /// <param name="execute">Action to perform when this command is executed.</param>
+        /// <param name="canExecute">Returns whether this command can be executed.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="execute"/> is null.</exception>
+        /// <remarks>
+        /// <paramref name="canExecute"/> may be null if this command can always be executed.
+        /// </remarks>
+        public DelegateCommand(Action<T1, T2, T3, T4> execute, Func<T1, T2, T3, T4, bool> canExecute = null)
+            : base(canExecute != null)
+        {
+            if (execute == null)
+            {
+                throw new ArgumentNullException("execute");
+            }
+
+            _Execute = execute;
+            _CanExecute = canExecute;
+        }
+
+        /// <summary>
+        /// Executes this command.
+        /// </summary>
+        /// <param name="parameter1">First parameter defined by command semantics.</param>
+        /// <param name="parameter2">Second parameter defined by command semantics.</param>
+        /// <param name="parameter3">Third parameter defined by command semantics.</param>
+        /// <param name="parameter4">Fourth parameter defined by command semantics.</param>
+        /// <remarks>
+        /// It simply invokes the <see cref="Action{T1, T2, T3, T4}"/> delegate passed to the constructor.
+        /// </remarks>
+        public void Execute(T1 parameter1, T2 parameter2, T3 parameter3, T4 parameter4)
+        {
+            _Execute(parameter1, parameter2, parameter3, parameter4);
+        }
+
+        /// <summary>
+        /// Tests whether this command can execute.
+        /// </summary>
+        /// <param name="parameter1">First parameter defined by command semantics.</param>
+        /// <param name="parameter2">Second parameter defined by command semantics.</param>
+        /// <param name="parameter3">Third parameter defined by command semantics.</param>
+        /// <param name="parameter4">Third parameter defined by command semantics.</param>
+        /// <returns>true if it can.</returns>
+        /// <remarks>
+        /// It invokes the <see cref="Func{T1,T2,T3,T4,bool}"/> delegate passed to the constructor,
+        /// or always returns true if the delegate was null.
+        /// </remarks>
+        public bool CanExecute(T1 parameter1, T2 parameter2, T3 parameter3, T4 parameter4)
+        {
+            return _CanExecute == null ? true : _CanExecute(parameter1, parameter2, parameter3, parameter4);
+        }
+
+        /// <summary>
+        /// Executes this command.
+        /// </summary>
+        /// <param name="parameter">A parameter object whose type is an array of objects with three or more elements.</param>
+        /// <exception cref="NullReferenceException"><paramref name="parameter"/> is null.</exception>
+        /// <exception cref="InvalidCastException"><paramref name="parameter"/> is not of type object array.</exception>
+        /// <exception cref="IndexOutOfRangeException"><paramref name="parameter"/> has less than two elements.</exception>
+        void ICommand.Execute(object parameter)
+        {
+            if (parameter == null) throw new NullReferenceException();
+            var array = (object[])parameter;
+            Execute((T1)array[0], (T2)array[1], (T3)array[2], (T4)array[3]);
+        }
+
+        /// <summary>
+        /// Tests whether this command can execute.
+        /// </summary>
+        /// <param name="parameter">A parameter object whose type is an array of objects with two or more elements.</param>
+        /// <exception cref="NullReferenceException"><paramref name="parameter"/> is null.</exception>
+        /// <exception cref="InvalidCastException"><paramref name="parameter"/> is not of type object array.</exception>
+        /// <exception cref="IndexOutOfRangeException"><paramref name="parameter"/> has less than two elements.</exception>
+        /// <returns>True if this command can execute.  False otherwise.</returns>
+        bool ICommand.CanExecute(object parameter)
+        {
+            if (parameter == null) throw new NullReferenceException();
+            var array = (object[])parameter;
+            return CanExecute((T1)array[0], (T2)array[1], (T3)array[2], (T4)array[3]);
         }
     }
 
