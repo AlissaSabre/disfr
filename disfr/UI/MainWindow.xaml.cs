@@ -159,15 +159,16 @@ namespace disfr.UI
 
         private void SaveAs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var table = e.Parameter as ITableController;
+            var table_view = e.Parameter as TableView;
+            var table = table_view?.Controller as ITableController;
             Controller.Busy = true;
             SaveFileDialog.Filter = Controller.SaveAsFilterString;
-            SaveFileDialog.FileName = table.Name;
+            SaveFileDialog.FileName = table_view?.Controller?.Name;
             if (SaveFileDialog.ShowDialog(this) == true)
             {
                 var filename = SaveFileDialog.FileName;
                 var index = SaveFileDialog.FilterIndex - 1; // Returned index is 1-based but we expect a 0-based index.
-                Controller.SaveAsCommand.Execute(filename, index, table);
+                Controller.SaveAsCommand.Execute(filename, index, table_view?.Controller, table_view?.VisibleColumnDescs);
             }
             else
             {
@@ -179,7 +180,9 @@ namespace disfr.UI
 
         private void SaveAs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Controller.SaveAsCommand.CanExecute(null, -1, e.Parameter as ITableController);
+            var table_view = e.Parameter as TableView;
+            e.CanExecute = table_view != null &&
+                Controller.SaveAsCommand.CanExecute(null, -1, table_view?.Controller, table_view?.VisibleColumnDescs);
             e.Handled = true;
         }
 

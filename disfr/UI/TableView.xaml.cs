@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using ColumnDesc = disfr.Writer.ColumnDesc;
+
 namespace disfr.UI
 {
     /// <summary>
@@ -155,6 +157,20 @@ namespace disfr.UI
         {
             dataGrid.UnselectAllCells();
             e.Handled = true;
+        }
+
+        public ColumnDesc[] VisibleColumnDescs
+        {
+            get
+            {
+                return dataGrid.Columns
+                    .Where(c => c.Visibility == Visibility.Visible)
+                    .OrderBy(c => c.DisplayIndex)
+                    .Select(c => new ColumnDesc(
+                        c.Header.ToString(),
+                        (c.ClipboardContentBinding as Binding)?.Path?.Path))
+                    .ToArray();
+            }
         }
     }
 

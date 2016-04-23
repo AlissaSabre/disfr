@@ -27,7 +27,7 @@ namespace disfr.Writer
 
         private static readonly XName SPACE = XNamespace.Xml + "space";
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, object write_params)
+        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] columns)
         {
             var tmx =
                 new XElement(X + "tmx",

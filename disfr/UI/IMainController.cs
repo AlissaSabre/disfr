@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using ColumnDesc = disfr.Writer.ColumnDesc;
+
 namespace disfr.UI
 {
     /// <summary>
@@ -19,7 +21,7 @@ namespace disfr.UI
         bool Busy { get; set; }
 
         DelegateCommand<string[], int> OpenCommand { get; }
-        DelegateCommand<string, int, ITableController> SaveAsCommand { get; }
+        DelegateCommand<string, int, ITableController, ColumnDesc[]> SaveAsCommand { get; }
         DelegateCommand<ITableController> CloseCommand { get; }
         DelegateCommand<ITableController> CloseExceptCommand { get; }
         DelegateCommand ExitCommand { get; }

@@ -55,7 +55,7 @@
                 <Menu x:Name="menu" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,3" Background="Transparent">
                     <MenuItem Header="_File">
                         <MenuItem Header="_Open..." Command="ApplicationCommands.Open"/>
-                        <MenuItem Header="Save _As..." Command="ApplicationCommands.SaveAs" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
+                        <MenuItem Header="Save _As..." Command="ApplicationCommands.SaveAs" CommandParameter="{Binding SelectedItem, ElementName=tables}"/>
                         <MenuItem Header="_Close" Command="{Binding CloseCommand}" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
                         <MenuItem Header="Close A_ll Others" Command="{Binding CloseExceptCommand}" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
                         <Separator/>

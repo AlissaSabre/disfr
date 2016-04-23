@@ -105,14 +105,14 @@ namespace disfr.UI
 
         public string SaveAsFilterString { get { return WriterManager.FilterString; } }
 
-        public DelegateCommand<string, int, ITableController> SaveAsCommand { get; private set; }
+        public DelegateCommand<string, int, ITableController, ColumnDesc[]> SaveAsCommand { get; private set; }
 
-        private void SaveAsCommand_Execute(string filename, int index, ITableController table)
+        private void SaveAsCommand_Execute(string filename, int index, ITableController table, ColumnDesc[] columns)
         {
             Busy = true;
             Task.Run(() =>
             {
-                WriterManager.Write(filename, index, table.Rows, null);
+                WriterManager.Write(filename, index, table.Rows, columns);
             }).ContinueWith(worker =>
             {
                 if (worker.Exception != null)
@@ -123,7 +123,7 @@ namespace disfr.UI
             }, Scheduler);
         }
 
-        private bool SaveAsCommand_CanExecute(string filename, int index, ITableController table)
+        private bool SaveAsCommand_CanExecute(string filename, int index, ITableController table, ColumnDesc[] columns)
         {
             return table != null;
         }
