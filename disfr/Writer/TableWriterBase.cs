@@ -27,6 +27,25 @@ namespace disfr.Writer
                         ConvertContent(r, c))))));
         }
 
+        private static readonly string[] GlossLabel;
+
+        static TableWriterBase()
+        {
+            var map = new string[Enum.GetValues(typeof(Gloss)).Cast<int>().Aggregate((x, y) => x | y) + 1];
+
+            map[(int)(Gloss.NOR | Gloss.COM)] = "NOR";
+            map[(int)(Gloss.NOR | Gloss.INS)] = "NOR INS";
+            map[(int)(Gloss.NOR | Gloss.DEL)] = "NOR DEL";
+            map[(int)(Gloss.TAG | Gloss.COM)] = "TAG";
+            map[(int)(Gloss.TAG | Gloss.INS)] = "TAG INS";
+            map[(int)(Gloss.TAG | Gloss.DEL)] = "TAG DEL";
+            map[(int)(Gloss.SYM | Gloss.COM)] = "SYM";
+            map[(int)(Gloss.SYM | Gloss.INS)] = "SYM INS";
+            map[(int)(Gloss.SYM | Gloss.DEL)] = "SYM DEL";
+
+            GlossLabel = map;
+        }
+
         protected static IEnumerable<XNode> ConvertContent(IRowData row, ColumnDesc column)
         {
             object content = null;
@@ -54,9 +73,7 @@ namespace disfr.Writer
             else if (content is GlossyString)
             {
                 return (content as GlossyString).AsCollection().Select(p =>
-                    new XElement(D + "Span",
-                        p.Gloss == Gloss.None ? null : new XAttribute("Gloss", p.Gloss.ToString()),
-                        p.Text));
+                    new XElement(D + "Span", new XAttribute("Gloss", GlossLabel[(int)p.Gloss]), p.Text));
             }
             else
             {
