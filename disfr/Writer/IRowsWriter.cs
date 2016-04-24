@@ -14,6 +14,6 @@ namespace disfr.Writer
 
         IList<string> FilterString { get; }
 
-        void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] write_params);
+        void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] columns);
     }
 }
