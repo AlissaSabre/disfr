@@ -32,10 +32,7 @@ namespace disfr.Doc
                     manager.Add(new XliffReader());
 
                     // Add plugin readers.
-                    foreach (var rd in PluginManager.Current.Readers)
-                    {
-                        manager.Add(rd);
-                    }
+                    manager.AddRange(PluginManager.Current.Readers);
 
                     _Current = manager;
                 }
@@ -50,6 +47,13 @@ namespace disfr.Doc
         public void Add(IAssetReader reader)
         {
             Readers.Add(reader);
+            _FilterString = null;
+            ReadersInPriority = null;
+        }
+
+        public void AddRange(IEnumerable<IAssetReader> readers)
+        {
+            Readers.AddRange(readers);
             _FilterString = null;
             ReadersInPriority = null;
         }
