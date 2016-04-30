@@ -48,11 +48,8 @@ namespace disfr.Writer
         private static void WriteXlsx(string filename, IEnumerable<IRowData> rows, ColumnDesc[] columns)
         {
             string tmpname = null;
-            string outname = null;
             try
             {
-                if (File.Exists(filename)) File.Delete(filename);
-
                 tmpname = CreateTempFile(Path.GetTempPath(), ".xml");
                 using (var output = File.OpenWrite(tmpname))
                 {
@@ -60,21 +57,21 @@ namespace disfr.Writer
                     Transform(table, output, "xmlss");
                 }
 
-                outname = CreateTempFile(Path.GetDirectoryName(filename), ".xlsx");
-                using (var excel = new Excel() { Visible = true, Interactive = false })
+                var excel = new Excel() { Visible = false, Interactive = false, DisplayAlerts = false };
+                try
                 {
                     var book = excel.Workbooks.Open(tmpname);
-                    book.SaveAs(outname, XlFileFormat.xlOpenXMLWorkbook);
+                    book.SaveAs(filename, XlFileFormat.xlOpenXMLWorkbook);
                     book.Close(false);
+                }
+                finally
+                {
                     excel.Quit();
                 }
-
-                File.Move(outname, filename);
             }
             finally
             {
                 if (tmpname != null) File.Delete(tmpname);
-                if (outname != null) File.Delete(outname);
             }
         }
 
