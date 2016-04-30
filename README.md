@@ -4,7 +4,7 @@ A Windows program to view/examine XLIFF file contents.
 
 ## Summary
 
-XLIFF is an OASIS standard XML file format for bilingual document used by professional translators.  It is used in most (if not all) of modern CAT environments.
+XLIFF is an OASIS standard XML file format for bilingual documents.  It is used in most (if not all) of modern CAT environments.
 
 disfr is a handy tool to show the contents of XLIFF and similar files.  It has some features to further examine the files, e.g., filtering and sorting segments, inspecting tags, or comparing differences between versions.  It has no way to edit/change the contents, however.
 
@@ -32,8 +32,8 @@ It may be capable of reading the following file formats in the future:
 
 It can also write contents in the following file formats:
 * TMX file.
+* Microsoft Excel (.xlsx) file.
 
 It may be capable of _writing_ the contents out into the following file formats in the future:
 * so-called CSV.
 * Office OpenXML WordProcessing document (aka .docx).
-* Microsoft Excel book.
