@@ -20,7 +20,9 @@ namespace disfr.Writer
         {
             return new XElement(D + "Tree",
                 new XElement(D + "Columns",
-                    columns.Select(c => new XElement(D + "Col", c.Header))),
+                    columns.Select(c => new XElement(D + "Col",
+                        new XAttribute("Path", c.Path),
+                        c.Header))),
                 rows.Select(r => new XElement(D + "Row",
                     columns.Select(c => new XElement(D + "Data",
                         new XAttribute("Path", c.Path),

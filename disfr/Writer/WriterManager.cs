@@ -25,13 +25,11 @@ namespace disfr.Writer
 
                     // Add standard writers.
                     manager.Add(new TmxWriter());
+                    manager.Add(new XlsxWriter());
                     manager.Add(new XmlTableWriter());
 
                     // Add plugin writers.
-                    foreach (var wr in PluginManager.Current.Writers)
-                    {
-                        manager.Add(wr);
-                    }
+                    manager.AddRange(PluginManager.Current.Writers);
 
                     // Add a debug writer.  (I want it listed last, since it is least useful for ordinary users.)
                     manager.Add(new XmlDebugTreeWriter());
@@ -47,6 +45,12 @@ namespace disfr.Writer
         public void Add(IRowsWriter writer)
         {
             Writers.Add(writer);
+            _FilterString = null;
+        }
+
+        public void AddRange(IEnumerable<IRowsWriter> writers)
+        {
+            Writers.AddRange(writers);
             _FilterString = null;
         }
 

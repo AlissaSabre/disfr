@@ -35,7 +35,7 @@ namespace disfr.Writer
 
         private readonly IList<string> _FilterString = new string[]
         {
-            "Debug Tree |*.tree",
+            "debug tree for developers|*.tree",
         };
 
         public IList<string> FilterString { get { return _FilterString; } }
