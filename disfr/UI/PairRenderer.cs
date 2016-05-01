@@ -58,7 +58,7 @@ namespace disfr.UI
             return ShowRawId ? id : TrimId(id, asset.IdTrimChars);
         }
 
-        public GlossyString GlossyFromInline(InlineString text)
+        public GlossyString GlossyFromInline(InlineString text, bool ignore_show_specials = false)
         {
             var g = new GlossyString();
             foreach (var obj in text.Contents)
@@ -71,7 +71,7 @@ namespace disfr.UI
                 {
                     string visual;
                     var c = ((InlineChar)obj).Char;
-                    if (!ShowSpecials)
+                    if (!ShowSpecials || ignore_show_specials)
                     {
                         g.Append(c.ToString(), Gloss.None);
                     }
@@ -125,6 +125,30 @@ namespace disfr.UI
             return opar + label + cpar;
         }
 
+        public string FlatFromInline(InlineString text)
+        {
+            var sb = new StringBuilder();
+            foreach (var obj in text.Contents)
+            {
+                if (obj is string)
+                {
+                    sb.Append(obj);
+                }
+                else if (obj is InlineChar)
+                {
+                    sb.Append((obj as InlineChar).Char);
+                }
+                else if (obj is InlineTag)
+                {
+                    // discard all tags.
+                }
+                else
+                {
+                    throw new ApplicationException("internal error");
+                }
+            }
+            return sb.ToString();
+        }
 
         private const char FIGURE_SPACE = '\u2007';
 

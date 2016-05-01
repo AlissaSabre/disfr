@@ -1,4 +1,4 @@
-﻿<!-- This XAML code is not very suitable for designer. -->
+﻿<!-- This XAML code is not very suitable for designer.  Use a text editor instead. -->
     
 <TabItem x:Class="disfr.UI.TableView"
          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -12,16 +12,36 @@
                 <ResourceDictionary Source="Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <local:SubtractingConverter x:Key="Subtract"/>
+
             <Style x:Key="DataGridStyle" TargetType="DataGrid" BasedOn="{StaticResource DisableWhenBusy}">
                 <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
                 <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
                 <Setter Property="AutoGenerateColumns" Value="False"/>
                 <Setter Property="CanUserSortColumns" Value="False"/>
-                <Setter Property="ColumnWidth" Value="SizeToCells"/>
+                <Setter Property="ColumnWidth" Value="Auto"/>
                 <Setter Property="HeadersVisibility" Value="Column"/>
                 <Setter Property="SelectionUnit" Value="Cell"/>
                 <Setter Property="IsReadOnly" Value="True"/>
                 <Setter Property="BorderThickness" Value="0"/>
+
+                <Setter Property="ColumnHeaderStyle">
+                    <Setter.Value>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding}"/>
+                                            <ComboBox Name="Filter" IsEditable="True" Visibility="Collapsed" Margin="0,3,0,0" MinWidth="30" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Subtract}, ConverterParameter=10}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+                
             </Style>
             
         </ResourceDictionary>
@@ -32,28 +52,28 @@
         <Binding Path="Name"/>
     </TabItem.Header>
 
-    <DataGrid x:Name="dataGrid" Margin="0,0,0,0" ItemsSource="{Binding Rows}" Style="{StaticResource DataGridStyle}">
+    <DataGrid x:Name="dataGrid" Margin="0,0,0,0" ItemsSource="{Binding Rows}" Style="{StaticResource DataGridStyle}" CanUserSortColumns="True">
         <DataGrid.Columns>
             <DataGridTextColumn x:Name="Serial" Header="#" Binding="{Binding Path=Serial, StringFormat=#}"/>
             <DataGridTextColumn x:Name="Asset2" Header="Old Asset" Binding="{Binding Asset2}" Width="80"/>
             <DataGridTextColumn x:Name="Asset" Header="Asset" Binding="{Binding Asset}" Width="80"/>
             <DataGridTextColumn x:Name="Id2" Header="Old Id" Binding="{Binding Id2}"/>
             <DataGridTextColumn x:Name="Id" Header="Id" Binding="{Binding Id}"/>
-            <DataGridTemplateColumn x:Name="Source" Header="Source" ClipboardContentBinding="{Binding Source}" Width="*">
+            <DataGridTemplateColumn x:Name="Source" Header="Source" ClipboardContentBinding="{Binding Source}" Width="*" CanUserSort="True" SortMemberPath="FlatSource">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <local:GlossyTextBlock GlossyText="{Binding Source}" TextWrapping="Wrap"/>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn x:Name="Target2" Header="Old Target" ClipboardContentBinding="{Binding Target2}" Width="*">
+            <DataGridTemplateColumn x:Name="Target2" Header="Old Target" ClipboardContentBinding="{Binding Target2}" Width="*" CanUserSort="True" SortMemberPath="FlatTarget2">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <local:GlossyTextBlock GlossyText="{Binding Target2}" TextWrapping="Wrap"/>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTemplateColumn x:Name="Target" Header="Target" ClipboardContentBinding="{Binding Target}" Width="*">
+            <DataGridTemplateColumn x:Name="Target" Header="Target" ClipboardContentBinding="{Binding Target}" Width="*" CanUserSort="True" SortMemberPath="FlatTarget">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <local:GlossyTextBlock GlossyText="{Binding Target}" TextWrapping="Wrap"/>

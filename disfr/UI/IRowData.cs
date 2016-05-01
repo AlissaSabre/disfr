@@ -38,6 +38,12 @@ namespace disfr.UI
 
         IEnumerable<string> Keys { get; }
 
+        string FlatSource { get; }
+
+        string FlatTarget { get; }
+
+        string FlatTarget2 { get; }
+
         InlineString RawSource { get; }
 
         InlineString RawTarget { get; }

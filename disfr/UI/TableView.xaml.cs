@@ -195,6 +195,20 @@ namespace disfr.UI
         }
     }
 
+
+    public class SubtractingConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value as double?) - (parameter as IConvertible)?.ToDouble(culture);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value as double?) + (parameter as IConvertible)?.ToDouble(culture);
+        }
+    }
+
     /// <summary>
     /// A StyleSelector that selects one of two styles to see whether a row is at an Asset boundary.
     /// </summary>

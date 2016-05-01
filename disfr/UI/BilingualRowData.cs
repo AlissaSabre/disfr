@@ -60,6 +60,12 @@ namespace disfr.UI
 
         public IEnumerable<string> Keys { get { return TransPair.Props.Keys; } }
 
+        public string FlatSource { get { return Renderer.FlatFromInline(TransPair.Source); } }
+
+        public string FlatTarget { get { return Renderer.FlatFromInline(TransPair.Target); } }
+
+        public string FlatTarget2 { get { return null; } }
+
         public InlineString RawSource { get { return TransPair.Source; } }
 
         public InlineString RawTarget { get { return TransPair.Target; } }
