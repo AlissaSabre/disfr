@@ -52,7 +52,7 @@
         <Binding Path="Name"/>
     </TabItem.Header>
 
-    <DataGrid x:Name="dataGrid" Margin="0,0,0,0" ItemsSource="{Binding Rows}" Style="{StaticResource DataGridStyle}" CanUserSortColumns="True">
+    <DataGrid x:Name="dataGrid" Margin="0,0,0,0" ItemsSource="{Binding Rows}" Style="{StaticResource DataGridStyle}" CanUserSortColumns="True" Sorting="dataGrid_Sorting">
         <DataGrid.Columns>
             <DataGridTextColumn x:Name="Serial" Header="#" Binding="{Binding Path=Serial, StringFormat=#}"/>
             <DataGridTextColumn x:Name="Asset2" Header="Old Asset" Binding="{Binding Asset2}" Width="80"/>

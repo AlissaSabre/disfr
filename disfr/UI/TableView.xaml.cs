@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -171,6 +172,48 @@ namespace disfr.UI
                         (c.ClipboardContentBinding as Binding)?.Path?.Path))
                     .ToArray();
             }
+        }
+
+        private void dataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            // We manage DataGrid sorting in a slightly different way than usual:
+            //  - When a column header is clicked, the table is sorted via the column (as usual),
+            //    but Seq (invisible to user) is always automatically specified as the second sort key.
+            //  - The second clicking on a same column reverses the sort order (this is normal),
+            //    but the third clicking on a sort key column resets the sorting,
+            //    as opposed to reverses the sort order again.
+            //    The fourth clicking is same as the first clicking.
+            //  - Shift key is ignored; users can't specify his/her own secondary sort keys.
+
+            // We use DataGridColumn.SortMemberPath to identify a column.
+            // We don't refer to DataGridColumn.Header, because it may be localized.
+
+            var dataGrid = sender as DataGrid;
+            foreach (var c in dataGrid.Columns) c.SortDirection = null;
+            var cv = dataGrid.Items as CollectionView;
+
+            var path = e.Column.SortMemberPath;
+            if (cv.SortDescriptions.Count == 0 || cv.SortDescriptions[0].PropertyName != path)
+            {
+                // This is the first clicking on a column.
+                cv.SortDescriptions.Clear();
+                cv.SortDescriptions.Add(new SortDescription(path, ListSortDirection.Ascending));
+                cv.SortDescriptions.Add(new SortDescription("Seq", ListSortDirection.Ascending));
+                e.Column.SortDirection = ListSortDirection.Ascending;
+            }
+            else if (cv.SortDescriptions[0].Direction == ListSortDirection.Ascending)
+            {
+                // This is the second clicking on a column.
+                cv.SortDescriptions[0] = new SortDescription(path, ListSortDirection.Descending);
+                e.Column.SortDirection = ListSortDirection.Descending;
+            }
+            else
+            {
+                // This should be the third clicking on a column.
+                cv.SortDescriptions.Clear();
+            }
+
+            e.Handled = true;
         }
     }
 
