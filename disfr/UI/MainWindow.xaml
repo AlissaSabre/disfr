@@ -72,7 +72,7 @@
                         <MenuItem Header="Select _Nothing" Command="{x:Static local:Commands.UnselectAll}" CommandTarget="{Binding SelectedItem.Content, ElementName=tables}"/>
                     </MenuItem>
                     <MenuItem Header="_View">
-                        <MenuItem Header="F_ilter..." Command="{Binding FilterCommand}"/>
+                        <MenuItem Header="_Quick Filter" IsCheckable="True" IsChecked="{Binding SelectedItem.QuickFilter, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
                         <Separator/>
                         <MenuItem Header="_Columns" Style="{StaticResource ColumnMenuItem}" ItemsSource="{Binding SelectedItem.Columns, ElementName=tables}"/>
                         <Separator/>

@@ -34,13 +34,12 @@ namespace disfr.UI
         {
             Renderer = renderer;
 
-            // We need to explicitly set it, so that the default non-null Filter is set appropriately. 
-            ShowAll = false;
-
             // The following are the default settings whose values are different from default(T).
             // BTW, the default settings should be user configurable. FIXME.
             TagShowing = TagShowing.Disp;
             ShowSpecials = true;
+
+            UpdateFilter();
         }
 
         /// <summary>
@@ -174,12 +173,36 @@ namespace disfr.UI
         public bool ShowAll
         {
             get { return _ShowAll; }
-            set
+            set { _ShowAll = value; UpdateFilter(); }
+        }
+
+        private Func<IRowData, bool> _ContentsFilter;
+
+        public Func<IRowData, bool> ContentsFilter
+        {
+            get { return _ContentsFilter; }
+            set { _ContentsFilter = value; UpdateFilter(); }
+        }
+
+        private void UpdateFilter()
+        {
+            if (_ShowAll && _ContentsFilter == null)
             {
-                _ShowAll = value;
-                _Rows.Filter = (value ? null as Func<IRowData, bool> : r => !r.Hidden);
-                _Rows.Reset();
+                _Rows.Filter = null;
             }
+            else if (_ShowAll && _ContentsFilter != null)
+            {
+                _Rows.Filter = _ContentsFilter;
+            }
+            else if (!_ShowAll && _ContentsFilter == null)
+            {
+                _Rows.Filter = r => !r.Hidden;
+            }
+            else if (!_ShowAll && _ContentsFilter != null)
+            {
+                _Rows.Filter = r => !r.Hidden && _ContentsFilter(r);
+            }
+            _Rows.Reset();
         }
 
         private Func<ITableController> AltLoader = null;

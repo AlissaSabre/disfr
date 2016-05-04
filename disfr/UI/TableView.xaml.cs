@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 using ColumnDesc = disfr.Writer.ColumnDesc;
 
@@ -33,7 +35,7 @@ namespace disfr.UI
 
         #region ColumnInUse attached property
 
-        private static readonly DependencyProperty ColumnInUseProperty =
+        public static readonly DependencyProperty ColumnInUseProperty =
             DependencyProperty.Register("ColumnInUse", typeof(bool), typeof(TableView));
 
         public static void SetColumnInUse(DependencyObject target, bool in_use)
@@ -185,9 +187,6 @@ namespace disfr.UI
             //    The fourth clicking is same as the first clicking.
             //  - Shift key is ignored; users can't specify his/her own secondary sort keys.
 
-            // We use DataGridColumn.SortMemberPath to identify a column.
-            // We don't refer to DataGridColumn.Header, because it may be localized.
-
             var dataGrid = sender as DataGrid;
             foreach (var c in dataGrid.Columns) c.SortDirection = null;
             var cv = dataGrid.Items as CollectionView;
@@ -215,6 +214,157 @@ namespace disfr.UI
 
             e.Handled = true;
         }
+
+        #region QuickFilter dependency property
+
+        public static readonly DependencyProperty QuickFilterProperty =
+            DependencyProperty.Register("QuickFilter", typeof(bool), typeof(TableView),
+                new FrameworkPropertyMetadata(QuickFilterChangedCallback) { BindsTwoWayByDefault = true });
+        
+        public bool QuickFilter
+        {
+            get { return (bool)GetValue(QuickFilterProperty); }
+            set { SetValue(QuickFilterProperty, value); }
+        }
+
+        private static void QuickFilterChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as TableView).OnQuickFilterChanged(true.Equals(e.NewValue));
+        }
+
+        private void OnQuickFilterChanged(bool value)
+        {
+            var visible = value ? Visibility.Visible : Visibility.Collapsed;
+            foreach (var c in dataGrid.Columns)
+            {
+                var h = c.Header;
+            }
+        }
+
+        #endregion
+
+        #region FilterBox backends
+
+        private static readonly DependencyProperty ColumnProperty
+            = DependencyProperty.Register("Column", typeof(DataGridColumn), typeof(TableView));
+
+        private static readonly DependencyProperty FilterRegexProperty
+            = DependencyProperty.Register("FilterRegex", typeof(Regex), typeof(TableView));
+
+        private void FilterBox_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // We want to hook into a PART_EditableTextBox component of a ComboBox.
+            // I first thought we can do so in Loaded event handler, but I was wrong.
+            // The visual tree appears to be created only after the ComboBox becomes visible,
+            // and IsVisibleChanged event handler is raised just before the visual tree creation.
+            // So, we need some tricky maneuver.
+            if ((bool)e.NewValue)
+            {
+                var filterbox = sender as ComboBox;
+                filterbox.IsVisibleChanged -= FilterBox_IsVisibleChanged;
+                Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
+                {
+                    var textbox = FindVisualChild<TextBox>(filterbox, "PART_EditableTextBox");
+                    textbox.TextChanged += FilterBox_TextBox_TextChanged;
+                });
+            }
+        }
+
+        private bool FilterUpdating = false;
+
+        private void FilterBox_TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textbox = sender as TextBox;
+            var column = textbox.GetValue(ColumnProperty) as DataGridColumn;
+            if (column == null)
+            {
+                // The corresponding header text is stored in Tag of the ComboBox.
+                // It is a UI text, so we can't compare it against a fixed string,
+                // but we can surely compare them each other (assuming there are no duplicates...)
+                var header = FindVisualParent<ComboBox>(textbox).Tag.ToString();
+                column = dataGrid.Columns.FirstOrDefault(c => (c.Header as string) == header);
+                textbox.SetValue(ColumnProperty, column);
+            }
+
+            var text = textbox.Text;
+            if (string.IsNullOrEmpty(text))
+            {
+                column.SetValue(FilterRegexProperty, null);
+            }
+            else
+            {
+                column.SetValue(FilterRegexProperty, new Regex(Regex.Escape(textbox.Text), RegexOptions.IgnoreCase));
+            }
+
+            if (!FilterUpdating)
+            {
+                FilterUpdating = true;
+                Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
+                {
+                    FilterUpdating = false;
+                    var matchers = dataGrid.Columns.Select(c => new { Grab = Grabber(c.SortMemberPath), Regex = c.GetValue(FilterRegexProperty) as Regex }).Where(u => u.Regex != null).ToArray();
+                    Controller.ContentsFilter = row =>
+                    {
+                        foreach (var u in matchers)
+                        {
+                            if (!u.Regex.IsMatch(u.Grab(row))) return false;
+                        }
+                        return true;
+                    };
+                });
+            }
+        }
+
+        private static Func<IRowData, string> Grabber(string path)
+        {
+            if (path.StartsWith("[") && path.EndsWith("]"))
+            {
+                var key = path.Substring(1, path.Length - 2);
+                return r => r[key];
+            }
+
+            var property = typeof(IRowData).GetProperty(path);
+            if (property.PropertyType == typeof(string))
+            {
+                return r => (string)property.GetValue(r);
+            }
+            else
+            {
+                return r => property.GetValue(r).ToString(); 
+            }
+        }
+
+        /// <summary>
+        /// Find a node of a particular type and optinally a name in a visual tree.
+        /// </summary>
+        /// <typeparam name="ChildType">Type of a node to find.</typeparam>
+        /// <param name="obj">An object which forms a visual tree to find a child in.</param>
+        /// <param name="name">name of a child to find, or null if name is not important.</param>
+        /// <returns>Any one of the children of the type and the name, or null if none found.</returns>
+        private static ChildType FindVisualChild<ChildType>(DependencyObject obj, string name) where ChildType : FrameworkElement
+        {
+            if (obj == null) return null;
+            if (obj is ChildType &&
+                (name == null || (obj as FrameworkElement).Name == name)) return obj as ChildType;
+            for (int i = VisualTreeHelper.GetChildrenCount(obj) - 1; i >= 0; --i)
+            {
+                var child = FindVisualChild<ChildType>(VisualTreeHelper.GetChild(obj, i), name);
+                if (child != null) return child;
+            }
+            return null;
+        }
+
+        private static ParentType FindVisualParent<ParentType>(DependencyObject obj) where ParentType : DependencyObject
+        {
+            while (obj != null)
+            {
+                if (obj is ParentType) return obj as ParentType;
+                obj = VisualTreeHelper.GetParent(obj);
+            }
+            return null;
+        }
+
+        #endregion
     }
 
     /// <summary>

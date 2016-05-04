@@ -1,6 +1,7 @@
 ﻿<!-- This XAML code is not very suitable for designer.  Use a text editor instead. -->
     
 <TabItem x:Class="disfr.UI.TableView"
+         x:Name="Root"
          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,6 +14,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <local:SubtractingConverter x:Key="Subtract"/>
+
+            <BooleanToVisibilityConverter x:Key="Visibility"/>
 
             <Style x:Key="DataGridStyle" TargetType="DataGrid" BasedOn="{StaticResource DisableWhenBusy}">
                 <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
@@ -33,7 +36,13 @@
                                     <DataTemplate>
                                         <StackPanel>
                                             <TextBlock Text="{Binding}"/>
-                                            <ComboBox Name="Filter" IsEditable="True" Visibility="Collapsed" Margin="0,3,0,0" MinWidth="30" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Subtract}, ConverterParameter=10}"/>
+                                            <ComboBox Name="FilterBox" IsEditable="True" Margin="0,3,0,0" MinWidth="30"
+                                                      Visibility="{Binding QuickFilter, ElementName=Root, Converter={StaticResource Visibility}}"
+                                                      Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Subtract}, ConverterParameter=10}"
+                                                      Tag="{Binding}"
+                                                      IsVisibleChanged="FilterBox_IsVisibleChanged"
+                                                      >
+                                            </ComboBox>
                                         </StackPanel>
                                     </DataTemplate>
                                 </Setter.Value>
@@ -80,7 +89,7 @@
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-            <DataGridTextColumn x:Name="Notes" Header="Notes" Binding="{Binding Note}"/>
+            <DataGridTextColumn x:Name="Notes" Header="Notes" Binding="{Binding Notes}"/>
         </DataGrid.Columns>
 
         <DataGrid.CommandBindings>

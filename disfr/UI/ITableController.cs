@@ -17,9 +17,9 @@ namespace disfr.UI
         string Name { get; }
         IEnumerable<IRowData> Rows { get; }
 
-
-
         ITableController LoadAltAssets();
         bool HasAltAssets { get; }
+
+        Func<IRowData, bool> ContentsFilter { get; set; }
     }
 }
