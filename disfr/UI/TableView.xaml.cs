@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -248,12 +249,21 @@ namespace disfr.UI
         /// <summary>
         /// Identifire of the private attached property Column.
         /// </summary>
+        /// <remarks>
+        /// A Column attached property is attached to a TextBox portion in a FilterBox ComboBox.
+        /// It holds a reference to the corresponding DataGridColumn object.
+        /// </remarks>
         private static readonly DependencyProperty ColumnProperty
             = DependencyProperty.Register("Column", typeof(DataGridColumn), typeof(TableView));
 
         /// <summary>
-        /// Identifier of the private attached property FIlterRegex.
+        /// Identifier of the private attached property FilterRegex.
         /// </summary>
+        /// <remarks>
+        /// A FilterRegex property is attached to a DataGridColumn.
+        /// It holds a Regex instance for use on the column for quick filtering.
+        /// It is null if no filtering applies to the column.
+        /// </remarks>
         private static readonly DependencyProperty FilterRegexProperty
             = DependencyProperty.Register("FilterRegex", typeof(Regex), typeof(TableView));
 
@@ -272,20 +282,18 @@ namespace disfr.UI
                 filterbox.IsVisibleChanged -= FilterBox_IsVisibleChanged;
 
                 // WPF is about to make this ComboBox visible,
-                // so next time its dispatcher becomes idle, it should have been mde visible.
+                // so next time its dispatcher becomes idle, it should have been made visible.
                 Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
                 {
-                    // The header text of a column that we are filtering with
-                    // is stored in the TextBlock next to this ComboBox.
-                    var header = FindVisualChild<TextBlock>(VisualTreeHelper.GetParent(filterbox), "HeaderText").Text;
-
-                    // It is a UI text, so we can't compare it against a fixed string,
-                    // but we can surely compare them each other (assuming there are no duplicates...)
-                    var column = dataGrid.Columns.FirstOrDefault(c => (c.Header as string) == header);
-
-                    // Next find a TextBox portion of the ComboBox and hook into it.
+                    // Find a TextBox portion of the ComboBox.
                     var textbox = FindVisualChild<TextBox>(filterbox, "PART_EditableTextBox");
-                    textbox.SetValue(ColumnProperty, column);
+
+                    // We need to access the corresponding DataGridColumn quickly,
+                    // so find one now and store it in a handy place.
+                    var header = FindVisualParent<DataGridColumnHeader>(filterbox);
+                    textbox.SetValue(ColumnProperty, header.Column);
+
+                    // Then, hook into the text box.
                     textbox.TextChanged += FilterBox_TextBox_TextChanged;
                 });
             }
