@@ -51,6 +51,55 @@ namespace disfr.UI
 
         #endregion
 
+        #region FilterOptions attached property
+
+        public static readonly DependencyProperty FilterOptionsProperty =
+            DependencyProperty.Register("FilterOptions", typeof(IEnumerable<FilterOption>), typeof(TableView));
+
+        public static void SetFilterOptions(DependencyObject target, IEnumerable<FilterOption> filter_options)
+        {
+            target.SetValue(FilterOptionsProperty, filter_options);
+        }
+
+        public static IEnumerable<FilterOption> GetFilterOptions(DependencyObject target)
+        {
+            return (IEnumerable<FilterOption>)target.GetValue(FilterOptionsProperty);
+        }
+
+        public class FilterOption
+        {
+            public const string MARKER = "\u2060\u200B";
+
+            private FilterOption(string text)
+            {
+                IsEmpty = false;
+                Regex = new Regex("^" + Regex.Escape(text) + "$");
+                DisplayString = MARKER + text;
+            }
+
+            private FilterOption()
+            {
+                IsEmpty = true;
+                Regex = new Regex("^$");
+                DisplayString = MARKER + MARKER + "(empty)";
+            }
+
+            public static FilterOption Get(string text)
+            {
+                return string.IsNullOrEmpty(text) ? new FilterOption() : new FilterOption(text);
+            }
+
+            public readonly bool IsEmpty;
+
+            public readonly Regex Regex;
+
+            public readonly string DisplayString;
+
+            public override string ToString() { return DisplayString; }
+        }
+
+        #endregion
+
         #region StandardColumns local array
 
         private class StandardColumnInfo
@@ -150,6 +199,15 @@ namespace disfr.UI
                 };
                 column.SetValue(ColumnInUseProperty, true);
                 dataGrid.Columns.Add(column);
+            }
+
+            
+            // Set FilterOptions attached property to all in-use columns.
+            foreach (var column in dataGrid.Columns.Where(GetColumnInUse))
+            {
+                var grabber = CreateGrabber(column.SortMemberPath);
+                var list = table.AllRows.Select(grabber).Distinct().OrderBy(s => string.IsNullOrEmpty(s) ? 0 : 1).ThenBy(s => s).Select(s => FilterOption.Get(s));
+                column.SetValue(FilterOptionsProperty, list);
             }
         }
 
@@ -276,15 +334,12 @@ namespace disfr.UI
             // So, we need some tricky maneuver.
             if ((bool)e.NewValue)
             {
-                // We have nothing to do upon every Visibility changes.
-                // We only need one-time bootstrap.
-                var filterbox = sender as ComboBox;
-                filterbox.IsVisibleChanged -= FilterBox_IsVisibleChanged;
-
                 // WPF is about to make this ComboBox visible,
                 // so next time its dispatcher becomes idle, it should have been made visible.
                 Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
                 {
+                    var filterbox = sender as ComboBox;
+
                     // Find a TextBox portion of the ComboBox.
                     var textbox = FindVisualChild<TextBox>(filterbox, "PART_EditableTextBox");
 
@@ -295,6 +350,9 @@ namespace disfr.UI
 
                     // Then, hook into the text box.
                     textbox.TextChanged += FilterBox_TextBox_TextChanged;
+
+                    // Hooked.  We don't need to do it again.
+                    filterbox.IsVisibleChanged -= FilterBox_IsVisibleChanged;
                 });
             }
         }
@@ -306,8 +364,27 @@ namespace disfr.UI
             var textbox = sender as TextBox;
             var column = textbox.GetValue(ColumnProperty) as DataGridColumn;
 
+            Regex regex;
             var text = textbox.Text;
-            column.SetValue(FilterRegexProperty, string.IsNullOrEmpty(text) ? null : new Regex(Regex.Escape(textbox.Text), RegexOptions.IgnoreCase));
+            if (string.IsNullOrEmpty(text))
+            {
+                regex = null;
+            }
+            else if (!text.StartsWith(FilterOption.MARKER))
+            {
+                regex = new Regex(Regex.Escape(textbox.Text), RegexOptions.IgnoreCase);
+            }
+            else
+            {
+                regex = GetFilterOptions(column).FirstOrDefault(w => w.DisplayString == text)?.Regex;
+                if (regex == null)
+                {
+                    // This is probably because the user is editing a text from dropdown list.
+                    // We can't handle the case as the user expects. Give the user a chance to know it. 
+                    textbox.Clear();
+                }
+            }
+            column.SetValue(FilterRegexProperty, regex);
 
             // For the moment, we need to enumerate all RowData whenever the ContentsFilter is changed.
             // It takes some significant time.
@@ -339,7 +416,7 @@ namespace disfr.UI
             var regex = column.GetValue(FilterRegexProperty) as Regex;
             if (regex == null) return null;
             var grabber = CreateGrabber(column.SortMemberPath);
-            return row => regex.IsMatch(grabber(row));
+            return row => regex.IsMatch(grabber(row) ?? ""); // XXX
         }
 
         private static Func<IRowData, string> CreateGrabber(string path)
