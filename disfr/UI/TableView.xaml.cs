@@ -245,9 +245,15 @@ namespace disfr.UI
 
         #region FilterBox backends
 
+        /// <summary>
+        /// Identifire of the private attached property Column.
+        /// </summary>
         private static readonly DependencyProperty ColumnProperty
             = DependencyProperty.Register("Column", typeof(DataGridColumn), typeof(TableView));
 
+        /// <summary>
+        /// Identifier of the private attached property FIlterRegex.
+        /// </summary>
         private static readonly DependencyProperty FilterRegexProperty
             = DependencyProperty.Register("FilterRegex", typeof(Regex), typeof(TableView));
 
@@ -260,11 +266,26 @@ namespace disfr.UI
             // So, we need some tricky maneuver.
             if ((bool)e.NewValue)
             {
+                // We have nothing to do upon every Visibility changes.
+                // We only need one-time bootstrap.
                 var filterbox = sender as ComboBox;
                 filterbox.IsVisibleChanged -= FilterBox_IsVisibleChanged;
+
+                // WPF is about to make this ComboBox visible,
+                // so next time its dispatcher becomes idle, it should have been mde visible.
                 Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
                 {
+                    // The header text of a column that we are filtering with
+                    // is stored in the TextBlock next to this ComboBox.
+                    var header = FindVisualChild<TextBlock>(VisualTreeHelper.GetParent(filterbox), "HeaderText").Text;
+
+                    // It is a UI text, so we can't compare it against a fixed string,
+                    // but we can surely compare them each other (assuming there are no duplicates...)
+                    var column = dataGrid.Columns.FirstOrDefault(c => (c.Header as string) == header);
+
+                    // Next find a TextBox portion of the ComboBox and hook into it.
                     var textbox = FindVisualChild<TextBox>(filterbox, "PART_EditableTextBox");
+                    textbox.SetValue(ColumnProperty, column);
                     textbox.TextChanged += FilterBox_TextBox_TextChanged;
                 });
             }
@@ -276,38 +297,28 @@ namespace disfr.UI
         {
             var textbox = sender as TextBox;
             var column = textbox.GetValue(ColumnProperty) as DataGridColumn;
-            if (column == null)
-            {
-                // The corresponding header text is stored in Tag of the ComboBox.
-                // It is a UI text, so we can't compare it against a fixed string,
-                // but we can surely compare them each other (assuming there are no duplicates...)
-                var header = FindVisualParent<ComboBox>(textbox).Tag.ToString();
-                column = dataGrid.Columns.FirstOrDefault(c => (c.Header as string) == header);
-                textbox.SetValue(ColumnProperty, column);
-            }
 
             var text = textbox.Text;
-            if (string.IsNullOrEmpty(text))
-            {
-                column.SetValue(FilterRegexProperty, null);
-            }
-            else
-            {
-                column.SetValue(FilterRegexProperty, new Regex(Regex.Escape(textbox.Text), RegexOptions.IgnoreCase));
-            }
+            column.SetValue(FilterRegexProperty, string.IsNullOrEmpty(text) ? null : new Regex(Regex.Escape(textbox.Text), RegexOptions.IgnoreCase));
 
+            // For the moment, we need to enumerate all RowData whenever the ContentsFilter is changed.
+            // It takes some significant time.
+            // We postpone updating the filter when the user is typing the filter text quickly,
+            // so that the typed texts appear on the screen as soon as possible.
+            // Well, I think the core cause of this problem is that the filtering-enumeration is performed by the UI thread.
+            // Hence I have a feeling we should run the filtering operation in a separate thread.  FIXME. 
             if (!FilterUpdating)
             {
                 FilterUpdating = true;
                 Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
                 {
                     FilterUpdating = false;
-                    var matchers = dataGrid.Columns.Select(c => new { Grab = Grabber(c.SortMemberPath), Regex = c.GetValue(FilterRegexProperty) as Regex }).Where(u => u.Regex != null).ToArray();
+                    var matchers = dataGrid.Columns.Select(CreateMatcher).Where(m => m != null).ToArray();
                     Controller.ContentsFilter = row =>
                     {
-                        foreach (var u in matchers)
+                        foreach (var m in matchers)
                         {
-                            if (!u.Regex.IsMatch(u.Grab(row))) return false;
+                            if (!m(row)) return false;
                         }
                         return true;
                     };
@@ -315,7 +326,15 @@ namespace disfr.UI
             }
         }
 
-        private static Func<IRowData, string> Grabber(string path)
+        private static Func<IRowData, bool> CreateMatcher(DataGridColumn column)
+        {
+            var regex = column.GetValue(FilterRegexProperty) as Regex;
+            if (regex == null) return null;
+            var grabber = CreateGrabber(column.SortMemberPath);
+            return row => regex.IsMatch(grabber(row));
+        }
+
+        private static Func<IRowData, string> CreateGrabber(string path)
         {
             if (path.StartsWith("[") && path.EndsWith("]"))
             {
@@ -326,7 +345,7 @@ namespace disfr.UI
             var property = typeof(IRowData).GetProperty(path);
             if (property.PropertyType == typeof(string))
             {
-                return r => (string)property.GetValue(r);
+                return r => property.GetValue(r) as string;
             }
             else
             {
@@ -341,7 +360,7 @@ namespace disfr.UI
         /// <param name="obj">An object which forms a visual tree to find a child in.</param>
         /// <param name="name">name of a child to find, or null if name is not important.</param>
         /// <returns>Any one of the children of the type and the name, or null if none found.</returns>
-        private static ChildType FindVisualChild<ChildType>(DependencyObject obj, string name) where ChildType : FrameworkElement
+        private static ChildType FindVisualChild<ChildType>(DependencyObject obj, string name = null) where ChildType : FrameworkElement
         {
             if (obj == null) return null;
             if (obj is ChildType &&

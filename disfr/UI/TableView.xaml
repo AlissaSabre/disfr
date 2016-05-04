@@ -35,14 +35,11 @@
                                 <Setter.Value>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding}"/>
+                                            <TextBlock Name="HeaderText" Text="{Binding}"/>
                                             <ComboBox Name="FilterBox" IsEditable="True" Margin="0,3,0,0" MinWidth="30"
                                                       Visibility="{Binding QuickFilter, ElementName=Root, Converter={StaticResource Visibility}}"
                                                       Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Subtract}, ConverterParameter=10}"
-                                                      Tag="{Binding}"
-                                                      IsVisibleChanged="FilterBox_IsVisibleChanged"
-                                                      >
-                                            </ComboBox>
+                                                      IsVisibleChanged="FilterBox_IsVisibleChanged"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </Setter.Value>
