@@ -16,6 +16,7 @@ namespace disfr.UI
     {
         string Name { get; }
         IEnumerable<IRowData> Rows { get; }
+        IEnumerable<IRowData> AllRows { get; }
 
         ITableController LoadAltAssets();
         bool HasAltAssets { get; }

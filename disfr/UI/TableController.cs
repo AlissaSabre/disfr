@@ -47,19 +47,39 @@ namespace disfr.UI
         /// </summary>
         public string Name { get; private set; }
 
+        #region Rows and AllRows properties
+
         private readonly RowDataCollection _Rows = new RowDataCollection();
 
         /// <summary>
-        /// Rows of this table.
+        /// Gets filtered rows of this table.
         /// </summary>
         /// <value>
         /// A <see cref="RowDataCollection"/> object.
         /// </value>
         /// <remarks>
+        /// <para>
         /// This property is intended to be bound by an <see cref="System.Windows.Controls.ItemCollection.ItemsSource"/>.
         /// The returned object implements <see cref="INotifyCollectionChanged"/>.
+        /// </para>
+        /// <para>
+        /// The returned collection is filtered.
+        /// That is, some rows may be excluded by settings of <see cref="ShowAll"/> and <see cref="ContentsFilter"/>.
+        /// Use <see cref="AllRows"/> if you need the full set of rows.
+        /// </para>
         /// </remarks>
         public IEnumerable<IRowData> Rows { get { return _Rows; } }
+
+        /// <summary>
+        /// Gets unfiltered rows of this table.
+        /// </summary>
+        /// <remarks>
+        /// Unlike <see cref="Rows"/>, this property returns unfiltered set of rows.
+        /// The returned object is not suitable for data binding.
+        /// </remarks>
+        public IEnumerable<IRowData> AllRows { get { return _Rows.Rows; } }
+
+        #endregion
 
         private readonly PairRenderer Renderer = new PairRenderer();
 

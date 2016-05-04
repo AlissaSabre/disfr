@@ -120,7 +120,7 @@ namespace disfr.UI
             // We use a false value of ColumnInUse atatched property to tell the case. 
             foreach (var colInfo in StandardColumns)
             {
-                var in_use = table.Rows.Any(colInfo.InUse);
+                var in_use = table.AllRows.Any(colInfo.InUse);
                 colInfo.Column.Visibility = in_use ? Visibility.Visible : Visibility.Collapsed;
                 colInfo.Column.SetValue(ColumnInUseProperty, in_use);
             }
@@ -131,7 +131,7 @@ namespace disfr.UI
             // (but users can still view it if they want.)
             if (Asset.Visibility == Visibility.Visible && 
                 Asset2.Visibility != Visibility.Visible &&
-                !table.Rows.Select(r => r.Asset).Distinct().Skip(1).Any())
+                !table.AllRows.Select(r => r.Asset).Distinct().Skip(1).Any())
             {
                 Asset.Visibility = Visibility.Collapsed;
             }
@@ -139,7 +139,7 @@ namespace disfr.UI
             // Create columns for additional properties.
             // They are initially hidden but users can view them.
             // ColumnInUse attached property is set to true for the purpose. 
-            foreach (var key in table.Rows.SelectMany(r => r.Keys).Distinct())
+            foreach (var key in table.AllRows.SelectMany(r => r.Keys).Distinct())
             {
                 var column = new DataGridTextColumn()
                 {
