@@ -72,15 +72,13 @@ namespace disfr.UI
 
             private FilterOption(string text)
             {
-                IsEmpty = false;
-                Regex = new Regex("^" + Regex.Escape(text) + "$");
+                String = text;
                 DisplayString = MARKER + text;
             }
 
             private FilterOption()
             {
-                IsEmpty = true;
-                Regex = new Regex("^$");
+                String = "";
                 DisplayString = MARKER + MARKER + "(empty)";
             }
 
@@ -89,9 +87,7 @@ namespace disfr.UI
                 return string.IsNullOrEmpty(text) ? new FilterOption() : new FilterOption(text);
             }
 
-            public readonly bool IsEmpty;
-
-            public readonly Regex Regex;
+            public readonly String String;
 
             public readonly string DisplayString;
 
@@ -315,46 +311,49 @@ namespace disfr.UI
             = DependencyProperty.Register("Column", typeof(DataGridColumn), typeof(TableView));
 
         /// <summary>
-        /// Identifier of the private attached property FilterRegex.
+        /// Identifier of the private attached property Filter.
         /// </summary>
         /// <remarks>
-        /// A FilterRegex property is attached to a DataGridColumn.
-        /// It holds a Regex instance for use on the column for quick filtering.
+        /// A Filter property is attached to a DataGridColumn.
+        /// It holds a filtering delegate (of type <see cref="Func{IRowData,Boolean}"/>)
+        /// for the column.
         /// It is null if no filtering applies to the column.
         /// </remarks>
-        private static readonly DependencyProperty FilterRegexProperty
-            = DependencyProperty.Register("FilterRegex", typeof(Regex), typeof(TableView));
+        private static readonly DependencyProperty FilterProperty
+            = DependencyProperty.Register("Filter", typeof(Func<IRowData, bool>), typeof(TableView));
 
-        private void FilterBox_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void FilterBox_GotFocus(object sender, RoutedEventArgs e)
         {
             // We want to hook into a PART_EditableTextBox component of a ComboBox.
             // I first thought we can do so in Loaded event handler, but I was wrong.
             // The visual tree appears to be created only after the ComboBox becomes visible,
-            // and IsVisibleChanged event handler is raised just before the visual tree creation.
-            // So, we need some tricky maneuver.
-            if ((bool)e.NewValue)
+            // and doing it in IsVisibleChanged event handler sometimes failed...
+            // We need some tricky maneuver.
+
+            Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
             {
-                // WPF is about to make this ComboBox visible,
-                // so next time its dispatcher becomes idle, it should have been made visible.
-                Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
+                var filterbox = sender as ComboBox;
+
+                // Find a TextBox portion of the ComboBox.
+                var textbox = FindVisualChild<TextBox>(filterbox, "PART_EditableTextBox");
+
+                if (textbox == null)
                 {
-                    var filterbox = sender as ComboBox;
+                    // Appears not ready yet ... but why?  FIXME.
+                    return;
+                }
 
-                    // Find a TextBox portion of the ComboBox.
-                    var textbox = FindVisualChild<TextBox>(filterbox, "PART_EditableTextBox");
+                // We need to access the corresponding DataGridColumn quickly,
+                // so find one now and store it in a handy place.
+                var header = FindVisualParent<DataGridColumnHeader>(filterbox);
+                textbox.SetValue(ColumnProperty, header.Column);
 
-                    // We need to access the corresponding DataGridColumn quickly,
-                    // so find one now and store it in a handy place.
-                    var header = FindVisualParent<DataGridColumnHeader>(filterbox);
-                    textbox.SetValue(ColumnProperty, header.Column);
+                // Then, hook into the text box.
+                textbox.TextChanged += FilterBox_TextBox_TextChanged;
 
-                    // Then, hook into the text box.
-                    textbox.TextChanged += FilterBox_TextBox_TextChanged;
-
-                    // Hooked.  We don't need to do it again.
-                    filterbox.IsVisibleChanged -= FilterBox_IsVisibleChanged;
-                });
-            }
+                // Hooked.  We don't need to do it again.
+                filterbox.GotFocus -= FilterBox_GotFocus;
+            });
         }
 
         private bool FilterUpdating = false;
@@ -364,27 +363,35 @@ namespace disfr.UI
             var textbox = sender as TextBox;
             var column = textbox.GetValue(ColumnProperty) as DataGridColumn;
 
-            Regex regex;
+            Func<IRowData, bool> filter;
             var text = textbox.Text;
             if (string.IsNullOrEmpty(text))
             {
-                regex = null;
+                filter = null;
             }
             else if (!text.StartsWith(FilterOption.MARKER))
             {
-                regex = new Regex(Regex.Escape(textbox.Text), RegexOptions.IgnoreCase);
+                var regex = new Regex(Regex.Escape(textbox.Text), RegexOptions.IgnoreCase);
+                var grabber = CreateGrabber(column.SortMemberPath);
+                filter = row => regex.IsMatch(grabber(row) ?? ""); // XXX
             }
             else
             {
-                regex = GetFilterOptions(column).FirstOrDefault(w => w.DisplayString == text)?.Regex;
-                if (regex == null)
+                var match_text = GetFilterOptions(column).FirstOrDefault(w => w.DisplayString == text)?.String;
+                if (match_text == null)
                 {
                     // This is probably because the user is editing a text from dropdown list.
                     // We can't handle the case as the user expects. Give the user a chance to know it. 
                     textbox.Clear();
+                    filter = null;
+                }
+                else
+                {
+                    var grabber = CreateGrabber(column.SortMemberPath);
+                    filter = row => match_text.Equals(grabber(row) ?? ""); // XXX
                 }
             }
-            column.SetValue(FilterRegexProperty, regex);
+            column.SetValue(FilterProperty, filter);
 
             // For the moment, we need to enumerate all RowData whenever the ContentsFilter is changed.
             // It takes some significant time.
@@ -398,7 +405,7 @@ namespace disfr.UI
                 Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
                 {
                     FilterUpdating = false;
-                    var matchers = dataGrid.Columns.Select(CreateMatcher).Where(m => m != null).ToArray();
+                    var matchers = dataGrid.Columns.Select(c => c.GetValue(FilterProperty) as Func<IRowData, bool>).Where(m => m != null).ToArray();
                     Controller.ContentsFilter = row =>
                     {
                         foreach (var m in matchers)
@@ -409,14 +416,6 @@ namespace disfr.UI
                     };
                 });
             }
-        }
-
-        private static Func<IRowData, bool> CreateMatcher(DataGridColumn column)
-        {
-            var regex = column.GetValue(FilterRegexProperty) as Regex;
-            if (regex == null) return null;
-            var grabber = CreateGrabber(column.SortMemberPath);
-            return row => regex.IsMatch(grabber(row) ?? ""); // XXX
         }
 
         private static Func<IRowData, string> CreateGrabber(string path)
@@ -434,7 +433,7 @@ namespace disfr.UI
             }
             else
             {
-                return r => property.GetValue(r).ToString(); 
+                return r => property.GetValue(r)?.ToString(); 
             }
         }
 
@@ -469,6 +468,7 @@ namespace disfr.UI
         }
 
         #endregion
+
     }
 
     /// <summary>

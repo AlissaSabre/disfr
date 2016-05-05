@@ -40,7 +40,7 @@
                                                       Visibility="{Binding QuickFilter, ElementName=Root, Converter={StaticResource Visibility}}"
                                                       Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource Subtract}, ConverterParameter=10}"
                                                       ItemsSource="{Binding Column.(local:TableView.FilterOptions), RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}, Mode=OneWay}"
-                                                      IsVisibleChanged="FilterBox_IsVisibleChanged"/>
+                                                      GotFocus="FilterBox_GotFocus"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </Setter.Value>
