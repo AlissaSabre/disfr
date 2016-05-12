@@ -31,8 +31,13 @@ namespace disfr.UI
             set
             {
                 _Exception = value;
-                Message.Text = value.Message;
-                Details.Text = value.ToString();
+                var e = value;
+                while (e is AggregateException)
+                {
+                    e = (e as AggregateException).InnerExceptions[0];
+                }
+                Message.Text = e?.Message;
+                Details.Text = value?.ToString();
             }
         }
 
