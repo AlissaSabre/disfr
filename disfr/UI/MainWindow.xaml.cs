@@ -37,6 +37,7 @@ namespace disfr.UI
 
         private void Dispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
+            if (e.Handled) return;
             var exception = e.Exception;
             Dispatcher.BeginInvoke((Action)delegate
             {
