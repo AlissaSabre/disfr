@@ -96,6 +96,9 @@
     <Compile Include="Doc\InlineString.cs" />
     <Compile Include="Doc\ITransPair.cs" />
     <Compile Include="Doc\ReaderManager.cs" />
+    <Compile Include="UI\ExceptionDialog.xaml.cs">
+      <DependentUpon>ExceptionDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Writer\IRowsWriter.cs" />
     <Compile Include="Writer\TableWriterBase.cs" />
     <Compile Include="Writer\TmxWriter.cs" />
@@ -132,6 +135,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\AppIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\ExceptionDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
