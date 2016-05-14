@@ -271,82 +271,6 @@ namespace disfr.Doc
                 return new ContentParser(this, true).Parse(element).GetSequence();
             }
 
-            //protected InlineString GetInline(IEnumerable<XNode> nodes)
-            //{
-            //    var sb = new InlineString();
-            //    if (nodes == null) return sb;
-            //    foreach (var n in nodes)
-            //    {
-            //        if (n.NodeType == XmlNodeType.Text)
-            //        {
-            //            sb.Append(((XText)n).Value);
-            //        }
-            //        else if (n.NodeType == XmlNodeType.Element)
-            //        {
-            //            var e = (XElement)n;
-            //            var ns = e.Name.Namespace;
-            //            var name = e.Name.LocalName;
-            //            if (ns == X && name == "mrk")
-            //            {
-            //                // Mrk tags are _markers_ for CAT tools.  Most of their uses are
-            //                // invisible to translators, although there MAY BE some that
-            //                // are visible.  For the moment, we ignore the start end end tags, 
-            //                // leaving the content.
-            //                sb.Append(GetInline(e));
-            //            }
-            //            else if (ns == X && (name == "x" || name == "ph"))
-            //            {
-            //                // Replace a standalone native code element with a standalone inline tag.
-            //                sb.Append(BuildNativeCodeTag(Tag.S, e, name == "ph"));
-            //            }
-            //            else if (ns == X && (name == "bx" || name == "bpt"))
-            //            {
-            //                // Replace a beginning native code element with a beginning inline tag.
-            //                sb.Append(BuildNativeCodeTag(Tag.B, e, name == "bpt"));
-            //            }
-            //            else if (ns == X && (name == "ex" || name == "ept"))
-            //            {
-            //                // Replace an ending native code element with an ending inline tag.
-            //                sb.Append(BuildNativeCodeTag(Tag.E, e, name == "ept"));
-            //            }
-            //            else if (ns == X && name == "it")
-            //            {
-            //                // Replace an isolated native code element with an appropriate inline tag.
-            //                Tag type;
-            //                switch ((string)e.Attribute("pos"))
-            //                {
-            //                    case "open": type = Tag.B; break;
-            //                    case "close": type = Tag.E; break;
-            //                    default: type = Tag.S; break;
-            //                }
-            //                sb.Append(BuildNativeCodeTag(type, e, true));
-            //            }
-            //            else if (ns == X && name == "g")
-            //            {
-            //                // If this is an XLIFF g element, 
-            //                // replace start and end tags with inline tags,
-            //                // and keep converting its content,
-            //                // because the g holds instructions in its attributes,
-            //                // and its content is a part of translatable text.
-            //                sb.Append(BuildNativeCodeTag(Tag.B, e, false))
-            //                    .Append(GetInline(e))
-            //                    .Append(BuildNativeCodeTag(Tag.E, e, false));
-            //            }
-            //            else
-            //            {
-            //                // Uunknown element, i.e., some external (no XLIFF) element or a 
-            //                // misplaced XLIFF element.
-            //                sb.Append(HandleUnknownTag(e));
-            //            }
-            //        }
-            //        else
-            //        {
-            //            // Silently discard any other nodes; e.g., comment or pi. 
-            //        }
-            //    }
-            //    return sb;
-            //}
-
             protected class ContentParser
             {
                 public ContentParser(XliffAsset xliff, bool allow_segmentation)
@@ -667,9 +591,17 @@ namespace disfr.Doc
             protected override XliffTransPair ExtractSinglePair(XElement tu)
             {
                 var pair = base.ExtractSinglePair(tu);
-                foreach (var attr in tu.Element(IWS + "segment-metadata").Attributes())
+                var metadata = tu.Element(IWS + "segment-metadata");
+                if (metadata != null)
                 {
-                    pair.AddProp(attr.Name.LocalName, attr.Value);
+                    foreach (var attr in metadata.Attributes())
+                    {
+                        pair.AddProp(attr.Name.LocalName, attr.Value);
+                    }
+                    foreach (var attr in metadata.Elements(IWS + "status").Attributes())
+                    {
+                        pair.AddProp(attr.Name.LocalName, attr.Value);
+                    }
                 }
                 return pair;
             }
