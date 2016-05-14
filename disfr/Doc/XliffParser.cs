@@ -233,6 +233,10 @@ namespace disfr.Doc
                     TargetLang = GetLang(target) ?? TargetLang,
                 };
                 MatchTags(pair.Source, pair.Target);
+                foreach (var attr in tu.Attributes().Where(a => a.Name != "id"))
+                {
+                    pair.AddProp(attr.Name.LocalName, attr.Value);
+                }
                 return pair;
             }
 
