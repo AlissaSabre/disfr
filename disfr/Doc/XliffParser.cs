@@ -504,7 +504,7 @@ namespace disfr.Doc
                     XElement seg;
                     if (seginfos.TryGetValue(pair.Id, out seg))
                     {
-                        foreach (var attr in seg.Attributes())
+                        foreach (var attr in seg.Attributes().Where(a => a.Name != "id"))
                         {
                             pair.AddProp(attr.Name.LocalName, attr.Value);
                         }
