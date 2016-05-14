@@ -153,26 +153,11 @@ namespace disfr.Doc
                     (string)tu.Attribute("translate") != "no" &
                     tu.Elements(X + "seg-source").Descendants(X + "mrk").Any(mrk => (string)mrk.Attribute("mtype") == "seg"))
                 {
-                    var slang = GetLang(tu.Element(X + "seg-source")) ?? GetLang(tu.Element(X + "source")) ?? SourceLang;
-                    var tlang = GetLang(tu.Element(X + "target")) ?? TargetLang;
-
-                    var ssegs = GetInlineSegments(tu.Element(X + "seg-source"));
-                    var tsegs = GetInlineSegments(tu.Element(X + "target"));
-                    var diff = Diff.Diff.Compare(ssegs, tsegs, CompareRuns);
-                    int s = 0, t = 0;
-                    foreach (char c in diff)
-                    {
-                        switch (c)
-                        {
-                            case 'A': yield return ExtractSegmentedPair(null, tsegs[t++], slang, tlang); break;
-                            case 'D': yield return ExtractSegmentedPair(ssegs[s++], null, slang, tlang); break;
-                            case 'C': yield return ExtractSegmentedPair(ssegs[s++], tsegs[t++], slang, tlang); break;
-                        }
-                    }
+                    return SegmentAndExtractPairs(tu);
                 }
                 else
                 {
-                    yield return ExtractSinglePair(tu);
+                    return new[] { ExtractSinglePair(tu) };
                 }
             }
 
@@ -194,6 +179,26 @@ namespace disfr.Doc
                 if (element.Name.LocalName != "mrk") return false;
                 if ((string)element.Attribute("mtype") != "seg") return false;
                 return true;
+            }
+
+            protected virtual IEnumerable<XliffTransPair> SegmentAndExtractPairs(XElement tu)
+            {
+                var slang = GetLang(tu.Element(X + "seg-source")) ?? GetLang(tu.Element(X + "source")) ?? SourceLang;
+                var tlang = GetLang(tu.Element(X + "target")) ?? TargetLang;
+
+                var ssegs = GetInlineSegments(tu.Element(X + "seg-source"));
+                var tsegs = GetInlineSegments(tu.Element(X + "target"));
+                var diff = Diff.Diff.Compare(ssegs, tsegs, CompareRuns);
+                int s = 0, t = 0;
+                foreach (char c in diff)
+                {
+                    switch (c)
+                    {
+                        case 'A': yield return ExtractSegmentedPair(null, tsegs[t++], slang, tlang); break;
+                        case 'D': yield return ExtractSegmentedPair(ssegs[s++], null, slang, tlang); break;
+                        case 'C': yield return ExtractSegmentedPair(ssegs[s++], tsegs[t++], slang, tlang); break;
+                    }
+                }
             }
 
             protected virtual XliffTransPair ExtractSegmentedPair(object src, object tgt, string slang, string tlang)
@@ -489,7 +494,29 @@ namespace disfr.Doc
             protected readonly Dictionary<string, string[]> SdlComments;
 
             protected readonly Dictionary<string, XElement> PhTags, PtTags, StTags;
-             
+
+            protected override IEnumerable<XliffTransPair> SegmentAndExtractPairs(XElement tu)
+            {
+                var seginfos = tu.Elements(SDL + "seg-defs").Elements(SDL + "seg").ToDictionary(seg => (string)seg.Attribute("id"));
+                var pairs = base.SegmentAndExtractPairs(tu).ToArray();
+                foreach (var pair in pairs)
+                {
+                    XElement seg;
+                    if (seginfos.TryGetValue(pair.Id, out seg))
+                    {
+                        foreach (var attr in seg.Attributes())
+                        {
+                            pair.AddProp(attr.Name.LocalName, attr.Value);
+                        }
+                        foreach (var value in seg.Elements(SDL + "value"))
+                        {
+                            pair.AddProp((string)value.Attribute("key"), value.Value);
+                        }
+                    }
+                }
+                return pairs;
+            }
+
             protected override XliffTransPair ExtractSinglePair(XElement tu)
             {
                 var p = base.ExtractSinglePair(tu);
