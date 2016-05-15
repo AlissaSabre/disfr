@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+  <?define Version = "!(bind.FileVersion.disfr.exe)"?>
+
+  <Product Id='*'
+  	   Name='disfr $(var.Version)'
+           UpgradeCode='{EDCE634C-06E4-4F94-BE3C-56771B0C00F9}'
+           Language='1033'
+	   Codepage='1252'
+           Version='$(var.Version)'
+	   Manufacturer='Alissa Sabre'>
+
+    <Package Id='*'
+    	     Keywords='Installer'
+             Description="disfr $(var.Version) Installer"
+             Manufacturer='Alissa Sabre'
+	     Languages='1033'
+	     SummaryCodepage='1252'
+             Compressed='yes' 
+             InstallPrivileges='elevated'
+	     InstallScope='perMachine'/>
+
+    <Upgrade Id='{EDCE634C-06E4-4F94-BE3C-56771B0C00F9}'>
+      <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
+                      Minimum='0.0.0' IncludeMinimum='yes'
+                      Maximum='$(var.Version)' IncludeMaximum='no' />
+      <UpgradeVersion OnlyDetect='yes' Property='NEWERFOUND'
+                      Minimum='$(var.Version)' IncludeMinimum='yes' />
+    </Upgrade>
+
+    <Media Id='1' Cabinet='disfr.cab' EmbedCab='yes' DiskPrompt='Disk 1' />
+    <Property Id='DiskPrompt' Value="disfr $(var.Version) Installer Disk 1 of 1" />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+
+      <Directory Id='ProgramFilesFolder'>
+        <Directory Id='Alissa' Name='Alissa'>
+          <Directory Id='INSTALLDIR' Name='disfr' />
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="AppMenuDir" Name="disfr" />
+      </Directory>
+
+      <Directory Id="DesktopFolder" Name="Desktop" />
+
+    </Directory>
+
+    <Feature Id="Complete" Level="1">
+      <ComponentRef Id="disfr.exe" />
+      <ComponentRef Id="disfr.exe.config" />
+      <ComponentRef Id="Dragablz.dll" />
+      <ComponentRef Id="NetOffice.dll" />
+      <ComponentRef Id="OfficeApi.dll" />
+      <ComponentRef Id="ExcelApi.dll" />
+      <ComponentRef Id="VBIDEApi.dll" />
+      <ComponentRef Id="WpfColorFontDialog.dll" />
+      <ComponentRef Id="table.xslt" />
+      <ComponentRef Id="xmlss.xslt" />
+      <ComponentRef Id="Readme.htm" />
+    </Feature>
+
+    <Component Id='disfr.exe' Directory='INSTALLDIR' Guid='{76840A5F-2A32-48D6-A7FF-4D1BD297C4DA}'>
+      <File Name='disfr.exe' Source='disfr.exe' KeyPath='yes'>
+	<Shortcut Id="DesktopFolder.disfr.exe" Directory="DesktopFolder" Advertise='yes'
+		  Name="disfr" WorkingDirectory='INSTALLDIR'
+		  Icon='disfr.exe'/>
+	<Shortcut Id="AppMenuDir.disfr.exe" Directory="AppMenuDir" Advertise='yes'
+		  Name="disfr" WorkingDirectory='INSTALLDIR'
+		  Icon='disfr.exe'/>
+      </File>
+      <RemoveFolder Id='disfr.exe' Directory='AppMenuDir' On='uninstall' />
+    </Component>
+
+    <Component Id='disfr.exe.config' Directory='INSTALLDIR' Guid='{5C84C31D-BF8C-4433-B4ED-291D57A6C1BF}'>
+      <File Source='disfr.exe.config' KeyPath='yes' />
+    </Component>
+
+    <Component Id='Dragablz.dll' Directory='INSTALLDIR' Guid='{165EDB7C-BAF8-4DE5-8B8B-E915CA6C5B5A}'>
+      <File Source='Dragablz.dll' KeyPath='yes' />
+    </Component>
+
+    <Component Id='NetOffice.dll' Directory='INSTALLDIR' Guid='{7C442F5A-B25A-4FEA-A811-9DA84A2519DA}'>
+      <File Source='NetOffice.dll' KeyPath='yes' />
+    </Component>
+
+    <Component Id='OfficeApi.dll' Directory='INSTALLDIR' Guid='{43124856-B13B-42C6-BBCA-57BABAD91AAB}'>
+      <File Source='OfficeApi.dll' KeyPath='yes' />
+    </Component>
+
+    <Component Id='ExcelApi.dll' Directory='INSTALLDIR' Guid='{B17CFBC1-D246-47C7-8840-097E2D4330A2}'>
+      <File Source='ExcelApi.dll' KeyPath='yes' />
+    </Component>
+
+    <Component Id='VBIDEApi.dll' Directory='INSTALLDIR' Guid='{07696046-6877-4AD7-A356-4E4F37D4F6EB}'>
+      <File Source='VBIDEApi.dll' KeyPath='yes' />
+    </Component>
+
+    <Component Id='WpfColorFontDialog.dll' Directory='INSTALLDIR' Guid='{BAE1B4DF-4764-44FC-8237-405FBDA62D21}'>
+      <File Source='WpfColorFontDialog.dll' KeyPath='yes' />
+    </Component>
+
+    <!-- Component Id='Ionic.Zip.dll' Directory='INSTALLDIR' Guid='{5BEFC045-3118-4441-B06D-B9C1B47B93C0}' -->
+
+    <Component Id='table.xslt' Directory='INSTALLDIR' Guid='{A3920AFF-494C-4D64-B10E-6AE4719D837A}'>
+      <File Source='table.xslt' KeyPath='yes' />
+    </Component>
+
+    <Component Id='xmlss.xslt' Directory='INSTALLDIR' Guid='{E6E57EE8-0B1B-464E-8942-6EBC7D8BFB3A}'>
+      <File Source='xmlss.xslt' KeyPath='yes' />
+    </Component>
+
+    <Component Id='Readme.htm' Directory='INSTALLDIR' Guid='{A156536D-81B0-42B1-98E3-4525D724D533}'>
+      <File Source='Readme.htm' KeyPath='yes'>
+	<Shortcut Id='AppMenuDir.Readme.htm' Name='Readme.htm' Directory='AppMenuDir' Advertise='yes' />
+      </File>
+      <RemoveFolder Id='Readme.htm' Directory='AppMenuDir' On='uninstall' />
+    </Component>
+
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallFinalize" />
+      <Custom Action='NewerProductFound' After='FindRelatedProducts'>NEWERFOUND</Custom>
+    </InstallExecuteSequence>
+
+    <CustomAction Id='NewerProductFound' Error='A same or newer version of [ProductName] appears installed.  Please remove it first if you want to install this version $(var.Version).' />
+
+    <Icon Id="disfr.exe" SourceFile="..\disfr\AppIcon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="disfr.exe" />
+
+  </Product>
+</Wix>

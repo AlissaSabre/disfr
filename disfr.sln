@@ -14,6 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{E3BD670B-CA87-4E3E-86AD-58BCDD553CB1}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\Readme.txt = Installer\Readme.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,5 +40,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E3BD670B-CA87-4E3E-86AD-58BCDD553CB1} = {765CCCBC-AE76-4440-8B92-F17506709561}
 	EndGlobalSection
 EndGlobal
