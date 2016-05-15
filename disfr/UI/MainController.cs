@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 using Dragablz;
 
@@ -84,16 +86,13 @@ namespace disfr.UI
                 ).ToArray()
             ).ContinueWith(worker =>
             {
-                if (worker.Exception != null)
-                {
-                    // Make some feedback.
-                }
                 if (worker.Result != null)
                 {
                     _Tables.AddRange(worker.Result);
                     RaisePropertyChanged("Tables");
                 }
                 Busy = false;
+                InvokeThrowTaskException(worker);
             }, Scheduler);
         }
 
@@ -115,11 +114,8 @@ namespace disfr.UI
                 WriterManager.Write(filename, index, table.Rows, columns);
             }).ContinueWith(worker =>
             {
-                if (worker.Exception != null)
-                {
-                    // Make some feedback.
-                }
                 Busy = false;
+                InvokeThrowTaskException(worker);
             }, Scheduler);
         }
 
@@ -182,16 +178,13 @@ namespace disfr.UI
                 table.LoadAltAssets()
             ).ContinueWith(worker =>
             {
-                if (worker.Exception != null)
-                {
-                    // Make some feedback.
-                }
                 if (worker.Result != null)
                 {
                     _Tables.Add(worker.Result);
                     RaisePropertyChanged("Tables");
                 }
                 Busy = false;
+                InvokeThrowTaskException(worker);
             });
         }
 
@@ -212,5 +205,15 @@ namespace disfr.UI
         }
 
         #endregion
+
+        private static void InvokeThrowTaskException(Task worker)
+        {
+            var e = worker.Exception;
+            if (e != null)
+            {
+                Dispatcher.FromThread(Thread.CurrentThread)?.BeginInvoke((Action)delegate { throw e; });
+            }
+        }
+
     }
 }

@@ -67,6 +67,7 @@ namespace disfr.Writer
                 finally
                 {
                     excel.Quit();
+                    excel.Dispose();
                 }
             }
             finally

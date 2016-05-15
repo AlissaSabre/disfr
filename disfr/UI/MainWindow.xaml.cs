@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.ComponentModel;
 
 using Dragablz;
@@ -29,9 +30,22 @@ namespace disfr.UI
         {
             InitializeComponent();
             DataContextChanged += this_DataContextChanged;
-            tables.ClosingItemCallback = tabControl_ClosingItemCallback;
+            tables.ClosingItemCallback = tables_ClosingItemCallback;
             //tabControl.Items.Clear();
+            Dispatcher.UnhandledException += Dispatcher_UnhandledException;
         }
+
+        private void Dispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (e.Handled) return;
+            var exception = e.Exception;
+            Dispatcher.BeginInvoke((Action)delegate
+            {
+                new ExceptionDialog() { Exception = exception }.ShowDialog();
+            });
+            e.Handled = true;
+        }
+
 
         /// <summary>
         /// A static instance of <see cref="InterTabClient"/> shared by all <see cref="TabablzControl"/> on all windows.
@@ -112,7 +126,7 @@ namespace disfr.UI
 
         private bool IsSoleWindow() { return !TabablzControl.GetLoadedInstances().Any(t => t != tables); }
 
-        private void tabControl_ClosingItemCallback(ItemActionCallbackArgs<TabablzControl> args)
+        private void tables_ClosingItemCallback(ItemActionCallbackArgs<TabablzControl> args)
         {
             var tab = args.DragablzItem.Content as TableView;
             Controller.CloseCommand.Execute(tab?.Controller);

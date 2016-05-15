@@ -1,0 +1,11 @@
+﻿<Window x:Class="disfr.UI.ExceptionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Height="256" Width="512" ShowInTaskbar="False" Title="Exception - disfr" WindowStartupLocation="CenterOwner">
+    <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        <TextBlock x:Name="Message" TextWrapping="Wrap" Text="Message" VerticalAlignment="Top" RenderTransformOrigin="0.327,-1.722" Margin="10,10,10,0" Height="55"/>
+        <Button Content="OK" Margin="0,0,10,10" Height="24" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="OK_Click" IsDefault="True"/>
+        <TextBox x:Name="Details" Margin="10,98,10,49" Text="Details" IsReadOnly="True" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"  />
+        <Label Content="Details:" HorizontalAlignment="Left" Margin="0,70,0,0" VerticalAlignment="Top"/>
+    </Grid>
+</Window>
