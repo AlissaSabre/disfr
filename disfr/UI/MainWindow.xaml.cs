@@ -24,7 +24,7 @@ namespace disfr.UI
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IComparable<MainWindow>
     {
         public MainWindow()
         {
@@ -71,14 +71,6 @@ namespace disfr.UI
             SyncToTables();
         }
 
-        /// <summary>
-        /// Indicates that this Window is waiting for a new Tab/Table being added on it.
-        /// </summary>
-        /// <remarks>
-        /// No, I don't think this is a good idea. :(
-        /// </remarks>
-        private bool AcceptingNewTable = true;
-
         private bool IsClosing = false;
 
         private void DataContext_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -94,37 +86,61 @@ namespace disfr.UI
         /// </summary>
         private void SyncToTables()
         {
+            bool previously_used = tables.Items.Count > 0;
+
             // Remove all redundant tabs.
             foreach (var tab in tables.Items.Cast<TableView>().Where(i => !Controller.Tables.Contains(i.DataContext)).ToArray())
             {
                 tables.Items.Remove(tab);
             }
 
-            if (AcceptingNewTable || IsSoleWindow())
+            // Add all new tabs to the active MainWindow.
+            var all_tables_in_view = TabablzControl.GetLoadedInstances().SelectMany(t => t.Items.Cast<TableView>()).Select(i => i.DataContext);
+            var all_new_tables = Controller.Tables.Except(all_tables_in_view).ToArray();
+            if (all_new_tables.Count() > 0)
             {
-                // Add all new tabs.
-                var all_tables_in_view = TabablzControl.GetLoadedInstances().SelectMany(t => t.Items.Cast<TableView>()).Select(i => i.DataContext).ToArray();
-                var all_new_tables = Controller.Tables.Except(all_tables_in_view).ToArray();
-                if (all_new_tables.Count() > 0)
-                {
-                    TableView first_added = null;
-                    foreach (var table in all_new_tables)
-                    {
-                        var tab = new TableView() { DataContext = table };
-                        tables.Items.Add(tab);
-                        if (first_added == null) first_added = tab;
-                    }
-                    tables.SelectedItem = first_added;
-                    AcceptingNewTable = false;
-                }
+                ActiveMainWindow.AddNewTables(all_new_tables);
             }
-            else if (tables.Items.Count == 0)
+
+            // If this MainWindow was used previously and lost all its content tabs, close it.
+            if (previously_used && tables.Items.Count == 0)
             {
                 Close();
             }
         }
 
-        private bool IsSoleWindow() { return !TabablzControl.GetLoadedInstances().Any(t => t != tables); }
+        private void AddNewTables(object[] all_new_tables)
+        {
+            foreach (var table in all_new_tables)
+            {
+                var tab = new TableView() { DataContext = table };
+                tables.Items.Add(tab);
+            }
+            tables.SelectedIndex = tables.Items.Count - all_new_tables.Length;
+        }
+
+        #region ActiveMainWindow static property
+
+        private static int ActivatedCount = 0;
+
+        private int LastActivated = 0;
+
+        private void this_Activated(object sender, EventArgs e)
+        {
+            LastActivated = ++ActivatedCount;
+        }
+
+        int IComparable<MainWindow>.CompareTo(MainWindow other)
+        {
+            return LastActivated - other.LastActivated;
+        }
+
+        private static MainWindow ActiveMainWindow
+        {
+            get { return Application.Current.Windows.OfType<MainWindow>().Max(); }
+        }
+
+        #endregion
 
         private void tables_ClosingItemCallback(ItemActionCallbackArgs<TabablzControl> args)
         {
@@ -141,7 +157,7 @@ namespace disfr.UI
             }
         }
 
-
+        #region RoutedCommand Handlers
 
         private OpenFileDialog OpenFileDialog = new OpenFileDialog() { Multiselect = true };
 
@@ -160,7 +176,6 @@ namespace disfr.UI
                 var filenames = OpenFileDialog.FileNames;
                 var index = OpenFileDialog.FilterIndex - 1; // Returned index is 1-based but we expect a 0-based index.
                 Controller.OpenCommand.Execute(filenames, index);
-                AcceptingNewTable = true;
             }
             else
             {
@@ -228,5 +243,6 @@ namespace disfr.UI
             ;
         }
 
+        #endregion
     }
 }
