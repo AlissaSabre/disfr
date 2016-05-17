@@ -94,13 +94,8 @@ namespace disfr.UI
                 tables.Items.Remove(tab);
             }
 
-            // Add all new tabs to the active MainWindow.
-            var all_tables_in_view = TabablzControl.GetLoadedInstances().SelectMany(t => t.Items.Cast<TableView>()).Select(i => i.DataContext);
-            var all_new_tables = Controller.Tables.Except(all_tables_in_view).ToArray();
-            if (all_new_tables.Count() > 0)
-            {
-                ActiveMainWindow.AddNewTables(all_new_tables);
-            }
+            // New tables should go to the active window.
+            ActiveMainWindow.AddAllNewTables();
 
             // If this MainWindow was used previously and lost all its content tabs, close it.
             if (previously_used && tables.Items.Count == 0)
@@ -109,8 +104,13 @@ namespace disfr.UI
             }
         }
 
-        private void AddNewTables(object[] all_new_tables)
+        /// <summary>
+        /// Add all new tables from the Controller to this Window.
+        /// </summary>
+        private void AddAllNewTables()
         {
+            var all_tables_in_view = TabablzControl.GetLoadedInstances().SelectMany(t => t.Items.Cast<TableView>()).Select(i => i.DataContext);
+            var all_new_tables = Controller.Tables.Except(all_tables_in_view).ToArray();
             foreach (var table in all_new_tables)
             {
                 var tab = new TableView() { DataContext = table };
