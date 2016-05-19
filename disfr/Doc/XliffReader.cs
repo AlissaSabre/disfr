@@ -13,7 +13,7 @@ namespace disfr.Doc
         public enum Flavour
         {
             Auto = -1,
-            Generic = 0,
+            Generic = 0,    // Generic must be the default(Flavour).
             Trados = 1,
             Idiom = 2,
             MemoQ = 3,

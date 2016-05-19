@@ -75,17 +75,27 @@ namespace disfr.Doc
             // OK.  It seems an XLIFF.  Try to detect a flavour if set to Auto.
             if (Flavour == XliffReader.Flavour.Auto)
             {
-                Flavour = XliffReader.Flavour.Generic;
-                var ns = xliff.Descendants().Select(e => e.Name.Namespace).FirstOrDefault(
-                    n => n == TradosXliffAsset.SDL ||
-                         n == IdiomXliffAsset.IWS ||
-                         n == MemoQXliffAsset.MQ);
-                if (ns == TradosXliffAsset.SDL) Flavour = XliffReader.Flavour.Trados;
-                if (ns == IdiomXliffAsset.IWS) Flavour = XliffReader.Flavour.Idiom;
-                if (ns == MemoQXliffAsset.MQ) Flavour = XliffReader.Flavour.MemoQ;
+                Flavour = DetectFlavour(xliff);
             }
 
             return xliff.Elements(X + "file").Select(CreateAsset);
+        }
+
+        /// <summary>
+        /// Detects a flavour of an XLIFF instance.
+        /// </summary>
+        /// <param name="xliff">xliff element to detect a flavour.</param>
+        /// <returns>Detected flavour, or <see cref="XliffReader.Flavour.Generic"/> if no unique feature is detected.</returns>
+        private XliffReader.Flavour DetectFlavour(XElement xliff)
+        {
+            return xliff.Descendants().Select(e =>
+            {
+                var ns = e.Name.Namespace;
+                if (ns == TradosXliffAsset.SDL) return XliffReader.Flavour.Trados;
+                if (ns == IdiomXliffAsset.IWS) return XliffReader.Flavour.Idiom;
+                if (ns == MemoQXliffAsset.MQ) return XliffReader.Flavour.MemoQ;
+                return XliffReader.Flavour.Generic;
+            }).FirstOrDefault(f => f != XliffReader.Flavour.Generic);
         }
 
         private XliffAsset CreateAsset(XElement file)
