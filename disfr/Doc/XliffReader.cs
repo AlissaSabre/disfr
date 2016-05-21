@@ -74,7 +74,7 @@ namespace disfr.Doc
                 {
                     using (var f = entry.Open())
                     {
-                        var a = ReadXliff(filename, f, filterindex);
+                        var a = ReadXliff(filename, f, filterindex, entry);
                         if (a != null) assets.AddRange(a);
                     }
                 }
@@ -82,11 +82,12 @@ namespace disfr.Doc
             }
         }
 
-        private static IEnumerable<IAsset> ReadXliff(string filename, Stream file, int filterindex)
+        private static IEnumerable<IAsset> ReadXliff(string filename, Stream file, int filterindex, ZipArchiveEntry entry = null)
         {
             var parser = new XliffParser();
             parser.Filename = filename;
             parser.Flavour = (Flavour)filterindex;
+            parser.ZipEntry = entry;
             return parser.Read(file);
         }
     }

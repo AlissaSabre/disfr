@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace disfr.Doc
         public string Filename;
 
         public XliffReader.Flavour Flavour;
+
+        public ZipArchiveEntry ZipEntry;
 
         public IEnumerable<IAsset> Read(Stream stream)
         {
@@ -78,7 +81,7 @@ namespace disfr.Doc
                 Flavour = DetectFlavour(xliff);
             }
 
-            return xliff.Elements(X + "file").Select(CreateAsset);
+            return xliff.Elements(X + "file").Select(CreateAsset).ToArray();
         }
 
         /// <summary>
@@ -113,7 +116,7 @@ namespace disfr.Doc
                     asset = new IdiomXliffAsset(file);
                     break;
                 case XliffReader.Flavour.MemoQ:
-                    asset = new MemoQXliffAsset(file);
+                    asset = new MemoQXliffAsset(file, ZipEntry);
                     break;
                 default:
                     throw new ApplicationException("internal error");

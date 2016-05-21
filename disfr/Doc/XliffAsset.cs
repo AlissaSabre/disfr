@@ -15,6 +15,15 @@ namespace disfr.Doc
     {
         public static readonly XNamespace XLIFF = XNamespace.Get("urn:oasis:names:tc:xliff:document:1.2");
 
+        /// <summary>
+        /// Creates a base <see cref="XliffAsset"/> instance from an xliff file element.  
+        /// </summary>
+        /// <param name="file">An xliff file element.</param>
+        /// <remarks>
+        /// This constructor initializes <see cref="TransPairs"/> and <see cref="AltPairs"/> to
+        /// LINQ-style deferred execution objects.
+        /// Subclass constructors can perform any additional initialization that may affect them.
+        /// </remarks>
         public XliffAsset(XElement file)
         {
             X = file.Name.Namespace;
