@@ -34,7 +34,7 @@ namespace disfr.Doc
 
         private const string DOC_MRD = "doc.mrd";
 
-        private static readonly Regex Marker = new Regex("(?:#L[1-9][0-9]*#)+");
+        private static readonly Regex Marker = new Regex("(?:#L?[1-9][0-9]*#)+");
 
         //private Dictionary<int, int[]> LabelConv;
 
@@ -149,7 +149,7 @@ namespace disfr.Doc
             if (!string.IsNullOrEmpty(endingws)) yield return InterSegmentPair(endingws);
 
             // A special case:
-            // If we have a skeleton and if this is the last segment and is from a subflow,
+            // If we have a skeleton, and if this is the last segment and is from a subflow,
             // we put the last inter-segment contents after this segment.
             // We need to look back for the previous main-flow segment to do so.
             if (InterSegments != null && !tu.ElementsAfterSelf(X + "trans-unit").Any() && (int?)tu.Attribute(MQ + "lastlabel") == -1)
@@ -162,6 +162,11 @@ namespace disfr.Doc
             }
         }
 
+        /// <summary>
+        /// Wraps an inter-segment text in an XliffTransPair.
+        /// </summary>
+        /// <param name="text">Inter-segment text to wrap.</param>
+        /// <returns>XliffTransPair instance that wraps the given text.</returns>
         private XliffTransPair InterSegmentPair(string text)
         {
             var inline = new InlineString() { text };
@@ -174,6 +179,43 @@ namespace disfr.Doc
                 SourceLang = SourceLang,
                 TargetLang = TargetLang,
             };
+        }
+
+        protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
+        {
+            if (element.Name.LocalName == "x" && element.Name.Namespace == X)
+            {
+                // In memoQ, x placeholder refers to a skeleton.
+                string code = null;
+                if (InterSegments != null)
+                {
+                    var tu = element.Ancestors(X + "trans-unit").First();
+                    var first = (int?)tu.Attribute(MQ + "firstlabel");
+                    var id0 = (int?)element.Attribute("id");
+                    if (first != null && id0 != null)
+                    {
+                        var index = first + tu.Element(X + "source")?.Descendants(X + "x")?.Where(x => (int?)x.Attribute("id") < id0)?.Count();
+                        if (index > 0 && index < InterSegments.Length)
+                        {
+                            code = InterSegments[(int)index];
+                        }
+                    }
+                }
+
+                var id = (string)element.Attribute("id") ?? "*";
+                return new InlineTag(
+                    type: type,
+                    id: id,
+                    rid: id,
+                    name: "x",
+                    ctype: null,
+                    display: "{" + id + "}",
+                    code: code);
+            }
+            else
+            {
+                return base.BuildNativeCodeTag(type, element, has_code);
+            }
         }
     }
 }
