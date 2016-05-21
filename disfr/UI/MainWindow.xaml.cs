@@ -41,7 +41,7 @@ namespace disfr.UI
             var exception = e.Exception;
             Dispatcher.BeginInvoke((Action)delegate
             {
-                new ExceptionDialog() { Exception = exception }.ShowDialog();
+                new ExceptionDialog() { Exception = exception, Owner = this }.ShowDialog();
             });
             e.Handled = true;
         }
@@ -240,7 +240,7 @@ namespace disfr.UI
 
         private void Debug_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            ;
+            throw new Exception("DEBUG!");
         }
 
         #endregion

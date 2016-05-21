@@ -86,13 +86,16 @@ namespace disfr.UI
                 ).ToArray()
             ).ContinueWith(worker =>
             {
-                if (worker.Result != null)
+                if (worker.IsFaulted)
+                {
+                    InvokeThrowTaskException(worker);
+                }
+                else
                 {
                     _Tables.AddRange(worker.Result);
                     RaisePropertyChanged("Tables");
                 }
                 Busy = false;
-                InvokeThrowTaskException(worker);
             }, Scheduler);
         }
 
@@ -114,8 +117,11 @@ namespace disfr.UI
                 WriterManager.Write(filename, index, table.Rows, columns);
             }).ContinueWith(worker =>
             {
+                if (worker.IsFaulted)
+                {
+                    InvokeThrowTaskException(worker);
+                }
                 Busy = false;
-                InvokeThrowTaskException(worker);
             }, Scheduler);
         }
 
@@ -178,13 +184,16 @@ namespace disfr.UI
                 table.LoadAltAssets()
             ).ContinueWith(worker =>
             {
-                if (worker.Result != null)
+                if (worker.IsFaulted)
+                {
+                    InvokeThrowTaskException(worker);
+                }
+                else
                 {
                     _Tables.Add(worker.Result);
                     RaisePropertyChanged("Tables");
                 }
                 Busy = false;
-                InvokeThrowTaskException(worker);
             });
         }
 
@@ -209,10 +218,7 @@ namespace disfr.UI
         private static void InvokeThrowTaskException(Task worker)
         {
             var e = worker.Exception;
-            if (e != null)
-            {
-                Dispatcher.FromThread(Thread.CurrentThread)?.BeginInvoke((Action)delegate { throw e; });
-            }
+            Dispatcher.FromThread(Thread.CurrentThread)?.BeginInvoke((Action)delegate { throw e; });
         }
 
     }
