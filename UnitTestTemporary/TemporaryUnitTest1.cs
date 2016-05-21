@@ -13,7 +13,8 @@ namespace UnitTestTemporary
         [TestMethod]
         public void TestMethod1()
         {
-            var open = System.Windows.Input.ApplicationCommands.Open;
+            "####".Replace("##", "#").Is("##");
+            "###+####+#####".Replace("##", "#").Is("##+##+###");
         }
     }
 }

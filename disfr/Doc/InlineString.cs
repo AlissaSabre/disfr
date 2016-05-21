@@ -138,6 +138,8 @@ namespace disfr.Doc
             return this;
         }
 
+        public bool IsEmpty { get { return _Contents.Count == 0; } }
+
         public override int GetHashCode() { return _HashCode; }
 
         public override bool Equals(object obj)
