@@ -186,5 +186,9 @@ namespace disfr.UI
             return sb.ToString();
         }
 
+        public string Notes(IEnumerable<string> notes)
+        {
+            return notes == null ? null : string.Join("\n", notes);
+        }
     }
 }

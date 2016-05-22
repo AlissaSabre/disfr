@@ -31,6 +31,10 @@
     <Style x:Key="Right" TargetType="TextBlock">
         <Setter Property="TextBlock.TextAlignment" Value="Right"/>
     </Style>
+
+    <Style x:Key="TextWrap" TargetType="TextBlock">
+        <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+    </Style>
     
     <!-- OriginChooser -->
 

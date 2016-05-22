@@ -46,7 +46,7 @@ namespace disfr.UI
 
         public GlossyString Target2 { get { return null; } }
 
-        public string Notes { get { return null; } }
+        public string Notes { get { return Renderer.Notes(TransPair.Notes); } }
 
         public string TagList { get { return Renderer.TagListFromInline(TransPair.Source); } }
 
