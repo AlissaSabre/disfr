@@ -93,6 +93,7 @@ namespace disfr.Doc
         {
             var slang = GetLang(tu.Element(X + "seg-source")) ?? GetLang(tu.Element(X + "source")) ?? SourceLang;
             var tlang = GetLang(tu.Element(X + "target")) ?? TargetLang;
+            var notes = GetNotes(tu); 
 
             var ssegs = GetInlineSegments(tu.Element(X + "seg-source"));
             var tsegs = GetInlineSegments(tu.Element(X + "target"));
@@ -102,14 +103,14 @@ namespace disfr.Doc
             {
                 switch (c)
                 {
-                    case 'A': yield return ExtractSegmentedPair(null, tsegs[t++], slang, tlang); break;
-                    case 'D': yield return ExtractSegmentedPair(ssegs[s++], null, slang, tlang); break;
-                    case 'C': yield return ExtractSegmentedPair(ssegs[s++], tsegs[t++], slang, tlang); break;
+                    case 'A': yield return ExtractSegmentedPair(null, tsegs[t++], slang, tlang, notes); break;
+                    case 'D': yield return ExtractSegmentedPair(ssegs[s++], null, slang, tlang, notes); break;
+                    case 'C': yield return ExtractSegmentedPair(ssegs[s++], tsegs[t++], slang, tlang, notes); break;
                 }
             }
         }
 
-        protected virtual XliffTransPair ExtractSegmentedPair(object src, object tgt, string slang, string tlang)
+        protected virtual XliffTransPair ExtractSegmentedPair(object src, object tgt, string slang, string tlang, IEnumerable<string> notes)
         {
             var selem = src as XElement;
             var telem = tgt as XElement;
@@ -123,7 +124,9 @@ namespace disfr.Doc
                 SourceLang = slang,
                 TargetLang = tlang,
             };
+
             MatchTags(pair.Source, pair.Target);
+            pair.AddNotes(notes);
             return pair;
         }
 
@@ -141,6 +144,7 @@ namespace disfr.Doc
                 TargetLang = GetLang(target) ?? TargetLang,
             };
             MatchTags(pair.Source, pair.Target);
+            pair.AddNotes(GetNotes(tu));
             foreach (var attr in tu.Attributes().Where(a => a.Name != "id"))
             {
                 pair.AddProp(attr.Name.LocalName, attr.Value);
@@ -172,6 +176,7 @@ namespace disfr.Doc
             };
             pair.AddProp("origin", (string)alt.Attribute("origin"));
             MatchTags(pair.Source, pair.Target);
+            pair.AddNotes(GetNotes(alt));
             return pair;
         }
 
@@ -372,6 +377,16 @@ namespace disfr.Doc
                 dict.TryGetValue(tag, out j);
                 tag.Number = j;
             }
+        }
+
+        /// <summary>
+        /// Gets notes from either trans-unit or alt-trans element.
+        /// </summary>
+        /// <param name="unit">trans-unit or alt-trans element.</param>
+        /// <returns>List of notes.</returns>
+        protected virtual IEnumerable<string> GetNotes(XElement unit)
+        {
+            return unit.Elements(X + "note").Select(note => (string)note);
         }
 
         protected Func<XliffTransPair, int, XliffTransPair> SerialPatcher

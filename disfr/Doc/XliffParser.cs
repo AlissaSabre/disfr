@@ -125,38 +125,4 @@ namespace disfr.Doc
             return asset;
         }
     }
-
-    class XliffTransPair : ITransPair
-    {
-        private static readonly IReadOnlyDictionary<string, string> EmptyProps
-            = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
-
-        public int Serial { get; internal set; }
-
-        public string Id { get; internal set; }
-
-        public InlineString Source { get; internal set; }
-
-        public InlineString Target { get; internal set; }
-
-        public string SourceLang { get; internal set; }
-
-        public string TargetLang { get; internal set; }
-
-        public IEnumerable<string> Notes { get; internal set; }
-
-        internal Dictionary<string, string> _Props = null;
-
-        public IReadOnlyDictionary<string, string> Props
-        {
-            get { return _Props ?? EmptyProps; }
-        }
-
-        internal void AddProp(string key, string value)
-        {
-            if (value == null) return;
-            if (_Props == null) _Props = new Dictionary<string, string>();
-            _Props[key] = value;
-        }
-    }
 }
