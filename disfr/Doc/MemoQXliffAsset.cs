@@ -217,5 +217,21 @@ namespace disfr.Doc
                 return base.BuildNativeCodeTag(type, element, has_code);
             }
         }
+
+        protected override IEnumerable<string> GetNotes(XElement unit)
+        {
+            // memoQ appears not to use standard XLIFF note at all, but just in case.
+            var standard = base.GetNotes(unit);
+
+            var memoQ = unit.Element(MQ + "comments")?.Elements(MQ + "comment")?.Select(c => (string)c);
+            if (memoQ == null)
+            {
+                return standard;
+            }
+            else
+            {
+                return standard.Concat(memoQ);
+            }
+        }
     }
 }
