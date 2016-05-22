@@ -48,6 +48,8 @@ namespace disfr.UI
 
         public string Notes { get { return null; } }
 
+        public string TagList { get { return Renderer.TagListFromInline(TransPair.Source); } }
+
         public string this[string key]
         {
             get

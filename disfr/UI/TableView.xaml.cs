@@ -116,13 +116,14 @@ namespace disfr.UI
             {
                 new StandardColumnInfo(Serial, r => true),
                 new StandardColumnInfo(Asset, r => true),
-                new StandardColumnInfo(Id, r => !string.IsNullOrEmpty(r.Id)),
+                new StandardColumnInfo(Id, r => !string.IsNullOrWhiteSpace(r.Id)),
                 new StandardColumnInfo(Source, r => true),
                 new StandardColumnInfo(Target, r => true),
-                new StandardColumnInfo(Asset2, r => !string.IsNullOrEmpty(r.Asset2)),
-                new StandardColumnInfo(Id2, r => !string.IsNullOrEmpty(r.Id2)),
+                new StandardColumnInfo(Asset2, r => !string.IsNullOrWhiteSpace(r.Asset2)),
+                new StandardColumnInfo(Id2, r => !string.IsNullOrWhiteSpace(r.Id2)),
                 new StandardColumnInfo(Target2, r => !GlossyString.IsNullOrEmpty(r.Target2)),
-                new StandardColumnInfo(Notes, r => !string.IsNullOrEmpty(r.Notes)),
+                new StandardColumnInfo(Notes, r => !string.IsNullOrWhiteSpace(r.Notes)),
+                new StandardColumnInfo(TagList, r => true),
             };
         }
 
@@ -181,6 +182,10 @@ namespace disfr.UI
             {
                 Asset.Visibility = Visibility.Collapsed;
             }
+
+            // Yet another special handling of TagList column visibility.
+            // It is always hidden initially.
+            TagList.Visibility = Visibility.Collapsed;
 
             // Create columns for additional properties.
             // They are initially hidden but users can view them.

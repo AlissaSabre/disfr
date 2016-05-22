@@ -28,8 +28,8 @@ namespace disfr.UI
 
         public bool ShowSpecials { get; set; }
 
-        private const char OPAR = '\u00AB'; /* « */
-        private const char CPAR = '\u00BB'; /* » */
+        private const char OPAR = '{';
+        private const char CPAR = '}';
 
         private static Dictionary<char, string> SpecialCharMap = new Dictionary<char, string>()
         {
@@ -96,10 +96,10 @@ namespace disfr.UI
                             g.Append(BuildTagString(tag, tag.Number.ToString()), Gloss.TAG);
                             break;
                         case TagShowing.Disp:
-                            g.Append(Enclose(tag.Display) ?? BuildTagString(tag, tag.Name, '{', '}'), Gloss.TAG);
+                            g.Append(Enclose(tag.Display) ?? BuildTagString(tag, tag.Name), Gloss.TAG);
                             break;
                         case TagShowing.Code:
-                            g.Append(tag.Code ?? BuildTagString(tag, "*", '(', ')'), Gloss.TAG);
+                            g.Append(tag.Code ?? BuildTagString(tag, "*"), Gloss.TAG);
                             break;
                         default:
                             throw new ApplicationException("internal error");
@@ -121,9 +121,9 @@ namespace disfr.UI
             return "{" + s + "}";
         }
 
-        private static string BuildTagString(InlineTag tag, string label, char opar = OPAR, char cpar = CPAR)
+        private static string BuildTagString(InlineTag tag, string label)
         {
-            return opar + label + cpar;
+            return OPAR + label + CPAR;
         }
 
         public string FlatFromInline(InlineString text)
@@ -162,7 +162,29 @@ namespace disfr.UI
             return sb.ToString();
         }
 
-
+        public string TagListFromInline(InlineString text)
+        {
+            if (ShowTag != TagShowing.Name && ShowTag != TagShowing.Disp) return null;
+            var sb = new StringBuilder();
+            foreach (var tag in text.Contents.OfType<InlineTag>())
+            {
+                if (sb.Length > 0) sb.AppendLine();
+                if (!string.IsNullOrWhiteSpace(tag.Code))
+                {
+                    switch (ShowTag)
+                    {
+                        case TagShowing.Name:
+                            sb.Append(BuildTagString(tag, tag.Number.ToString()));
+                            break;
+                        case TagShowing.Disp:
+                            sb.Append(Enclose(tag.Display) ?? BuildTagString(tag, tag.Name));
+                            break;
+                    }
+                    sb.Append(" = ").Append(tag.Code);
+                }
+            }
+            return sb.ToString();
+        }
 
     }
 }

@@ -88,6 +88,7 @@
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             <DataGridTextColumn x:Name="Notes" Header="Notes" Binding="{Binding Notes}"/>
+            <DataGridTextColumn x:Name="TagList" Header="Tag List" Binding="{Binding TagList}"/>
         </DataGrid.Columns>
 
         <DataGrid.CommandBindings>

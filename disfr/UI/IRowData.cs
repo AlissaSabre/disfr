@@ -34,6 +34,8 @@ namespace disfr.UI
 
         string Notes { get; }
 
+        string TagList { get; }
+
         string this[string key] { get; }
 
         IEnumerable<string> Keys { get; }
