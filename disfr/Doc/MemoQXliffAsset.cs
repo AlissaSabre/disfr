@@ -194,7 +194,7 @@ namespace disfr.Doc
                     var id0 = (int?)element.Attribute("id");
                     if (first != null && id0 != null)
                     {
-                        var index = first + tu.Element(X + "source")?.Descendants(X + "x")?.Where(x => (int?)x.Attribute("id") < id0)?.Count();
+                        var index = first + tu.Element(X + "source")?.Descendants(X + "x")?.Count(x => (int?)x.Attribute("id") < id0);
                         if (index > 0 && index < InterSegments.Length)
                         {
                             code = InterSegments[(int)index];
