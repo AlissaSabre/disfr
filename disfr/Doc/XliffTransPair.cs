@@ -31,8 +31,10 @@ namespace disfr.Doc
         internal void AddNotes(IEnumerable<string> notes)
         {
             if (notes == null) return;
+            var valid_notes = notes.Where(s => !string.IsNullOrWhiteSpace(s));
+            if (!valid_notes.Any()) return;
             if (_Notes == null) _Notes = new HashSet<string>();
-            _Notes.UnionWith(notes.Where(s => !string.IsNullOrWhiteSpace(s)));
+            _Notes.UnionWith(valid_notes);
         }
 
         private Dictionary<string, string> _Props = null;
