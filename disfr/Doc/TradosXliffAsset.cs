@@ -81,6 +81,18 @@ namespace disfr.Doc
                     }
                 }
             }
+
+            // Look into the trans unit for x-sdl-comment, and bind them to appropriate segments.
+            // Yes, the following code looks very messy.  FIXME.
+            foreach (var cmtmrk in Enumerable.Concat(tu.Elements(X + "seg-source"), tu.Elements(X + "target")).Descendants(X + "mrk").Where(mrk => (string)mrk.Attribute("mtype") == "x-sdl-comment"))
+            {
+                string[] comment;
+                if (SdlComments.TryGetValue((string)cmtmrk.Attribute(SDL + "cid"), out comment))
+                {
+                    var segid = (string)cmtmrk.Ancestors(X + "mrk").FirstOrDefault(mrk => (string)mrk.Attribute("mtype") == "seg")?.Attribute("mid");
+                    pairs.FirstOrDefault(p => p.Id == segid)?.AddNotes(comment);
+                }
+            }
             return pairs;
         }
 
