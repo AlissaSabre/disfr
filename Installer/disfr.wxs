@@ -125,7 +125,7 @@
       <Custom Action='NewerProductFound' After='FindRelatedProducts'>NEWERFOUND</Custom>
     </InstallExecuteSequence>
 
-    <CustomAction Id='NewerProductFound' Error='A same or newer version of [ProductName] appears installed.  Please remove it first if you want to install this version $(var.Version).' />
+    <CustomAction Id='NewerProductFound' Error='A same or newer version of this program appears installed.  Please remove it first if you want to install this version ($(var.Version)).' />
 
     <Icon Id="disfr.exe" SourceFile="..\disfr\AppIcon.ico" />
     <Property Id="ARPPRODUCTICON" Value="disfr.exe" />
