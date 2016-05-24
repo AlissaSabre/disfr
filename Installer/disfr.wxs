@@ -17,6 +17,7 @@
              Manufacturer='Alissa Sabre'
 	     Languages='1033'
 	     SummaryCodepage='1252'
+	     InstallerVersion='400'
              Compressed='yes' 
              InstallPrivileges='elevated'
 	     InstallScope='perMachine'/>
@@ -30,7 +31,7 @@
     </Upgrade>
 
     <Media Id='1' Cabinet='disfr.cab' EmbedCab='yes' DiskPrompt='Disk 1' />
-    <Property Id='DiskPrompt' Value="disfr $(var.Version) Installer Disk 1 of 1" />
+    <Property Id='DiskPrompt' Value="disfr $(var.Version) (1/1)" />
 
     <Directory Id='TARGETDIR' Name='SourceDir'>
 
@@ -128,6 +129,8 @@
 
     <Icon Id="disfr.exe" SourceFile="..\disfr\AppIcon.ico" />
     <Property Id="ARPPRODUCTICON" Value="disfr.exe" />
+    <Property Id="ARPNOMODIFY" Value="yes" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/AlissaSabre/disfr"/>
 
   </Product>
 </Wix>
