@@ -78,8 +78,8 @@
                         <Separator/>
                         <MenuItem Header="Asset _Local Serial Numbers" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowLocalSerial, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
                         <MenuItem Header="L_ong Asset Names" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowLongAssetName, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
-                        <MenuItem Header="_No-translate Segments" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowAll, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
                         <Separator/>
+                        <MenuItem Header="_Inter-segment Contents" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowAll, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
                         <MenuItem Header="_Tags" IsEnabled="{Binding HasItems, ElementName=tables}">
                             <local:RadioMenuItem Header="As Local Numbers" Value="{x:Static local:TagShowing.Name}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
                             <local:RadioMenuItem Header="As Labels" Value="{x:Static local:TagShowing.Disp}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
