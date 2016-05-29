@@ -126,8 +126,8 @@ namespace disfr.Doc
                 }
                 using (var stream = conv.Open())
                 {
-                    var count = XElement.Load(stream).Elements("Key").Count();
-                    if (count != intersegs.Length) return;
+                    var count = XElement.Load(stream).Elements("Item").Count();
+                    if (count + 1 != intersegs.Length) return;
                 }
             }
 
