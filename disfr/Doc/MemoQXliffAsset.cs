@@ -24,13 +24,8 @@ namespace disfr.Doc
             SegmentationAllowed = false;
 
             // Parse skeleton if this file has one and is available.
-            if (zip_entry != null)
-            {
-                ParseSkeleton(file, zip_entry);
-            }
+            ParseSkeleton(file, zip_entry);
         }
-
-        //private const string LABEL_CONVERSION_TABLE = "LabConversionTable.dat";
 
         private const string DOC_MRD = "doc.mrd";
 
@@ -41,22 +36,31 @@ namespace disfr.Doc
         private string[] InterSegments = null;
 
         /// <summary>
-        /// Tries to retrieve the corresponding skeleton info. and parses it for later use.
+        /// Tries to retrieve the corresponding skeleton info., parses it, and save it for later use.
         /// </summary>
         /// <param name="file">XLIFF file element to find a skeleton for.</param>
-        /// <param name="zip_entry">ZIP entry the XLIFF instance containing <paramref name="file"/> is read from.</param>
+        /// <param name="zip_entry">ZIP entry the XLIFF instance containing <paramref name="file"/> is read from.
+        /// It can be null if the XLIFF instance is not from a ZIP archive.
+        /// This method does nothing in the case.</param>
         protected void ParseSkeleton(XElement file, ZipArchiveEntry zip_entry)
         {
+            // Locate the external skeleton file.
+            // Note that the syntax and semantics of skl element is defined in XLIFF spec.,
+            // and it is allows much more various cases than the following code,
+            // but I believe memoQ uses it in a single uniform pattern.
+
             var skl_href = (string)file.Element(X + "header")?.Element(X + "skl")?.Element(X + "external-file")?.Attribute("href");
             if (skl_href == null) return;
 
-            var skl_entry = zip_entry.Archive.GetEntry(skl_href);
+            var skl_entry = zip_entry?.Archive?.GetEntry(skl_href);
             if (skl_entry == null) return;
 
-            MemoryStream skl_stream = null;
+            // Read the skeleton portion of the skeleton info into a memory stream.
+
+            MemoryStream skl_stream;
             using (var stream = skl_entry.Open())
             {
-                XElement skeleton = null;
+                XElement skeleton;
                 try
                 {
                     skeleton = XElement.Load(stream).Element(MQX + "skeleton");
@@ -65,54 +69,69 @@ namespace disfr.Doc
                 catch (Exception)
                 {
                     // Try to catch any Exceptions from LINQ to XML methods indicating XML parse errors.
+                    // We should report (rethrow) others, but it is not easy to distinguish them.
                     return;
                 }
                 skl_stream = new MemoryStream(Convert.FromBase64String(skeleton.Value), false);
                 if (skl_stream.Length == 0) return;
             }
 
-            //Dictionary<int, int[]> labels = null;
-            string[] interseg = null;
+            // Extract the file doc.mrd that contains no translatable contents of source file
+            // out of the skeleton zip archive.
+
+            string[] intersegs;
             using (var zip = new ZipArchive(skl_stream, ZipArchiveMode.Read, false, Encoding.GetEncoding(850)))
             {
-                //var label_conversion_table = zip.GetEntry(LABEL_CONVERSION_TABLE);
-                //if (label_conversion_table == null) return;
-                //using (var stream = label_conversion_table.Open())
-                //{
-                //    labels = XElement.Load(stream).Elements("Item").ToDictionary(
-                //        item => (int)item.Element("Key").Element("int"),
-                //        item => item.Element("Value").Element("ArrayOfInt").Elements("int").Select(i => (int)i).ToArray());
-                //}
-
                 var doc = zip.GetEntry(DOC_MRD);
                 if (doc == null) return;
                 using (var stream = doc.Open())
                 {
-                    interseg = Marker.Split(new StreamReader(stream, true).ReadToEnd());
+                    // Some memoQ import filter creates a doc.mrd which is a zip archive.
+                    // This version of disfr can't handle such skeleton (unfortunately.)
+                    // I think it's better to detect the case early,
+                    // since such doc.mrd is often big, and Regex.Split could take some time unnecessarily.
+                    //
+                    // Although undocumented
+                    // (and I'm not surprised to see some fundamental feature is undocumented in Microsoft's API definitions),
+                    // the Stream object returned by ZipArchiveEntry.Open() has a CanSeek set to false.
+                    // So, we need to call Open() twice; once to check whether it is a zip, and again to process it.
+                    if (stream.ReadByte() == 0x50 &&
+                        stream.ReadByte() == 0x4B &&
+                        stream.ReadByte() == 0x03 &&
+                        stream.ReadByte() == 0x04)
+                    {
+                        return; 
+                    }
                 }
-                for (int i = 0; i < interseg.Length; i++)
+                using (var stream = doc.Open())
                 {
-                    interseg[i] = interseg[i].Replace("##", "#");
+                    intersegs = Marker.Split(new StreamReader(stream, true).ReadToEnd());
+                }
+                for (int i = 0; i < intersegs.Length; i++)
+                {
+                    intersegs[i] = intersegs[i].Replace("##", "#");
+                }
+
+                // Sanity check against LabConversionTable.
+                // Some XML based bilingual file creates an XML based doc.mrd which uses
+                // XML techniques to identify insertion points of target texts,
+                // which this version of disfr can't handle.
+                var conv = zip.GetEntry("LabConversionTable.dat");
+                if (conv == null)
+                {
+                    // The label conversion table is missing in the skeleton...
+                    // Probably this is a totally different format of skeleton,
+                    // and we should not rely on our understanding of the doc.mrd format.
+                    return;
+                }
+                using (var stream = conv.Open())
+                {
+                    var count = XElement.Load(stream).Elements("Key").Count();
+                    if (count != intersegs.Length) return;
                 }
             }
 
-#if false
-            for (int n = labels.Count; n > 0; --n)
-            {
-                if (!labels.ContainsKey(n))
-                {
-                    throw new Exception("OOPS!");
-                }
-            }
-            var w = labels.Values.SelectMany(v => v).Count();
-            if (w != interseg.Length - 1)
-            {
-                throw new Exception("OOPS!");
-            }
-#endif
-
-            //LabelConv = labels;
-            InterSegments = interseg;
+            InterSegments = intersegs;
         }
 
         protected override IEnumerable<XliffTransPair> ExtractPairs(XElement tu)
@@ -130,7 +149,7 @@ namespace disfr.Doc
                 // That's why we say last_last_label >= 0 but >.
                 var first_label = (int?)tu.Attribute(MQ + "firstlabel") ?? 0;
                 var prev_last_label = tu.ElementsBeforeSelf(X + "trans-unit").Select(e=> (int?)e.Attribute(MQ + "lastlabel")).LastOrDefault(label => label > 0) ?? 0;
-                if (first_label > 0 && prev_last_label >= 0 && first_label != prev_last_label)
+                if (first_label > 0 && prev_last_label >= 0 && first_label != prev_last_label && prev_last_label < InterSegments.Length)
                 {
                     // I assume first_label == last_last_label + 1.  I have no idea what we should do otherwise.
                     yield return InterSegmentPair(InterSegments[prev_last_label]);
@@ -155,7 +174,7 @@ namespace disfr.Doc
             if (InterSegments != null && !tu.ElementsAfterSelf(X + "trans-unit").Any() && (int?)tu.Attribute(MQ + "lastlabel") == -1)
             {
                 var prev_last_label = tu.ElementsBeforeSelf(X + "trans-unit").Select(t => (int?)t.Attribute(MQ + "lastlabel")).LastOrDefault(label => label > 0);
-                if (prev_last_label != null)
+                if (prev_last_label != null && prev_last_label >= 0 && prev_last_label < InterSegments.Length)
                 {
                     yield return InterSegmentPair(InterSegments[(int)prev_last_label]);
                 }
