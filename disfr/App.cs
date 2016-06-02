@@ -15,8 +15,18 @@ namespace disfr
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public class App : Application
     {
+        /// <summary>
+        /// Application Entry Point.
+        /// </summary>
+        [System.STAThreadAttribute()]
+        public static void Main()
+        {
+            disfr.App app = new disfr.App();
+            app.Run();
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             //Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
