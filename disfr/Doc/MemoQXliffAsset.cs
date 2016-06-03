@@ -242,14 +242,20 @@ namespace disfr.Doc
             // memoQ appears not to use standard XLIFF note at all, but just in case.
             var standard = base.GetNotes(unit);
 
-            var memoQ = unit.Element(MQ + "comments")?.Elements(MQ + "comment")?.Select(c => (string)c);
-            if (memoQ == null)
+            // The following handling of mq:comment/@deleted may not be right.  FIXME.
+            var memoq = unit.Element(MQ + "comments")?.Elements(MQ + "comment")?.Where(c => (string)c.Attribute("deleted") != "true")?.Select(c => (string)c);
+
+            if (memoq == null)
             {
                 return standard;
             }
+            else if (standard == null)
+            {
+                return memoq;
+            }
             else
             {
-                return standard.Concat(memoQ);
+                return standard.Concat(memoq);
             }
         }
     }
