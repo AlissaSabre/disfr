@@ -8,6 +8,13 @@ namespace disfr.Doc
 {
     public interface ITransPair
     {
+        /// <summary>
+        /// Non-negative serial number in an asset.
+        /// </summary>
+        /// <value>
+        /// Zero means the pair represents an inter-segment content.
+        /// Pairs with a non-zero value should be in their increasing order in the pairs' natural ordering, except for zero.
+        /// </value>
         int Serial { get; }
 
         string Id { get; }

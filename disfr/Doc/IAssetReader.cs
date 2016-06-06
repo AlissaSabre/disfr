@@ -10,6 +10,12 @@ namespace disfr.Doc
     {
         string Name { get; }
 
+        /// <summary>
+        /// A positive value to indicate the priority of this asset reader in auto-detection.
+        /// </summary>
+        /// <value>
+        /// A reader with higher priority will be tried earlier than those with lower.  
+        /// </value>
         int Priority { get; }
 
         IList<string> FilterString { get; }

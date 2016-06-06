@@ -96,6 +96,7 @@
     <Compile Include="Doc\InlineString.cs" />
     <Compile Include="Doc\ITransPair.cs" />
     <Compile Include="Doc\ReaderManager.cs" />
+    <Compile Include="Doc\TmxReader.cs" />
     <Compile Include="Doc\XliffAsset.cs" />
     <Compile Include="Doc\TradosXliffAsset.cs" />
     <Compile Include="Doc\IdiomXliffAsset.cs" />
