@@ -69,6 +69,8 @@ namespace disfr
                     catch (Exception) { }
                     Thread.Sleep(50);
                 }
+
+                MessageBox.Show("Appliation failed: Couldn't establish remoting.", "Error - disfr");
             }
             else
             {
