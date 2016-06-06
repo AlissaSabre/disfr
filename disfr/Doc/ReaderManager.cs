@@ -101,7 +101,16 @@ namespace disfr.Doc
             if (i < Readers.Count && adjusted_index >= 0)
             {
                 // An explicit file type (= reader) was specified.
-                return Readers[i].Read(filename, adjusted_index);
+                var assets = Readers[i].Read(filename, adjusted_index);
+                if (assets == null)
+                {
+                    var name = Path.GetFileName(filename);
+                    var type = Readers[i].FilterString[adjusted_index];
+                    type = type.Substring(0, type.IndexOf('|'));
+                    var message = string.Format("\"{0}\" is incompatible with the specified file format ({1}).", name, type);
+                    throw new IOException(message);
+                }
+                return assets;
             }
 
             if (i >= Readers.Count && adjusted_index > 0)
@@ -125,7 +134,7 @@ namespace disfr.Doc
                 if (assets != null) return assets;
             }
 
-            return null;
+            throw new IOException(string.Format("Can't read \"{0}\"; file format is incompatible.", Path.GetFileName(filename)));
         }
 
         public string FriendlyFilename(string filename)
