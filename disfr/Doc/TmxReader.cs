@@ -51,7 +51,6 @@ namespace disfr.Doc
             var tus = tmx.Element(X + "body").Elements(X + "tu");
 
             string[] langs;
-            XElement[] segs;
             {
                 var slang = (string)tmx.Element(X + "header").Attribute("srclang");
 
@@ -60,11 +59,15 @@ namespace disfr.Doc
                 if (tlangs.Length == 0) return null;
 
                 langs = new[] { slang }.Concat(tlangs).ToArray();
-                segs = new XElement[langs.Length];
             }
 
             var lists = new List<TmxPair>[langs.Length];
             for (int i = 0; i < lists.Length; i++) lists[i] = new List<TmxPair>();
+
+            var segs = new XElement[langs.Length];
+            //var props = new 
+
+            var tag_pool = new Dictionary<InlineTag, int>();
 
             foreach (var tu in tus)
             {
@@ -83,7 +86,7 @@ namespace disfr.Doc
                 if (segs[0] != null)
                 {
                     var id = (string)tu.Attribute("tuid") ?? "";
-                    var source = GetInline(segs[0], X);
+                    var source = NumberTags(tag_pool, GetInline(segs[0], X));
                     var source_lang = (string)segs[0].Attribute(XML_LANG) ?? langs[0];
                     for (int i = 1; i < segs.Length; i++)
                     {
@@ -94,7 +97,7 @@ namespace disfr.Doc
                                 Serial = 0, // XXX
                                 Id = id,
                                 Source = source,
-                                Target = GetInline(segs[i], X),
+                                Target = MatchTags(tag_pool, GetInline(segs[i], X)),
                                 SourceLang = source_lang,
                                 TargetLang = (string)segs[i].Attribute(XML_LANG) ?? langs[i]
                             };
@@ -110,6 +113,7 @@ namespace disfr.Doc
                 var asset = new TmxAsset()
                 {
                     Package = package,
+                    Original = string.Format("{0} - {1}", langs[0], langs[i]),
                     SourceLang = langs[0],
                     TargetLang = langs[i],
                     TransPairs = lists[i],
@@ -235,13 +239,35 @@ namespace disfr.Doc
                 display: null,
                 code: has_code ? elem.Value : null);
         }
+
+        private static InlineString NumberTags(Dictionary<InlineTag, int> pool, InlineString source)
+        {
+            pool.Clear();
+            int n = 0;
+            foreach (var tag in source.OfType<InlineTag>())
+            {
+                pool[tag] = tag.Number = ++n;
+            }
+            return source;
+        }
+
+        private static InlineString MatchTags(Dictionary<InlineTag, int> pool, InlineString target)
+        {
+            foreach (var tag in target.OfType<InlineTag>())
+            {
+                int m;
+                pool.TryGetValue(tag, out m);
+                tag.Number = m;
+            }
+            return target;
+        }
     }
 
     class TmxAsset : IAsset
     {
         public string Package { get; set; }
 
-        public string Original { get { return null; } }
+        public string Original { get; set; }
 
         public string SourceLang { get; set; }
 
