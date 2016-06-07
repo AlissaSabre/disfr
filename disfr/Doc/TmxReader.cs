@@ -65,12 +65,24 @@ namespace disfr.Doc
             for (int i = 0; i < lists.Length; i++) lists[i] = new List<TmxPair>();
 
             var segs = new XElement[langs.Length];
-            //var props = new 
+            var props = new List<KeyValuePair<string, string>>[langs.Length];
+            var notes = new List<string>[langs.Length];
+            for (int i = 0; i < segs.Length; i++)
+            {
+                segs[i] = null;
+                props[i] = new List<KeyValuePair<string, string>>();
+                notes[i] = new List<string>();
+            }
 
+            var tu_props = new List<KeyValuePair<string, string>>();
+            var tu_notes = new List<string>();
             var tag_pool = new Dictionary<InlineTag, int>();
 
             foreach (var tu in tus)
             {
+                CollectProps(tu_props, tu);
+                CollectNotes(tu_notes, tu);
+
                 for (int i = 0; i < segs.Length; i++) segs[i] = null;
                 foreach (var tuv in tu.Elements(X + "tuv"))
                 {
@@ -79,15 +91,19 @@ namespace disfr.Doc
                         if (Covers(langs[i], (string)tuv.Attribute(XML_LANG)))
                         {
                             segs[i] = tuv.Element(X + "seg");
+                            CollectProps(props[i], tuv);
+                            CollectNotes(notes[i], tuv);
                             break;
                         }
                     }
                 }
+
                 if (segs[0] != null)
                 {
                     var id = (string)tu.Attribute("tuid") ?? "";
                     var source = NumberTags(tag_pool, GetInline(segs[0], X));
                     var source_lang = (string)segs[0].Attribute(XML_LANG) ?? langs[0];
+
                     for (int i = 1; i < segs.Length; i++)
                     {
                         if (segs[i] != null)
@@ -101,6 +117,8 @@ namespace disfr.Doc
                                 SourceLang = source_lang,
                                 TargetLang = (string)segs[i].Attribute(XML_LANG) ?? langs[i]
                             };
+                            pair.SetProps(tu_props.Concat(props[0]).Concat(props[i]));
+                            pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
                             lists[i].Add(pair);
                         }
                     }
@@ -261,6 +279,22 @@ namespace disfr.Doc
             }
             return target;
         }
+
+        // <paramref name="elem"/> should either be TMX:tu or TMX:tuv.
+        private static void CollectProps(List<KeyValuePair<string, string>> props, XElement elem)
+        {
+            var X = elem.Name.Namespace;
+            props.Clear();
+            props.AddRange(elem.Attributes().Where(a => a.Name.Namespace != XNamespace.Xml).Select(a => new KeyValuePair<string, string>(a.Name.LocalName, (string)a)));
+            props.AddRange(elem.Elements(X + "prop").Select(p => new KeyValuePair<string, string>((string)p.Attribute("type"), (string)p)));
+        }
+
+        private static void CollectNotes(List<string> notes, XElement elem)
+        {
+            var X = elem.Name.Namespace;
+            notes.Clear();
+            notes.AddRange(elem.Elements(X + "note").Select(n => (string)n));
+        }
     }
 
     class TmxAsset : IAsset
@@ -292,16 +326,24 @@ namespace disfr.Doc
 
         public string TargetLang { get; set; }
 
-        private static HashSet<string> _Notes;
+        private HashSet<string> _Notes = null;
 
         public IEnumerable<string> Notes { get { return _Notes; } }
 
-        void AddNote(string note) { (_Notes ?? (_Notes = new HashSet<string>())).Add(note); }
+        public void AddNotes(IEnumerable<string> notes) { (_Notes ?? (_Notes = new HashSet<string>())).UnionWith(notes); }
 
-        private static readonly Dictionary<string, string> _Props = new Dictionary<string, string>();
+        private Dictionary<string, string> _Props = null;
 
-        public IReadOnlyDictionary<string, string> Props { get { return _Props; } }
+        private static readonly Dictionary<string, string> EmptyProps = new Dictionary<string, string>();
 
-        void AddProp(string key, string value) { _Props[key] = value; }
+        public IReadOnlyDictionary<string, string> Props { get { return _Props ?? EmptyProps; } }
+
+        public void SetProps(IEnumerable<KeyValuePair<string, string>> props)
+        {
+            if (props.Any())
+            {
+                _Props = props.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            }
+        }
     }
 }
