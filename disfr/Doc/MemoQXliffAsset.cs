@@ -109,7 +109,7 @@ namespace disfr.Doc
                 }
                 for (int i = 0; i < intersegs.Length; i++)
                 {
-                    intersegs[i] = intersegs[i].Replace("##", "#");
+                    intersegs[i] = intersegs[i].Replace("##", "#").Replace("\r\n", "\n");
                 }
 
                 // Sanity check against LabConversionTable.
