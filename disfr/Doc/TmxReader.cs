@@ -342,7 +342,8 @@ namespace disfr.Doc
         {
             if (props.Any())
             {
-                _Props = props.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                _Props = new Dictionary<string, string>();
+                foreach (var kvp in props) _Props[kvp.Key] = kvp.Value;
             }
         }
     }
