@@ -22,8 +22,8 @@ namespace disfr.Doc
         private static readonly string[] _FilterString =
         {
             "Generic XLIFF|*.xlf;*.xliff",
-            "Trados Studio|*.sdlxliff;*.sdlppx;*.sdlrpx",
-            "WorldServer|*.xlz;*.wsxz",
+            "Trados Studio|*.sdlxliff;*.sdlppx;*.sdlrpx;*.wsxz",
+            "Idiom WorldServer|*.xlz;*.wsxz",
             "memoQ|*.mqxlz;*.mqxliff",
         };
 
