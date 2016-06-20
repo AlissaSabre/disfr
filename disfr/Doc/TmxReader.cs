@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Xml.Linq;
 
 namespace disfr.Doc
 {
     public class TmxReader : IAssetReader
     {
+        private const int MINIMUM_ENTRIES_PER_THREAD = 400;
+
         private static readonly string[] _FilterString = { "TMX Translation Memory|*.tmx" };
 
         public IList<string> FilterString { get { return _FilterString; } }
@@ -62,81 +64,116 @@ namespace disfr.Doc
                 langs = new[] { slang }.Concat(tlangs).ToArray();
             }
 
-            var lists = new List<TmxPair>[langs.Length];
-            for (int i = 0; i < lists.Length; i++) lists[i] = new List<TmxPair>();
-
-            var segs = new XElement[langs.Length];
-            var props = new List<KeyValuePair<string, string>>[langs.Length];
-            var notes = new List<string>[langs.Length];
-            for (int i = 0; i < segs.Length; i++)
+            var thread_count = Environment.ProcessorCount - 1;
+            if (thread_count * MINIMUM_ENTRIES_PER_THREAD > tus.Length)
             {
-                segs[i] = null;
-                props[i] = new List<KeyValuePair<string, string>>();
-                notes[i] = new List<string>();
+                thread_count = tus.Length / MINIMUM_ENTRIES_PER_THREAD;
             }
+            if (thread_count < 1) thread_count = 1;
+            var threads = new Thread[thread_count];
+            var entries_per_thread = (int)Math.Ceiling((double)tus.Length / thread_count);
 
-            var tu_props = new List<KeyValuePair<string, string>>();
-            var tu_notes = new List<string>();
-            var tag_pool = new Dictionary<InlineTag, int>();
+            var array_of_array_of_list_of_pairs = new List<TmxPair>[threads.Length][];
 
-            foreach (var tu in tus)
+            for (int thread = 0; thread < threads.Length; thread++)
             {
-                CollectProps(tu_props, tu);
-                CollectNotes(tu_notes, tu);
+                var array_of_list_of_pairs = new List<TmxPair>[langs.Length];
+                for (int i = 0; i < array_of_list_of_pairs.Length; i++) array_of_list_of_pairs[i] = new List<TmxPair>();
+                array_of_array_of_list_of_pairs[thread] = array_of_list_of_pairs;
 
-                for (int i = 0; i < segs.Length; i++) segs[i] = null;
-                foreach (var tuv in tu.Elements(X + "tuv"))
+                int min = thread * entries_per_thread;
+                int max = Math.Min(min + entries_per_thread, tus.Length); 
+                threads[thread] = new Thread((ThreadStart)delegate
                 {
-                    for (int i = 0; i < langs.Length; i++)
+                    var segs = new XElement[langs.Length];
+                    var props = new List<KeyValuePair<string, string>>[langs.Length];
+                    var notes = new List<string>[langs.Length];
+                    for (int i = 0; i < segs.Length; i++)
                     {
-                        if (Covers(langs[i], (string)tuv.Attribute(XML_LANG)))
-                        {
-                            segs[i] = tuv.Element(X + "seg");
-                            CollectProps(props[i], tuv);
-                            CollectNotes(notes[i], tuv);
-                            break;
-                        }
+                        segs[i] = null;
+                        props[i] = new List<KeyValuePair<string, string>>();
+                        notes[i] = new List<string>();
                     }
-                }
 
-                if (segs[0] != null)
-                {
-                    var id = (string)tu.Attribute("tuid") ?? "";
-                    var source = NumberTags(tag_pool, GetInline(segs[0], X));
-                    var source_lang = (string)segs[0].Attribute(XML_LANG) ?? langs[0];
+                    var tu_props = new List<KeyValuePair<string, string>>();
+                    var tu_notes = new List<string>();
+                    var tag_pool = new Dictionary<InlineTag, int>();
 
-                    for (int i = 1; i < segs.Length; i++)
+                    for (int index = min; index < max; index++)
                     {
-                        if (segs[i] != null)
+                        var tu = tus[index];
+
+                        CollectProps(tu_props, tu);
+                        CollectNotes(tu_notes, tu);
+
+                        for (int i = 0; i < segs.Length; i++) segs[i] = null;
+                        foreach (var tuv in tu.Elements(X + "tuv"))
                         {
-                            var pair = new TmxPair()
+                            for (int i = 0; i < langs.Length; i++)
                             {
-                                Serial = 0, // XXX
-                                Id = id,
-                                Source = source,
-                                Target = MatchTags(tag_pool, GetInline(segs[i], X)),
-                                SourceLang = source_lang,
-                                TargetLang = (string)segs[i].Attribute(XML_LANG) ?? langs[i]
-                            };
-                            pair.SetProps(tu_props.Concat(props[0]).Concat(props[i]), pool);
-                            pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
-                            lists[i].Add(pair);
+                                if (Covers(langs[i], (string)tuv.Attribute(XML_LANG)))
+                                {
+                                    segs[i] = tuv.Element(X + "seg");
+                                    CollectProps(props[i], tuv);
+                                    CollectNotes(notes[i], tuv);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (segs[0] != null)
+                        {
+                            var id = (string)tu.Attribute("tuid") ?? "";
+                            var source = NumberTags(tag_pool, GetInline(segs[0], X));
+                            var source_lang = (string)segs[0].Attribute(XML_LANG) ?? langs[0];
+
+                            for (int i = 1; i < segs.Length; i++)
+                            {
+                                if (segs[i] != null)
+                                {
+                                    var pair = new TmxPair()
+                                    {
+                                        Serial = 0, // XXX
+                                        Id = id,
+                                        Source = source,
+                                        Target = MatchTags(tag_pool, GetInline(segs[i], X)),
+                                        SourceLang = source_lang,
+                                        TargetLang = (string)segs[i].Attribute(XML_LANG) ?? langs[i]
+                                    };
+                                    pair.SetProps(tu_props.Concat(props[0]).Concat(props[i]), pool);
+                                    pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
+                                    array_of_list_of_pairs[i].Add(pair);
+                                }
+                            }
                         }
                     }
-                }
+                });
+                threads[thread].Start();
             }
+
+            for (int thread = 0; thread < threads.Length; thread++) threads[thread].Join();
 
             var assets = new IAsset[langs.Length - 1];
             for (int i = 1; i < langs.Length; i++)
             {
+
                 var asset = new TmxAsset()
                 {
                     Package = package,
                     Original = string.Format("{0} - {1}", langs[0], langs[i]),
                     SourceLang = langs[0],
                     TargetLang = langs[i],
-                    TransPairs = lists[i],
                 };
+
+                var pairs = new TmxPair[array_of_array_of_list_of_pairs.Sum(x => x[i].Count)];
+                int index = 0;
+                for (int t = 0; t < thread_count; t++)
+                {
+                    array_of_array_of_list_of_pairs[t][i].CopyTo(pairs, index);
+                    index += array_of_array_of_list_of_pairs[t][i].Count;
+                }
+                asset.TransPairs = pairs;
+
                 assets[i - 1] = asset;
             }
 
