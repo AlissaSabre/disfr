@@ -48,7 +48,8 @@ namespace disfr.Doc
                 return null;
             }
 
-            var tus = tmx.Element(X + "body").Elements(X + "tu");
+            var tus = tmx.Element(X + "body").Elements(X + "tu").ToArray();
+            var pool = new StringPool();
 
             string[] langs;
             {
@@ -117,7 +118,7 @@ namespace disfr.Doc
                                 SourceLang = source_lang,
                                 TargetLang = (string)segs[i].Attribute(XML_LANG) ?? langs[i]
                             };
-                            pair.SetProps(tu_props.Concat(props[0]).Concat(props[i]));
+                            pair.SetProps(tu_props.Concat(props[0]).Concat(props[i]), pool);
                             pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
                             lists[i].Add(pair);
                         }
@@ -338,12 +339,19 @@ namespace disfr.Doc
 
         public IReadOnlyDictionary<string, string> Props { get { return _Props ?? EmptyProps; } }
 
-        public void SetProps(IEnumerable<KeyValuePair<string, string>> props)
+        public void SetProps(IEnumerable<KeyValuePair<string, string>> props, StringPool pool = null)
         {
             if (props.Any())
             {
                 _Props = new Dictionary<string, string>();
-                foreach (var kvp in props) _Props[kvp.Key] = kvp.Value;
+                if (pool == null)
+                {
+                    foreach (var kvp in props) _Props[kvp.Key] = kvp.Value;
+                }
+                else
+                {
+                    foreach (var kvp in props) _Props[pool.Intern(kvp.Key)] = pool.Intern(kvp.Value);
+                }
             }
         }
     }
