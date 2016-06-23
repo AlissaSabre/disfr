@@ -50,29 +50,33 @@ namespace disfr.Doc
                 return null;
             }
 
-            var tus = tmx.Element(X + "body").Elements(X + "tu").ToArray();
+            var tus = tmx.Element(X + "body").Elements(X + "tu").ToList();
             var pool = new StringPool();
 
             string[] langs;
             {
                 var slang = (string)tmx.Element(X + "header").Attribute("srclang");
 
-                var tlang_variants = tus.Elements(X + "tuv").Attributes(XML_LANG).Select(a => (string)a).Distinct().Where(t => !Covers(slang, t)).ToArray();
-                var tlangs = tlang_variants.Where(t => !tlang_variants.Any(v => v != t && Covers(v, t))).ToArray();
-                if (tlangs.Length == 0) return null;
+                var tlang_variants = tus.Elements(X + "tuv").Attributes(XML_LANG).Select(a => (string)a).Distinct().Where(t => !Covers(slang, t)).ToList();
+                var tlangs = tlang_variants.Where(t => !tlang_variants.Any(v => v != t && Covers(v, t))).ToList();
+                if (tlangs.Count == 0) return null;
 
                 langs = new[] { slang }.Concat(tlangs).ToArray();
             }
 
             var thread_count = Environment.ProcessorCount - 1;
-            if (thread_count * MINIMUM_ENTRIES_PER_THREAD > tus.Length)
+            if (thread_count * MINIMUM_ENTRIES_PER_THREAD > tus.Count)
             {
-                thread_count = tus.Length / MINIMUM_ENTRIES_PER_THREAD;
+                thread_count = tus.Count / MINIMUM_ENTRIES_PER_THREAD;
             }
             if (thread_count < 1) thread_count = 1;
             var threads = new Thread[thread_count];
-            var entries_per_thread = (int)Math.Ceiling((double)tus.Length / thread_count);
+            var entries_per_thread = (int)Math.Ceiling((double)tus.Count / thread_count);
 
+            // When accessing array_of_array_of_list_of_pairs[x][y][z], 
+            // x is a thread index, 
+            // y is a language index, 
+            // z is a serial number within the thread-language group.
             var array_of_array_of_list_of_pairs = new List<TmxPair>[threads.Length][];
 
             for (int thread = 0; thread < threads.Length; thread++)
@@ -82,7 +86,7 @@ namespace disfr.Doc
                 array_of_array_of_list_of_pairs[thread] = array_of_list_of_pairs;
 
                 int min = thread * entries_per_thread;
-                int max = Math.Min(min + entries_per_thread, tus.Length); 
+                int max = Math.Min(min + entries_per_thread, tus.Count); 
                 threads[thread] = new Thread((ThreadStart)delegate
                 {
                     var segs = new XElement[langs.Length];
@@ -150,7 +154,6 @@ namespace disfr.Doc
                 });
                 threads[thread].Start();
             }
-
             for (int thread = 0; thread < threads.Length; thread++) threads[thread].Join();
 
             var assets = new IAsset[langs.Length - 1];
