@@ -31,6 +31,7 @@ namespace disfr.Doc
                     // Add standard readers.
                     manager.Add(new XliffReader());
                     manager.Add(new TmxReader());
+                    manager.Add(new SdltmReader());
 
                     // Add plugin readers.
                     manager.AddRange(PluginManager.Current.Readers);

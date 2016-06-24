@@ -12,7 +12,7 @@ namespace UnitTestDisfr
         public void SdlReaderTestMethod1()
         {
             var rd = new SdltmReader();
-            var entries = rd.Read(@"..\..\Samples\tm1.sdltm", -1);
+            var entries = rd.Read(@"..\..\..\..\PRIVATE\sample.sdltm", -1);
         }
     }
 }

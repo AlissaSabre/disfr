@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace disfr.Doc
 {
@@ -17,13 +19,6 @@ namespace disfr.Doc
         public string Name { get { return "SdltmReader"; } }
 
         public int Priority { get { return 10; } }
-
-        private class TmMeta
-        {
-            public string Name;
-            public string SourceLang;
-            public string TargetLang;
-        };
 
         public IEnumerable<IAsset> Read(string filename, int filterindex)
         {
@@ -39,9 +34,8 @@ namespace disfr.Doc
                     s.ReadByte() != '3' || s.ReadByte() != '\0') return null;
             }
 
-            SQLiteConnection connection = null;
-            SQLiteDataReader reader = null;
-            SQLiteCommand cmd = null;
+            IDbConnection connection = null;
+            IDataReader reader = null;
             try
             {
                 var b = new SQLiteConnectionStringBuilder()
@@ -53,52 +47,178 @@ namespace disfr.Doc
                     connection = new SQLiteConnection(b.ConnectionString);
                     connection.Open();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }
 
-                cmd = connection.CreateCommand();
+                var version = ExecScalar(connection, @"SELECT value FROM parameters WHERE name = 'VERSION'") as string;
+                if (version?.StartsWith("8.") != true) return null;
 
-                cmd.CommandText = @"SELECT value FROM parameters WHERE name = 'VERSION'";
-                if ((cmd.ExecuteScalar() as string)?.StartsWith("8.") != true)
-                {
-                    return null;
-                }
+                var tm_min = ExecScalarValue<int>(connection, @"SELECT min(id) FROM translation_memories");
+                var tm_max = ExecScalarValue<int>(connection, @"SELECT max(id) FROM translation_memories");
+                var tm_count = tm_max - tm_min + 1;
+                if (tm_count <= 0 || tm_count > 1000) return null;
 
-                cmd.CommandText = @"SELECT min(id) FROM translation_memories";
-                var min = cmd.ExecuteScalar() as int?;
-                cmd.CommandText = @"SELECT max(id) FROM translation_memories";
-                var max = cmd.ExecuteScalar() as int?;
-                if (!(max - min < 1000)) return null;
+                var assets = new SdltmAsset[tm_count];
 
-                var min_tm_id = (int)min;
-                var tm_meta = new TmMeta[(int)max - min_tm_id + 1];
-
-                cmd.CommandText = @"SELECT id, name, source_language, target_language FROM translation_memories";
-                reader = cmd.ExecuteReader();
+                reader = ExecReader(connection, @"SELECT id, name, source_language, target_language FROM translation_memories");
                 while (reader.Read())
                 {
-                    var id = reader.GetInt32(0);
-                    var meta = new TmMeta()
+                    var tmid = reader.GetInt32(0);
+                    assets[tmid - tm_min] = new SdltmAsset()
                     {
-                        Name = reader.GetString(1),
+                        Package = filename,
+                        Original = reader.GetString(1),
                         SourceLang = reader.GetString(2),
                         TargetLang = reader.GetString(3),
                     };
-                    tm_meta[id - min_tm_id] = meta;
                 }
+                reader.Close();
                 reader.Dispose();
+                reader = null;
 
-                throw new NotImplementedException();
+                reader = ExecReader(connection, @"SELECT translation_memory_id, id, source_segment, target_segment, creation_date, creation_user, change_date, change_user FROM translation_units");
+                while (reader.Read())
+                {
+                    var tmid = reader.GetInt32(0);
+                    var pair = new SdltmPair()
+                    {
+                        Id = reader.GetInt32(1).ToString(),
+                        Source = GetInlineString(reader.GetString(2)),
+                        Target = GetInlineString(reader.GetString(3)),
+                        SourceLang = assets[tmid - tm_min].SourceLang,
+                        TargetLang = assets[tmid - tm_min].TargetLang,
+                    };
+                    var props = new Dictionary<string, string>()
+                    {
+                        { "creation_date", reader.GetString(4) },
+                        { "creation_user", reader.GetString(5) },
+                        { "change_date", reader.GetString(6) },
+                        { "change_user", reader.GetString(7) },
+                    };
+                    pair.Props = props;
+                    assets[tmid - tm_min]._TransPairs.Add(pair);
+                }
+                reader.Close();
+                reader.Dispose();
+                reader = null;
 
+                int serial = 0;
+                foreach (var asset in assets)
+                {
+                    foreach (var pair in asset._TransPairs)
+                    {
+                        pair.Serial = ++serial;
+                    }
+                }
+
+                return assets;
             }
             finally
             {
-                cmd?.Dispose();
+                reader?.Close();
                 reader?.Dispose();
                 connection?.Dispose();
             }
         }
+
+        protected static object ExecScalar(IDbConnection connection, string sql)
+        {
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                var result = cmd.ExecuteScalar();
+                if (result is DBNull) result = null;
+                return result;
+            }
+        }
+
+        protected static T ExecScalarValue<T>(IDbConnection connection, string sql)
+        {
+            return (T)Convert.ChangeType(ExecScalar(connection, sql), typeof(T));
+        }
+
+        protected static IDataReader ExecReader(IDbConnection connection, string sql)
+        {
+            using (var cmd = connection.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                return cmd.ExecuteReader();
+            }
+        }
+
+        protected static InlineString GetInlineString(string text)
+        {
+            var inline = new InlineString();
+            foreach (var elem in XElement.Parse(text).Elements("Elements").Elements())
+            {
+                switch (elem.Name.LocalName)
+                {
+                    case "Text":
+                        inline.Add((string)elem.Element("Value") ?? "");
+                        break;
+                    case "Tag":
+                        inline.Add(GetInlineTag(elem));
+                        break;
+                    default:
+                        inline.Add(new InlineTag(Tag.S, "*", "", "*UNKNOWN*", null, null, elem.Value));
+                        break;
+                }
+            }
+            return inline;
+        }
+
+        protected static InlineTag GetInlineTag(XElement tag)
+        {
+            Tag tagtype = Tag.S;
+            switch ((string)tag.Element("Type"))
+            {
+                case "Start": tagtype = Tag.B; break;
+                case "End": tagtype = Tag.E; break;
+            }
+
+            var id = (string)tag.Element("TagID") ?? "*";
+            var rid = (string)tag.Element("Anchor") ?? "";
+            var name = (string)tag.Element("Type") ?? "Tag";
+
+            return new InlineTag(tagtype, id, rid, name, null, null, null);
+        }
+    }
+
+    class SdltmAsset : IAsset
+    {
+        public string Package { get; set; }
+
+        public string Original { get; set; }
+
+        public string SourceLang { get; set; }
+
+        public string TargetLang { get; set; }
+
+        internal readonly List<SdltmPair> _TransPairs = new List<SdltmPair>();
+
+        public IEnumerable<ITransPair> TransPairs { get { return _TransPairs; } }
+
+        public IEnumerable<ITransPair> AltPairs { get { return Enumerable.Empty<ITransPair>(); } }
+    }
+
+    class SdltmPair : ITransPair
+    {
+        public int Serial { get; set; }
+
+        public string Id { get; set; }
+
+        public InlineString Source { get; set; }
+
+        public InlineString Target { get; set; }
+
+        public string SourceLang { get; set; }
+
+        public string TargetLang { get; set; }
+
+        public IEnumerable<string> Notes { get { return Enumerable.Empty<string>(); } }
+
+        public IReadOnlyDictionary<string, string> Props { get; set; }
     }
 }
