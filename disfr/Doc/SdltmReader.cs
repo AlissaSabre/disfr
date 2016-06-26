@@ -24,14 +24,22 @@ namespace disfr.Doc
         {
             using (var s = File.OpenRead(filename))
             {
-                if (s.ReadByte() != 'S' || s.ReadByte() != 'Q' ||
-                    s.ReadByte() != 'L' || s.ReadByte() != 'i' ||
-                    s.ReadByte() != 't' || s.ReadByte() != 'e' ||
-                    s.ReadByte() != ' ' || s.ReadByte() != 'f' ||
-                    s.ReadByte() != 'o' || s.ReadByte() != 'r' ||
-                    s.ReadByte() != 'm' || s.ReadByte() != 'a' ||
-                    s.ReadByte() != 't' || s.ReadByte() != ' ' ||
-                    s.ReadByte() != '3' || s.ReadByte() != '\0') return null;
+                if (s.ReadByte() != 'S' || 
+                    s.ReadByte() != 'Q' ||
+                    s.ReadByte() != 'L' || 
+                    s.ReadByte() != 'i' ||
+                    s.ReadByte() != 't' || 
+                    s.ReadByte() != 'e' ||
+                    s.ReadByte() != ' ' || 
+                    s.ReadByte() != 'f' ||
+                    s.ReadByte() != 'o' || 
+                    s.ReadByte() != 'r' ||
+                    s.ReadByte() != 'm' || 
+                    s.ReadByte() != 'a' ||
+                    s.ReadByte() != 't' || 
+                    s.ReadByte() != ' ' ||
+                    s.ReadByte() != '3' || 
+                    s.ReadByte() != '\0') return null;
             }
 
             IDbConnection connection = null;
@@ -162,7 +170,8 @@ namespace disfr.Doc
                         inline.Add(GetInlineTag(elem));
                         break;
                     default:
-                        inline.Add(new InlineTag(Tag.S, "*", "", "*UNKNOWN*", null, null, elem.Value));
+                        // Just in case...
+                        inline.Add(new InlineTag(Tag.S, "*", "", elem.Name.LocalName, null, null, elem.ToString()));
                         break;
                 }
             }
@@ -182,7 +191,24 @@ namespace disfr.Doc
             var rid = (string)tag.Element("Anchor") ?? "";
             var name = (string)tag.Element("Type") ?? "Tag";
 
-            return new InlineTag(tagtype, id, rid, name, null, null, null);
+            if (tagtype == Tag.E && id == "*")
+            {
+                // Find the matching Start tag and use its TagID.
+                var tid = (string)tag.ElementsBeforeSelf()
+                    .LastOrDefault(e => (string)e.Element("Anchor") == rid && (string)e.Element("Type") == "Start" && e.Name.LocalName == "Tag")
+                    ?.Element("TagID");
+                if (tid != null) id = tid;
+            }
+
+            string display = null;
+            switch (tagtype)
+            {
+                case Tag.B: display = "[" + id + ">"; break;
+                case Tag.E: display = "<" + id + "]"; break;
+                case Tag.S: display = "[" + id + "]"; break;
+            }
+
+            return new InlineTag(tagtype, id, rid, name, null, display, null);
         }
     }
 
