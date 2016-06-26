@@ -86,6 +86,8 @@ namespace disfr.Doc
                 reader.Dispose();
                 reader = null;
 
+                var pool = new StringPool();
+
                 reader = ExecReader(connection, @"SELECT translation_memory_id, id, source_segment, target_segment, creation_date, creation_user, change_date, change_user FROM translation_units");
                 while (reader.Read())
                 {
@@ -100,10 +102,10 @@ namespace disfr.Doc
                     };
                     var props = new Dictionary<string, string>()
                     {
-                        { "creation_date", reader.GetString(4) },
-                        { "creation_user", reader.GetString(5) },
-                        { "change_date", reader.GetString(6) },
-                        { "change_user", reader.GetString(7) },
+                        { "creation_date", pool.Intern(reader.GetString(4)) },
+                        { "creation_user", pool.Intern(reader.GetString(5)) },
+                        { "change_date", pool.Intern(reader.GetString(6)) },
+                        { "change_user", pool.Intern(reader.GetString(7)) },
                     };
                     pair.Props = props;
                     assets[tmid - tm_min]._TransPairs.Add(pair);
