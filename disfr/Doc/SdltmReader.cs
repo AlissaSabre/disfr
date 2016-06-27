@@ -87,6 +87,7 @@ namespace disfr.Doc
                 reader = null;
 
                 var pool = new StringPool();
+                var matcher = new TagMatcher();
 
                 reader = ExecReader(connection, @"SELECT translation_memory_id, id, source_segment, target_segment, creation_date, creation_user, change_date, change_user FROM translation_units");
                 while (reader.Read())
@@ -100,6 +101,7 @@ namespace disfr.Doc
                         SourceLang = assets[tmid - tm_min].SourceLang,
                         TargetLang = assets[tmid - tm_min].TargetLang,
                     };
+                    matcher.MatchTags(pair.Source, pair.Target);
                     var props = new Dictionary<string, string>()
                     {
                         { "creation_date", pool.Intern(reader.GetString(4)) },
@@ -192,6 +194,7 @@ namespace disfr.Doc
             var id = (string)tag.Element("TagID") ?? "*";
             var rid = (string)tag.Element("Anchor") ?? "";
             var name = (string)tag.Element("Type") ?? "Tag";
+            int number = (int?)tag.Element("AlignmentAnchor") ?? int.MinValue;
 
             if (tagtype == Tag.E && id == "*")
             {
@@ -205,12 +208,36 @@ namespace disfr.Doc
             string display = null;
             switch (tagtype)
             {
-                case Tag.B: display = "[" + id + ">"; break;
-                case Tag.E: display = "<" + id + "]"; break;
-                case Tag.S: display = "[" + id + "]"; break;
+                case Tag.B: display = id + ">"; break;
+                case Tag.E: display = "<" + id; break;
+                case Tag.S: display = id; break;
             }
 
-            return new InlineTag(tagtype, id, rid, name, null, display, null);
+            return new InlineTag(tagtype, id, rid, name, null, display, null) { Number = number };
+        }
+
+        protected class TagMatcher
+        {
+            private readonly Dictionary<int, int> pool = new Dictionary<int, int>();
+
+            public void MatchTags(InlineString source, InlineString target)
+            {
+                pool.Clear();
+
+                int n = 0;
+                foreach (var tag in source.OfType<InlineTag>())
+                {
+                    var number = tag.Number;
+                    pool[number] = tag.Number = ++n;
+                }
+
+                foreach (var tag in target.OfType<InlineTag>())
+                {
+                    int m;
+                    pool.TryGetValue(tag.Number, out m);
+                    tag.Number = m;
+                }
+            }
         }
     }
 
