@@ -101,7 +101,7 @@ namespace disfr.Doc
                         SourceLang = assets[tmid - tm_min].SourceLang,
                         TargetLang = assets[tmid - tm_min].TargetLang,
                     };
-                    matcher.MatchTags(pair.Source, pair.Target);
+                    matcher.MatchTags(pair.Source, pair.Target, reader.GetString(2), reader.GetString(3));
                     var props = new Dictionary<string, string>()
                     {
                         { "creation_date", pool.Intern(reader.GetString(4)) },
@@ -194,15 +194,16 @@ namespace disfr.Doc
             var id = (string)tag.Element("TagID") ?? "*";
             var rid = (string)tag.Element("Anchor") ?? "";
             var name = (string)tag.Element("Type") ?? "Tag";
-            int number = (int?)tag.Element("AlignmentAnchor") ?? int.MinValue;
 
-            if (tagtype == Tag.E && id == "*")
+            if (tagtype == Tag.E)
             {
                 // Find the matching Start tag and use its TagID.
-                var tid = (string)tag.ElementsBeforeSelf()
-                    .LastOrDefault(e => (string)e.Element("Anchor") == rid && (string)e.Element("Type") == "Start" && e.Name.LocalName == "Tag")
-                    ?.Element("TagID");
-                if (tid != null) id = tid;
+                var start = tag.ElementsBeforeSelf()
+                    .LastOrDefault(e => (string)e.Element("Anchor") == rid && (string)e.Element("Type") == "Start" && e.Name.LocalName == "Tag");
+                if (start != null)
+                {
+                    if (id == "*") id = (string)start.Element("TagID") ?? "*";
+                }
             }
 
             string display = null;
@@ -213,29 +214,59 @@ namespace disfr.Doc
                 case Tag.S: display = id; break;
             }
 
-            return new InlineTag(tagtype, id, rid, name, null, display, null) { Number = number };
+            return new InlineTag(tagtype, id, rid, name, null, display, null);
         }
 
+        // This one got too much complicated and mixed-up,
+        // as well as it is like repeating a same thing multiple times unnecessarily.
+        // Definitely needs redesigning...
         protected class TagMatcher
         {
-            private readonly Dictionary<int, int> pool = new Dictionary<int, int>();
+            public static readonly XName ELEM = "Elements";
+            public static readonly XName TAG = "Tag";
+            public static readonly XName ID = "TagID";
+            public static readonly XName TYPE = "Type";
+            public static readonly XName ANCH = "Anchor";
+            public static readonly XName ALIGN = "AlignmentAnchor";
 
-            public void MatchTags(InlineString source, InlineString target)
+            public void MatchTags(InlineString source, InlineString target, string source_xml, string target_xml)
             {
-                pool.Clear();
+                var st = source.OfType<InlineTag>().ToList();
+                var tt = target.OfType<InlineTag>().ToList();
 
-                int n = 0;
-                foreach (var tag in source.OfType<InlineTag>())
+                var sx = XElement.Parse(source_xml).Elements(ELEM).Elements(TAG).ToList();
+                var tx = XElement.Parse(target_xml).Elements(ELEM).Elements(TAG).ToList();
+
+                for (int i = 0; i < st.Count; i++)
                 {
-                    var number = tag.Number;
-                    pool[number] = tag.Number = ++n;
+                    st[i].Number = i + 1;
                 }
 
-                foreach (var tag in target.OfType<InlineTag>())
+                for (int j = 0; j < tt.Count; j++)
                 {
-                    int m;
-                    pool.TryGetValue(tag.Number, out m);
-                    tag.Number = m;
+                    int? index;
+                    if (tt[j].TagType == Tag.E)
+                    {
+                        var anchor_in_tx = (string)tx[j].Element(ANCH);
+                        var jj = Enumerable.Range(0, j).Select(x => (int?)x).LastOrDefault(x =>
+                            (string)tx[(int)x].Element(ANCH) == anchor_in_tx && (string)tx[(int)x].Element(TYPE) == "Start");
+                        var alignment = (jj == null) ? null : (string)tx[(int)jj].Element(ALIGN);
+                        var id = (jj == null) ? null : (string)tx[(int)jj].Element(ID);
+                        var ii = Enumerable.Range(0, sx.Count).Select(x => (int?)x).FirstOrDefault(x =>
+                            (string)sx[(int)x].Element(ID) == id && (string)sx[(int)x].Element(ALIGN) == alignment && (string)sx[(int)x].Element(TYPE) == "Start");
+                        var anchor_in_sx = (ii == null) ? null : (string)sx[(int)ii].Element(ANCH);
+                        index = Enumerable.Range(0, sx.Count).Select(x => (int?)x).FirstOrDefault(x =>
+                            (string)sx[(int)x].Element(ANCH) == anchor_in_sx && (string)sx[(int)x].Element(TYPE) == "End");
+                    }
+                    else
+                    {
+                        var type = (string)tx[j].Element(TYPE);
+                        var id = (string)tx[j].Element(ID);
+                        var alignment = (string)tx[j].Element(ALIGN);
+                        index = Enumerable.Range(0, sx.Count).Select(x => (int?)x).FirstOrDefault(x =>
+                            (string)sx[(int)x].Element(ID) == id && (string)sx[(int)x].Element(ALIGN) == alignment && (string)sx[(int)x].Element(TYPE) == type);
+                    }
+                    if (index != null) tt[j].Number = st[(int)index].Number;
                 }
             }
         }
