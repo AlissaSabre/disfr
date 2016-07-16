@@ -128,7 +128,7 @@ namespace disfr.Doc
 
             if (ReadersInPriority == null)
             {
-                ReadersInPriority = Readers.OrderBy(r => -r.Priority).ToArray();
+                ReadersInPriority = Readers.Where(r => r.Priority > 0).OrderBy(r => -r.Priority).ToArray();
             }
             foreach (var reader in ReadersInPriority)
             {
