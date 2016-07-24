@@ -18,22 +18,24 @@ It reads the following file formats, which are more or less based on XLIFF stand
 * Standard XLIFF 1.1 and 1.2 files.
 * Zipped XLIFF 1.1 and 1.2 files.
 * SDL Idiom WorldServer translation kit and return packages.
-* SDL Trados Studio files.  (in progress)
-* Kilgray memoQ bilingual files.  (in progress)
+* SDL Trados Studio files.
+* Kilgray memoQ bilingual files.
 
 It also reads the following file formats, which are not based on XLIFF:
-* TMX files (raw/zipped, in progress)
-* so-called CSV (tab-separated UTF-8 only; in progress)
+* TMX files (raw; zipped TMX in progress.)
+* SDL Trados Studio Translation Memories (sdltm.)
+* so-called CSV (tab-separated UTF-8 only; in progress.)
 
 It may be capable of reading the following file formats in the future:
 * Standard XLIFF 2.0 and packages containing it.
 * .po files for GNU gettext.
 * .string files for iOS Apps.
 
-It can also write contents in the following file formats:
+It can also write contents of a read file into the following file formats:
 * TMX file.
 * Microsoft Excel (.xlsx) file.
 
-It may be capable of _writing_ the contents out into the following file formats in the future:
+It may be capable of _writing_ the contents into the following file formats in the future:
 * so-called CSV.
-* Office OpenXML WordProcessing document (aka .docx).
+* Office OpenXML WordProcessing document (aka .docx) as a so-called bilingual table.
+* HTML bilingual table.
