@@ -37,7 +37,10 @@
 
       <Directory Id='ProgramFilesFolder'>
         <Directory Id='Alissa' Name='Alissa'>
-          <Directory Id='INSTALLDIR' Name='disfr' />
+          <Directory Id='INSTALLDIR' Name='disfr'>
+	    <Directory Id='INSTALLDIR_X86' Name='x86' />
+	    <Directory Id='INSTALLDIR_X64' Name='x64' />
+	  </Directory>
         </Directory>
       </Directory>
 
@@ -58,6 +61,9 @@
       <ComponentRef Id="ExcelApi.dll" />
       <ComponentRef Id="VBIDEApi.dll" />
       <ComponentRef Id="WpfColorFontDialog.dll" />
+      <ComponentRef Id="System.Data.SQLite.dll" />
+      <ComponentRef Id="x86.SQLite.Interop.dll" />
+      <ComponentRef Id="x64.SQLite.Interop.dll" />
       <ComponentRef Id="table.xslt" />
       <ComponentRef Id="xmlss.xslt" />
       <ComponentRef Id="Readme.htm" />
@@ -104,6 +110,18 @@
     </Component>
 
     <!-- Component Id='Ionic.Zip.dll' Directory='INSTALLDIR' Guid='{5BEFC045-3118-4441-B06D-B9C1B47B93C0}' -->
+
+    <Component Id="System.Data.SQLite.dll" Directory='INSTALLDIR' Guid='{A6792548-D48E-4EC1-830A-2C1E2F119DD3}' >
+      <File Source="System.Data.SQLite.dll" KeyPath='yes' />
+    </Component>
+
+    <Component Id="x86.SQLite.Interop.dll" Directory='INSTALLDIR_X86' Guid='{34EAC1D2-D140-4C7A-96CD-72115A47E899}'>
+      <File Id="x86.SQLite.Interop.dll" Source="x86\SQLite.Interop.dll" KeyPath='yes' />
+    </Component>
+
+    <Component Id="x64.SQLite.Interop.dll" Directory='INSTALLDIR_X64' Guid='{8CF347E2-4694-4015-955E-8F8458C32AF1}'>
+      <File Id="x64.SQLite.Interop.dll" Source="x64\SQLite.Interop.dll" KeyPath='yes' />
+    </Component>
 
     <Component Id='table.xslt' Directory='INSTALLDIR' Guid='{A3920AFF-494C-4D64-B10E-6AE4719D837A}'>
       <File Source='table.xslt' KeyPath='yes' />
