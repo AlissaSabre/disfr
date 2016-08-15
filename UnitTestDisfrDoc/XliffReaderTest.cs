@@ -1,17 +1,22 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using disfr.Doc;
 
-namespace UnitTestDisfr
+namespace UnitTestDisfrDoc
 {
     [TestClass]
     public class XliffReaderTest
     {
+        private const string IDIR = @"..\..\Samples";
+        private const string ODIR = @"..\..\Expected";
+
         [TestMethod]
-        public void TestMethod1()
+        public void Read_Basic_Xliff1()
         {
-            var assets = new XliffReader().Read(@"..\..\Samples\Xliff1.xliff", -1);
+            var assets = new XliffReader().Read(Path.Combine(IDIR, "Xliff1.xliff"), -1);
 
             assets.Count().Is(1);
 
@@ -48,9 +53,9 @@ namespace UnitTestDisfr
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void Read_Basic_Xliff2()
         {
-            var assets = new XliffReader().Read(@"..\..\Samples\Xliff2.xliff", -1);
+            var assets = new XliffReader().Read(Path.Combine(IDIR, "Xliff2.xliff"), -1);
 
             assets.Count().Is(1);
 
@@ -61,7 +66,53 @@ namespace UnitTestDisfr
             asset0.TargetLang.Is("fr-FR");
             asset0.TransPairs.Count().Is(7);
             asset0.AltPairs.Count().Is(2);
-
         }
+
+        [TestMethod]
+        public void Read_Comprehensive_Xliff1()
+        {
+            Comprehensive(@"Xliff1.xliff");
+        }
+
+        [TestMethod]
+        public void Read_Comprehensive_Xliff2()
+        {
+            Comprehensive(@"Xliff2.xliff");
+        }
+
+        [TestMethod]
+        public void Read_Comprehensive_ConfiguringSpellingChecker()
+        {
+            Comprehensive(@"Configuring_Spelling_Checker.doc.sdlxliff");
+        }
+
+        [TestMethod]
+        public void Read_Comprehensive_LanguageSupport()
+        {
+            Comprehensive(@"Language_Support.doc.sdlxliff");
+        }
+
+        [TestMethod]
+        public void Read_Comprehensive_NewFeatures()
+        {
+            Comprehensive(@"New_features.ppt.sdlxliff");
+        }
+
+        [TestMethod]
+        public void Read_Comprehensive_git()
+        {
+            Comprehensive(@"git.html_jpn.mqxlz");
+        }
+
+        private static void Comprehensive(string filename)
+        {
+            var assets = new XliffReader().Read(Path.Combine(IDIR, filename), -1);
+            var got = new PairVisualizer().Visualize(assets);
+
+            var dumpname = Path.GetFileNameWithoutExtension(filename) + ".dump";
+            var expected = File.ReadAllText(Path.Combine(ODIR, dumpname));
+
+            got.Is(expected);
+        } 
     }
 }

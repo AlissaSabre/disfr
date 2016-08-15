@@ -5,7 +5,7 @@ using disfr.Doc;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UnitTestDisfr
+namespace UnitTestDisfrDoc
 {
     [TestClass]
     public class ReaderManagerTest

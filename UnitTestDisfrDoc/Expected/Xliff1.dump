@@ -1,0 +1,7 @@
+<Package>
+<Asset package="..\..\Samples\Xliff1.xliff" original="Graphic Example.psd" source-lang="en-US" target-lang="ja-JP">
+<Pair><Serial>1</Serial><Id>1</Id><Source>Quetzal</Source><Target>Quetzal</Target><SourceLang>en-US</SourceLang><TargetLang>ja-JP</TargetLang><Prop name="maxbytes">14</Prop></Pair>
+<Pair><Serial>2</Serial><Id>3</Id><Source>An application to manipulate and process XLIFF documents</Source><Target>XLIFF 文書を編集し処理するアプリケーション</Target><SourceLang>en-US</SourceLang><TargetLang>ja-JP</TargetLang><Note>I believe "編集し処理する" is better than "編集および処理する".</Note><Prop name="maxbytes">114</Prop></Pair>
+<Pair><Serial>3</Serial><Id>4</Id><Source>XLIFF Data Manager</Source><Target>XLIFF データ・マネージャ</Target><SourceLang>en-US</SourceLang><TargetLang>ja-JP</TargetLang><Prop name="maxbytes">36</Prop></Pair>
+</Asset>
+</Package>
