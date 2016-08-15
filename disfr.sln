@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr", "disfr\disfr.csproj", "{1A3654B0-0F44-4CED-A7A2-E7835FFDEA49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestDisfr", "UnitTestDisfr\UnitTestDisfr.csproj", "{FAAC6E56-E922-4400-B97D-52F6066BEFBA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestDisfrUI", "UnitTestDisfr\UnitTestDisfrUI.csproj", "{FAAC6E56-E922-4400-B97D-52F6066BEFBA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestTemporary", "UnitTestTemporary\UnitTestTemporary.csproj", "{2BFC797C-960E-45CA-BEF6-744D22A1771D}"
 EndProject
@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestDisfrDoc", "UnitTestDisfrDoc\UnitTestDisfrDoc.csproj", "{7C1ED742-F14C-448B-9B81-D49B0F11692A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{2BFC797C-960E-45CA-BEF6-744D22A1771D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BFC797C-960E-45CA-BEF6-744D22A1771D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BFC797C-960E-45CA-BEF6-744D22A1771D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C1ED742-F14C-448B-9B81-D49B0F11692A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C1ED742-F14C-448B-9B81-D49B0F11692A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C1ED742-F14C-448B-9B81-D49B0F11692A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C1ED742-F14C-448B-9B81-D49B0F11692A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
