@@ -32,6 +32,8 @@ namespace disfr.Doc
 
         private static readonly XName XML_LANG = XNamespace.Xml + "lang";
 
+        private static readonly XName LANG = "lang";
+
         public IEnumerable<IAsset> Read(Stream stream, string package)
         {
             XElement tmx;
@@ -53,16 +55,8 @@ namespace disfr.Doc
             var tus = tmx.Element(X + "body").Elements(X + "tu").ToList();
             var pool = new StringPool();
 
-            string[] langs;
-            {
-                var slang = (string)tmx.Element(X + "header").Attribute("srclang");
-
-                var tlang_variants = tus.Elements(X + "tuv").Attributes(XML_LANG).Select(a => (string)a).Distinct().Where(t => !Covers(slang, t)).ToList();
-                var tlangs = tlang_variants.Where(t => !tlang_variants.Any(v => v != t && Covers(v, t))).ToList();
-                if (tlangs.Count == 0) return null;
-
-                langs = new[] { slang }.Concat(tlangs).ToArray();
-            }
+            string[] langs = DetectLanguages(tmx);
+            if (langs == null) return null;
 
             var thread_count = Environment.ProcessorCount - 1;
             if (thread_count * MINIMUM_ENTRIES_PER_THREAD > tus.Count)
@@ -115,7 +109,7 @@ namespace disfr.Doc
                         {
                             for (int i = 0; i < langs.Length; i++)
                             {
-                                if (Covers(langs[i], (string)tuv.Attribute(XML_LANG)))
+                                if (Covers(langs[i], Lang(tuv)))
                                 {
                                     segs[i] = tuv.Element(X + "seg");
                                     CollectProps(props[i], tuv);
@@ -129,7 +123,7 @@ namespace disfr.Doc
                         {
                             var id = (string)tu.Attribute("tuid") ?? "";
                             var source = NumberTags(tag_pool, GetInline(segs[0], X));
-                            var source_lang = (string)segs[0].Attribute(XML_LANG) ?? langs[0];
+                            var source_lang = Lang(segs[0].Parent);
 
                             for (int i = 1; i < segs.Length; i++)
                             {
@@ -142,7 +136,7 @@ namespace disfr.Doc
                                         Source = source,
                                         Target = MatchTags(tag_pool, GetInline(segs[i], X)),
                                         SourceLang = source_lang,
-                                        TargetLang = (string)segs[i].Attribute(XML_LANG) ?? langs[i]
+                                        TargetLang = Lang(segs[i].Parent),
                                     };
                                     pair.SetProps(tu_props.Concat(props[0]).Concat(props[i]), pool);
                                     pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
@@ -184,34 +178,88 @@ namespace disfr.Doc
         }
 
         /// <summary>
+        /// Detect the source language and target languages. 
+        /// </summary>
+        /// <param name="tmx">The &lt;tmx&gt; element.</param>
+        /// <returns>An array of language codes, whose element at [0] is the source language.</returns>
+        private string[] DetectLanguages(XElement tmx)
+        {
+            var X = tmx.Name.Namespace;
+
+            var slang = (string)tmx.Element(X + "header").Attribute("srclang");
+
+            var tlang_variants = tmx.Element(X + "body").Elements(X + "tu").Elements(X + "tuv").Select(Lang).Distinct().Where(t => !Covers(slang, t)).ToList();
+            var tlangs = tlang_variants.Where(t => !tlang_variants.Any(v => v != t && Covers(v, t))).ToList();
+            if (tlangs.Count == 0) return null;
+
+            if (string.Equals(slang, "*all*", StringComparison.OrdinalIgnoreCase))
+            {
+                if (tlangs.Count <= 1) return null;
+
+                var freq = new int[tlangs.Count];
+                for (int i = 0; i < freq.Length; i++)
+                {
+                    var lang = tlangs[i];
+                    freq[i] = tmx.Element(X + "body").Elements(X + "tu").Count(tu => tu.Elements(X + "tuv").Select(Lang).Any(n => Covers(lang, n)));
+                }
+
+                var max = freq.Max();
+                var candidates = freq.Select((f, i) => (f == max) ? tlangs[i] : null).Where(s => s != null).ToList();
+                if (candidates.Count > 1)
+                {
+                    var en = candidates.Where(n => Covers("en", n)).ToList();
+                    if (en.Count > 0) candidates = en;
+                }
+
+                slang = candidates[0];
+                tlangs.Remove(slang);
+            }
+
+            tlangs.Insert(0, slang);
+            return tlangs.ToArray();
+        }
+
+        /// <summary>
         /// Checks a language code covers another.
         /// </summary>
-        /// <param name="x">A language code.</param>
-        /// <param name="y">A language code.</param>
+        /// <param name="parent">A language code that may cover <paramref name="code"/>.</param>
+        /// <param name="code">A language code that may be covered by <paramref name="parent"/>.</param>
         /// <returns>
-        /// True if <paramref name="x"/> covers <paramref name="y"/>.  False otherwise.
+        /// True if <paramref name="parent"/> covers <paramref name="code"/>.  False otherwise.
+        /// </returns>
+        /// <remarks>
         /// A langauge code covers itself.
         /// A langauge code covers another langauge code if all subtags are included in the other.
         /// Cases are insignificant (and the casing is via so-called ordinal manner.
-        /// </returns>
+        /// </remarks>
         /// <example>
         /// "en" covers "en" itself, "en-GB", "en-US", and "en-US-VA", but it doesn't cover "fr".
         /// "en-US" covers "en-US-VA" but doesn't cover "en" or "en-GB".
         /// </example>
-        private static bool Covers(string x, string y)
+        private static bool Covers(string parent, string code)
         {
-            if (x.Length == y.Length)
+            if (parent.Length == code.Length)
             {
-                return StringComparer.OrdinalIgnoreCase.Equals(x, y);
+                return StringComparer.OrdinalIgnoreCase.Equals(parent, code);
             }
-            else if (x.Length < y.Length)
+            else if (parent.Length < code.Length)
             {
-                return y[x.Length] == '-' && StringComparer.OrdinalIgnoreCase.Equals(x, y.Substring(0, x.Length));
+                return code[parent.Length] == '-' && StringComparer.OrdinalIgnoreCase.Equals(parent, code.Substring(0, parent.Length));
             }
             else
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Get the language code of a tuv element.
+        /// </summary>
+        /// <param name="tuv">tuv element.</param>
+        /// <returns>Language code as specified by xml:lang attribute or lang.</returns>
+        private static string Lang(XElement tuv)
+        {
+            return (string)tuv.Attribute(XML_LANG) ?? (string)tuv.Attribute(LANG);
         }
 
         private static InlineString GetInline(XElement elem, XNamespace X)
@@ -377,7 +425,17 @@ namespace disfr.Doc
 
         private static readonly Dictionary<string, string> EmptyProps = new Dictionary<string, string>();
 
-        public IReadOnlyDictionary<string, string> Props { get { return _Props ?? EmptyProps; } }
+        public string this[string key]
+        {
+            get
+            {
+                string value = null;
+                _Props?.TryGetValue(key, out value);
+                return value;
+            }
+        }
+
+        public IEnumerable<string> PropKeys { get { return _Props == null ? Enumerable.Empty<string>() : _Props.Keys; } }
 
         public void SetProps(IEnumerable<KeyValuePair<string, string>> props, StringPool pool = null)
         {

@@ -100,16 +100,12 @@ namespace disfr.Doc
                         Target = GetInlineString(reader.GetString(3)),
                         SourceLang = assets[tmid - tm_min].SourceLang,
                         TargetLang = assets[tmid - tm_min].TargetLang,
+                        _CreationDate = pool.Intern(reader.GetString(4)),
+                        _CreationUser = pool.Intern(reader.GetString(5)),
+                        _ChangeDate = pool.Intern(reader.GetString(6)),
+                        _ChangeUser = pool.Intern(reader.GetString(7)),
                     };
                     matcher.MatchTags(pair.Source, pair.Target, reader.GetString(2), reader.GetString(3));
-                    var props = new Dictionary<string, string>()
-                    {
-                        { "creation_date", pool.Intern(reader.GetString(4)) },
-                        { "creation_user", pool.Intern(reader.GetString(5)) },
-                        { "change_date", pool.Intern(reader.GetString(6)) },
-                        { "change_user", pool.Intern(reader.GetString(7)) },
-                    };
-                    pair.Props = props;
                     assets[tmid - tm_min]._TransPairs.Add(pair);
                 }
                 reader.Close();
@@ -274,13 +270,13 @@ namespace disfr.Doc
 
     class SdltmAsset : IAsset
     {
-        public string Package { get; set; }
+        public string Package { get; internal set; }
 
-        public string Original { get; set; }
+        public string Original { get; internal set; }
 
-        public string SourceLang { get; set; }
+        public string SourceLang { get; internal set; }
 
-        public string TargetLang { get; set; }
+        public string TargetLang { get; internal set; }
 
         internal readonly List<SdltmPair> _TransPairs = new List<SdltmPair>();
 
@@ -291,20 +287,39 @@ namespace disfr.Doc
 
     class SdltmPair : ITransPair
     {
-        public int Serial { get; set; }
+        public int Serial { get; internal set; }
 
-        public string Id { get; set; }
+        public string Id { get; internal set; }
 
-        public InlineString Source { get; set; }
+        public InlineString Source { get; internal set; }
 
-        public InlineString Target { get; set; }
+        public InlineString Target { get; internal set; }
 
-        public string SourceLang { get; set; }
+        public string SourceLang { get; internal set; }
 
-        public string TargetLang { get; set; }
+        public string TargetLang { get; internal set; }
 
         public IEnumerable<string> Notes { get { return Enumerable.Empty<string>(); } }
 
-        public IReadOnlyDictionary<string, string> Props { get; set; }
+        internal string _CreationDate, _CreationUser, _ChangeDate, _ChangeUser;
+
+        public string this[string key]
+        {
+            get
+            {
+                switch (key)
+                {
+                    case "creation_date": return _CreationDate;
+                    case "creation_user": return _CreationUser;
+                    case "change_date": return _ChangeDate;
+                    case "change_user": return _ChangeUser;
+                    default: return null;
+                }
+            }
+        }
+
+        private readonly string[] _PropKeys = { "creation_date", "creation_user", "change_date", "change_user" };
+
+        public IEnumerable<string> PropKeys { get { return _PropKeys; } }
     }
 }

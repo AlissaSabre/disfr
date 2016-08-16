@@ -39,10 +39,17 @@ namespace disfr.Doc
 
         private Dictionary<string, string> _Props = null;
 
-        public IReadOnlyDictionary<string, string> Props
+        public string this[string key]
         {
-            get { return _Props ?? EmptyProps; }
+            get
+            {
+                string value = null;
+                _Props?.TryGetValue(key, out value);
+                return value;
+            }
         }
+
+        public IEnumerable<string> PropKeys { get { return _Props == null ? Enumerable.Empty<string>() : _Props.Keys; } }
 
         internal void AddProp(string key, string value)
         {

@@ -43,7 +43,7 @@ namespace UnitTestDisfrDoc
 
         private IEnumerable<string> FindProps(ITransPair pair)
         {
-            return pair.Props.Keys;
+            return pair.PropKeys;
         }
 
         private void Visualize(StringBuilder sb, IEnumerable<IAsset> package, string[] props)
@@ -99,8 +99,7 @@ namespace UnitTestDisfrDoc
             }
             foreach (var key in props)
             {
-                string prop;
-                pair.Props.TryGetValue(key, out prop);
+                var prop = pair[key];
                 if (prop != null && prop.Length > 0)
                 {
                     Print(sb, "Prop", "name", key, prop);

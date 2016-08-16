@@ -50,17 +50,9 @@ namespace disfr.UI
 
         public string TagList { get { return Renderer.TagListFromInline(TransPair.Source); } }
 
-        public string this[string key]
-        {
-            get
-            {
-                string value;
-                TransPair.Props.TryGetValue(key, out value);
-                return value;
-            }
-        }
+        public string this[string key] { get { return TransPair[key]; } }
 
-        public IEnumerable<string> Keys { get { return TransPair.Props.Keys; } }
+        public IEnumerable<string> Keys { get { return TransPair.PropKeys; } }
 
         public string FlatSource { get { return Renderer.FlatFromInline(TransPair.Source); } }
 
