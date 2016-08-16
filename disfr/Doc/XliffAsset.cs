@@ -92,7 +92,7 @@ namespace disfr.Doc
             {
                 _Properties[index] = new PropInfo(key, true);
             }
-            pair.AddProp(key, Pool.Intern(value));
+            pair?.AddProp(key, Pool.Intern(value));
         }
 
         protected virtual IEnumerable<XliffTransPair> ExtractPairs(XElement tu)

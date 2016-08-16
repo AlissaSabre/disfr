@@ -10,19 +10,24 @@ namespace disfr.Doc
     {
         private readonly Dictionary<string, int> Indexes = new Dictionary<string, int>();
 
-        public void Put(ref string[] values, string key, string value)
+        private readonly List<bool> VisibleVector = new List<bool>();
+
+        public void Put(ref string[] vector, string key, string value, bool Visible)
         {
             int index;
             if (!Indexes.TryGetValue(key, out index))
             {
                 index = Indexes[key] = Indexes.Count;
+                while (VisibleVector.Count <= index) VisibleVector.Add(false);
             }
-            var v = values;
+            if (Visible) VisibleVector[index] = true;
+
+            var v = vector;
             if (v == null || v.Length <= index)
             {
                 var u = new string[Indexes.Count]; // XXX: Or, should we allocate [Index + 1] or in-between?  
                 if (v != null) Array.Copy(v, u, v.Length);
-                v = values = u;
+                v = vector = u;
             }
             v[index] = value;
         }
@@ -35,6 +40,9 @@ namespace disfr.Doc
             return values[index];
         }
 
-        public string[] Keys { get { return Indexes.OrderBy(p => p.Value).Select(p => p.Key).ToArray(); } }
+        public IEnumerable<PropInfo> Infos
+        {
+            get { return Indexes.OrderBy(p => p.Value).Select(p => new PropInfo(p.Key, VisibleVector[p.Value])); }
+        }
     }
 }
