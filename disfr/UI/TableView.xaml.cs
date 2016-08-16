@@ -188,9 +188,9 @@ namespace disfr.UI
             TagList.Visibility = Visibility.Collapsed;
 
             // Create columns for additional properties.
-            // They are initially hidden but users can view them.
+            // They are initially hidden by default but users can view them.
             // ColumnInUse attached property is set to true for the purpose. 
-            foreach (var key in table.AllRows.Select(r => r.AdditionalColumns).Distinct().SelectMany(cols => cols).Select(col => col.Key).Distinct())
+            foreach (var key in table.AdditionalProps.Select(col => col.Key))
             {
                 var column = new DataGridTextColumn()
                 {

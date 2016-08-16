@@ -52,8 +52,6 @@ namespace disfr.UI
 
         public string this[string key] { get { return TransPair[key]; } }
 
-        public List<AdditionalColumnInfo> AdditionalColumns { get { return AssetData.AdditionalColumns; } }
-
         public string FlatSource { get { return Renderer.FlatFromInline(TransPair.Source); } }
 
         public string FlatTarget { get { return Renderer.FlatFromInline(TransPair.Target); } }
@@ -105,7 +103,19 @@ namespace disfr.UI
         public string SourceLang { get; set; }
 
         public string TargetLang { get; set; }
-
-        public List<AdditionalColumnInfo> AdditionalColumns { get; set; }
     }
+
+    public class AdditionalPropertiesInfo
+    {
+        public readonly string Key;
+
+        public readonly bool Visible;
+
+        public AdditionalPropertiesInfo(string key, bool visible)
+        {
+            Key = key;
+            Visible = visible;
+        }
+    }
+
 }
