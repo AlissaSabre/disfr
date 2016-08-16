@@ -65,18 +65,23 @@
     <None Include="Expected\Configuring_Spelling_Checker.doc.dump" />
     <None Include="Expected\git.html_jpn.dump" />
     <None Include="Expected\Language_Support.doc.dump" />
+    <None Include="Expected\my_memory.dump" />
     <None Include="Expected\New_features.ppt.dump" />
     <None Include="Expected\Readme.md" />
     <None Include="Expected\Xliff1.dump" />
     <None Include="Expected\Xliff2.dump" />
+    <None Include="Expected\XuanZang.dump" />
     <None Include="packages.config" />
     <None Include="Samples\Configuring_Spelling_Checker.doc.sdlxliff" />
     <None Include="Samples\git.html_jpn.mqxlz" />
     <None Include="Samples\Language_Support.doc.sdlxliff" />
+    <None Include="Samples\my_memory.doc" />
+    <None Include="Samples\my_memory.tmx" />
     <None Include="Samples\New_features.ppt.sdlxliff" />
     <None Include="Samples\Readme.md" />
     <None Include="Samples\Xliff1.xliff" />
     <None Include="Samples\Xliff2.xliff" />
+    <None Include="Samples\XuanZang.tmx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\disfr\disfr.csproj">
