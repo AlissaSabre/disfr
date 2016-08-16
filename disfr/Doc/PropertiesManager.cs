@@ -10,18 +10,18 @@ namespace disfr.Doc
     {
         private readonly Dictionary<string, int> Indexes = new Dictionary<string, int>();
 
-        private readonly List<bool> VisibleVector = new List<bool>();
+        private readonly HashSet<string> Visibles = new HashSet<string>();
 
-        public void Put(ref string[] vector, string key, string value, bool Visible)
+        public int GetIndex(string key)
         {
             int index;
-            if (!Indexes.TryGetValue(key, out index))
-            {
-                index = Indexes[key] = Indexes.Count;
-                while (VisibleVector.Count <= index) VisibleVector.Add(false);
-            }
-            if (Visible) VisibleVector[index] = true;
+            if (Indexes.TryGetValue(key, out index)) return index;
+            return Indexes[key] = Indexes.Count;
+        }
 
+        public void Put(ref string[] vector, string key, string value)
+        {
+            var index = GetIndex(key);
             var v = vector;
             if (v == null || v.Length <= index)
             {
@@ -34,15 +34,21 @@ namespace disfr.Doc
 
         public string Get(string[] values, string key)
         {
+            if (values == null) return null;
             int index;
             if (!Indexes.TryGetValue(key, out index)) return null;
             if (index >= values.Length) return null;
             return values[index];
         }
 
+        public void MarkVisible(string key)
+        {
+            Visibles.Add(key);
+        }
+
         public IEnumerable<PropInfo> Infos
         {
-            get { return Indexes.OrderBy(p => p.Value).Select(p => new PropInfo(p.Key, VisibleVector[p.Value])); }
+            get { return Indexes.OrderBy(p => p.Value).Select(p => new PropInfo(p.Key, Visibles.Contains(p.Key))); }
         }
     }
 }

@@ -25,6 +25,9 @@ namespace disfr.Doc
 
             // Parse skeleton if this file has one and is available.
             ParseSkeleton(file, zip_entry);
+
+            // segment status column is made initially visible by popular demand.
+            PropMan.MarkVisible("status");
         }
 
         private const string DOC_MRD = "doc.mrd";
@@ -189,7 +192,7 @@ namespace disfr.Doc
         private XliffTransPair InterSegmentPair(string text)
         {
             var inline = new InlineString() { text };
-            return new XliffTransPair()
+            return new XliffTransPair(PropMan)
             {
                 Serial = -1,
                 Id = "*",

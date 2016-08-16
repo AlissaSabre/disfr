@@ -9,6 +9,8 @@ namespace disfr.Doc
 {
     class XliffTransPair : ITransPair
     {
+        internal XliffTransPair(PropertiesManager manager) { PropMan = manager; }
+
         public int Serial { get; internal set; }
 
         public string Id { get; internal set; }
@@ -34,23 +36,16 @@ namespace disfr.Doc
             _Notes.UnionWith(valid_notes);
         }
 
-        private Dictionary<string, string> _Props = null;
+        internal PropertiesManager PropMan;
+
+        internal string[] _Props = null;
 
         public string this[string key]
         {
             get
             {
-                string value = null;
-                _Props?.TryGetValue(key, out value);
-                return value;
+                return PropMan.Get(_Props, key);
             }
-        }
-
-        internal void AddProp(string key, string value)
-        {
-            if (value == null) return;
-            if (_Props == null) _Props = new Dictionary<string, string>();
-            _Props[key] = value;
         }
     }
 }

@@ -190,13 +190,14 @@ namespace disfr.UI
             // Create columns for additional properties.
             // They are initially hidden by default but users can view them.
             // ColumnInUse attached property is set to true for the purpose. 
-            foreach (var key in table.AdditionalProps.Select(col => col.Key))
+            foreach (var props in table.AdditionalProps)
             {
+                var key = props.Key;
                 var column = new DataGridTextColumn()
                 {
                     Header = key.Replace("_", " "), // XXX: No, we should not do this!
                     Binding = new Binding("[" + key + "]"),
-                    Visibility = Visibility.Collapsed,
+                    Visibility = props.Visible ? Visibility.Visible : Visibility.Collapsed,
                 };
                 column.SetValue(ColumnInUseProperty, true);
                 dataGrid.Columns.Add(column);

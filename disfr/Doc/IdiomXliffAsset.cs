@@ -36,7 +36,7 @@ namespace disfr.Doc
         private XliffTransPair ExtractMsegPair(XElement mseg)
         {
             var markup = new InlineString() { mseg.Value };
-            return new XliffTransPair()
+            return new XliffTransPair(PropMan)
             {
                 Serial = -1,
                 Id = (string)mseg.Attribute("sequence"),

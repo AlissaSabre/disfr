@@ -61,11 +61,9 @@ namespace disfr.Doc
 
         public IEnumerable<ITransPair> AltPairs { get { Materialize(); return _AltPairs; } }
 
-        protected readonly List<PropInfo> _Properties = new List<PropInfo>();
+        protected readonly PropertiesManager PropMan = new PropertiesManager(); 
 
-        protected readonly Dictionary<string, int> _PropertiesIndex = new Dictionary<string, int>();
-
-        public IList<PropInfo> Properties { get { Materialize(); return _Properties.AsReadOnly(); } }
+        public IList<PropInfo> Properties { get { Materialize(); return PropMan.Infos.ToList().AsReadOnly(); } }
 
         protected bool Materialized = false;
 
@@ -76,23 +74,9 @@ namespace disfr.Doc
             _AltPairs = _AltPairs.ToList();
         }
 
-        protected virtual void AddProp(XliffTransPair pair, string key, string value, bool visible = false)
+        protected virtual void AddProp(XliffTransPair pair, string key, string value)
         {
-            int index;
-            if (!_PropertiesIndex.TryGetValue(key, out index))
-            {
-                index = _PropertiesIndex[key] = _Properties.Count;
-                _Properties.Add(new PropInfo(key, visible));
-            }
-            else
-            {
-                key = _Properties[index].Key;
-            }
-            if (visible && !_Properties[index].Visible)
-            {
-                _Properties[index] = new PropInfo(key, true);
-            }
-            pair?.AddProp(key, Pool.Intern(value));
+            PropMan.Put(ref pair._Props, key, value);
         }
 
         protected virtual IEnumerable<XliffTransPair> ExtractPairs(XElement tu)
@@ -155,7 +139,7 @@ namespace disfr.Doc
             var selem = src as XElement;
             var telem = tgt as XElement;
 
-            var pair = new XliffTransPair()
+            var pair = new XliffTransPair(PropMan)
             {
                 Serial = (selem != null) || (telem != null) ? 1 : -1,
                 Id = (string)selem?.Attribute("mid") ?? (string)telem?.Attribute("mid") ?? "*",
@@ -174,7 +158,7 @@ namespace disfr.Doc
         {
             var source = tu.Element(X + "source");
             var target = tu.Element(X + "target");
-            var pair = new XliffTransPair()
+            var pair = new XliffTransPair(PropMan)
             {
                 Serial = ((string)tu.Attribute("translate") == "no") ? -1 : 1,
                 Id = (string)tu.Attribute("id"),
@@ -206,7 +190,7 @@ namespace disfr.Doc
                 alt.Parent.Element(X + "seg-source") ??
                 alt.Parent.Element(X + "source");
             var target = alt.Element(X + "target");
-            var pair = new XliffTransPair()
+            var pair = new XliffTransPair(PropMan)
             {
                 Id = (string)alt.Parent.Attribute("id"),
                 Source = GetInline(source),
