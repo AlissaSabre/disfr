@@ -10,46 +10,27 @@ namespace UnitTestDisfrDoc
 {
     public class PairVisualizer
     {
-        public string Visualize(IEnumerable<IAsset> package)
+        public string Visualize(IEnumerable<IAsset> assets)
         {
             var sb = new StringBuilder();
-            Visualize(sb, package, FindProps(package).OrderBy(s => s, StringComparer.Ordinal).ToArray());
+            Visualize(sb, assets, FindProps(assets).OrderBy(s => s, StringComparer.Ordinal).ToArray());
             return sb.ToString();
         }
 
-        public string Visualize(IAsset asset)
+        private IEnumerable<string> FindProps(IEnumerable<IAsset> assets)
         {
-            var sb = new StringBuilder();
-            Visualize(sb, asset, FindProps(asset).OrderBy(s => s, StringComparer.Ordinal).ToArray());
-            return sb.ToString();
-        }
-
-        public string Visualize(ITransPair pair)
-        {
-            var sb = new StringBuilder();
-            Visualize(sb, pair, FindProps(pair).OrderBy(s => s, StringComparer.Ordinal).ToArray());
-            return sb.ToString();
-        }
-
-        private IEnumerable<string> FindProps(IEnumerable<IAsset> package)
-        {
-            return package.SelectMany(FindProps).Distinct();
+            return assets.SelectMany(FindProps).Distinct();
         }
 
         private IEnumerable<string> FindProps(IAsset asset)
         {
-            return Enumerable.Concat(asset.TransPairs, asset.AltPairs).SelectMany(FindProps).Distinct();
+            return asset.Properties.Select(p => p.Key);
         }
 
-        private IEnumerable<string> FindProps(ITransPair pair)
-        {
-            return pair.PropKeys;
-        }
-
-        private void Visualize(StringBuilder sb, IEnumerable<IAsset> package, string[] props)
+        private void Visualize(StringBuilder sb, IEnumerable<IAsset> assets, string[] props)
         {
             sb.AppendLine("<Package>");
-            foreach (var asset in package)
+            foreach (var asset in assets)
             {
                 Visualize(sb, asset, props);
             }

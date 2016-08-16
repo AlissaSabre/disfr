@@ -190,7 +190,7 @@ namespace disfr.UI
             // Create columns for additional properties.
             // They are initially hidden but users can view them.
             // ColumnInUse attached property is set to true for the purpose. 
-            foreach (var key in table.AllRows.SelectMany(r => r.Keys).Distinct())
+            foreach (var key in table.AllRows.Select(r => r.AdditionalColumns).Distinct().SelectMany(cols => cols).Select(col => col.Key).Distinct())
             {
                 var column = new DataGridTextColumn()
                 {

@@ -41,13 +41,5 @@ namespace disfr.Doc
         /// <param name="key"></param>
         /// <returns></returns>
         string this[string key] { get; }
-
-        /// <summary>
-        /// Returns all keys of additional properties that this pair <b>may</b> have.
-        /// </summary>
-        /// <remarks>
-        /// This property is tentative; it should be removed soon.
-        /// </remarks>
-        IEnumerable<string> PropKeys { get; }
     }
 }

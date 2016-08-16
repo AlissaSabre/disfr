@@ -171,6 +171,8 @@ namespace disfr.Doc
                 }
                 asset.TransPairs = pairs;
 
+                asset.Properties = pairs.SelectMany(p => p.PropKeys).Distinct().Select(s => new PropInfo(s)).ToList().AsReadOnly();
+
                 assets[i - 1] = asset;
             }
 
@@ -388,17 +390,19 @@ namespace disfr.Doc
 
     class TmxAsset : IAsset
     {
-        public string Package { get; set; }
+        public string Package { get; internal set; }
 
-        public string Original { get; set; }
+        public string Original { get; internal set; }
 
-        public string SourceLang { get; set; }
+        public string SourceLang { get; internal set; }
 
-        public string TargetLang { get; set; }
+        public string TargetLang { get; internal set; }
 
-        public IEnumerable<ITransPair> TransPairs { get; set; }
+        public IEnumerable<ITransPair> TransPairs { get; internal set; }
 
         public IEnumerable<ITransPair> AltPairs { get { return Enumerable.Empty<ITransPair>(); } }
+
+        public IList<PropInfo> Properties { get; internal set; }
     }
 
     class TmxPair : ITransPair
@@ -435,7 +439,7 @@ namespace disfr.Doc
             }
         }
 
-        public IEnumerable<string> PropKeys { get { return _Props == null ? Enumerable.Empty<string>() : _Props.Keys; } }
+        internal IEnumerable<string> PropKeys { get { return _Props == null ? Enumerable.Empty<string>() : _Props.Keys; } }
 
         public void SetProps(IEnumerable<KeyValuePair<string, string>> props, StringPool pool = null)
         {

@@ -38,7 +38,7 @@ namespace disfr.UI
 
         string this[string key] { get; }
 
-        IEnumerable<string> Keys { get; }
+        List<AdditionalColumnInfo> AdditionalColumns { get; }
 
         string FlatSource { get; }
 
@@ -55,5 +55,18 @@ namespace disfr.UI
         string SourceLang { get; }
 
         string TargetLang { get; }
+    }
+
+    public class AdditionalColumnInfo
+    {
+        public readonly string Key;
+
+        public readonly bool Visible;
+
+        public AdditionalColumnInfo(string key, bool visible)
+        {
+            Key = key;
+            Visible = visible;
+        }
     }
 }

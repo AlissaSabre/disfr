@@ -283,6 +283,17 @@ namespace disfr.Doc
         public IEnumerable<ITransPair> TransPairs { get { return _TransPairs; } }
 
         public IEnumerable<ITransPair> AltPairs { get { return Enumerable.Empty<ITransPair>(); } }
+
+        private IList<PropInfo> _Properties =
+            new List<PropInfo>()
+            {
+                new PropInfo("creation_date"),
+                new PropInfo("creation_user"),
+                new PropInfo("change_date"),
+                new PropInfo("change_user"),
+            }.AsReadOnly();
+
+        public IList<PropInfo> Properties { get { return _Properties; } }
     }
 
     class SdltmPair : ITransPair
@@ -317,9 +328,5 @@ namespace disfr.Doc
                 }
             }
         }
-
-        private readonly string[] _PropKeys = { "creation_date", "creation_user", "change_date", "change_user" };
-
-        public IEnumerable<string> PropKeys { get { return _PropKeys; } }
     }
 }

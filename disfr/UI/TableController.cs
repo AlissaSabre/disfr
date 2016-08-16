@@ -128,6 +128,7 @@ namespace disfr.UI
                     BaseSerial = serial,
                     SourceLang = asset.SourceLang,
                     TargetLang = asset.TargetLang,
+                    AdditionalColumns = asset.Properties.Select(p => new AdditionalColumnInfo(p.Key, p.Visible)).ToList(),
                 };
                 foreach (var pair in pairs(asset))
                 {

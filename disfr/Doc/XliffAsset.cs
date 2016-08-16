@@ -31,9 +31,11 @@ namespace disfr.Doc
             Original = (string)file.Attribute("original") ?? "";
             SourceLang = (string)file.Attribute("source-language");
             TargetLang = (string)file.Attribute("target-language");
-            TransPairs = file.Descendants(X + "trans-unit").SelectMany(ExtractPairs).Select(SerialPatcher);
-            AltPairs = file.Descendants(X + "trans-unit").Elements(X + "alt-trans").SelectMany(ExtractAltPairs);
+            _TransPairs = file.Descendants(X + "trans-unit").SelectMany(ExtractPairs).Select(SerialPatcher);
+            _AltPairs = file.Descendants(X + "trans-unit").Elements(X + "alt-trans").SelectMany(ExtractAltPairs);
         }
+
+        protected StringPool Pool = new StringPool();
 
         protected readonly XNamespace X;
 
@@ -51,9 +53,47 @@ namespace disfr.Doc
 
         public string TargetLang { get; protected set; }
 
-        public IEnumerable<ITransPair> TransPairs { get; protected set; }
+        protected IEnumerable<ITransPair> _TransPairs; 
 
-        public IEnumerable<ITransPair> AltPairs { get; protected set; }
+        public IEnumerable<ITransPair> TransPairs { get { Materialize(); return _TransPairs; } }
+
+        protected IEnumerable<ITransPair> _AltPairs;
+
+        public IEnumerable<ITransPair> AltPairs { get { Materialize(); return _AltPairs; } }
+
+        protected readonly List<PropInfo> _Properties = new List<PropInfo>();
+
+        protected readonly Dictionary<string, int> _PropertiesIndex = new Dictionary<string, int>();
+
+        public IList<PropInfo> Properties { get { Materialize(); return _Properties.AsReadOnly(); } }
+
+        protected bool Materialized = false;
+
+        protected virtual void Materialize()
+        {
+            if (Materialized) return;
+            _TransPairs = _TransPairs.ToList();
+            _AltPairs = _AltPairs.ToList();
+        }
+
+        protected virtual void AddProp(XliffTransPair pair, string key, string value, bool visible = false)
+        {
+            int index;
+            if (!_PropertiesIndex.TryGetValue(key, out index))
+            {
+                index = _PropertiesIndex[key] = _Properties.Count;
+                _Properties.Add(new PropInfo(key, visible));
+            }
+            else
+            {
+                key = _Properties[index].Key;
+            }
+            if (visible && !_Properties[index].Visible)
+            {
+                _Properties[index] = new PropInfo(key, true);
+            }
+            pair.AddProp(key, Pool.Intern(value));
+        }
 
         protected virtual IEnumerable<XliffTransPair> ExtractPairs(XElement tu)
         {
@@ -147,7 +187,7 @@ namespace disfr.Doc
             pair.AddNotes(GetNotes(tu));
             foreach (var attr in tu.Attributes().Where(a => a.Name != "id"))
             {
-                pair.AddProp(attr.Name.LocalName, attr.Value);
+                AddProp(pair, attr.Name.LocalName, attr.Value);
             }
             return pair;
         }
@@ -174,7 +214,7 @@ namespace disfr.Doc
                 SourceLang = GetLang(source) ?? SourceLang,
                 TargetLang = GetLang(target) ?? TargetLang,
             };
-            pair.AddProp("origin", (string)alt.Attribute("origin"));
+            AddProp(pair, "origin", (string)alt.Attribute("origin"));
             MatchTags(pair.Source, pair.Target);
             pair.AddNotes(GetNotes(alt));
             return pair;

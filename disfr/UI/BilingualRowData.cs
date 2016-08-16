@@ -52,7 +52,7 @@ namespace disfr.UI
 
         public string this[string key] { get { return TransPair[key]; } }
 
-        public IEnumerable<string> Keys { get { return TransPair.PropKeys; } }
+        public List<AdditionalColumnInfo> AdditionalColumns { get { return AssetData.AdditionalColumns; } }
 
         public string FlatSource { get { return Renderer.FlatFromInline(TransPair.Source); } }
 
@@ -105,5 +105,7 @@ namespace disfr.UI
         public string SourceLang { get; set; }
 
         public string TargetLang { get; set; }
+
+        public List<AdditionalColumnInfo> AdditionalColumns { get; set; }
     }
 }

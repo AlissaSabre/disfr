@@ -9,9 +9,6 @@ namespace disfr.Doc
 {
     class XliffTransPair : ITransPair
     {
-        private static readonly IReadOnlyDictionary<string, string> EmptyProps
-            = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
-
         public int Serial { get; internal set; }
 
         public string Id { get; internal set; }
@@ -48,8 +45,6 @@ namespace disfr.Doc
                 return value;
             }
         }
-
-        public IEnumerable<string> PropKeys { get { return _Props == null ? Enumerable.Empty<string>() : _Props.Keys; } }
 
         internal void AddProp(string key, string value)
         {
