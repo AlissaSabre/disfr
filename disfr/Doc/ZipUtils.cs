@@ -17,7 +17,7 @@ namespace disfr.Doc
         /// </summary>
         /// <param name="file">A ZIP archive stream.</param>
         /// <returns>True if it is a ZIP archive.  False otherwise.</returns>
-        /// <exception cref="NotSupportedException"><paramref name="file"/> doesn't support <see cref="Stream.Seek(long, SeekOrigin)"/>.</exception>
+        /// <exception cref="NotSupportedException"><paramref name="file"/> doesn't support seeking.</exception>
         /// <exception cref="IOException">An I/O error occurred.</exception>
         public static bool IsZip(this Stream file)
         {
