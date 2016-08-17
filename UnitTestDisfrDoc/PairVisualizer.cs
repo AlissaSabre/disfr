@@ -13,35 +13,22 @@ namespace UnitTestDisfrDoc
         public string Visualize(IEnumerable<IAsset> assets)
         {
             var sb = new StringBuilder();
-            Visualize(sb, assets, FindProps(assets).OrderBy(s => s, StringComparer.Ordinal).ToArray());
-            return sb.ToString();
-        }
-
-        private IEnumerable<string> FindProps(IEnumerable<IAsset> assets)
-        {
-            return assets.SelectMany(FindProps).Distinct();
-        }
-
-        private IEnumerable<string> FindProps(IAsset asset)
-        {
-            return asset.Properties.Select(p => p.Key);
-        }
-
-        private void Visualize(StringBuilder sb, IEnumerable<IAsset> assets, string[] props)
-        {
+            //Visualize(sb, assets, FindProps(assets));
             sb.AppendLine("<Package>");
             foreach (var asset in assets)
             {
-                Visualize(sb, asset, props);
+                Visualize(sb, asset);
             }
             sb.AppendLine("</Package>");
+            return sb.ToString();
         }
 
-        private void Visualize(StringBuilder sb, IAsset asset, string[] props)
+        private void Visualize(StringBuilder sb, IAsset asset)
         {
             sb.AppendFormat("<Asset package=\"{0}\" original=\"{1}\" source-lang=\"{2}\" target-lang=\"{3}\">",
                 asset.Package, asset.Original, asset.SourceLang, asset.TargetLang);
             sb.AppendLine();
+            var props = asset.Properties.Select(p => p.Key).OrderBy(s => s, StringComparer.Ordinal).ToArray();
             foreach (var pair in asset.TransPairs)
             {
                 Visualize(sb, pair, props);
