@@ -188,8 +188,8 @@ namespace disfr.UI
             TagList.Visibility = Visibility.Collapsed;
 
             // Create columns for additional properties.
-            // They are initially hidden by default but users can view them.
-            // ColumnInUse attached property is set to true for the purpose. 
+            // Their initial shown/hidden states are specified by the DOC module via AdditionalProps.
+            // ColumnInUse attached property is set to true so that users can change their visibility.
             foreach (var props in table.AdditionalProps)
             {
                 var key = props.Key;
