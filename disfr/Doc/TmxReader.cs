@@ -58,6 +58,19 @@ namespace disfr.Doc
             string[] langs = DetectLanguages(tmx);
             if (langs == null) return null;
 
+            var assets = new TmxAsset[langs.Length];
+            for (int i = 1; i < langs.Length; i++)
+            {
+                var asset = new TmxAsset()
+                {
+                    Package = package,
+                    Original = string.Format("{0} - {1}", langs[0], langs[i]),
+                    SourceLang = langs[0],
+                    TargetLang = langs[i],
+                };
+                assets[i] = asset;
+            }
+
             var thread_count = Environment.ProcessorCount - 1;
             if (thread_count * MINIMUM_ENTRIES_PER_THREAD > tus.Count)
             {
@@ -129,7 +142,7 @@ namespace disfr.Doc
                             {
                                 if (segs[i] != null)
                                 {
-                                    var pair = new TmxPair()
+                                    var pair = new TmxPair(assets[i].PropMan)
                                     {
                                         Serial = 0, // XXX
                                         Id = id,
@@ -138,7 +151,9 @@ namespace disfr.Doc
                                         SourceLang = source_lang,
                                         TargetLang = Lang(segs[i].Parent),
                                     };
-                                    pair.SetProps(tu_props.Concat(props[0]).Concat(props[i]), pool);
+                                    SetProps(assets[i].PropMan, pair, tu_props, pool);
+                                    SetProps(assets[i].PropMan, pair, props[0], pool);
+                                    SetProps(assets[i].PropMan, pair, props[i], pool);
                                     pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
                                     array_of_list_of_pairs[i].Add(pair);
                                 }
@@ -150,18 +165,8 @@ namespace disfr.Doc
             }
             for (int thread = 0; thread < threads.Length; thread++) threads[thread].Join();
 
-            var assets = new IAsset[langs.Length - 1];
             for (int i = 1; i < langs.Length; i++)
             {
-
-                var asset = new TmxAsset()
-                {
-                    Package = package,
-                    Original = string.Format("{0} - {1}", langs[0], langs[i]),
-                    SourceLang = langs[0],
-                    TargetLang = langs[i],
-                };
-
                 var pairs = new TmxPair[array_of_array_of_list_of_pairs.Sum(x => x[i].Count)];
                 int index = 0;
                 for (int t = 0; t < thread_count; t++)
@@ -169,14 +174,10 @@ namespace disfr.Doc
                     array_of_array_of_list_of_pairs[t][i].CopyTo(pairs, index);
                     index += array_of_array_of_list_of_pairs[t][i].Count;
                 }
-                asset.TransPairs = pairs;
-
-                asset.Properties = pairs.SelectMany(p => p.PropKeys).Distinct().Select(s => new PropInfo(s)).ToList().AsReadOnly();
-
-                assets[i - 1] = asset;
+                assets[i].TransPairs = pairs;
             }
 
-            return assets;
+            return assets.Skip(1);
         }
 
         /// <summary>
@@ -386,6 +387,15 @@ namespace disfr.Doc
             notes.Clear();
             notes.AddRange(elem.Elements(X + "note").Select(n => (string)n));
         }
+
+
+        private static void SetProps(PropertiesManager manager, TmxPair pair, IEnumerable<KeyValuePair<string, string>> props, StringPool pool)
+        {
+            foreach (var kvp in props)
+            {
+                manager.Put(ref pair._Props, kvp.Key, pool.Intern(kvp.Value));
+            }
+        }
     }
 
     class TmxAsset : IAsset
@@ -402,11 +412,15 @@ namespace disfr.Doc
 
         public IEnumerable<ITransPair> AltPairs { get { return Enumerable.Empty<ITransPair>(); } }
 
-        public IList<PropInfo> Properties { get; internal set; }
+        internal readonly PropertiesManager PropMan = new PropertiesManager();
+
+        public IList<PropInfo> Properties { get { return PropMan.Infos.ToList().AsReadOnly(); } }
     }
 
     class TmxPair : ITransPair
     {
+        internal TmxPair(PropertiesManager manager) { PropMan = manager; }
+
         public int Serial { get; set; }
 
         public string Id { get; set; }
@@ -425,35 +439,15 @@ namespace disfr.Doc
 
         public void AddNotes(IEnumerable<string> notes) { (_Notes ?? (_Notes = new HashSet<string>())).UnionWith(notes); }
 
-        private Dictionary<string, string> _Props = null;
+        private readonly PropertiesManager PropMan;
 
-        private static readonly Dictionary<string, string> EmptyProps = new Dictionary<string, string>();
+        internal string[] _Props = null;
 
         public string this[string key]
         {
             get
             {
-                string value = null;
-                _Props?.TryGetValue(key, out value);
-                return value;
-            }
-        }
-
-        internal IEnumerable<string> PropKeys { get { return _Props == null ? Enumerable.Empty<string>() : _Props.Keys; } }
-
-        public void SetProps(IEnumerable<KeyValuePair<string, string>> props, StringPool pool = null)
-        {
-            if (props.Any())
-            {
-                _Props = new Dictionary<string, string>();
-                if (pool == null)
-                {
-                    foreach (var kvp in props) _Props[kvp.Key] = kvp.Value;
-                }
-                else
-                {
-                    foreach (var kvp in props) _Props[pool.Intern(kvp.Key)] = pool.Intern(kvp.Value);
-                }
+                return PropMan.Get(_Props, key);
             }
         }
     }

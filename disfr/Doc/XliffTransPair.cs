@@ -36,7 +36,7 @@ namespace disfr.Doc
             _Notes.UnionWith(valid_notes);
         }
 
-        internal PropertiesManager PropMan;
+        internal readonly PropertiesManager PropMan;
 
         internal string[] _Props = null;
 
