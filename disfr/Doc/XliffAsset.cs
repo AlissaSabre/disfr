@@ -139,7 +139,7 @@ namespace disfr.Doc
             var selem = src as XElement;
             var telem = tgt as XElement;
 
-            var pair = new XliffTransPair(PropMan)
+            var pair = new XliffTransPair()
             {
                 Serial = (selem != null) || (telem != null) ? 1 : -1,
                 Id = (string)selem?.Attribute("mid") ?? (string)telem?.Attribute("mid") ?? "*",
@@ -158,7 +158,7 @@ namespace disfr.Doc
         {
             var source = tu.Element(X + "source");
             var target = tu.Element(X + "target");
-            var pair = new XliffTransPair(PropMan)
+            var pair = new XliffTransPair()
             {
                 Serial = ((string)tu.Attribute("translate") == "no") ? -1 : 1,
                 Id = (string)tu.Attribute("id"),
@@ -190,7 +190,7 @@ namespace disfr.Doc
                 alt.Parent.Element(X + "seg-source") ??
                 alt.Parent.Element(X + "source");
             var target = alt.Element(X + "target");
-            var pair = new XliffTransPair(PropMan)
+            var pair = new XliffTransPair()
             {
                 Id = (string)alt.Parent.Attribute("id"),
                 Source = GetInline(source),

@@ -192,11 +192,10 @@ namespace disfr.UI
             // ColumnInUse attached property is set to true so that users can change their visibility.
             foreach (var props in table.AdditionalProps)
             {
-                var key = props.Key;
                 var column = new DataGridTextColumn()
                 {
-                    Header = key.Replace("_", " "), // XXX: No, we should not do this!
-                    Binding = new Binding("[" + key + "]"),
+                    Header = props.Key.Replace("_", " "), // XXX: No, we should not do this!
+                    Binding = new Binding("[" + props.Index + "]"),
                     Visibility = props.Visible ? Visibility.Visible : Visibility.Collapsed,
                 };
                 column.SetValue(ColumnInUseProperty, true);
@@ -428,8 +427,8 @@ namespace disfr.UI
         {
             if (path.StartsWith("[") && path.EndsWith("]"))
             {
-                var key = path.Substring(1, path.Length - 2);
-                return r => r[key];
+                var index = int.Parse(path.Substring(1, path.Length - 2));
+                return r => r[index];
             }
 
             var property = typeof(IRowData).GetProperty(path);

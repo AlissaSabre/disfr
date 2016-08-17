@@ -314,16 +314,16 @@ namespace disfr.Doc
 
         internal string _CreationDate, _CreationUser, _ChangeDate, _ChangeUser;
 
-        public string this[string key]
+        public string this[int key]
         {
             get
             {
                 switch (key)
                 {
-                    case "creation_date": return _CreationDate;
-                    case "creation_user": return _CreationUser;
-                    case "change_date": return _ChangeDate;
-                    case "change_user": return _ChangeUser;
+                    case 0: return _CreationDate;
+                    case 1: return _CreationUser;
+                    case 2: return _ChangeDate;
+                    case 3: return _ChangeUser;
                     default: return null;
                 }
             }

@@ -53,7 +53,7 @@ namespace disfr.Writer
             object content = null;
             if (column.Path.StartsWith("["))
             {
-                content = row[column.Path.Substring(1, column.Path.Length - 2)];
+                content = row[int.Parse(column.Path.Substring(1, column.Path.Length - 2))];
             }
             else
             {

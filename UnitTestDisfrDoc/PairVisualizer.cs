@@ -10,6 +10,12 @@ namespace UnitTestDisfrDoc
 {
     public class PairVisualizer
     {
+        private struct Prop
+        {
+            public string Key;
+            public int Index;
+        }
+
         public string Visualize(IEnumerable<IAsset> assets)
         {
             var sb = new StringBuilder();
@@ -28,7 +34,7 @@ namespace UnitTestDisfrDoc
             sb.AppendFormat("<Asset package=\"{0}\" original=\"{1}\" source-lang=\"{2}\" target-lang=\"{3}\">",
                 asset.Package, asset.Original, asset.SourceLang, asset.TargetLang);
             sb.AppendLine();
-            var props = asset.Properties.Select(p => p.Key).OrderBy(s => s, StringComparer.Ordinal).ToArray();
+            var props = asset.Properties.Select((p, i) => new Prop() { Key = p.Key, Index = i }).OrderBy(p => p.Key, StringComparer.Ordinal).ToList();
             foreach (var pair in asset.TransPairs)
             {
                 Visualize(sb, pair, props);
@@ -49,7 +55,7 @@ namespace UnitTestDisfrDoc
             sb.AppendLine("</Asset>");
         }
 
-        private void Visualize(StringBuilder sb, ITransPair pair, string[] props)
+        private void Visualize(StringBuilder sb, ITransPair pair, IList<Prop> props)
         {
             sb.Append("<Pair>");
             Print(sb, "Serial", pair.Serial);
@@ -65,12 +71,12 @@ namespace UnitTestDisfrDoc
                     Print(sb, "Note", note);
                 }
             }
-            foreach (var key in props)
+            foreach (var prop in props)
             {
-                var prop = pair[key];
-                if (prop != null && prop.Length > 0)
+                var value = pair[prop.Index];
+                if (value != null && value.Length > 0)
                 {
-                    Print(sb, "Prop", "name", key, prop);
+                    Print(sb, "Prop", "name", prop.Key, value);
                 }
             }
             sb.Append("</Pair>");

@@ -142,7 +142,7 @@ namespace disfr.Doc
                             {
                                 if (segs[i] != null)
                                 {
-                                    var pair = new TmxPair(assets[i].PropMan)
+                                    var pair = new TmxPair()
                                     {
                                         Serial = 0, // XXX
                                         Id = id,
@@ -419,8 +419,6 @@ namespace disfr.Doc
 
     class TmxPair : ITransPair
     {
-        internal TmxPair(PropertiesManager manager) { PropMan = manager; }
-
         public int Serial { get; set; }
 
         public string Id { get; set; }
@@ -439,15 +437,13 @@ namespace disfr.Doc
 
         public void AddNotes(IEnumerable<string> notes) { (_Notes ?? (_Notes = new HashSet<string>())).UnionWith(notes); }
 
-        private readonly PropertiesManager PropMan;
-
         internal string[] _Props = null;
 
-        public string this[string key]
+        public string this[int key]
         {
             get
             {
-                return PropMan.Get(_Props, key);
+                return (key < _Props?.Length) ? _Props[key] : null;
             }
         }
     }

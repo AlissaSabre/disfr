@@ -123,37 +123,48 @@ namespace disfr.UI
         {
             var props = new List<AdditionalPropertiesInfo>();
             var props_indexes = new Dictionary<string, int>();
+            foreach (var prop in assets.SelectMany(a => a.Properties))
+            {
+                int index;
+                if (!props_indexes.TryGetValue(prop.Key, out index))
+                {
+                    index = props_indexes[prop.Key] = props.Count;
+                    props.Add(new AdditionalPropertiesInfo(index, prop.Key, prop.Visible));
+                }
+                else if (prop.Visible && !props[index].Visible)
+                {
+                    props[index] = new AdditionalPropertiesInfo(index, prop.Key, prop.Visible);
+                }
+            }
+
             var rows = new List<IRowData>();
             var seq = 0;
             var serial = 0;
             foreach (var asset in assets)
             {
-                foreach (var prop in asset.Properties)
+                var mapper = new int[props.Count];
+                for (int i = 0; i < mapper.Length; i++) mapper[i] = int.MaxValue;
+                for (int j = 0; j < asset.Properties.Count; j++)
                 {
-                    int index;
-                    if (!props_indexes.TryGetValue(prop.Key, out index))
-                    {
-                        props_indexes[prop.Key] = props.Count;
-                        props.Add(new AdditionalPropertiesInfo(prop.Key, prop.Visible));
-                    }
-                    else if (prop.Visible && !props[index].Visible)
-                    {
-                        props[index] = new AdditionalPropertiesInfo(prop.Key, prop.Visible);
-                    }
+                    mapper[props_indexes[asset.Properties[j].Key]] = j;
                 }
+
                 var ad = new AssetData()
                 {
                     LongAssetName = asset.Original,
                     BaseSerial = serial,
                     SourceLang = asset.SourceLang,
                     TargetLang = asset.TargetLang,
+                    PropMapper = mapper,
                 };
+
                 foreach (var pair in pairs(asset))
                 {
                     rows.Add(new BilingualRowData(renderer, ad, pair, seq++));
                     if (pair.Serial > 0) serial++;
                 }
             }
+
             _AdditionalProps = props;
             _Rows.Rows = rows;
         }

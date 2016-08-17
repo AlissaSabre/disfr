@@ -38,8 +38,8 @@ namespace disfr.Doc
         /// <summary>
         /// Additional properties of a pair.
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        string this[string key] { get; }
+        /// <param name="index">The index of property <see cref="IAsset.Properties"/></param>
+        /// <returns>The property value, or null if no property presents.</returns>
+        string this[int index] { get; }
     }
 }

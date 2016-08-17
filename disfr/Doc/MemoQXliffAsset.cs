@@ -192,7 +192,7 @@ namespace disfr.Doc
         private XliffTransPair InterSegmentPair(string text)
         {
             var inline = new InlineString() { text };
-            return new XliffTransPair(PropMan)
+            return new XliffTransPair()
             {
                 Serial = -1,
                 Id = "*",
