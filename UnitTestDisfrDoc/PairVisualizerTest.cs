@@ -19,7 +19,7 @@ namespace UnitTestDisfrDoc
         /// When run (via Test Explorer), it creates (overwrites if files are present) *.dump files
         /// under the directory "Expected".
         /// Running it frequently is meaningless.
-        /// The files are only useful for regression tests especially after refactoring.
+        /// Don't enable any of the #if block, unless you know what you are doing.
         /// </remarks>
         [TestMethod]
         public void GenerateFiles()
@@ -39,6 +39,12 @@ namespace UnitTestDisfrDoc
             Dump(tmx, "my_memory.tmx");
             Dump(tmx, "XuanZang.tmx");
 #endif
+
+            var sdltm = new SdltmReader();
+#if false
+            Dump(sdltm, "tea-party.sdltm");
+#endif
+
         }
 #endif
 
