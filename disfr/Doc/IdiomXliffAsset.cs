@@ -55,11 +55,11 @@ namespace disfr.Doc
             {
                 foreach (var attr in metadata.Attributes())
                 {
-                    pair.AddProp(attr.Name.LocalName, attr.Value);
+                    AddProp(pair, attr.Name.LocalName, attr.Value);
                 }
                 foreach (var attr in metadata.Elements(IWS + "status").Attributes())
                 {
-                    pair.AddProp(attr.Name.LocalName, attr.Value);
+                    AddProp(pair, attr.Name.LocalName, attr.Value);
                 }
             }
             return pair;

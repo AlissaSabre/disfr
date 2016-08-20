@@ -11,27 +11,52 @@ namespace UnitTestDisfrDoc
     public class PairVisualizerTest
     {
 #if false
-        private const string IDIR = @"..\..\Samples";
-        private const string ODIR = @"..\..\Expected";
-
+        /// <summary>
+        /// Generates files in Expected directory.
+        /// </summary>
+        /// <remarks>
+        /// This is not really a test case, but a utility to support tests.
+        /// When run (via Test Explorer), it creates (overwrites if files are present) *.dump files
+        /// under the directory "Expected".
+        /// Running it frequently is meaningless.
+        /// Don't enable any of the #if block, unless you know what you are doing.
+        /// </remarks>
         [TestMethod]
-        public void TestMethod1()
+        public void GenerateFiles()
         {
-            var rd = new XliffReader();
-            Dump(rd, "Xliff1.xliff", "Xliff1.dump");
-            Dump(rd, "Xliff2.xliff", "Xliff2.dump");
-            Dump(rd, "git.html_jpn.mqxlz", "git.html_jpn.dump");
-            Dump(rd, "Configuring_Spelling_Checker.doc.sdlxliff", "Configuring_Spelling_Checker.doc.dump");
-            Dump(rd, "Language_Support.doc.sdlxliff", "Language_Support.doc.dump");
-            Dump(rd, "New_features.ppt.sdlxliff", "New_features.ppt.dump");
-        }
+            var xliff = new XliffReader();
+#if false
+            Dump(xliff, "Xliff1.xliff");
+            Dump(xliff, "Xliff2.xliff");
+            Dump(xliff, "git.html_jpn.mqxlz");
+            Dump(xliff, "Configuring_Spelling_Checker.doc.sdlxliff");
+            Dump(xliff, "Language_Support.doc.sdlxliff");
+            Dump(xliff, "New_features.ppt.sdlxliff");
+#endif
 
-        private static void Dump(IAssetReader rd, string input, string output)
-        {
-            var package = rd.Read(Path.Combine(IDIR, input), -1);
-            var vis = new PairVisualizer();
-            File.WriteAllText(Path.Combine(ODIR, output), vis.Visualize(package));
+            var tmx = new TmxReader();
+#if false
+            Dump(tmx, "my_memory.tmx");
+            Dump(tmx, "XuanZang.tmx");
+#endif
+
+            var sdltm = new SdltmReader();
+#if false
+            Dump(sdltm, "tea-party.sdltm");
+#endif
+
         }
 #endif
+
+        private static void Dump(IAssetReader rd, string input)
+        {
+            string IDIR = @"..\..\Samples";
+            string ODIR = @"..\..\Expected";
+
+            var assets = rd.Read(Path.Combine(IDIR, input), -1);
+            var visualized = new PairVisualizer().Visualize(assets);
+            var output = Path.GetFileNameWithoutExtension(input) + ".dump";
+            File.WriteAllText(Path.Combine(ODIR, output), visualized);
+        }
     }
 }

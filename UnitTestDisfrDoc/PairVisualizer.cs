@@ -10,57 +10,31 @@ namespace UnitTestDisfrDoc
 {
     public class PairVisualizer
     {
-        public string Visualize(IEnumerable<IAsset> package)
+        private struct Prop
+        {
+            public string Key;
+            public int Index;
+        }
+
+        public string Visualize(IEnumerable<IAsset> assets)
         {
             var sb = new StringBuilder();
-            Visualize(sb, package, FindProps(package).OrderBy(s => s, StringComparer.Ordinal).ToArray());
-            return sb.ToString();
-        }
-
-        public string Visualize(IAsset asset)
-        {
-            var sb = new StringBuilder();
-            Visualize(sb, asset, FindProps(asset).OrderBy(s => s, StringComparer.Ordinal).ToArray());
-            return sb.ToString();
-        }
-
-        public string Visualize(ITransPair pair)
-        {
-            var sb = new StringBuilder();
-            Visualize(sb, pair, FindProps(pair).OrderBy(s => s, StringComparer.Ordinal).ToArray());
-            return sb.ToString();
-        }
-
-        private IEnumerable<string> FindProps(IEnumerable<IAsset> package)
-        {
-            return package.SelectMany(FindProps).Distinct();
-        }
-
-        private IEnumerable<string> FindProps(IAsset asset)
-        {
-            return Enumerable.Concat(asset.TransPairs, asset.AltPairs).SelectMany(FindProps).Distinct();
-        }
-
-        private IEnumerable<string> FindProps(ITransPair pair)
-        {
-            return pair.Props.Keys;
-        }
-
-        private void Visualize(StringBuilder sb, IEnumerable<IAsset> package, string[] props)
-        {
+            //Visualize(sb, assets, FindProps(assets));
             sb.AppendLine("<Package>");
-            foreach (var asset in package)
+            foreach (var asset in assets)
             {
-                Visualize(sb, asset, props);
+                Visualize(sb, asset);
             }
             sb.AppendLine("</Package>");
+            return sb.ToString();
         }
 
-        private void Visualize(StringBuilder sb, IAsset asset, string[] props)
+        private void Visualize(StringBuilder sb, IAsset asset)
         {
             sb.AppendFormat("<Asset package=\"{0}\" original=\"{1}\" source-lang=\"{2}\" target-lang=\"{3}\">",
                 asset.Package, asset.Original, asset.SourceLang, asset.TargetLang);
             sb.AppendLine();
+            var props = asset.Properties.Select((p, i) => new Prop() { Key = p.Key, Index = i }).OrderBy(p => p.Key, StringComparer.Ordinal).ToList();
             foreach (var pair in asset.TransPairs)
             {
                 Visualize(sb, pair, props);
@@ -81,7 +55,7 @@ namespace UnitTestDisfrDoc
             sb.AppendLine("</Asset>");
         }
 
-        private void Visualize(StringBuilder sb, ITransPair pair, string[] props)
+        private void Visualize(StringBuilder sb, ITransPair pair, IList<Prop> props)
         {
             sb.Append("<Pair>");
             Print(sb, "Serial", pair.Serial);
@@ -97,13 +71,12 @@ namespace UnitTestDisfrDoc
                     Print(sb, "Note", note);
                 }
             }
-            foreach (var key in props)
+            foreach (var prop in props)
             {
-                string prop;
-                pair.Props.TryGetValue(key, out prop);
-                if (prop != null && prop.Length > 0)
+                var value = pair[prop.Index];
+                if (value != null && value.Length > 0)
                 {
-                    Print(sb, "Prop", "name", key, prop);
+                    Print(sb, "Prop", "name", prop.Key, value);
                 }
             }
             sb.Append("</Pair>");

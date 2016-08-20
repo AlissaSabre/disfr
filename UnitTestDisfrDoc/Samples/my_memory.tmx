@@ -1,0 +1,1198 @@
+<?xml version="1.0" ?>
+		<!DOCTYPE tmx SYSTEM "tmx11.dtd">
+		<tmx version="1.1">
+		<header
+		creationtool="MyMemory - mymemory.translated.net"
+		creationtoolversion="Beta"
+		segtype="sentence"
+		o-tmf="TW4Win 2.0 Format"
+		adminlang="EN-US"
+		srclang="EN-GB"
+		datatype="rtf"
+		creationdate="20160816T041322Z"
+		creationid="Translated">
+		<prop type="RTFFontTable">
+		{\fonttbl
+			{\f1 \fmodern\fprq1 \fcharset0 Courier New;}
+			{\f2 \fswiss\fprq2 \fcharset0 Arial;}
+			{\f3 \froman\fprq2 {\*\panose 02020603050405020304}\fcharset0 Times New Roman;}
+			{\f4 \froman\fprq2 {\*\panose 05050102010706020507}\fcharset2 Symbol;}
+			{\f5 \fnil\fprq2 {\*\panose 05000000000000000000}\fcharset2 Wingdings;}
+			{\f6 \fswiss\fprq2 {\*\panose 020b0506020202030204}\fcharset0 Arial Narrow;}
+			{\f7 \froman\fprq2 \fcharset238 Times New Roman CE;}
+			{\f8 \froman\fprq2 \fcharset204 Times New Roman Cyr;}
+			{\f9 \froman\fprq2 \fcharset161 Times New Roman Greek;}
+			{\f10 \froman\fprq2 \fcharset162 Times New Roman Tur;}
+			{\f11 \froman\fprq2 \fcharset177 Times New Roman (Hebrew);}
+			{\f12 \froman\fprq2 \fcharset178 Times New Roman (Arabic);}
+			{\f13 \froman\fprq2 \fcharset186 Times New Roman Baltic;}
+			{\f14 \froman\fprq2 \fcharset163 Times New Roman (Vietnamese);}
+			{\f15 \fswiss\fprq2 \fcharset238 Arial CE;}
+			{\f16 \fswiss\fprq2 \fcharset204 Arial Cyr;}
+			{\f17 \fswiss\fprq2 \fcharset161 Arial Greek;}
+			{\f18 \fswiss\fprq2 \fcharset162 Arial Tur;}
+			{\f19 \fswiss\fprq2 \fcharset177 Arial (Hebrew);}
+			{\f20 \fswiss\fprq2 \fcharset178 Arial (Arabic);}
+			{\f21 \fswiss\fprq2 \fcharset186 Arial Baltic;}
+			{\f22 \fswiss\fprq2 \fcharset163 Arial (Vietnamese);}
+			{\f23 \fmodern\fprq1 \fcharset238 Courier New CE;}
+			{\f24 \fmodern\fprq1 \fcharset204 Courier New Cyr;}
+			{\f25 \fmodern\fprq1 \fcharset161 Courier New Greek;}
+			{\f26 \fmodern\fprq1 \fcharset162 Courier New Tur;}
+			{\f27 \fmodern\fprq1 \fcharset177 Courier New (Hebrew);}
+			{\f28 \fmodern\fprq1 \fcharset178 Courier New (Arabic);}
+			{\f29 \fmodern\fprq1 \fcharset186 Courier New Baltic;}
+			{\f30 \fmodern\fprq1 \fcharset163 Courier New (Vietnamese);}
+			{\f31 \fswiss\fprq2 \fcharset238 Arial Narrow CE;}
+			{\f32 \fswiss\fprq2 \fcharset204 Arial Narrow Cyr;}
+			{\f33 \fswiss\fprq2 \fcharset161 Arial Narrow Greek;}
+			{\f34 \fswiss\fprq2 \fcharset162 Arial Narrow Tur;}
+			{\f35 \fswiss\fprq2 \fcharset186 Arial Narrow Baltic;}}</prop>
+	<prop type="RTFStyleSheet">
+	{\stylesheet
+		{\St \s0 {\StN Normal}}
+		{\St \cs1 {\StB \v\f1\fs24\sub\cf12 }{\StN tw4winMark}}
+		{\St \cs2 {\StB \cf4\fs40\f1 }{\StN tw4winError}}
+		{\St \cs3 {\StB \f1\cf11\lang1024 }{\StN tw4winPopup}}
+		{\St \cs4 {\StB \f1\cf10\lang1024 }{\StN tw4winJump}}
+		{\St \cs5 {\StB \f1\cf15\lang1024 }{\StN tw4winExternal}}
+		{\St \cs6 {\StB \f1\cf6\lang1024 }{\StN tw4winInternal}}
+		{\St \cs7 {\StB \cf2 }{\StN tw4winTerm}}
+		{\St \cs8 {\StB \f1\cf13\lang1024 }{\StN DO_NOT_TRANSLATE}}
+		{\St \cs9 \additive\ssemihidden {\StN Default Paragraph Font}}}</prop>
+	</header>
+
+		<body>
+
+		<tu tuid="0" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="14" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Untitled</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160703T202058Z" changeid="anonymous">
+				<seg>Без названия</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="1" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="5" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Untitled</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160529T224733Z" changeid="anonymous">
+				<seg>Безымянный</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="2" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Untitled</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160406T043710Z" changeid="anonymous">
+				<seg>Без названия слайдер</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="3" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Untitled</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150425T215734Z" changeid="anonymous">
+				<seg>Без заголовка</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="4" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>MyMemory</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160517T203642Z" changeid="">
+				<seg>MyMemory</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="5" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>MyMemory:</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041244Z" changeid="MT!">
+				<seg>MyMemory:</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="6" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>MateCat   counts   words   by   using   a   &lt;g id=&quot;1088&quot;&gt;combination   &lt;/g&gt;of   advanced   &lt;g id=&quot;1089&quot;&gt;TM   technology &lt;/g&gt;(MyMemory)  and  application  of  a  reduction  in  weighting  &lt;g id=&quot;1090&quot;&gt;for  machine translation suggestions&lt;/g&gt;.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150923T110842Z" changeid="anonymous">
+				<seg>MateCat рассчитывает слова, с помощью &lt;g id=&quot;1088&quot;&gt;сочетание &lt;/g&gt;передовых &lt;g id=&quot;1089&quot;&gt;Технология ТМ &lt;/g&gt;(MyMemory) и применение снижение взвешивания &lt;g id=&quot;1090&quot;&gt;для предложений машинного перевода&lt;/g&gt;.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="7" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Instructions for SDL MyMemory Plugin v2.4</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150328T113952Z" changeid="anonymous">
+				<seg>Инструкции по SDL MyMemory Plugin v2.4</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="8" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>next generation Translation Memory technology</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041245Z" changeid="MT!">
+				<seg>следующего поколения технологии Translation Memory</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="9" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="5" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Translation memory</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150606T085447Z" changeid="Wikipedia">
+				<seg>Память переводов</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="10" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>translation memory</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20110218T224839Z" changeid="NDerov">
+				<seg>накопитель переводов</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="11" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Translation Memory and Machine Translation	13</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150923T110515Z" changeid="anonymous">
+				<seg>Перевод памяти и машинного перевода 13</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="12" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>What is MyMemory?</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041246Z" changeid="MT!">
+				<seg>Что такое MyMemory?</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="13" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>what is</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160317T173105Z" changeid="anonymous">
+				<seg>что такое</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="14" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>what is</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160317T173046Z" changeid="anonymous">
+				<seg>что</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="15" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>MyMemory</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160517T203642Z" changeid="">
+				<seg>MyMemory</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="16" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>MyMemoryis the world&apos;s largest Translation Memory.MyMemoryis 100% free.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041247Z" changeid="MT!">
+				<seg>MyMemoryis мир &apos;s крупнейший перевода Memory.MyMemoryis 100% бесплатно.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="17" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>The world&apos;s largest reservoir</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20130126T184119Z" changeid="">
+				<seg>Самый большой водоем в мире</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="18" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>The world&apos;s largest online shipping platform.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150414T160147Z" changeid="anonymous">
+				<seg>Заказывайте доставку грузов и следите за их перемещением онлайн.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="19" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>The world&apos;s largest online shipping platform.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150407T114331Z" changeid="anonymous">
+				<seg>Крупнейшая в мире транспортная онлайн платформа.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="20" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>It has been created collecting TMs from the European Union, United Nations and aligning the best domain specific multilingual websites.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041249Z" changeid="MT!">
+				<seg>Она была создана собирая TMs из Европейского союза, Организации Объединенных Наций и согласования лучших домена конкретные многоязычные веб-сайты.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="21" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Wishing to promote cooperation between the United Nations and the Collective Security Treaty Organization,</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160816T041322Z" changeid="UN">
+				<seg>желая содействовать сотрудничеству между Организацией Объединенных Наций и Организацией Договора о коллективной безопасности,</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="22" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>The European Nations Rugby Cup.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160511T061108Z" changeid="anonymous">
+				<seg>Европейский Кубок наций по регби.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="23" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>This list includes asset freeze targets designated by &lt;g id=&quot;345&quot;/&gt;the United Nations, European Union, and United Kingdom.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150301T045638Z" changeid="anonymous">
+				<seg>Этот список включает в себя объекты для замораживания активов, указанные &lt;g id=&quot;345&quot;/&gt;Организацией Объединенных Наций, Европейским Союзом и Соединенным Королевством.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="24" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>You can download memories for free in TMX format and use them with yourCAT toolof choice.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041250Z" changeid="MT!">
+				<seg>Вы можете скачать бесплатно в формате TMX воспоминания и использовать их с yourCAT toolof выбор.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="25" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Download sheets in PDF format</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20141017T100031Z" changeid="anonymous">
+				<seg>Загрузить документацию в формате PDF</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="26" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Download sheets in PDF format</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20141015T172712Z" changeid="anonymous">
+				<seg>Загрузить документцию в формате PDF</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="27" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>WCS Download Format</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160708T144112Z" changeid="anonymous">
+				<seg>Формат Загрузки WCS</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="28" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>You can also contribute to makeMyMemoryeven better withyour memories, or editing entries.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041254Z" changeid="MT!">
+				<seg>Вы можете также способствовать makeMyMemoryeven лучше withyour воспоминания, или редактирования записей.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="29" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>You can also manually add, edit or delete data entries.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20121212T135609Z" changeid="anonymous">
+				<seg>Вы также можете вручную добавлять, изменять или удалять записи данных.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="30" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Editing or Deleting Index and Table Entries</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160816T041322Z" changeid="TRANSLATED">
+				<seg>Правка и удаление элементов указателей и оглавлений</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="31" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>You don&apos;t have adequate permission to edit entries.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150602T212224Z" changeid="anonymous">
+				<seg>У Вас нет разрешения на редактирование записей.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="32" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>When no human translation is found for your sentences,MyMemorywill help you with state of the art Statistical Machine Translation technology.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041255Z" changeid="MT!">
+				<seg>Когда человека перевод не найден для вашего предложения, MyMemorywill помочь вам в современные технологии статистического машинного перевода.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="33" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>When the movable head reaches the micro switch, the movement of translation is reversed in search of the zero point of the machine.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20140907T085634Z" changeid="anonymous">
+				<seg>Когда подвижная головка доходит до микропереключателя, направление движения меняется на противоположное и начинается поиск нулевой точки станка.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="34" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="6" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Machine translation</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150418T015515Z" changeid="Wikipedia">
+				<seg>Машинный перевод</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="35" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>State machine</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20130314T174141Z" changeid="Wikipedia">
+				<seg>Конечный автомат</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="36" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Getting Started   Download your first TM!It&apos;s all free!</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041256Z" changeid="MT!">
+				<seg>Начало начал загружать ваш первый ТМ! Все это бесплатно!</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="37" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Download your first extension now.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150918T094246Z" changeid="anonymous">
+				<seg>Скачать первое расширение сейчас.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="38" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>DOWNLOAD YOUR FREE COPY</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160814T010229Z" changeid="anonymous">
+				<seg>СКАЧАЙТЕ ВАШУ БЕСПЛАТНУЮ КОПИЮ</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="39" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="82" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Your first call free</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160816T041322Z" changeid="MatteoT">
+				<seg>Первый звонок не будет стоить тебе ни копейки</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="40" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Go tohttp://mymemory.translated.netand click onLog in(username:</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041258Z" changeid="MT!">
+				<seg>Идти tohttp://mymemory.translated.netand нажмите onLog in(username:</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="41" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Link in Username</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160403T154215Z" changeid="anonymous">
+				<seg>Ссылка на пользователя</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="42" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Link in Username</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160215T103801Z" changeid="anonymous">
+				<seg>Ссылка в имени пользователя</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="43" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Show Logged-in Username</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160813T231214Z" changeid="anonymous">
+				<seg>ссылку на профиль?</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="44" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>demo   password:</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041259Z" changeid="MT!">
+				<seg>демо пароль:</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="45" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Demo</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160724T001252Z" changeid="anonymous">
+				<seg>Демо-режим</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="46" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="27" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Demo</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160720T205425Z" changeid="anonymous">
+				<seg>Демо</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="47" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Demo</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160412T161649Z" changeid="anonymous">
+				<seg>Это демо-магазин для тестирования &#x2014; заказы не исполняются.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="48" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Demo</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160724T001252Z" changeid="anonymous">
+				<seg>Демо-режим</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="49" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="27" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Demo</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160720T205425Z" changeid="anonymous">
+				<seg>Демо</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="50" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Demo</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160412T161649Z" changeid="anonymous">
+				<seg>Это демо-магазин для тестирования &#x2014; заказы не исполняются.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="51" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>demo</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20090701T092646Z" changeid="marco">
+				<seg>показать</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="52" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Click onDownload a TMX.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041301Z" changeid="MT!">
+				<seg>Нажмите onDownload TMX.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="53" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="11" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>.Click &lt;a href=&quot;</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150328T173651Z" changeid="anonymous">
+				<seg>.Нажмите  &lt;a href=&quot;</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="54" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Click in a paragraph.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160816T041322Z" changeid="TRANSLATED">
+				<seg>Щелкните абзац.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="55" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="11" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Click</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160424T224648Z" changeid="anonymous">
+				<seg>клик</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="56" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Upload a small .doc (not .docx) file you want to translate, choose source and target languages.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041302Z" changeid="MT!">
+				<seg>Загрузите небольшой .doc (не .docx) файл, который вы хотите перевести, выбор источника и целевых языков.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="57" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>What if the client wants to translate the same source into multiple languages?</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160802T120723Z" changeid="anonymous">
+				<seg>Что делать, если клиент хочет, перевести один и тот же документ на несколько языков?</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="58" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>What if the client wants to translate the same source into multiple languages?</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160801T171909Z" changeid="anonymous">
+				<seg>Что делать, если клиент хочет, чтобы перевести один и тот же документ на несколько языков?</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="59" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>If you want to translate English to your language, visit this link.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20141104T175601Z" changeid="anonymous">
+				<seg>Если хочешь перевести с английского на свой родной язык, пройди по этой ссылке.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="60" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Click onCreate memorythen wait a few minutes while your memory is created.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041304Z" changeid="MT!">
+				<seg>Нажмите кнопку onCreate memorythen ждать несколько минут, в то время как ваша память будет создан.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="61" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="4" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Click the Paste button and wait a few seconds while the program is detecting YouTube video.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160816T041322Z" changeid="MatteoT">
+				<seg>В контекстном меню выберите пункт Вставить и подождите несколько секунд, пока программа распознает YouTube видео.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="62" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="28" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Please wait while your bet is placed.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160816T041322Z" changeid="MatteoT">
+				<seg>Пожалуйста подождите, пока вашу ставку примут.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="63" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Please click import only once and wait, it can take a couple of minutes.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160721T144757Z" changeid="anonymous">
+				<seg>Пожалуйста, нажмите кнопку импортировать только один раз и подождите, это может занять пару минут.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="64" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Download your TMX file and import it in your CAT tool, making sure that the languages match.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041305Z" changeid="MT!">
+				<seg>Загрузите ваш файл TMX и импортировать его в ваш инструмент CAT, убедившись, что языки соответствуют.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="65" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="3" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Download and import file attachments</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160801T115642Z" changeid="anonymous">
+				<seg>Загрузка и импорт файлов вложений</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="66" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Download and import file attachments</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160526T081455Z" changeid="anonymous">
+				<seg>Загрузить и импортировать прикрепленные файлы</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="67" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Download and import file attachments</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160515T155944Z" changeid="anonymous">
+				<seg>Загрузка и импорт файлов</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="68" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Translate your document with your CAT tool.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041306Z" changeid="MT!">
+				<seg>Перевести документ с вашим инструментом CAT.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="69" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="4" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>TRANSLATE</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160701T173242Z" changeid="anonymous">
+				<seg>ПЕРЕВЕСТИ</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="70" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Translate</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160611T073109Z" changeid="anonymous">
+				<seg>Перевод</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="71" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Translate the sentences into your language</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20131012T145054Z" changeid="anonymous">
+				<seg>Перевести предложения на вашем языке</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="72" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2151" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Note.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160202T095114Z" changeid="anonymous">
+				<seg>Примечание.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="73" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="38" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Note.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150814T104720Z" changeid="anonymous">
+				<seg>Note.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="74" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="30" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Note</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160801T181754Z" changeid="anonymous">
+				<seg>Заметка</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="75" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="7" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>note</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160727T072957Z" changeid="anonymous">
+				<seg>Примечания</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="76" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>This is the easiest way to download a memory, but it does not guarantee the best results.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041311Z" changeid="MT!">
+				<seg>Это самый простой способ для загрузки памяти, но он не гарантирует наилучшие результаты.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="77" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Dry mortar is the easiest and most accurate way to guarantee always stable quality.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150604T221949Z" changeid="anonymous">
+				<seg>Сухая строительная смесь - это самый лёгкий и точный путь к гарантии всегда стабильного качества.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="78" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>This model is expensive and does not ensure the best outcomes for people with TB.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20151118T121733Z" changeid="anonymous">
+				<seg>Эта модель является дорогостоящей и не гарантирует наилучшие результаты для людей с ТБ.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="79" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Download does not exist.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20151031T155458Z" changeid="anonymous">
+				<seg>Загрузка не существует.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="80" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Please have a look at thedetailed instructionsfor creating a Translation memory from an empty TMX file.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041312Z" changeid="MT!">
+				<seg>Пожалуйста посмотрите на thedetailed инструкциями, создание памяти переводов из пустой файл TMX.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="81" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Please choose an empty folder.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20140712T120034Z" changeid="anonymous">
+				<seg>Пожалуйста, выберите пустой каталог.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="82" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="5" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Translation memory</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150606T085447Z" changeid="Wikipedia">
+				<seg>Память переводов</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="83" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>translation memory</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20110218T224839Z" changeid="NDerov">
+				<seg>накопитель переводов</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="84" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>(... abridged ...)</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041313Z" changeid="MT!">
+				<seg>(... сокращенный...)</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="85" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>(ABRIDGED TRANSLATION)</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160511T170225Z" changeid="anonymous">
+				<seg>(СОКРАЩЕННЫЙ ПЕРЕВОД)</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="86" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Abridged name of the legal entity in Russian</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160426T142123Z" changeid="anonymous">
+				<seg>Сокращенное наименование юридического лица на русском языке</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="87" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Account filing with authorities, as “Statutory Abridged Balance Sheet”.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150622T141821Z" changeid="anonymous">
+				<seg>подача отчетности в компетентные органы, как например «Предусмотренный законом сокращенный бухгалтерский баланс».</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="88" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Anything else?</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041314Z" changeid="MT!">
+				<seg>Что-нибудь еще?</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="89" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>anything?</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160802T130632Z" changeid="anonymous">
+				<seg>Что?</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="90" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>anything?</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160801T141611Z" changeid="anonymous">
+				<seg>Чего угодно?</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="91" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>anything?</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160801T141600Z" changeid="anonymous">
+				<seg>Чего же?</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="92" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>MyMemory&apos;s goal is to help translators work faster and better by rendering existing translations universally searchable and accessible.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041315Z" changeid="MT!">
+				<seg>MyMemory в цель – помочь переводчикам работать быстрее и лучше путем отрисовки существующих переводов универсально для поиска и доступны.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="93" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="9" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>translations.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160503T211808Z" changeid="anonymous">
+				<seg>переводы.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="94" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="4" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Translations</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160805T074935Z" changeid="anonymous">
+				<seg>Перевод</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="95" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Translators</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20151112T195615Z" changeid="anonymous">
+				<seg>Ted Mossolov</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="96" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>The next big thing is going to be seamlessintegration with CAT tools, which will seeMyMemorymove right onto your desktop as a virtual local memory.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041317Z" changeid="MT!">
+				<seg>Следующая большая вещь будет seamlessintegration с CAT инструменты, которые будут seeMyMemorymove прямо на рабочем столе виртуальной памяти.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="97" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Virtual memory</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150302T185610Z" changeid="Wikipedia">
+				<seg>Виртуальная память</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="98" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Configuring the Virtual Processor to Interact with the Desktop</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20121203T110027Z" changeid="anonymous">
+				<seg>Конфигурация Virtual Processor для рабочего стола</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="99" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Right Sidebar Medium Desktop Expand</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160718T113251Z" changeid="anonymous">
+				<seg>расширение правого сайдбара среднего экрана компьютера</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="100" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>If you have feedback or suggestions on how to improveMyMemory, pleasewrite to us.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041320Z" changeid="MT!">
+				<seg>Если у вас есть отзывы или предложения о том, как improveMyMemory, pleasewrite к нам.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="101" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>If you have any suggestions or wishes</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160201T201543Z" changeid="anonymous">
+				<seg>Если у вас есть какие-либо предложения или пожелания</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="102" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Feedback and suggestions for BrainApps</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160619T024123Z" changeid="anonymous">
+				<seg>Oтзывы и предложения для BrainApps.ru</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="103" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="3" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Please feel free to send us feedback and suggestions.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160111T153011Z" changeid="anonymous">
+				<seg>Пожалуйста, не стесняйтесь и присылайте нам отзывы и предложения.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="104" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="3" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Document created</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150923T095646Z" changeid="anonymous">
+				<seg>Документ создан</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="105" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>Document created with</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041320Z" changeid="MT!">
+				<seg>Документ создан с</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="106" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Document created on</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20151227T121951Z" changeid="anonymous">
+				<seg>Документ создан</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="107" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>No document created</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20150112T112034Z" changeid="anonymous">
+				<seg>Нет созданного документа</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="108" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>wvWare/wvWare version 1.2.9</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041321Z" changeid="MT!">
+				<seg>wvWare/wvWare версия 1.2.9</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="109" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>1.2.9.</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20151002T151229Z" changeid="anonymous">
+				<seg>1.2.9.</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="110" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>&lt;g id=&quot;1&quot;&gt;1.2.9.&lt;/g&gt;&lt;g id=&quot;2&quot;&gt;Excursions: &lt;/g&gt;</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20151022T110142Z" changeid="anonymous">
+				<seg>&lt;g id=&quot;1&quot;&gt;1.2.9.&lt;/g&gt;&lt;g id=&quot;2&quot;&gt;Экскурсии: &lt;/g&gt;</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="111" creationdate="20160816T041322Z" creationid="MyMemory" usagecount="94" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MyMemory">
+				<seg>Version</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MyMemory" changedate="20160814T164425Z" changeid="anonymous">
+				<seg>Версия</seg>
+				</tuv>
+				</tu>
+
+<tu tuid="112" creationdate="20160816T041322Z" creationid="MT!" usagecount="2" lastusagedate="20160816T041322Z">
+				<prop type="x-Match-Value">100%</prop>
+				<tuv lang="EN-GB"  creationdate="20160816T041322Z" creationid="MT!">
+				<seg>&gt;</seg>
+				</tuv>
+				<tuv lang="RU-RU" creationdate="20160816T041322Z" creationid="MT!" changedate="20160816T041322Z" changeid="MT!">
+				<seg>&gt;</seg>
+				</tuv>
+				</tu>
+
+</body>
+		</tmx>

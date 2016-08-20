@@ -50,17 +50,7 @@ namespace disfr.UI
 
         public string TagList { get { return Renderer.TagListFromInline(TransPair.Source); } }
 
-        public string this[string key]
-        {
-            get
-            {
-                string value;
-                TransPair.Props.TryGetValue(key, out value);
-                return value;
-            }
-        }
-
-        public IEnumerable<string> Keys { get { return TransPair.Props.Keys; } }
+        public string this[int key] { get { return TransPair[AssetData.PropMapper[key]]; } }
 
         public string FlatSource { get { return Renderer.FlatFromInline(TransPair.Source); } }
 
@@ -113,5 +103,24 @@ namespace disfr.UI
         public string SourceLang { get; set; }
 
         public string TargetLang { get; set; }
+
+        public int[] PropMapper { get; set; }
     }
+
+    public class AdditionalPropertiesInfo
+    {
+        public readonly int Index;
+
+        public readonly string Key;
+
+        public readonly bool Visible;
+
+        public AdditionalPropertiesInfo(int index, string key, bool visible)
+        {
+            Index = index;
+            Key = key;
+            Visible = visible;
+        }
+    }
+
 }

@@ -36,9 +36,7 @@ namespace disfr.UI
 
         string TagList { get; }
 
-        string this[string key] { get; }
-
-        IEnumerable<string> Keys { get; }
+        string this[int index] { get; }
 
         string FlatSource { get; }
 

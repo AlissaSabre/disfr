@@ -47,7 +47,7 @@ namespace disfr.UI
         /// </summary>
         public string Name { get; private set; }
 
-        #region Rows and AllRows properties
+        #region Rows and related properties
 
         private readonly RowDataCollection _Rows = new RowDataCollection();
 
@@ -79,6 +79,10 @@ namespace disfr.UI
         /// </remarks>
         public IEnumerable<IRowData> AllRows { get { return _Rows.Rows; } }
 
+        private List<AdditionalPropertiesInfo> _AdditionalProps;
+
+        public IEnumerable<AdditionalPropertiesInfo> AdditionalProps { get { return _AdditionalProps; } }
+
         #endregion
 
         private readonly PairRenderer Renderer = new PairRenderer();
@@ -97,7 +101,7 @@ namespace disfr.UI
 
             // Build an instance.
             var new_instance = new TableController(renderer);
-            new_instance._Rows.Rows = BuildBilingualRowData(asset_array, a => a.TransPairs, renderer);
+            new_instance.LoadBilingualRowData(asset_array, a => a.TransPairs, renderer);
             new_instance.Name = name;
 
             // Take care of Alt.
@@ -106,7 +110,7 @@ namespace disfr.UI
                 new_instance.AltLoader = () =>
                 {
                     var alt_instance = new TableController(renderer);
-                    alt_instance._Rows.Rows = BuildBilingualRowData(asset_array, a => a.AltPairs, renderer);
+                    alt_instance.LoadBilingualRowData(asset_array, a => a.AltPairs, renderer);
                     alt_instance.Name = string.Format("TM ({0})", name);
                     return alt_instance;
                 };
@@ -115,27 +119,54 @@ namespace disfr.UI
             return new_instance;
         }
 
-        private static List<IRowData> BuildBilingualRowData(IAsset[] assets, Func<IAsset, IEnumerable<ITransPair>> pairs, PairRenderer renderer)
+        private void LoadBilingualRowData(IAsset[] assets, Func<IAsset, IEnumerable<ITransPair>> pairs, PairRenderer renderer)
         {
+            var props = new List<AdditionalPropertiesInfo>();
+            var props_indexes = new Dictionary<string, int>();
+            foreach (var prop in assets.SelectMany(a => a.Properties))
+            {
+                int index;
+                if (!props_indexes.TryGetValue(prop.Key, out index))
+                {
+                    index = props_indexes[prop.Key] = props.Count;
+                    props.Add(new AdditionalPropertiesInfo(index, prop.Key, prop.Visible));
+                }
+                else if (prop.Visible && !props[index].Visible)
+                {
+                    props[index] = new AdditionalPropertiesInfo(index, prop.Key, prop.Visible);
+                }
+            }
+
             var rows = new List<IRowData>();
             var seq = 0;
             var serial = 0;
             foreach (var asset in assets)
             {
+                var mapper = new int[props.Count];
+                for (int i = 0; i < mapper.Length; i++) mapper[i] = int.MaxValue;
+                for (int j = 0; j < asset.Properties.Count; j++)
+                {
+                    mapper[props_indexes[asset.Properties[j].Key]] = j;
+                }
+
                 var ad = new AssetData()
                 {
                     LongAssetName = asset.Original,
                     BaseSerial = serial,
                     SourceLang = asset.SourceLang,
                     TargetLang = asset.TargetLang,
+                    PropMapper = mapper,
                 };
+
                 foreach (var pair in pairs(asset))
                 {
                     rows.Add(new BilingualRowData(renderer, ad, pair, seq++));
                     if (pair.Serial > 0) serial++;
                 }
             }
-            return rows;
+
+            _AdditionalProps = props;
+            _Rows.Rows = rows;
         }
 
         /// <summary>

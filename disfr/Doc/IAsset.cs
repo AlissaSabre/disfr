@@ -5,6 +5,9 @@ using System.Text;
 
 namespace disfr.Doc
 {
+    /// <summary>
+    /// Represents an asset, which corresponds to a file element in XLIFF.
+    /// </summary>
     public interface IAsset
     {
         /// <summary>
@@ -30,5 +33,35 @@ namespace disfr.Doc
         IEnumerable<ITransPair> TransPairs { get; }
 
         IEnumerable<ITransPair> AltPairs { get; }
+
+        /// <summary>
+        /// List of properties that <see cref="ITransPair"/>s of this asset may have.
+        /// </summary>
+        /// <remarks>
+        /// The returned object will be readonly.
+        /// </remarks>
+        IList<PropInfo> Properties { get; }
+    }
+
+    /// <summary>
+    /// Represents an additional property of an <see cref="ITransPair"/>.
+    /// </summary>
+    public class PropInfo
+    {
+        /// <summary>
+        /// A key to pass to <see cref="ITransPair[string]"/> to get the property value.
+        /// </summary>
+        public readonly string Key;
+
+        /// <summary>
+        /// Whether this property should be initially visible to the user.
+        /// </summary>
+        public readonly bool Visible;
+
+        public PropInfo(string key, bool visible = false)
+        {
+            Key = key;
+            Visible = visible;
+        }
     }
 }
