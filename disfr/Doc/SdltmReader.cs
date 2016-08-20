@@ -284,7 +284,7 @@ namespace disfr.Doc
 
         public IEnumerable<ITransPair> AltPairs { get { return Enumerable.Empty<ITransPair>(); } }
 
-        private IList<PropInfo> _Properties =
+        private static readonly IList<PropInfo> _Properties =
             new List<PropInfo>()
             {
                 new PropInfo("creation_date"),
