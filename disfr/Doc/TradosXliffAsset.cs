@@ -27,6 +27,9 @@ namespace disfr.Doc
             StTags = tags?.Where(tag => tag.Element(SDL + "st") != null)?.ToDictionary(tag => (string)tag.Attribute("id"), tag => tag);
 
             Cxts = file.Element(X + "header")?.Element(SDL + "cxt-defs")?.Elements(SDL + "cxt-def")?.ToDictionary(d => (string)d.Attribute("id"), d => (string)d.Attribute("type"));
+
+            // confirmation status column is made initially visible by popular demand.
+            PropMan.MarkVisible("conf");
         }
 
         protected readonly Dictionary<string, string[]> SdlComments;
