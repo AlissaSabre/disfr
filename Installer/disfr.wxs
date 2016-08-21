@@ -71,12 +71,12 @@
 
     <Component Id='disfr.exe' Directory='INSTALLDIR' Guid='{76840A5F-2A32-48D6-A7FF-4D1BD297C4DA}'>
       <File Name='disfr.exe' Source='disfr.exe' KeyPath='yes'>
-	<Shortcut Id="DesktopFolder.disfr.exe" Directory="DesktopFolder" Advertise='yes'
-		  Name="disfr" WorkingDirectory='INSTALLDIR'
-		  Icon='disfr.exe'/>
-	<Shortcut Id="AppMenuDir.disfr.exe" Directory="AppMenuDir" Advertise='yes'
-		  Name="disfr" WorkingDirectory='INSTALLDIR'
-		  Icon='disfr.exe'/>
+        <Shortcut Id="DesktopFolder.disfr.exe" Directory="DesktopFolder" Advertise='yes'
+                  Name="disfr" WorkingDirectory='INSTALLDIR'
+                  Icon='disfr.icon.exe'/>
+        <Shortcut Id="AppMenuDir.disfr.exe" Directory="AppMenuDir" Advertise='yes'
+                  Name="disfr" WorkingDirectory='INSTALLDIR'
+                  Icon='disfr.icon.exe'/>
       </File>
       <RemoveFolder Id='disfr.exe' Directory='AppMenuDir' On='uninstall' />
     </Component>
@@ -145,8 +145,8 @@
 
     <CustomAction Id='NewerProductFound' Error='A same or newer version of this program appears installed.  Please remove it first if you want to install this version ($(var.Version)).' />
 
-    <Icon Id="disfr.exe" SourceFile="..\disfr\AppIcon.ico" />
-    <Property Id="ARPPRODUCTICON" Value="disfr.exe" />
+    <Icon Id="disfr.icon.exe" SourceFile="..\disfr\AppIcon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="disfr.icon.exe" />
     <Property Id="ARPNOMODIFY" Value="yes" />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/AlissaSabre/disfr"/>
 
