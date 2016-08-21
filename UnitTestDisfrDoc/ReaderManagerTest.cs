@@ -5,7 +5,7 @@ using disfr.Doc;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UnitTestDisfr
+namespace UnitTestDisfrDoc
 {
     [TestClass]
     public class ReaderManagerTest
@@ -96,6 +96,7 @@ namespace UnitTestDisfr
             public string TargetLang { get { return "fr-FR"; } }
             public IEnumerable<ITransPair> TransPairs { get { return new ITransPair[0]; } }
             public IEnumerable<ITransPair> AltPairs { get { return null; } }
+            public IList<PropInfo> Properties { get { return new List<PropInfo>(0).AsReadOnly(); } }
         }
     }
 }

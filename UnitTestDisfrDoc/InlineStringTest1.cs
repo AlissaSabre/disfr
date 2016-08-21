@@ -5,7 +5,7 @@ using System.Linq;
 
 using disfr.Doc;
 
-namespace UnitTestDisfr
+namespace UnitTestDisfrDoc
 {
     [TestClass]
     public class InlineStringTest1

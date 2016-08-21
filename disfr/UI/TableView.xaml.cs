@@ -188,15 +188,15 @@ namespace disfr.UI
             TagList.Visibility = Visibility.Collapsed;
 
             // Create columns for additional properties.
-            // They are initially hidden but users can view them.
-            // ColumnInUse attached property is set to true for the purpose. 
-            foreach (var key in table.AllRows.SelectMany(r => r.Keys).Distinct())
+            // Their initial shown/hidden states are specified by the DOC module via AdditionalProps.
+            // ColumnInUse attached property is set to true so that users can change their visibility.
+            foreach (var props in table.AdditionalProps)
             {
                 var column = new DataGridTextColumn()
                 {
-                    Header = key.Replace("_", " "), // XXX: No, we should not do this!
-                    Binding = new Binding("[" + key + "]"),
-                    Visibility = Visibility.Collapsed,
+                    Header = props.Key.Replace("_", " "), // XXX: No, we should not do this!
+                    Binding = new Binding("[" + props.Index + "]"),
+                    Visibility = props.Visible ? Visibility.Visible : Visibility.Collapsed,
                 };
                 column.SetValue(ColumnInUseProperty, true);
                 dataGrid.Columns.Add(column);
@@ -427,8 +427,8 @@ namespace disfr.UI
         {
             if (path.StartsWith("[") && path.EndsWith("]"))
             {
-                var key = path.Substring(1, path.Length - 2);
-                return r => r[key];
+                var index = int.Parse(path.Substring(1, path.Length - 2));
+                return r => r[index];
             }
 
             var property = typeof(IRowData).GetProperty(path);

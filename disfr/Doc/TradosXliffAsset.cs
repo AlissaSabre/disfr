@@ -27,6 +27,9 @@ namespace disfr.Doc
             StTags = tags?.Where(tag => tag.Element(SDL + "st") != null)?.ToDictionary(tag => (string)tag.Attribute("id"), tag => tag);
 
             Cxts = file.Element(X + "header")?.Element(SDL + "cxt-defs")?.Elements(SDL + "cxt-def")?.ToDictionary(d => (string)d.Attribute("id"), d => (string)d.Attribute("type"));
+
+            // confirmation status column is made initially visible by popular demand.
+            PropMan.MarkVisible("conf");
         }
 
         protected readonly Dictionary<string, string[]> SdlComments;
@@ -53,7 +56,7 @@ namespace disfr.Doc
                     if (array.Length > 0)
                     {
                         var pair = array.FirstOrDefault(p => p.Serial > 0) ?? array[0];
-                        pair.AddProp("sdl:cxt", string.Join("\r\n", cxts));
+                        AddProp(pair, "sdl:cxt", string.Join("\r\n", cxts));
                     }
                     pairs = array;
                 }
@@ -73,11 +76,11 @@ namespace disfr.Doc
                 {
                     foreach (var attr in seg.Attributes().Where(a => a.Name != "id"))
                     {
-                        pair.AddProp(attr.Name.LocalName, attr.Value);
+                        AddProp(pair, attr.Name.LocalName, attr.Value);
                     }
                     foreach (var value in seg.Elements(SDL + "value"))
                     {
-                        pair.AddProp((string)value.Attribute("key"), value.Value);
+                        AddProp(pair, (string)value.Attribute("key"), value.Value);
                     }
                 }
             }

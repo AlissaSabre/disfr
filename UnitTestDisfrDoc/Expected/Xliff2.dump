@@ -1,0 +1,15 @@
+<Package>
+<Asset package="..\..\Samples\Xliff2.xliff" original="v12/messages.xml" source-lang="en-US" target-lang="fr-FR">
+<Pair><Serial>-1</Serial><Id>1</Id><Source>&lt;html&gt;&lt;head&gt;&lt;title&gt;</Source><Target></Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang><Prop name="translate">no</Prop></Pair>
+<Pair><Serial>1</Serial><Id>2</Id><Source>Remove entry</Source><Target></Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang></Pair>
+<Pair><Serial>2</Serial><Id>18</Id><Source>Do not use special CPU acceleration functions</Source><Target>N'utilise pas les accélérations propres aux CPU</Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang><Prop name="approved">yes</Prop></Pair>
+<Pair><Serial>3</Serial><Id>37a</Id><Source>The configured filename encoding cannot be converted to {bpt;38be}UTF-8{ept;38c3}.</Source><Target>Le codage de caractères configuré pour le nom de fichier ne peut pas être converti en {bpt;38be}UTF-8{ept;38c3}.</Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang></Pair>
+<Pair><Serial>-1</Serial><Id>*</Id><Source> </Source><Target> </Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang></Pair>
+<Pair><Serial>4</Serial><Id>37b</Id><Source>Please check the value of the environment variable {ph;38f5}.</Source><Target>Vérifiez la valeur de la variable d'environnement {ph;38f5}.</Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang></Pair>
+<Pair><Serial>5</Serial><Id>361</Id><Source>Paste as</Source><Target>Coller comme</Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang></Pair>
+<AltPairs>
+  <Pair><Serial>0</Serial><Id>2</Id><Source>Remove Entry</Source><Target>Supprimer l'entrée</Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang><Prop name="origin">v11/messages.xml</Prop></Pair>
+  <Pair><Serial>0</Serial><Id>2</Id><Source>Remove the selected entry</Source><Target>Supprimer l'entrée sélectionnée</Target><SourceLang>en-US</SourceLang><TargetLang>fr-FR</TargetLang><Prop name="origin">generic.tmx</Prop></Pair>
+</AltPairs>
+</Asset>
+</Package>

@@ -1,0 +1,1026 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<tmx version="1.4">
+<header adminlang="en" creationdate="20040823T101333Z" creationtool="Heartsome TM Server" creationtoolversion="1.0.1" datatype="xml" o-tmf="unknown" segtype="block" srclang="*all*"/>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tu creationdate="20020919T004233Z" creationid="Mike Du" tuid="1093266792948">
+<tuv xml:lang="de">
+<seg>Xuan Zang - möglicherweise Chinas größter Übersetzer</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Xuan Zang, Possibly China's Greatest Translator</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Xuan Zang, probablemente el traductor más importante de China</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Xuan Zang, probabilmente il più grande traduttore cinese</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>현장법사(玄奬法師), 중국 최고의 번역가</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>玄奘，中国最伟大的翻译家</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266793131">
+<tuv xml:lang="de">
+<seg>Das von ihm entwickelte zehnstufige Qualitätssicherungsverfahren ist über 1300 Jahre alt, jedoch erheblich gründlicher und genauer als die heutigen Verfahren.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>His 10-stage quality control process initiated more than 1300 years ago is far more thorough and exacting than any existing today.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>El proceso de control de calidad en diez pasos que inició hace más de 1300 años es mucho más completo y preciso que los que existen en la actualidad.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Il suo metodo di controllo di qualità in 10 fasi risale a più di 1300 anni fa ed è molto più accurato e preciso di qualsiasi metodo attuale.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>그가 1300여년 전 시작한 10단계 품질 관리 방법은 현존하는 것보다 훨씬 더 철저하고 정확하다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>1300 多年前，他创立了翻译质量控制的十个步骤，其严谨与精确程度远远超过当今翻译界。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266793344">
+<tuv xml:lang="de">
+<seg>Einführung</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Introduction</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Introducción</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Introduzione</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>서론</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>简介</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266793385">
+<tuv xml:lang="de">
+<seg>Jeder Chinese, ob alt oder jung, innerhalb oder außerhalb Chinas, kennt die Heldentaten der klassischen Sprachübertragung Xuan Zangs, des frommen Mönchs der Tang-Dynastie, und seiner drei sagenhaften Schüler, des unsterblichen Affenkönigs, des Großen Weisen; Schweinekopfs, der Acht Verneinungen des Buddhismus und Bruder Sands, des dritten Schülers. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Every Chinese, young and old, within and outside China, knows the classical language rendering of the exploits of Xuan Zang, the pious Tang dynasty monk and his three storybook disciples, the indestructible Monkey King, the Great Sage; Brother Pig, the Eight Denials (of Buddhism) and Sand Monk, the third disciple. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Todos los chinos, jóvenes y viejos, dentro y fuera de China, conocen la versión en lengua clásica de las hazañas de Xuan Zang, el devoto monje de la dinastía Tang, y sus tres legendarios discípulos: el indestructible Rey Mono, el Gran Sabio, el Hermano Cerdo, de las ocho negaciones del budismo, y el Monje Arena, el tercer discípulo. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>I Cinesi d'ogni età, in Cina e fuori di essa, conoscono la versione in cinese classico delle avventure di Xuan Zang, il pio monaco buddista della dinastia Tang e dei suoi tre leggendari discepoli, l'indistruttibile Re Scimmia, il Grande Saggio; il Porcello delle Otto Astinenze (del Buddismo) e Sabbioso, il terzo discepolo. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>중국 국내외, 남녀노소를 불문한 모든 중국인들은 당대(唐代, 618-907 AD)의 독실한 승려인 현장법사와 그의 이야기책 속에 나오는 세 명의 제자들, 즉 공(空)을 깨닫는다라는 뜻을 지닌 불멸의 손오공, (불교의) 여덟 가지 계율을 나타내는 저팔계, 세 번째 제자인 사오정이 이루어낸 업적 가운데 고전적인 언어 번역에 대해서 알고 있다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>古今中外，几乎无人不晓唐代高僧玄奘在古代汉语方面所做的贡献，以及他在小说《西游记》中的三位徒弟，大徒弟孙悟空，二徒弟猪八戒和三徒弟沙僧。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266793776">
+<tuv xml:lang="de">
+<seg>Zu Lebzeiten war Xuan Zang ein wahrhaftig außergewöhnlicher buddhistischer Mönch. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>In real life, Xuan Zang was a truly remarkable Buddhist monk. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>En la vida real, Xuan Zang fue un monje budista realmente excepcional. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Nella vita reale, Xuan Zang fu un monaco veramente eccezionale. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>실제로 현장법사는 매우 뛰어난 불교 승려였다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>在真实生活中，玄奘的确是一个了不起的僧人。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266793860">
+<tuv xml:lang="de">
+<seg>Er reiste durch das Land durch feindliche und unerforschte Gebiete zum Geburtsort Buddhas auf dem indischen Subkontinent und kehrte mit einer Vielzahl buddhistischer Sutras nach Chang'an (dem heutigen Xi'an) zurück. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>He traveled on land on the way through hostile and uncharted territory to the birthplace of Buddha in the Indian sub-continent and returned to Chang'an (modern day Xi'an) with a set of Buddhist sutras. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Emprendió un largo camino a través de territorios hostiles e inexplorados y llegó finalmente al lugar de nacimiento de Buda, en el subcontinente indio. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Egli attraversò zone ostili e inesplorate fino a raggiungere il luogo di nascita di Budda, nel subcontinente indiano. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>인도 아대륙(亞大陸)에 있는 부처의 탄생지를 찾기 위해 적대적이고 지도에도 나타나있지 않은 지역들을 거쳐 대륙을 여행했고 일련의 불교 경전을 가지고 장안(현재의 시안(서안, 西安))으로 돌아왔다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>他突破重重关隘，横渡渺无人烟的地区，直到印度次大陆的佛教发源地，然后带着一套佛教经典回到长安（现西安）。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794053">
+<tuv xml:lang="de">
+<seg>Die umfangreiche Reihe an Sutras war im äußerst komplizierten Sanskrit verfasst. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>The voluminous set of sutras was written in the extremely difficult Sanskrit language. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Cuando regresó a Chang'an (actualmente Xi'an), llevaba una colección de sutras budistas escritos en sánscrito, lengua extremadamente difícil. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fece ritorno a Chang'an (l'attuale Xi'an) con una voluminosa edizione completa di sutra buddisti, scritti nel difficilissimo Sanscrito. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>방대한 양의 경전은 극도로 어려운 산스크리트어(범어, 梵語)로 저술되어 있었다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>这套卷帙浩繁的佛经是用极难懂的梵语所著。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794192">
+<tuv xml:lang="de">
+<seg>Gemeinsam mit seinen erfahrensten Schülern übersetzte er die annähernd 75 Sutra-Bände in die gleichermaßen schwierigen chinesischen Sprachen.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Together with his doyens of pupils, he completed the translation of some 75 volumes of the sutras into the equally difficult Chinese languages</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Con la ayuda de sus discípulos más veteranos, tradujo unos 75 volúmenes de sutras a las no menos difíciles lenguas chinas. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>In collaborazione con i suoi allievi più esperti, egli tradusse qualcosa come 75 volumi di sutra nelle altrettanto ostiche lingue cinesi. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>그는 오랫동안 수행해온 제자들과 함께 75권이나 되는 경전을 산스크리트어만큼 어려운 중국어로 번역했다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>他与他的高徒一起将 75 卷佛经翻译成同等难度的汉语。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794333">
+<tuv xml:lang="de">
+<seg>Die 10 Stufen</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>The 10 Stages</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Los 10 pasos</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Le 10 fasi</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>열 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>10 个步骤</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794352">
+<tuv xml:lang="de">
+<seg>Buddhistische Sutras, die vor der Tang-Dynastie ins Chinesische übertragen worden waren, waren nur schwer verständlich, da die ersten Übersetzer buddhistische Mönche nicht-hanchinesischer Herkunft waren. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Buddhist sutras translated into Chinese prior the Tang dynasty were difficult to comprehend because the first translators were Buddhist monks of non-Han Chinese origin. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Las traducciones de los sutras budistas al chino, anteriores a la dinastía Tang, resultaban difíciles de comprender porque sus autores habían sido monjes budistas que no eran de origen Han. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Le traduzioni di sutra buddisti anteriori alla dinastia Tang erano di difficile comprensione, giacché i monaci che le avevano tradotte non erano di origine Han.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>당대 이전에 중국어로 번역된 불교 경전들은 한족(漢族) 출신이 아닌 불교 승려들이 최초로 번역했기 때문에 이해하기 어려웠다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>唐朝以前，汉译佛经颇令人费解，因为最初的译者是非汉族血统的和尚。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794516">
+<tuv xml:lang="de">
+<seg>Es sollten mehrere hundert Jahre vergehen, ehe China mehrere buddhistischer Mönche hervorbrachte, die sowohl Sanskrit als auch die komplizierten buddhistischen Lehren beherrschten, die auf Sanskrit geschrieben waren. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>It took China several hundred years to bring forth a selection of Buddhist monks who could master both the Sanskrit language as well as the complex Buddhism doctrines, which were written in Sanskrit. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Tuvieron que transcurrir varios siglos para que se formase en China un grupo de monjes que dominasen a la vez las complejas doctrinas budistas y el sánscrito, lengua en la que estaban escritas. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Ci vollero alcuni secoli prima che in Cina si formasse un gruppo di monaci buddisti in grado di dominare sia le complesse dottrine buddiste sia il sanscrito, lingua in cui queste furono scritte. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>중국은 산스크리트어 뿐만 아니라 산스크리트어로 쓰여진 복잡한 불교의 교리에 정통한 불교 승려들을 배출하는데 수 백년이 걸렸다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>几百年后，才出现了一批和尚，他们既精通梵文，又深晓复杂的梵经义理。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794692">
+<tuv xml:lang="de">
+<seg>Unter ihnen galt Xuan Zang als einer der führenden und begabtesten Schüler. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>And Xuan Zang was recognized as foremost among them. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Xuan Zang, considerado el representante más eminente, </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Xuan Zang, considerato il massimo rappresentante di questo gruppo, </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>현장법사는 그들 가운데에서도 최고로 인정 받았다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>而玄奘被公认为是其中最卓越的大师。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794763">
+<tuv xml:lang="de">
+<seg>Er wurde zum Leiter des kaiserlichen Übersetzungszentrums der Tang-Dynastie ernannt. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>He was appointed chief of the Tang dynasty imperial translation center. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>fue nombrado director del centro imperial de traducción de la dinastía Tang.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>fu nominato direttore del centro di traduzione della dinastia imperiale Tang.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>그는 당대 황실 번역소(역경원)의 대표자로 임명되었다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>他被指定为唐代官方译经院的负责人， </seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794853">
+<tuv xml:lang="de">
+<seg>Er entwickelte und führte einen Übersetzungsablauf ein, mit dem die Qualität des Endprodukts garantiert wurde. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>It was he who designed and implemented a translation workflow that would guarantee the quality of the final product. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Él fue quien creó, y más tarde implantó, un método de trabajo que garantizaría la calidad del producto final. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fu lui a creare e a mettere a punto un sistema di lavoro per garantire la qualità del prodotto finale.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>최종 완성본의 품질을 보증할 수 있는 번역 작업 과정을 고안해내고 실행한 사람이 바로 그였다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>他设计并实施了一套翻译工作流程，以确保最后译作的质量。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266794974">
+<tuv xml:lang="de">
+<seg>Das im Folgenden aufgeschlüsselte Verfahren ist es wert, von modernen Übersetzungsteams aufgegriffen zu werden.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>The process detailed below is well worth adopting by any modern day translation team.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Este proceso, que se detalla a continuación, podría ser perfectamente aplicable a cualquier equipo de traducción de nuestros días.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Anche ai giorni nostri, il metodo descritto qui sotto può benissimo essere adottato da qualsiasi equipe di traduttori.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>아래 열거한 과정은 오늘날의 번역 팀도 도입해 볼 만한 가치가 있을 것이다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>下面所列的详细步骤是值得让当今任何翻译队伍采纳借鉴的。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795125">
+<tuv xml:lang="de">
+<seg>Stufe 1</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 1</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 1</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 1</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>1 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第一步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795138">
+<tuv xml:lang="de">
+<seg>Chefübersetzer und Buddhismusexperten studieren und legen gemeinsam den Originaltext in Sanskrit aus. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Master translator and Buddhism expert to jointly study and interpret the original text written in Sanskrit. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>El experto en sánscrito y el experto en budismo trabajan conjuntamente en el estudio y la interpretación del texto original sánscrito. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Il maestro traduttore e l'esperto di buddismo studiano e interpretano insieme il testo originale sanscrito. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>번역 팀장과 불교 전문가가 함께 산스크리트어로 쓰여진 원문을 연구하고 해석한다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>由主译和佛教专家共同研讨梵经义理，并解释梵语经文。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795269">
+<tuv xml:lang="de">
+<seg>Das können eine oder mehrere Personen sein.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>It could involve one or more persons.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>En este paso pueden participar una o varias personas más.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>A questa fase possono partecipare una o più persone.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>여기에는 한 명 이상의 사람들이 참여할 것이다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>此过程需要一个或更多的人参与。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795322">
+<tuv xml:lang="de">
+<seg>Stufe 2</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 2</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 2</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 2</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>2 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第二步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795337">
+<tuv xml:lang="de">
+<seg>Alle Mitarbeiter des Übersetzungsteams wohnen der Lesung des betreffenden Textes durch den Chefübersetzer bei. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>All members of the translation team to attend a recital of the text in question by the Master translator. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Todos los miembros del equipo traductor asisten a un recital del texto en cuestión, ofrecido por el traductor experto. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Tutti i membri del gruppo di traduzione assistono alla lettura del testo in questione da parte del maestro traduttore, </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>번역 팀의 모든 멤버들이 번역 팀장이 문제를 제기한 본문의 낭독에 참여한다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>翻译队伍的所有成员吟诵经文，由主译提问。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795525">
+<tuv xml:lang="de">
+<seg>Dies dient der Sicherung der Genauigkeit der in Stufe 1 gewonnenen Auslegung. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>The purpose is to verify the accuracy of the interpretation undertaken in Stage 1. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>La finalidad de esta etapa es comprobar que en el paso 1 se haya interpretado correctamente el texto. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>allo scopo di verificare l'esattezza di quanto interpretato nella fase 1.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>1단계에서 수행한 해석이 정확한지 확인하는 것이 목적이다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>其目的是检验第一步中解释的准确性。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795617">
+<tuv xml:lang="de">
+<seg>Der Vortrag des Textes ist notwendig, da die Schriften ursprünglich zum Vorlesen gedacht waren.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>A recital is necessary because the scriptures were originally written for recitation.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Su lectura en voz alta es necesaria puesto que, en su origen, las escrituras fueron concebidas para ser recitadas. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>La lettura è necessaria perché originariamente il testo fu concepito per la recitazione.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>경전들은 원래 낭독하기 위해 쓴 것이기 때문에 낭독이 필수적이다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>因为经文最初就是用于吟诵的，所以此过程尤显必要。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795725">
+<tuv xml:lang="de">
+<seg>Stufe 3</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 3</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 3</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 3</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>3 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第三步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795739">
+<tuv xml:lang="de">
+<seg>Ein Team von Übersetzern erstellt den ersten chinesischen Entwurf des Sanskrit-Textes. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>A team of junior translators produces the first Chinese draft of the Sanskrit text. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Un equipo de traductores principiantes redacta en chino el primer esbozo del texto original en sánscrito. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Un gruppo di allievi traduttori redige una prima bozza in cinese del testo sanscrito. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>하위 번역팀이 산스크리트어 본문에 대해 중국어 초안을 만든다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>由初级翻译人员第一次将梵语经文翻译成汉语初稿， </seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795838">
+<tuv xml:lang="de">
+<seg>Der Entwurf enthält eine Mischung an transliterierten Sanskrit-Begriffen und Standardchinesisch.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>The draft is a combination of transliteration of Sanskrit terms and standard Chinese.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>El borrador es una combinación de transliteración de términos sánscritos y términos de chino estándar.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>La bozza è una combinazione di traslitterazione di termini sanscriti e di termini in cinese standard.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>이 초안에는 산스크리트 용어의 음역(音譯)과 중국 표준어가 결합되어 있다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>该初稿包含梵文术语的音译和标准汉语。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266795952">
+<tuv xml:lang="de">
+<seg>Stufe 4</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 4</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 4</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 4</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>4 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第四步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796006">
+<tuv xml:lang="de">
+<seg>Erarbeitung einer vollständig chinesischen Version durch einen erfahrenen buddhistischen Mönch, dessen Muttersprache Chinesisch ist und der in der Übersetzung heiliger Schriften geschult ist. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Production of a complete Chinese version by a senior native Chinese Buddhist monk trained to undertake scripture translation. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Un monje budista experto, cuyo idioma materno es el chino, formado para emprender la traducción de las escrituras, realiza la versión completa en chino. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Elaborazione di una versione cinese completa a cura un monaco buddista di madrelingua cinese, esperto e specializzato nella traduzione di testi sacri. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>토종 중국인으로 경전 번역에 숙련된 중견 불교 승려에 의한 완전한 중국어판을  작성한다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>由一位母语为汉语的高僧负责将全部的汉语译文整理成经文。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796174">
+<tuv xml:lang="de">
+<seg>Dies ist die wichtigste Stufe des gesamten Verfahrens. Diese Aufgabe obliegt einem Mönch, der über umfangreiche und tiefgreifende Kenntnisse der chinesischen Kultur und Sprache verfügt.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>This is the most important stage in the entire process and it must be undertaken by a monk with an in-depth knowledge of Chinese culture and language.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Éste es el paso más importante del proceso y su realización debe confiarse a un monje con amplios conocimientos de la lengua y la cultura chinas.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Questa è la fase più importante dell'intero processo e deve essere affidata a un monaco con una perfetta padronanza della cultura e della lingua cinese.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>전 과정 중에서 이 단계가 가장 중요하며 중국의 문화와 언어에 대해 심층적인 지식을 가지고 있는 승려가 수행해야만 한다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>这是所有步骤中最重要的一步，必须由一位深晓中国文化和语言的佛教大师负责。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796351">
+<tuv xml:lang="de">
+<seg>Stufe 5</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 5</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 5</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 5</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>5 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第五步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796367">
+<tuv xml:lang="de">
+<seg>Ausarbeitung der Satzstruktur der vollständigen chinesischen Version. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Refinement of sentence structure of the complete Chinese version. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Se perfecciona la estructura de las frases de la versión china completa. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Perfezionamento della struttura delle frasi dell'intera versione cinese. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>완전한 중국어 판의 문장 구조를 다듬는다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>将最后中文译文的句子结构进行润色加工， </seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796460">
+<tuv xml:lang="de">
+<seg>Die Notwendigkeit dieser Stufe ergibt sich aus den immensen sprachlichen Unterschieden zwischen Ursprungs- und Zielsprache.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>This is a necessary stage because of the vast linguistic differences between the source and target language.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Este paso es necesario debido a la gran divergencia lingüística entre los idiomas de origen y de destino.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>È una fase necessaria, viste le grandi differenze linguistiche tra la lingua di partenza e quella d'arrivo.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>이 단계는 원문과 목표 언어 사이에 커다란 언어적 차이가 있기 때문에 필수적이다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>这一步非常必要，因为在源语言与目标语言之间存在巨大的语言差异。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796587">
+<tuv xml:lang="de">
+<seg>Stufe 6</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 6</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 6</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 6</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>6 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第六步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796604">
+<tuv xml:lang="de">
+<seg>Übersetzung der chinesischen Version in Sanskrit, um die Genauigkeit der Übertragung des Ursprungstextes zu überprüfen. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Reverse translation of the Chinese version into Sanskrit in order to verify the accuracy of the interpretation of the original text. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>La versión china se somete a una traducción inversa al sánscrito, con el fin de verificar que el texto original se haya interpretado con la máxima exactitud. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Traduzione inversa della versione cinese al sanscrito, al fine di verificare l'esattezza dell'interpretazione del testo originale. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>원문의 해석이 정확한지 검증하기 위해 중국어 판을 산스크리트어로 거꾸로 번역한다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>为确保原文翻译的准确性，将中文译文翻回梵语。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796755">
+<tuv xml:lang="de">
+<seg>Fehler in der Übertragung müssen in der chinesischen Version unverzüglich berichtigt werden.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Mistakes in interpretation are to be promptly rectified in the Chinese version.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Los errores de interpretación se rectifican inmediatamente en la versión china.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Errori d'interpretazione sono immediatamente rettificati nella versione cinese.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>해석상의 실수를 중국어 판에서 신속하게 수정할 수 있다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>翻译中的错误可以迅速地在译文中得以纠正。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796864">
+<tuv xml:lang="de">
+<seg>Stufe 7</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 7</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 7</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 7</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>7 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第七步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266796880">
+<tuv xml:lang="de">
+<seg>Nachbearbeitung der überprüften chinesischen Version zur Ermittlung falsch verwendeter Zeichen, zur Verfeinerung des sprachlichen Ausdrucks und damit zur Verbesserung der Lesbarkeit.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Review of the verified Chinese version to identify errors in character usage, and refinement of linguistic expressions to improve readability.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Se revisa la versión china validada para detectar posibles errores en el uso de los caracteres y pulir las expresiones lingüísticas de modo que el texto resulte más legible.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Revisione della versione cinese precedentemente controllata, al fine di individuare errori nell'uso di caratteri. Perfezionamento delle espressioni idiomatiche per una migliore leggibilità.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>문자 사용 상의 오류를 찾아내기 위해 검증된 중국어 판을 재검토하고, 보다 읽기 쉽게 하기 위해 언어적 표현을 다듬는다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>再次检查校验后的中文译文，找出措词不当处，将语言表达得更加明确精炼，提高其可读性。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797078">
+<tuv xml:lang="de">
+<seg>Stufe 8</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 8</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 8</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 8</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>8 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第八步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797098">
+<tuv xml:lang="de">
+<seg>Letzter Schliff, um die literarische Schönheit der Sprache zu verbessern und um ansonsten eintönigen Schriften Farbigkeit zu geben.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Further polishing to improve the literary beauty of the language and adding colors to the otherwise monotonous writings.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Nueva revisión para mejorar la belleza literaria de la lengua y dar un toque de color a los textos de lectura monótona.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Ulteriore revisione per migliorare la qualità letteraria della lingua e per aggiungere coloritura ai testi, che altrimenti potrebbero risultare monotoni. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>언어가 갖는 문학적 아름다움을 높이기 위해 세련되게 다듬기와 단조로운 문장들에 색채를 입힌다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>再次将译文进行润色，增强其语言的文学欣赏性，并对单调部分加以修饰。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797242">
+<tuv xml:lang="de">
+<seg>Stufe 9</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 9</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 9</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 9</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>9 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第九步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797261">
+<tuv xml:lang="de">
+<seg>Überprüfung der Klanggefälligkeit durch eine Lesung der Übersetzung. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Verification of the audio quality by reciting the translation aloud. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Comprobación de la musicalidad del texto mediante lectura en voz alta de la traducción. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Lettura ad alta voce della traduzione per verificarne la qualità acustica; </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>번역물을 큰소리로 낭독하여 음질을 확인한다. </seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>通过大声朗读译文，确定译文的听觉质量。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797353">
+<tuv xml:lang="de">
+<seg>Die akustische Wirkung ist wichtig, da die Schriften zur Predigt vor einer Zuhörerschaft vorgesehen sind.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>The audio effect is important because scriptures are meant for preaching to an audience.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>El aspecto auditivo es importante, puesto que las oraciones serán recitadas en público.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>di grande importanza, considerato che le scritture furono concepite per essere recitate in pubblico.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>경전은 청중을 설득하기 위한 것이므로 청각적인 효과가 중요하다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>音效是很重要的，因为经文是用于讲述给听众的。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797464">
+<tuv xml:lang="de">
+<seg>Stufe 10</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Stage 10</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Paso 10</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Fase 10</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>10 단계</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>第十步</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797482">
+<tuv xml:lang="de">
+<seg>Letzte Prüfung durch den Chefübersetzer.</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Final check by the Master Translator.</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Revisión final por parte del traductor experto. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Verifica finale da parte del maestro traduttore.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>번역 팀장이 최종 점검한다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>由主译最后检查译文。</seg>
+</tuv>
+</tu><tu changedate="20040705T121341Z" creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797537">
+<tuv xml:lang="de">
+<seg>Schlussbemerkung</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Conclusion</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Conclusión</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Conclusione</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>결론</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>总结</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797565">
+<tuv xml:lang="de">
+<seg>Xuan Zang hat für die Übersetzung der buddhistischen Sutras Bedeutendes geleistet. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Xuan Zang did a great job in the translation of the Buddhist sutras. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Xuan Zang elaboró una traducción extraordinaria de los sutras budistas. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Xuan Zang fece un'eccezionale traduzione dei sutra buddisti. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>현장법사는 불교 경전 번역에서 대단한 위업을 달성했다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>玄奘为佛经的翻译做出了巨大的贡献。</seg>
+</tuv>
+</tu><tu changedate="20040823T101705Z" creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797652">
+<tuv xml:lang="de">
+<seg>Er tat sich nicht nur als außergewöhnlicher Linguist hervor, sondern widmete sich auch als ergebener Buddhist mit einem überragenden inhaltlichen Verständnis dieser Aufgabe von ganzem Herzen. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>He was able to excel not only was he an outstanding linguist but also he was wholeheartedly committed to the task as a devoted Buddhist with an extraordinary understanding of its contents. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Demostró que no sólo era un lingüista excepcional, sino también un budista devoto que se volcó en cuerpo y alma en un cometido que conocía a fondo. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>Personaggio fuori del comune, egli non solo fu uno straordinario linguista, ma anche un buddista devoto, che si dedicò con abnegazione a una materia che conosceva a fondo: impegnò, </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>그는 뛰어난 언어학자였을 뿐만 아니라, 귀의한 불자로서 경전 내용을 정확히 파악하여 전심 전력을 다해 과업을 수행한 뛰어난 사람이었다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>这不仅在于他是一个杰出的语言学家，而且他作为一个虔诚的佛教徒，凭着对佛经的超凡的理解力，将全身心投入到这项事业中。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797842">
+<tuv xml:lang="de">
+<seg>Er hat dieser Arbeit dreizehn Jahre seines Lebens gewidmet. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Indeed, he dedicated thirteen years of his life to the task. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>Dedicó trece años a su gran obra, </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>infatti, ben tredici anni in quest'impresa.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>실제로 그는 이 작업에 13년이라는 세월을 바쳤다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>他为这项工程投入了十三年时间。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797899">
+<tuv xml:lang="de">
+<seg>Und die Aufgabe bestand nicht lediglich darin, eine Sprache in eine andere zu übertragen. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>And the task was not simply transforming one language into another. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>que no se limitaba a transformar una lengua en otra, </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>E non si trattava solo di trasformare una lingua in un'altra: per un'efficace divulgazione del Buddismo, </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>그리고 이 작업은 단순히 하나의 언어를 다른 언어로 바꾸는 것이 아니었다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>这已不仅仅是将一种语言翻译成另外一种语言。</seg>
+</tuv>
+</tu><tu changedate="20040823T101717Z" creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266797991">
+<tuv xml:lang="de">
+<seg>Um den Buddhismus wirkungsvoll zu verbreiten, mussten die chinesischsprachigen Sutras von den chinesischen Gläubigen wirklich verstanden werden. </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>In order to effectively spread Buddhism, the sutras in Chinese would have to be understood by the Chinese devotees. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>puesto que para difundir el budismo el único medio era que los devotos chinos comprendieran los sutras.</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>i sutra in cinese dovevano risultare comprensibili ai fedeli cinesi.</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>불교를 효과적으로 전파하기 위해서 중국어 경전을 중국인 신자들이 이해해야만 했다. </seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>为了有效地传播佛教，中文版的佛经必须被中国的信徒所读懂。</seg>
+</tuv>
+</tu><tu creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266798115">
+<tuv xml:lang="de">
+<seg>Mit anderen Worten, er musste den Absatzmarkt in Betracht ziehen: </seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>In other words, he had to take into account the marketplace. </seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>En otras palabras: debía tener en cuenta el mercado. </seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>In altre parole, bisognava tener conto del mercato. </seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>다시 말해, 그는 속세를 염두에 두어야만 했다. </seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>换句话说，他必须考虑这个群体。</seg>
+</tuv>
+</tu><tu changedate="20040823T101647Z" creationdate="20020930T004233Z" creationid="Mike Du" tuid="1093266798174">
+<tuv xml:lang="de">
+<seg>Waren die Übersetzungen für den Adel gedacht, von dessen finanzieller Unterstützung der Buddhismus abhängig war, oder für die weniger gebildete breite Bevölkerung, um den Marktanteil zu erhöhen? Oder für beide?</seg>
+</tuv>
+<tuv xml:lang="en">
+<seg>Was it intended for the gentry for whom Buddhism depended for their financial support or was it for the less literate general populace to widen market share or was it for both?</seg>
+</tuv>
+<tuv xml:lang="es">
+<seg>¿Su esfuerzo iba dirigido a la elite, de cuyo apoyo económico dependía el budismo, o a un pueblo menos culto, lo que permitiría ampliar la cota de mercado? ¿O tal vez a ambos?</seg>
+</tuv>
+<tuv xml:lang="it">
+<seg>A chi era destinata la traduzione? All'elite dal cui appoggio dipendevano gli interessi del Buddismo, al popolino, allo scopo di incrementare la quota di mercato, oppure ad entrambi?</seg>
+</tuv>
+<tuv xml:lang="ko">
+<seg>불교의 재정적인 지원을 맡았던 상류층을 향한 의도였는지, 아니면 불교 전파를 위해 덜 교육 받은 일반 서민들을 향한 의도였는지, 그도 아니면 그 모두를 위한 의도였는지에 대한 의문은 남는다.</seg>
+</tuv>
+<tuv xml:lang="zh-cn">
+<seg>是为那些为佛教提供财政支持的上层阶级服务，还是为那些没有太多文化修养的普通百姓服务，以扩展佛教的影响范围，或者两者兼顾？</seg>
+</tuv>
+</tu></body>
+</tmx>
