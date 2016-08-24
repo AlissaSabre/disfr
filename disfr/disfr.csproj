@@ -112,6 +112,7 @@
       <DependentUpon>ExceptionDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Writer\IRowsWriter.cs" />
+    <Compile Include="Writer\SpaceSensitiveXmlTextWriter.cs" />
     <Compile Include="Writer\TableWriterBase.cs" />
     <Compile Include="Writer\TmxWriter.cs" />
     <Compile Include="Writer\WriterManager.cs" />

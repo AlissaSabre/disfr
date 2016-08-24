@@ -91,9 +91,12 @@ namespace disfr.Writer
             }
             var transform = new XslCompiledTransform();
             transform.Load(Path.Combine(folder, transform_name + ".xslt"));
-            using (var rd = tree.CreateReader(ReaderOptions.OmitDuplicateNamespaces))
+            using (var wr = new SpaceSensitiveXmlTextWriter(output, transform.OutputSettings))
             {
-                transform.Transform(rd, null, output);
+                using (var rd = tree.CreateReader(ReaderOptions.OmitDuplicateNamespaces))
+                {
+                    transform.Transform(rd, null, wr);
+                }
             }
         }
     }
