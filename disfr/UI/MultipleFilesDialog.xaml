@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:disfr.UI"
         mc:Ignorable="d"
-        Title="MultipleFilesDialog" Height="192" Width="300" WindowStartupLocation="CenterOwner">
+        Title="Multiple Files - disfr" Height="192" Width="300" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
     <Grid>
         <TextBlock x:Name="textBlock" Margin="10,10,10,104" TextWrapping="Wrap" Text="You selected multiple files.  What do you want to do?"/>
         <RadioButton x:Name="singleTabRadioButton" Content="View all files on a single tab." HorizontalAlignment="Left" Margin="10,0,0,81" Height="18" VerticalAlignment="Bottom"/>
