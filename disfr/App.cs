@@ -111,7 +111,7 @@ namespace disfr
             }
             if (args.Length > 0)
             {
-                MainController.OpenCommand.Execute(args, -1);
+                MainController.OpenCommand.Execute(args, -1, false);
             }
         }
 
@@ -122,7 +122,7 @@ namespace disfr
                 new MainWindow() { DataContext = MainController }.Show();
                 if (files.Length > 0)
                 {
-                    MainController.OpenCommand.Execute(files, -1);
+                    MainController.OpenCommand.Execute(files, -1, false);
                 }
                 return true;
             }, DispatcherPriority.ApplicationIdle);
