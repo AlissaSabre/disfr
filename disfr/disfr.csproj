@@ -111,6 +111,9 @@
     <Compile Include="UI\ExceptionDialog.xaml.cs">
       <DependentUpon>ExceptionDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\MultipleFilesDialog.xaml.cs">
+      <DependentUpon>MultipleFilesDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Writer\IRowsWriter.cs" />
     <Compile Include="Writer\TableWriterBase.cs" />
     <Compile Include="Writer\TmxWriter.cs" />
@@ -163,6 +166,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UI\MultipleFilesDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

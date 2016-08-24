@@ -73,17 +73,25 @@ namespace disfr.UI
 
         public string OpenFilterString { get { return ReaderManager.FilterString; } }
 
-        public DelegateCommand<string[], int> OpenCommand { get; private set; }
+        public DelegateCommand<string[], int, bool> OpenCommand { get; private set; }
 
-        private void OpenCommand_Execute(string[] filenames, int index)
+        private void OpenCommand_Execute(string[] filenames, int index, bool single_tab)
         {
             Busy = true;
             Task.Run(() =>
-                filenames.Select(f =>
-                    TableController.LoadBilingualAssets(
-                        name: ReaderManager.FriendlyFilename(f),
-                        assets: ReaderManager.Read(f, index))
-                ).ToArray()
+                single_tab
+                    ?
+                        new[] {
+                            TableController.LoadBilingualAssets(
+                                name: "(multiple files)",
+                                assets: filenames.SelectMany(f => ReaderManager.Read(f, index)))
+                        }
+                    :
+                        filenames.Select(f =>
+                            TableController.LoadBilingualAssets(
+                                name: ReaderManager.FriendlyFilename(f),
+                                assets: ReaderManager.Read(f, index))
+                        ).ToArray()
             ).ContinueWith(worker =>
             {
                 if (worker.IsFaulted)

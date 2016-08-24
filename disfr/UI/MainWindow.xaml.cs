@@ -171,17 +171,38 @@ namespace disfr.UI
 
             Controller.Busy = true;
             OpenFileDialog.Filter = Controller.OpenFilterString;
+            OpenFileDialog.Tag = false; // XXX
+            OpenFileDialog.FileOk -= OpenFileDialog_FileOk; // XXX XXX XXX
+            OpenFileDialog.FileOk += OpenFileDialog_FileOk;
             if (OpenFileDialog.ShowDialog(this) == true)
             {
                 var filenames = OpenFileDialog.FileNames;
                 var index = OpenFileDialog.FilterIndex - 1; // Returned index is 1-based but we expect a 0-based index.
-                Controller.OpenCommand.Execute(filenames, index);
+                Controller.OpenCommand.Execute(filenames, index, (bool)OpenFileDialog.Tag);
             }
             else
             {
                 Controller.Busy = false;
             }
             e.Handled = true;
+        }
+
+        private void OpenFileDialog_FileOk(object sender, CancelEventArgs e)
+        {
+            var open = sender as OpenFileDialog;
+            if (open?.FileNames.Length > 1)
+            {
+                var dlg = new MultipleFilesDialog();
+                dlg.Owner = this;
+                if (dlg.ShowDialog() == true)
+                {
+                    open.Tag = dlg.SingleTab;
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
         }
 
         private SaveFileDialog SaveFileDialog = new SaveFileDialog();
