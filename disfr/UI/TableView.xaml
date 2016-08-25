@@ -50,7 +50,9 @@
                 </Setter>
                 
             </Style>
-            
+
+            <Style x:Key="AdditionalColumnElementStyle" TargetType="TextBlock" BasedOn="{StaticResource TextWrap}" />
+
         </ResourceDictionary>
 
     </TabItem.Resources>

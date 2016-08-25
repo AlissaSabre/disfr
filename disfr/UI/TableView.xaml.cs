@@ -149,7 +149,7 @@ namespace disfr.UI
         {
             // Reset the column organization.
             // This should be useless under the current scenario.
-            foreach (var dc in dataGrid.Columns.Except(StandardColumns.Select(sc => sc.Column)).ToArray())
+            foreach (var dc in dataGrid.Columns.Except(StandardColumns.Select(sc => sc.Column)).ToList())
             {
                 dataGrid.Columns.Remove(dc);
             }
@@ -189,7 +189,11 @@ namespace disfr.UI
 
             // Create columns for additional properties.
             // Their initial shown/hidden states are specified by the DOC module via AdditionalProps.
-            // ColumnInUse attached property is set to true so that users can change their visibility.
+            // ColumnInUse attached property is always set to true so that users can view any column.
+            // We don't check whether an additonal property is actually used;
+            // If such a checking is essential for a particular additional property,
+            // the responsible AssetReader can do it when constructing the Properties.
+            // See TableController.cs for the interaction between the AssetReader and TableController.AdditionalProps. 
             foreach (var props in table.AdditionalProps)
             {
                 var column = new DataGridTextColumn()
@@ -197,6 +201,7 @@ namespace disfr.UI
                     Header = props.Key.Replace("_", " "), // XXX: No, we should not do this!
                     Binding = new Binding("[" + props.Index + "]"),
                     Visibility = props.Visible ? Visibility.Visible : Visibility.Collapsed,
+                    ElementStyle = FindResource("AdditionalColumnElementStyle") as Style,
                 };
                 column.SetValue(ColumnInUseProperty, true);
                 dataGrid.Columns.Add(column);
