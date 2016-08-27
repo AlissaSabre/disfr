@@ -227,6 +227,12 @@ namespace disfr.UI
             e.Handled = true;
         }
 
+        /// <summary>
+        /// List of columns as currently shown to the user.
+        /// </summary>
+        /// <remarks>
+        /// Some <see cref="IRowWriter"/> implementation uses it.
+        /// </remarks>
         public ColumnDesc[] VisibleColumnDescs
         {
             get
@@ -481,8 +487,10 @@ namespace disfr.UI
 
     }
 
+    #region class VisibilityToBooleanConverter
+
     /// <summary>
-    /// Convert a Boolean value to and from a <see cref="Visibility"/> value.
+    /// Converts a Boolean value to and from a <see cref="Visibility"/> value.
     /// </summary>
     /// <seealso cref="BooleanToVisibilityConverter"/>
     /// <remarks>
@@ -502,7 +510,13 @@ namespace disfr.UI
         }
     }
 
+    #endregion
 
+    #region class SubtractingConverter
+
+    /// <summary>
+    /// Converts a double value to another double value by subtracting a constant double value.
+    /// </summary>
     public class SubtractingConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -515,6 +529,10 @@ namespace disfr.UI
             return (value as double?) + (parameter as IConvertible)?.ToDouble(culture);
         }
     }
+
+    #endregion
+
+    #region class RowStyleSelector
 
     /// <summary>
     /// A StyleSelector that selects one of two styles to see whether a row is at an Asset boundary.
@@ -544,7 +562,9 @@ namespace disfr.UI
             if (index == 0) return BoundaryStyle;
 
             var prev = itemsControl.Items[index - 1] as IRowData;
-            return (prev == null || prev.Asset != info.Asset) ? BoundaryStyle : MiddleStyle;
+            return object.ReferenceEquals(info.AssetIdentity, prev?.AssetIdentity) ? MiddleStyle : BoundaryStyle;
         }
     }
+
+    #endregion
 }

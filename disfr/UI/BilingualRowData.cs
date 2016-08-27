@@ -67,6 +67,8 @@ namespace disfr.UI
         public string SourceLang { get { return AssetData.SourceLang; } }
 
         public string TargetLang { get { return AssetData.TargetLang; } }
+
+        public object AssetIdentity { get { return AssetData; } }
     }
 
     public class AssetData
