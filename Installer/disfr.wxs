@@ -64,6 +64,8 @@
       <ComponentRef Id="System.Data.SQLite.dll" />
       <ComponentRef Id="x86.SQLite.Interop.dll" />
       <ComponentRef Id="x64.SQLite.Interop.dll" />
+      <ComponentRef Id="Microsoft.WindowsAPICodePack.dll" />
+      <ComponentRef Id="Microsoft.WindowsAPICodePack.Shell.dll" />
       <ComponentRef Id="table.xslt" />
       <ComponentRef Id="xmlss.xslt" />
       <ComponentRef Id="Readme.htm" />
@@ -123,6 +125,14 @@
       <File Id="x64.SQLite.Interop.dll" Source="x64\SQLite.Interop.dll" KeyPath='yes' />
     </Component>
 
+    <Component Id="Microsoft.WindowsAPICodePack.dll" Directory="INSTALLDIR" Guid="{4F144BEE-5AF3-47D1-945A-7BE66710254D}">
+      <File Source="Microsoft.WindowsAPICodePack.dll" KeyPath="yes" />
+    </Component>
+
+    <Component Id="Microsoft.WindowsAPICodePack.Shell.dll" Directory="INSTALLDIR" Guid="{94A94E1D-5E8C-4C99-930E-CB208F54E664}">
+      <File Source="Microsoft.WindowsAPICodePack.Shell.dll" KeyPath="yes" />
+    </Component>
+
     <Component Id='table.xslt' Directory='INSTALLDIR' Guid='{A3920AFF-494C-4D64-B10E-6AE4719D837A}'>
       <File Source='table.xslt' KeyPath='yes' />
     </Component>
@@ -133,7 +143,7 @@
 
     <Component Id='Readme.htm' Directory='INSTALLDIR' Guid='{A156536D-81B0-42B1-98E3-4525D724D533}'>
       <File Source='Readme.htm' KeyPath='yes'>
-	<Shortcut Id='AppMenuDir.Readme.htm' Name='Readme.htm' Directory='AppMenuDir' Advertise='yes' />
+        <Shortcut Id='AppMenuDir.Readme.htm' Name='Readme.htm' Directory='AppMenuDir' Advertise='yes' />
       </File>
       <RemoveFolder Id='Readme.htm' Directory='AppMenuDir' On='uninstall' />
     </Component>
