@@ -79,7 +79,7 @@ namespace disfr.UI
         {
             Busy = true;
             Task.Run(() =>
-                single_tab
+                single_tab && filenames.Length > 1
                     ?
                         new[] {
                             TableController.LoadBilingualAssets(
