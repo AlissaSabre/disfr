@@ -159,7 +159,7 @@ namespace disfr.UI
 
         #region RoutedCommand Handlers
 
-        private OpenFileDialog OpenFileDialog = new OpenFileDialog() { Multiselect = true };
+        private readonly DuckOpenFileDialog OpenFileDialog = new DuckOpenFileDialog();
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -171,38 +171,18 @@ namespace disfr.UI
 
             Controller.Busy = true;
             OpenFileDialog.Filter = Controller.OpenFilterString;
-            OpenFileDialog.Tag = false; // XXX
-            OpenFileDialog.FileOk -= OpenFileDialog_FileOk; // XXX XXX XXX
-            OpenFileDialog.FileOk += OpenFileDialog_FileOk;
-            if (OpenFileDialog.ShowDialog(this) == true)
+            if (OpenFileDialog.ShowDialog(this))
             {
                 var filenames = OpenFileDialog.FileNames;
                 var index = OpenFileDialog.FilterIndex - 1; // Returned index is 1-based but we expect a 0-based index.
-                Controller.OpenCommand.Execute(filenames, index, (bool)OpenFileDialog.Tag);
+                var single_tab = OpenFileDialog.SingleTab;
+                Controller.OpenCommand.Execute(filenames, index, single_tab);
             }
             else
             {
                 Controller.Busy = false;
             }
             e.Handled = true;
-        }
-
-        private void OpenFileDialog_FileOk(object sender, CancelEventArgs e)
-        {
-            var open = sender as OpenFileDialog;
-            if (open?.FileNames.Length > 1)
-            {
-                var dlg = new MultipleFilesDialog();
-                dlg.Owner = this;
-                if (dlg.ShowDialog() == true)
-                {
-                    open.Tag = dlg.SingleTab;
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            }
         }
 
         private SaveFileDialog SaveFileDialog = new SaveFileDialog();
