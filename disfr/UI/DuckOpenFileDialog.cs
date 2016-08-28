@@ -77,7 +77,7 @@ namespace disfr.UI
             var filters = dialog.Filters;
             ParsedFilter.ForEach(f => filters.Add(f));
 
-            var result = dialog.ShowDialog() == CommonFileDialogResult.Ok;
+            var result = dialog.ShowDialog(window) == CommonFileDialogResult.Ok;
             if (result)
             {
                 FileNames = dialog.FileNames.ToArray();
