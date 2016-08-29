@@ -289,14 +289,13 @@
     <InstallExecuteSequence>
       <RemoveExistingProducts After="InstallFinalize" />
       <Custom Action='NewerProductFound' After='FindRelatedProducts'>NEWERFOUND</Custom>
-      <Custom Action='SHChangeNotify' After='WriteRegistryValues' />
+      <Custom Action='ChangeNotify' After='WriteRegistryValues' />
     </InstallExecuteSequence>
 
     <CustomAction Id='NewerProductFound' Error='A same or newer version of this program appears installed.  Please remove it first if you want to install this version ($(var.Version)).' />
 
-    <CustomAction Id="SHChangeNotify" BinaryKey="SHChangeNotify.exe" ExeCommand="" /> 
-    
-    <Binary Id="SHChangeNotify.exe" SourceFile="SHChangeNotify.exe" /> 
+    <CustomAction Id="ChangeNotify" BinaryKey="CustomActions.dll" DllEntry="ShellChangeNotify" /> 
+    <Binary Id="CustomActions.dll" SourceFile="CustomActions.dll" /> 
     
     <Icon Id="disfr.icon.exe" SourceFile="..\disfr\AppIcon.ico" />
     <Property Id="ARPPRODUCTICON" Value="disfr.icon.exe" />
