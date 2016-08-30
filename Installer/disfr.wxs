@@ -279,7 +279,7 @@
 
     <Component Id="REG.sdltm" Directory="TARGETDIR" Guid="{1AD0CBFC-8762-4E72-9075-D48F6C8ECA62}">
       <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
-        <RegistryValue Type="string" Name="sdltm." Value="" KeyPath="yes" />
+        <RegistryValue Type="string" Name=".sdltm" Value="" KeyPath="yes" />
       </RegistryKey>
       <RegistryKey Root="HKLM" Key="Software\Classes\.sdltm\OpenWithProgIds">
         <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
