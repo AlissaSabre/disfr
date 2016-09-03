@@ -188,16 +188,13 @@ namespace disfr
         /// <returns><c>true</c> if successfully opened.</returns>
         public bool OpenNewWindow(string[] args)
         {
+            var options = Options.Parse(args);
             return Dispatcher.Invoke(() =>
             {
                 var window = new MainWindow() { DataContext = MainController };
+                window.OpenFiles(options.Files, options.ReadIntoSingleTab);
                 window.Show();
                 window.Activate();
-                var options = Options.Parse(args);
-                if (options.Files.Length > 0)
-                {
-                    MainController.OpenCommand.Execute(options.Files, -1, options.ReadIntoSingleTab);
-                }
                 return true;
             }, DispatcherPriority.ApplicationIdle);
         }

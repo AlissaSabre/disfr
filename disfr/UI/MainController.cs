@@ -73,26 +73,34 @@ namespace disfr.UI
 
         public string OpenFilterString { get { return ReaderManager.FilterString; } }
 
-        public DelegateCommand<string[], int, bool> OpenCommand { get; private set; }
+        public DelegateCommand<string[], int, bool, object> OpenCommand { get; private set; }
 
-        private void OpenCommand_Execute(string[] filenames, int index, bool single_tab)
+        private void OpenCommand_Execute(string[] filenames, int index, bool single_tab, object tag)
         {
             Busy = true;
             Task.Run(() =>
-                single_tab && filenames.Length > 1
-                    ?
-                        new[] {
-                            TableController.LoadBilingualAssets(
-                                name: "(multiple files)",
-                                assets: filenames.SelectMany(f => ReaderManager.Read(f, index)))
-                        }
-                    :
-                        filenames.Select(f =>
-                            TableController.LoadBilingualAssets(
-                                name: ReaderManager.FriendlyFilename(f),
-                                assets: ReaderManager.Read(f, index))
-                        ).ToArray()
-            ).ContinueWith(worker =>
+            {
+                ITableController[] result;
+                if (single_tab && filenames.Length > 1)
+                {
+                    result = new[]
+                    {
+                        TableController.LoadBilingualAssets(
+                            name: "(multiple files)",
+                            assets: filenames.SelectMany(f => ReaderManager.Read(f, index)))
+                    };
+                }
+                else
+                {
+                    result = filenames.Select(f =>
+                        TableController.LoadBilingualAssets(
+                            name: ReaderManager.FriendlyFilename(f),
+                            assets: ReaderManager.Read(f, index))
+                    ).ToArray();
+                }
+                Array.ForEach(result, tc => { tc.Tag = tag; });
+                return result;
+            }).ContinueWith(worker =>
             {
                 if (worker.IsFaulted)
                 {

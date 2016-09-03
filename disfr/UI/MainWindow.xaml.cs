@@ -75,7 +75,7 @@ namespace disfr.UI
 
         private void DataContext_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Tables" && !IsClosing)
+            if (e.PropertyName == "Tables")
             {
                 SyncToTables();
             }
@@ -88,35 +88,33 @@ namespace disfr.UI
         {
             bool previously_used = tables.Items.Count > 0;
 
-            // Remove all redundant tabs.
-            foreach (var tab in tables.Items.Cast<TableView>().Where(i => !Controller.Tables.Contains(i.DataContext)).ToArray())
+            // Remove all redundant tabs, i.e., tabs that have no corresponding tables in the backend.
+            foreach (var tab in tables.Items.Cast<TableView>().Where(i => !Controller.Tables.Contains(i.DataContext)).ToList())
             {
                 tables.Items.Remove(tab);
             }
 
-            // New tables should go to the active window.
-            ActiveMainWindow.AddAllNewTables();
+            // Create a tab for each of new tables, then add it to the appropriate window.
+            foreach (var t in Controller.Tables.Where(t => t.Tag != null))
+            {
+                (t.Tag as MainWindow)?.AddTabFromITableController(t);
+                t.Tag = null;
+            }
 
             // If this MainWindow was used previously and lost all its content tabs, close it.
-            if (previously_used && tables.Items.Count == 0)
+            if (!IsClosing && previously_used && tables.Items.Count == 0)
             {
                 Close();
             }
         }
 
-        /// <summary>
-        /// Add all new tables from the Controller to this Window.
-        /// </summary>
-        private void AddAllNewTables()
+        private void AddTabFromITableController(ITableController t)
         {
-            var all_tables_in_view = TabablzControl.GetLoadedInstances().SelectMany(t => t.Items.Cast<TableView>()).Select(i => i.DataContext);
-            var all_new_tables = Controller.Tables.Except(all_tables_in_view).ToArray();
-            foreach (var table in all_new_tables)
+            if (!IsClosing)
             {
-                var tab = new TableView() { DataContext = table };
-                tables.Items.Add(tab);
+                tables.Items.Add(new TableView() { DataContext = t });
+                tables.SelectedIndex = tables.Items.Count - 1;
             }
-            tables.SelectedIndex = tables.Items.Count - all_new_tables.Length;
         }
 
         #region ActiveMainWindow static property
@@ -176,13 +174,28 @@ namespace disfr.UI
                 var filenames = OpenFileDialog.FileNames;
                 var index = OpenFileDialog.FilterIndex - 1; // Returned index is 1-based but we expect a 0-based index.
                 var single_tab = OpenFileDialog.SingleTab;
-                Controller.OpenCommand.Execute(filenames, index, single_tab);
+                Controller.OpenCommand.Execute(filenames, index, single_tab, this);
             }
             else
             {
                 Controller.Busy = false;
             }
             e.Handled = true;
+        }
+
+        /// <summary>
+        /// A special method to simulate Open RoutedCommand.
+        /// </summary>
+        /// <remarks>
+        /// This is used by <see cref="App"/> only.
+        /// </remarks>
+        public void OpenFiles(string[] filenames, bool single_tab)
+        {
+            if (filenames?.Length > 0)
+            {
+                Controller.Busy = true;
+                Controller.OpenCommand.Execute(filenames, -1, single_tab, this);
+            }
         }
 
         private SaveFileDialog SaveFileDialog = new SaveFileDialog();

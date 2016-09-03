@@ -14,6 +14,15 @@ namespace disfr.UI
     /// </remarks>
     public interface ITableController
     {
+        /// <summary>
+        /// An opaque object used by UI components for their own circumstances.
+        /// </summary>
+        /// <remarks>
+        /// An implementation of <see cref="ITableController"/> only provides a storage.
+        /// It never uses it for its own purpose.
+        /// </remarks>
+        object Tag { get; set; }
+
         string Name { get; }
         IEnumerable<IRowData> Rows { get; }
         IEnumerable<IRowData> AllRows { get; }

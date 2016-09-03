@@ -27,6 +27,7 @@ namespace disfr.UI
         /// <summary>
         /// Creates an unloaded instance of TableController.
         /// </summary>
+        /// <param name="renderer">A pair renderer to render the rows in this table.</param>
         /// <remarks>
         /// Use <see cref="LoadBilingualAssets"/> to create a usable instance.
         /// </remarks>
@@ -41,6 +42,11 @@ namespace disfr.UI
 
             UpdateFilter();
         }
+
+        /// <summary>
+        /// Use by UI components for their own pruposes.
+        /// </summary>
+        public object Tag { get; set; }
 
         /// <summary>
         /// User friendly name of this table.
@@ -88,8 +94,9 @@ namespace disfr.UI
         private readonly PairRenderer Renderer = new PairRenderer();
 
         /// <summary>
-        /// Load a set of <see cref="IAsset"/>s from a bilingual file to a TableController.
+        /// Load a set of <see cref="IAsset"/>s from a bilingual file into a new TableController.
         /// </summary>
+        /// <param name="name">User friendly name of this table.</param>
         /// <param name="assets">Assets to load.</param>
         /// <returns>
         /// A newly created and loaded <see cref="ITableController"/> instance.
