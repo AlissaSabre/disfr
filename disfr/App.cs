@@ -190,7 +190,9 @@ namespace disfr
         {
             return Dispatcher.Invoke(() =>
             {
-                new MainWindow() { DataContext = MainController }.Show();
+                var window = new MainWindow() { DataContext = MainController };
+                window.Show();
+                window.Activate();
                 var options = Options.Parse(args);
                 if (options.Files.Length > 0)
                 {
