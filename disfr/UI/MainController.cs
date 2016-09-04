@@ -191,14 +191,17 @@ namespace disfr.UI
 
         #region OpenAltCommand
 
-        public DelegateCommand<ITableController> OpenAltCommand { get; private set; }
+        public DelegateCommand<ITableController, string[], object> OpenAltCommand { get; private set; }
 
-        private void OpenAltCommand_Execute(ITableController table)
+        private void OpenAltCommand_Execute(ITableController table, string[] origins, object tag)
         {
             Busy = true;
             Task.Run(() =>
-                table.LoadAltAssets()
-            ).ContinueWith(worker =>
+            {
+                var result = table.LoadAltAssets(origins);
+                result.Tag = tag;
+                return result;
+            }).ContinueWith(worker =>
             {
                 if (worker.IsFaulted)
                 {
@@ -210,10 +213,10 @@ namespace disfr.UI
                     RaisePropertyChanged("Tables");
                 }
                 Busy = false;
-            });
+            }, Scheduler);
         }
 
-        private bool OpenAltCommand_CanExecute(ITableController table)
+        private bool OpenAltCommand_CanExecute(ITableController table, string[] origins, object tag)
         {
             return table != null && table.HasAltAssets;
         }

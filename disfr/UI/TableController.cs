@@ -114,16 +114,47 @@ namespace disfr.UI
             // Take care of Alt.
             if (asset_array.Any(a => a.AltPairs.Any()))
             {
-                new_instance.AltLoader = () =>
+                new_instance.AltLoader = delegate(string[] origins)
                 {
                     var alt_instance = new TableController(renderer);
-                    alt_instance.LoadBilingualRowData(asset_array, a => a.AltPairs, renderer);
-                    alt_instance.Name = string.Format("TM ({0})", name);
+                    alt_instance.LoadBilingualRowData(asset_array, FilteredAltPairs(origins), renderer);
+                    alt_instance.Name = string.Format("Alt TM {0}", name);
                     return alt_instance;
+                };
+
+                new_instance.AltOriginsLoader = delegate ()
+                {
+                    var origins = new HashSet<string>();
+                    foreach (var asset in asset_array)
+                    {
+                        var origin = asset.Properties.ToList().FindIndex(prop => prop.Key == "origin");
+                        if (origin >= 0) 
+                        {
+                            origins.UnionWith(asset.AltPairs.Select(pair => pair[origin]));
+                        }
+                    }
+                    origins.Remove(null); // XXX
+                    return origins.AsEnumerable();
                 };
             }
 
             return new_instance;
+        }
+
+        private static Func<IAsset, IEnumerable<ITransPair>> FilteredAltPairs(string[] origins)
+        {
+            if (origins == null)
+            {
+                return asset => asset.AltPairs;
+            }
+            else
+            {
+                return delegate (IAsset asset)
+                {
+                    var origin_index = asset.Properties.ToList().FindIndex(prop => prop.Key == "origin");
+                    return asset.AltPairs.Where(pair => Array.IndexOf(origins, pair[origin_index]) >= 0);
+                };
+            }
         }
 
         private void LoadBilingualRowData(IAsset[] assets, Func<IAsset, IEnumerable<ITransPair>> pairs, PairRenderer renderer)
@@ -263,12 +294,16 @@ namespace disfr.UI
             _Rows.Reset();
         }
 
-        private Func<ITableController> AltLoader = null;
+        private Func<string[], ITableController> AltLoader = null;
 
-        public ITableController LoadAltAssets()
+        public ITableController LoadAltAssets(string[] origins)
         {
-            return AltLoader?.Invoke();
+            return AltLoader?.Invoke(origins);
         }
+
+        private Func<IEnumerable<string>> AltOriginsLoader = null;
+
+        public IEnumerable<string> AltAssetOrigins { get { return AltOriginsLoader?.Invoke(); } }
 
         public bool HasAltAssets { get { return AltLoader != null; } }
 

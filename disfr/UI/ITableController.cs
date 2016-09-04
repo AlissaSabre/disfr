@@ -28,7 +28,8 @@ namespace disfr.UI
         IEnumerable<IRowData> AllRows { get; }
         IEnumerable<AdditionalPropertiesInfo> AdditionalProps { get; }
 
-        ITableController LoadAltAssets();
+        ITableController LoadAltAssets(string[] origins);
+        IEnumerable<string> AltAssetOrigins { get; }
         bool HasAltAssets { get; }
 
         Func<IRowData, bool> ContentsFilter { get; set; }

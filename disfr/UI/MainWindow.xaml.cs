@@ -157,6 +157,8 @@ namespace disfr.UI
 
         #region RoutedCommand Handlers
 
+        #region Open
+
         private readonly DuckOpenFileDialog OpenFileDialog = new DuckOpenFileDialog();
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -198,6 +200,10 @@ namespace disfr.UI
             }
         }
 
+        #endregion
+
+        #region SaveAs
+
         private SaveFileDialog SaveFileDialog = new SaveFileDialog();
 
         private void SaveAs_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -229,6 +235,39 @@ namespace disfr.UI
             e.Handled = true;
         }
 
+        #endregion
+
+        #region OpenAlt
+
+        private void OpenAlt_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Controller.Busy = true;
+            var tc = e.Parameter as ITableController;
+            var dlg = new OriginChooserDialog();
+            dlg.Owner = this;
+            dlg.AllOrigins = tc.AltAssetOrigins;
+            if (dlg.ShowDialog() == true)
+            {
+                Controller.OpenAltCommand.Execute(tc, dlg.SelectedOrigins, this);
+            }
+            else
+            {
+                Controller.Busy = false;
+            }
+            e.Handled = true;
+        }
+
+        private void OpenAlt_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var tc = e.Parameter as ITableController;
+            e.CanExecute = Controller.OpenAltCommand.CanExecute(tc, null, this);
+            e.Handled = true;
+        }
+
+        #endregion
+
+        #region Font
+
         private void Font_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var dlg = new ColorFontDialog();
@@ -246,16 +285,26 @@ namespace disfr.UI
             e.Handled = true;
         }
 
+        #endregion
+
+        #region About
+
         private void About_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             new AboutDialog() { Owner = this }.ShowDialog();
             e.Handled = true;
         }
 
+        #endregion
+
+        #region Debug
+
         private void Debug_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             throw new Exception("DEBUG!");
         }
+
+        #endregion
 
         #endregion
     }

@@ -120,6 +120,9 @@
       <DependentUpon>ExceptionDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\DuckOpenFileDialog.cs" />
+    <Compile Include="UI\OriginChooserDialog.xaml.cs">
+      <DependentUpon>OriginChooserDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Writer\IRowsWriter.cs" />
     <Compile Include="Writer\SpaceSensitiveXmlTextWriter.cs" />
     <Compile Include="Writer\TableWriterBase.cs" />
@@ -173,6 +176,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UI\OriginChooserDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

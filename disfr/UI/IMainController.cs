@@ -22,6 +22,7 @@ namespace disfr.UI
 
         DelegateCommand<string[], int, bool, object> OpenCommand { get; }
         DelegateCommand<string, int, ITableController, ColumnDesc[]> SaveAsCommand { get; }
+        DelegateCommand<ITableController, string[], object> OpenAltCommand { get; }
         DelegateCommand<ITableController> CloseCommand { get; }
         DelegateCommand<ITableController> CloseExceptCommand { get; }
         DelegateCommand ExitCommand { get; }

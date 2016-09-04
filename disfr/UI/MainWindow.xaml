@@ -37,6 +37,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed"/>
         <CommandBinding Command="ApplicationCommands.SaveAs" Executed="SaveAs_Executed" CanExecute="SaveAs_CanExecute"/>
+        <CommandBinding Command="local:Commands.OpenAlt" Executed="OpenAlt_Executed" CanExecute="OpenAlt_CanExecute"/>
         <CommandBinding Command="local:Commands.Font" Executed="Font_Executed" CanExecute="Font_CanExecute"/>
         <CommandBinding Command="local:Commands.About" Executed="About_Executed"/>
         <CommandBinding Command="local:Commands.Debug" Executed="Debug_Executed"/>
@@ -59,7 +60,7 @@
                         <MenuItem Header="_Close" Command="{Binding CloseCommand}" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
                         <MenuItem Header="Close A_ll Others" Command="{Binding CloseExceptCommand}" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
                         <Separator/>
-                        <MenuItem Header="Complementary TM..." Command="{Binding OpenAltCommand}" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
+                        <MenuItem Header="Complementary TM..." Command="local:Commands.OpenAlt" CommandParameter="{Binding SelectedItem.Controller, ElementName=tables}"/>
                         <MenuItem Header="Compare..." Command="local:Commands.Compare"/>
                         <Separator/>
                         <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
