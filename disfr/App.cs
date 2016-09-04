@@ -25,57 +25,132 @@ namespace disfr
     public class App : Application
     {
         /// <summary>
+        /// Represents command line options to this app.
+        /// </summary>
+        public class Options
+        {
+            /// <summary>
+            /// Indicates the application must run in a single-instance.
+            /// </summary>
+            public bool SingleInstance = true;
+
+            /// <summary>
+            /// Indicates all specified files should be read into a single tab.
+            /// </summary>
+            public bool ReadIntoSingleTab = false;
+
+            /// <summary>
+            /// List of files to read.
+            /// </summary>
+            public string[] Files;
+
+            private Options() { }
+
+            /// <summary>
+            /// Parses the command line arguments.
+            /// </summary>
+            /// <param name="args">Command line arguments as passed to the program entry point Main(string[]).</param>
+            /// <returns>An <see cref="Options"/> instance holding parsed options.</returns>
+            /// <exception cref="ArgumentException">
+            /// <paramref name="args"/> includes an unknown option designator.
+            /// </exception>
+            public static Options Parse(string[] args)
+            {
+                var options = new Options();
+                var a = new List<string>(args);
+                while (a.Count > 0 && a[0].StartsWith("-"))
+                {
+                    switch (a[0])
+                    {
+                        case "-t": options.ReadIntoSingleTab = true; break;
+                        case "-m": options.ReadIntoSingleTab = false; break;
+                        case "-s": options.SingleInstance = true; break;
+                        case "-i": options.SingleInstance = false; break;
+                        default:
+                            throw new ArgumentException("Unknown option: " + a[0], "args");
+                    }
+                    a.RemoveAt(0);
+                }
+                options.Files = a.ToArray();
+                return options;
+            }
+        }
+
+        /// <summary>
         /// Application Entry Point.
         /// </summary>
-        [System.STAThreadAttribute()]
+        [STAThread]
         public static void Main(string[] args)
         {
-            string command = "-s";
-            if (args.Length > 0 && args[0].StartsWith("-"))
+            Options options;
+            try
             {
-                command = args[0];
-                args = args.Skip(1).ToArray();
+                options = Options.Parse(args);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Error in command line - disfr");
+                return;
             }
 
-            if (command == "-s")
+            if (!options.SingleInstance)
+            {
+                var app = new App();
+                app.Run();
+            }
+            else
             {
                 var ipc_port = CreateUniquePort(typeof(App).Assembly);
                 var uri = "Run";
+
+                // If two or more process started executing this program at some critical timing,
+                // or an existing App (running as IPC server) is terminating when a new process tried to start,
+                // the IPC channel connection may fail.
+                // We need to detect the case and try again,
+                // but don't retry too much, since the failure may be by other reason (e.g., system resource exhaust.)
 
                 for (int i = 0; i < 10; i++)
                 {
                     try
                     {
+                        // Try to be an IPC server.
                         var server_channel = new IpcServerChannel(ipc_port);
                         ChannelServices.RegisterChannel(server_channel, true);
                         RemotingConfiguration.RegisterWellKnownServiceType(typeof(SingleInstance), uri, WellKnownObjectMode.Singleton);
+
+                        // We've got a server-side IPC channel.  Run as a server.
                         try
                         {
                             var app = new App();
                             app.Run();
                         }
-                        catch (Exception) { }
+                        catch (Exception)
+                        {
+                            // The program may got an exception and terminates, due to a bug.
+                            // We SHOULD NOT retry IPC connection in the case.  Just terminate.
+                        }
                         return;
                     }
                     catch (Exception) { }
+
+                    // When we got here, it is very likely that an IPC server is already running.
                     Thread.Sleep(50);
+
                     try
                     {
+                        // Try to be an IPC client.
                         var client_channel = new IpcClientChannel();
                         ChannelServices.RegisterChannel(client_channel, true);
                         var instance = Activator.GetObject(typeof(SingleInstance), "ipc://" + ipc_port + "/" + uri) as SingleInstance;
                         if (instance.Run(args)) return;
                     }
                     catch (Exception) { }
+
+                    // When we got here, it is likely that an IPC server was running but terminated.
                     Thread.Sleep(50);
                 }
 
                 MessageBox.Show("Appliation failed: Couldn't establish remoting.", "Error - disfr");
-            }
-            else
-            {
-                var app = new App();
-                app.Run();
             }
         }
 
@@ -103,31 +178,30 @@ namespace disfr
         {
             base.OnStartup(e);
             MainController = new MainController();
-            new MainWindow() { DataContext = MainController }.Show();
-            var args = e.Args;
-            if (args.Length > 0 && args[0].StartsWith("-"))
-            {
-                args = args.Skip(1).ToArray();
-            }
-            if (args.Length > 0)
-            {
-                MainController.OpenCommand.Execute(args, -1);
-            }
+            OpenNewWindow(e.Args);
         }
 
-        public bool OpenNewWindow(string[] files)
+        /// <summary>
+        /// Open a new application window as if invoked with command line arguments.
+        /// </summary>
+        /// <param name="args">Command line arguments as passed to program entry point <see cref="Main(string[])"/>.</param>
+        /// <returns><c>true</c> if successfully opened.</returns>
+        public bool OpenNewWindow(string[] args)
         {
+            var options = Options.Parse(args);
             return Dispatcher.Invoke(() =>
             {
-                new MainWindow() { DataContext = MainController }.Show();
-                if (files.Length > 0)
-                {
-                    MainController.OpenCommand.Execute(files, -1);
-                }
+                var window = new MainWindow() { DataContext = MainController };
+                window.OpenFiles(options.Files, options.ReadIntoSingleTab);
+                window.Show();
+                window.Activate();
                 return true;
             }, DispatcherPriority.ApplicationIdle);
         }
 
+        /// <summary>
+        /// The remote server object.
+        /// </summary>
         class SingleInstance : MarshalByRefObject
         {
             public bool Run(string[] args)
@@ -136,4 +210,5 @@ namespace disfr
             }
         }
     }
+
 }

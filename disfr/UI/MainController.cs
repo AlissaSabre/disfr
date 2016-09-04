@@ -73,18 +73,34 @@ namespace disfr.UI
 
         public string OpenFilterString { get { return ReaderManager.FilterString; } }
 
-        public DelegateCommand<string[], int> OpenCommand { get; private set; }
+        public DelegateCommand<string[], int, bool, object> OpenCommand { get; private set; }
 
-        private void OpenCommand_Execute(string[] filenames, int index)
+        private void OpenCommand_Execute(string[] filenames, int index, bool single_tab, object tag)
         {
             Busy = true;
             Task.Run(() =>
-                filenames.Select(f =>
-                    TableController.LoadBilingualAssets(
-                        name: ReaderManager.FriendlyFilename(f),
-                        assets: ReaderManager.Read(f, index))
-                ).ToArray()
-            ).ContinueWith(worker =>
+            {
+                ITableController[] result;
+                if (single_tab && filenames.Length > 1)
+                {
+                    result = new[]
+                    {
+                        TableController.LoadBilingualAssets(
+                            name: "(multiple files)",
+                            assets: filenames.SelectMany(f => ReaderManager.Read(f, index)))
+                    };
+                }
+                else
+                {
+                    result = filenames.Select(f =>
+                        TableController.LoadBilingualAssets(
+                            name: ReaderManager.FriendlyFilename(f),
+                            assets: ReaderManager.Read(f, index))
+                    ).ToArray();
+                }
+                Array.ForEach(result, tc => { tc.Tag = tag; });
+                return result;
+            }).ContinueWith(worker =>
             {
                 if (worker.IsFaulted)
                 {
@@ -175,14 +191,17 @@ namespace disfr.UI
 
         #region OpenAltCommand
 
-        public DelegateCommand<ITableController> OpenAltCommand { get; private set; }
+        public DelegateCommand<ITableController, string[], object> OpenAltCommand { get; private set; }
 
-        private void OpenAltCommand_Execute(ITableController table)
+        private void OpenAltCommand_Execute(ITableController table, string[] origins, object tag)
         {
             Busy = true;
             Task.Run(() =>
-                table.LoadAltAssets()
-            ).ContinueWith(worker =>
+            {
+                var result = table.LoadAltAssets(origins);
+                result.Tag = tag;
+                return result;
+            }).ContinueWith(worker =>
             {
                 if (worker.IsFaulted)
                 {
@@ -194,10 +213,10 @@ namespace disfr.UI
                     RaisePropertyChanged("Tables");
                 }
                 Busy = false;
-            });
+            }, Scheduler);
         }
 
-        private bool OpenAltCommand_CanExecute(ITableController table)
+        private bool OpenAltCommand_CanExecute(ITableController table, string[] origins, object tag)
         {
             return table != null && table.HasAltAssets;
         }

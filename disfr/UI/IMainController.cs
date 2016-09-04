@@ -20,8 +20,9 @@ namespace disfr.UI
         string SaveAsFilterString { get; }
         bool Busy { get; set; }
 
-        DelegateCommand<string[], int> OpenCommand { get; }
+        DelegateCommand<string[], int, bool, object> OpenCommand { get; }
         DelegateCommand<string, int, ITableController, ColumnDesc[]> SaveAsCommand { get; }
+        DelegateCommand<ITableController, string[], object> OpenAltCommand { get; }
         DelegateCommand<ITableController> CloseCommand { get; }
         DelegateCommand<ITableController> CloseExceptCommand { get; }
         DelegateCommand ExitCommand { get; }

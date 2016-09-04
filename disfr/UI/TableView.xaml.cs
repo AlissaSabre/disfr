@@ -149,7 +149,7 @@ namespace disfr.UI
         {
             // Reset the column organization.
             // This should be useless under the current scenario.
-            foreach (var dc in dataGrid.Columns.Except(StandardColumns.Select(sc => sc.Column)).ToArray())
+            foreach (var dc in dataGrid.Columns.Except(StandardColumns.Select(sc => sc.Column)).ToList())
             {
                 dataGrid.Columns.Remove(dc);
             }
@@ -189,7 +189,11 @@ namespace disfr.UI
 
             // Create columns for additional properties.
             // Their initial shown/hidden states are specified by the DOC module via AdditionalProps.
-            // ColumnInUse attached property is set to true so that users can change their visibility.
+            // ColumnInUse attached property is always set to true so that users can view any column.
+            // We don't check whether an additonal property is actually used;
+            // If such a checking is essential for a particular additional property,
+            // the responsible AssetReader can do it when constructing the Properties.
+            // See TableController.cs for the interaction between the AssetReader and TableController.AdditionalProps. 
             foreach (var props in table.AdditionalProps)
             {
                 var column = new DataGridTextColumn()
@@ -197,6 +201,7 @@ namespace disfr.UI
                     Header = props.Key.Replace("_", " "), // XXX: No, we should not do this!
                     Binding = new Binding("[" + props.Index + "]"),
                     Visibility = props.Visible ? Visibility.Visible : Visibility.Collapsed,
+                    ElementStyle = FindResource("AdditionalColumnElementStyle") as Style,
                 };
                 column.SetValue(ColumnInUseProperty, true);
                 dataGrid.Columns.Add(column);
@@ -222,6 +227,12 @@ namespace disfr.UI
             e.Handled = true;
         }
 
+        /// <summary>
+        /// List of columns as currently shown to the user.
+        /// </summary>
+        /// <remarks>
+        /// Some <see cref="IRowWriter"/> implementation uses it.
+        /// </remarks>
         public ColumnDesc[] VisibleColumnDescs
         {
             get
@@ -476,8 +487,10 @@ namespace disfr.UI
 
     }
 
+    #region class VisibilityToBooleanConverter
+
     /// <summary>
-    /// Convert a Boolean value to and from a <see cref="Visibility"/> value.
+    /// Converts a Boolean value to and from a <see cref="Visibility"/> value.
     /// </summary>
     /// <seealso cref="BooleanToVisibilityConverter"/>
     /// <remarks>
@@ -497,7 +510,13 @@ namespace disfr.UI
         }
     }
 
+    #endregion
 
+    #region class SubtractingConverter
+
+    /// <summary>
+    /// Converts a double value to another double value by subtracting a constant double value.
+    /// </summary>
     public class SubtractingConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -510,6 +529,10 @@ namespace disfr.UI
             return (value as double?) + (parameter as IConvertible)?.ToDouble(culture);
         }
     }
+
+    #endregion
+
+    #region class RowStyleSelector
 
     /// <summary>
     /// A StyleSelector that selects one of two styles to see whether a row is at an Asset boundary.
@@ -539,7 +562,9 @@ namespace disfr.UI
             if (index == 0) return BoundaryStyle;
 
             var prev = itemsControl.Items[index - 1] as IRowData;
-            return (prev == null || prev.Asset != info.Asset) ? BoundaryStyle : MiddleStyle;
+            return object.ReferenceEquals(info.AssetIdentity, prev?.AssetIdentity) ? MiddleStyle : BoundaryStyle;
         }
     }
+
+    #endregion
 }

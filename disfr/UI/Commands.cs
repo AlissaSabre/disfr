@@ -20,7 +20,10 @@ namespace disfr.UI
 
         public static readonly RoutedCommand Font = new RoutedCommand("Font", typeof(Commands));
 
-        public static readonly RoutedCommand SaveAlt = new RoutedCommand("SaveAlt", typeof(Commands));
+        /// <summary>
+        /// A command to extract complementary TM (alt-trans contents).  Handled in <see cref="MainWindow"/>.
+        /// </summary>
+        public static readonly RoutedCommand OpenAlt = new RoutedCommand("OpenAlt", typeof(Commands));
 
         /// <summary>
         /// A command to make selection empty.  Handled in <see cref="DataGrid"/> control on <see cref="TableView"/>.

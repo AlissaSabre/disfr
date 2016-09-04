@@ -1,0 +1,3 @@
+LIBRARY		"CustomActions"
+EXPORTS
+	ShellChangeNotify

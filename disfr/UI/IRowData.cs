@@ -53,5 +53,7 @@ namespace disfr.UI
         string SourceLang { get; }
 
         string TargetLang { get; }
+
+        object AssetIdentity { get; }
     }
 }

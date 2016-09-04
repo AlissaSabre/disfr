@@ -4,23 +4,23 @@
   <?define Version = "!(bind.FileVersion.disfr.exe)"?>
 
   <Product Id='*'
-  	   Name='disfr $(var.Version)'
-           UpgradeCode='{EDCE634C-06E4-4F94-BE3C-56771B0C00F9}'
-           Language='1033'
-	   Codepage='1252'
-           Version='$(var.Version)'
-	   Manufacturer='Alissa Sabre'>
+      Name='disfr $(var.Version)'
+      UpgradeCode='{EDCE634C-06E4-4F94-BE3C-56771B0C00F9}'
+      Language='1033'
+	    Codepage='1252'
+      Version='$(var.Version)'
+	    Manufacturer='Alissa Sabre'>
 
     <Package Id='*'
-    	     Keywords='Installer'
-             Description="disfr $(var.Version) Installer"
-             Manufacturer='Alissa Sabre'
-	     Languages='1033'
-	     SummaryCodepage='1252'
-	     InstallerVersion='400'
-             Compressed='yes' 
-             InstallPrivileges='elevated'
-	     InstallScope='perMachine'/>
+    	  Keywords='Installer'
+        Description="disfr $(var.Version) Installer"
+        Manufacturer='Alissa Sabre'
+	      Languages='1033'
+	      SummaryCodepage='1252'
+	      InstallerVersion='400'
+        Compressed='yes'
+        InstallPrivileges='elevated'
+	      InstallScope='perMachine'/>
 
     <Upgrade Id='{EDCE634C-06E4-4F94-BE3C-56771B0C00F9}'>
       <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
@@ -38,9 +38,9 @@
       <Directory Id='ProgramFilesFolder'>
         <Directory Id='Alissa' Name='Alissa'>
           <Directory Id='INSTALLDIR' Name='disfr'>
-	    <Directory Id='INSTALLDIR_X86' Name='x86' />
-	    <Directory Id='INSTALLDIR_X64' Name='x64' />
-	  </Directory>
+            <Directory Id='InstallDirX86' Name='x86' />
+            <Directory Id='InstallDirX64' Name='x64' />
+          </Directory>
         </Directory>
       </Directory>
 
@@ -53,97 +53,219 @@
     </Directory>
 
     <Feature Id="Complete" Level="1">
-      <ComponentRef Id="disfr.exe" />
-      <ComponentRef Id="disfr.exe.config" />
-      <ComponentRef Id="Dragablz.dll" />
-      <ComponentRef Id="NetOffice.dll" />
-      <ComponentRef Id="OfficeApi.dll" />
-      <ComponentRef Id="ExcelApi.dll" />
-      <ComponentRef Id="VBIDEApi.dll" />
-      <ComponentRef Id="WpfColorFontDialog.dll" />
-      <ComponentRef Id="System.Data.SQLite.dll" />
-      <ComponentRef Id="x86.SQLite.Interop.dll" />
-      <ComponentRef Id="x64.SQLite.Interop.dll" />
-      <ComponentRef Id="table.xslt" />
-      <ComponentRef Id="xmlss.xslt" />
-      <ComponentRef Id="Readme.htm" />
+
+      <Component Id='disfr.exe' Directory='INSTALLDIR' Guid='{76840A5F-2A32-48D6-A7FF-4D1BD297C4DA}'>
+        <File Name='disfr.exe' Source='disfr.exe' KeyPath='yes'>
+          <Shortcut Id="DesktopFolder.disfr.exe" Directory="DesktopFolder" Advertise='yes'
+                    Name="disfr" WorkingDirectory='INSTALLDIR'
+                    Icon='disfr.icon.exe'/>
+          <Shortcut Id="AppMenuDir.disfr.exe" Directory="AppMenuDir" Advertise='yes'
+                    Name="disfr" WorkingDirectory='INSTALLDIR'
+                    Icon='disfr.icon.exe'/>
+        </File>
+        <RemoveFolder Id='disfr.exe' Directory='AppMenuDir' On='uninstall' />
+      </Component>
+
+      <Component Id='disfr.exe.config' Directory='INSTALLDIR' Guid='{5C84C31D-BF8C-4433-B4ED-291D57A6C1BF}'>
+        <File Source='disfr.exe.config' KeyPath='yes' />
+      </Component>
+
+      <Component Id='Dragablz.dll' Directory='INSTALLDIR' Guid='{165EDB7C-BAF8-4DE5-8B8B-E915CA6C5B5A}'>
+        <File Source='Dragablz.dll' KeyPath='yes' />
+      </Component>
+
+      <Component Id='NetOffice.dll' Directory='INSTALLDIR' Guid='{7C442F5A-B25A-4FEA-A811-9DA84A2519DA}'>
+        <File Source='NetOffice.dll' KeyPath='yes' />
+      </Component>
+
+      <Component Id='OfficeApi.dll' Directory='INSTALLDIR' Guid='{43124856-B13B-42C6-BBCA-57BABAD91AAB}'>
+        <File Source='OfficeApi.dll' KeyPath='yes' />
+      </Component>
+
+      <Component Id='ExcelApi.dll' Directory='INSTALLDIR' Guid='{B17CFBC1-D246-47C7-8840-097E2D4330A2}'>
+        <File Source='ExcelApi.dll' KeyPath='yes' />
+      </Component>
+
+      <Component Id='VBIDEApi.dll' Directory='INSTALLDIR' Guid='{07696046-6877-4AD7-A356-4E4F37D4F6EB}'>
+        <File Source='VBIDEApi.dll' KeyPath='yes' />
+      </Component>
+
+      <Component Id='WpfColorFontDialog.dll' Directory='INSTALLDIR' Guid='{BAE1B4DF-4764-44FC-8237-405FBDA62D21}'>
+        <File Source='WpfColorFontDialog.dll' KeyPath='yes' />
+      </Component>
+
+      <!-- Component Id='Ionic.Zip.dll' Directory='INSTALLDIR' Guid='{5BEFC045-3118-4441-B06D-B9C1B47B93C0}' -->
+
+      <Component Id="System.Data.SQLite.dll" Directory='INSTALLDIR' Guid='{A6792548-D48E-4EC1-830A-2C1E2F119DD3}' >
+        <File Source="System.Data.SQLite.dll" KeyPath='yes' />
+      </Component>
+
+      <Component Id="x86.SQLite.Interop.dll" Directory='InstallDirX86' Guid='{34EAC1D2-D140-4C7A-96CD-72115A47E899}'>
+        <File Id="x86.SQLite.Interop.dll" Source="x86\SQLite.Interop.dll" KeyPath='yes' />
+      </Component>
+
+      <Component Id="x64.SQLite.Interop.dll" Directory='InstallDirX64' Guid='{8CF347E2-4694-4015-955E-8F8458C32AF1}'>
+        <File Id="x64.SQLite.Interop.dll" Source="x64\SQLite.Interop.dll" KeyPath='yes' />
+      </Component>
+
+      <Component Id="Microsoft.WindowsAPICodePack.dll" Directory="INSTALLDIR" Guid="{4F144BEE-5AF3-47D1-945A-7BE66710254D}">
+        <File Source="Microsoft.WindowsAPICodePack.dll" KeyPath="yes" />
+      </Component>
+
+      <Component Id="Microsoft.WindowsAPICodePack.Shell.dll" Directory="INSTALLDIR" Guid="{94A94E1D-5E8C-4C99-930E-CB208F54E664}">
+        <File Source="Microsoft.WindowsAPICodePack.Shell.dll" KeyPath="yes" />
+      </Component>
+
+      <Component Id='table.xslt' Directory='INSTALLDIR' Guid='{A3920AFF-494C-4D64-B10E-6AE4719D837A}'>
+        <File Source='table.xslt' KeyPath='yes' />
+      </Component>
+
+      <Component Id='xmlss.xslt' Directory='INSTALLDIR' Guid='{E6E57EE8-0B1B-464E-8942-6EBC7D8BFB3A}'>
+        <File Source='xmlss.xslt' KeyPath='yes' />
+      </Component>
+
+      <Component Id='Readme.htm' Directory='INSTALLDIR' Guid='{A156536D-81B0-42B1-98E3-4525D724D533}'>
+        <File Source='Readme.htm' KeyPath='yes'>
+          <Shortcut Id='AppMenuDir.Readme.htm' Name='Readme.htm' Directory='AppMenuDir' Advertise='yes' />
+        </File>
+        <RemoveFolder Id='Readme.htm' Directory='AppMenuDir' On='uninstall' />
+      </Component>
+
+      <Component Id="REG.InstallDir" Directory="TARGETDIR" Guid="{A7CF610F-C416-4A85-8D29-6341DCF262FF}">
+        <RegistryKey Root="HKLM" Key="Software\Alissa Sabre\disfr">
+          <RegistryValue Type="string" Name="InstallDir" Value="[INSTALLDIR]" KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.AppPath" Directory="TARGETDIR" Guid="{83A7E281-4E10-4A33-9293-9D86086E5DFC}">
+        <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\disfr.exe">
+          <RegistryValue Type="string" Value='"[INSTALLDIR]disfr.exe"' KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.Applications" Directory="TARGETDIR" Guid="{996DD30A-8D6E-41A5-8EF9-ACA7168854B7}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\shell\open\command">
+          <RegistryValue Type="string" Value='"[INSTALLDIR]disfr.exe" "%1"' KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.ProgId" Directory="TARGETDIR" Guid="{508AA0E4-7C83-4AF9-A2D8-DEDC10639ACC}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\disfr.viewer.0\shell\open\command">
+          <RegistryValue Type="string" Value='"[INSTALLDIR]disfr.exe" "%1"' KeyPath="yes" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.xlf" Directory="TARGETDIR" Guid="{D312BF7B-8EF8-4774-93BA-BDB39143BCC7}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".xlf" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.xlf\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.xliff" Directory="TARGETDIR" Guid="{76BCD98F-B995-4C68-AF5A-8444354A7614}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".xliff" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.xliff\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.sdlxliff" Directory="TARGETDIR" Guid="{9408B334-A2ED-4831-B7F2-69D65F006DCE}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".sdlxliff" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.sdlxliff\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.sdlppx" Directory="TARGETDIR" Guid="{93933525-C3D6-4301-A6B2-CE9F44AD0092}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".sdlppx" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.sdlppx\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.sdlrpx" Directory="TARGETDIR" Guid="{A44AD140-577B-4C61-A324-1370E3258390}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".sdlrpx" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.sdlrpx\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.wsxz" Directory="TARGETDIR" Guid="{AA65EAEF-34F1-4EDB-AE9C-FE316EC77381}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".wsxz" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.wsxz\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.xlz" Directory="TARGETDIR" Guid="{E09B3C3B-6785-4AF3-882B-A0E7745A1A07}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".xlz" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.xlz\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.mqxlz" Directory="TARGETDIR" Guid="{D601D401-1FE7-47E9-B9FF-5B5C905FA510}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".mqxlz" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.mqxlz\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.mqxliff" Directory="TARGETDIR" Guid="{95C45BE1-3B06-4C79-849E-3CAA10AE52BD}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".mqxliff" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.mqxliff\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.tmx" Directory="TARGETDIR" Guid="{A22F6D80-D2FC-44EA-B0F1-3C5799DA18E8}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".tmx" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.tmx\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="REG.sdltm" Directory="TARGETDIR" Guid="{1AD0CBFC-8762-4E72-9075-D48F6C8ECA62}">
+        <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+          <RegistryValue Type="string" Name=".sdltm" Value="" KeyPath="yes" />
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Classes\.sdltm\OpenWithProgIds">
+          <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+        </RegistryKey>
+      </Component>
+
     </Feature>
-
-    <Component Id='disfr.exe' Directory='INSTALLDIR' Guid='{76840A5F-2A32-48D6-A7FF-4D1BD297C4DA}'>
-      <File Name='disfr.exe' Source='disfr.exe' KeyPath='yes'>
-        <Shortcut Id="DesktopFolder.disfr.exe" Directory="DesktopFolder" Advertise='yes'
-                  Name="disfr" WorkingDirectory='INSTALLDIR'
-                  Icon='disfr.icon.exe'/>
-        <Shortcut Id="AppMenuDir.disfr.exe" Directory="AppMenuDir" Advertise='yes'
-                  Name="disfr" WorkingDirectory='INSTALLDIR'
-                  Icon='disfr.icon.exe'/>
-      </File>
-      <RemoveFolder Id='disfr.exe' Directory='AppMenuDir' On='uninstall' />
-    </Component>
-
-    <Component Id='disfr.exe.config' Directory='INSTALLDIR' Guid='{5C84C31D-BF8C-4433-B4ED-291D57A6C1BF}'>
-      <File Source='disfr.exe.config' KeyPath='yes' />
-    </Component>
-
-    <Component Id='Dragablz.dll' Directory='INSTALLDIR' Guid='{165EDB7C-BAF8-4DE5-8B8B-E915CA6C5B5A}'>
-      <File Source='Dragablz.dll' KeyPath='yes' />
-    </Component>
-
-    <Component Id='NetOffice.dll' Directory='INSTALLDIR' Guid='{7C442F5A-B25A-4FEA-A811-9DA84A2519DA}'>
-      <File Source='NetOffice.dll' KeyPath='yes' />
-    </Component>
-
-    <Component Id='OfficeApi.dll' Directory='INSTALLDIR' Guid='{43124856-B13B-42C6-BBCA-57BABAD91AAB}'>
-      <File Source='OfficeApi.dll' KeyPath='yes' />
-    </Component>
-
-    <Component Id='ExcelApi.dll' Directory='INSTALLDIR' Guid='{B17CFBC1-D246-47C7-8840-097E2D4330A2}'>
-      <File Source='ExcelApi.dll' KeyPath='yes' />
-    </Component>
-
-    <Component Id='VBIDEApi.dll' Directory='INSTALLDIR' Guid='{07696046-6877-4AD7-A356-4E4F37D4F6EB}'>
-      <File Source='VBIDEApi.dll' KeyPath='yes' />
-    </Component>
-
-    <Component Id='WpfColorFontDialog.dll' Directory='INSTALLDIR' Guid='{BAE1B4DF-4764-44FC-8237-405FBDA62D21}'>
-      <File Source='WpfColorFontDialog.dll' KeyPath='yes' />
-    </Component>
-
-    <!-- Component Id='Ionic.Zip.dll' Directory='INSTALLDIR' Guid='{5BEFC045-3118-4441-B06D-B9C1B47B93C0}' -->
-
-    <Component Id="System.Data.SQLite.dll" Directory='INSTALLDIR' Guid='{A6792548-D48E-4EC1-830A-2C1E2F119DD3}' >
-      <File Source="System.Data.SQLite.dll" KeyPath='yes' />
-    </Component>
-
-    <Component Id="x86.SQLite.Interop.dll" Directory='INSTALLDIR_X86' Guid='{34EAC1D2-D140-4C7A-96CD-72115A47E899}'>
-      <File Id="x86.SQLite.Interop.dll" Source="x86\SQLite.Interop.dll" KeyPath='yes' />
-    </Component>
-
-    <Component Id="x64.SQLite.Interop.dll" Directory='INSTALLDIR_X64' Guid='{8CF347E2-4694-4015-955E-8F8458C32AF1}'>
-      <File Id="x64.SQLite.Interop.dll" Source="x64\SQLite.Interop.dll" KeyPath='yes' />
-    </Component>
-
-    <Component Id='table.xslt' Directory='INSTALLDIR' Guid='{A3920AFF-494C-4D64-B10E-6AE4719D837A}'>
-      <File Source='table.xslt' KeyPath='yes' />
-    </Component>
-
-    <Component Id='xmlss.xslt' Directory='INSTALLDIR' Guid='{E6E57EE8-0B1B-464E-8942-6EBC7D8BFB3A}'>
-      <File Source='xmlss.xslt' KeyPath='yes' />
-    </Component>
-
-    <Component Id='Readme.htm' Directory='INSTALLDIR' Guid='{A156536D-81B0-42B1-98E3-4525D724D533}'>
-      <File Source='Readme.htm' KeyPath='yes'>
-	<Shortcut Id='AppMenuDir.Readme.htm' Name='Readme.htm' Directory='AppMenuDir' Advertise='yes' />
-      </File>
-      <RemoveFolder Id='Readme.htm' Directory='AppMenuDir' On='uninstall' />
-    </Component>
 
     <InstallExecuteSequence>
       <RemoveExistingProducts After="InstallFinalize" />
       <Custom Action='NewerProductFound' After='FindRelatedProducts'>NEWERFOUND</Custom>
+      <Custom Action='ChangeNotify' After='WriteRegistryValues' />
     </InstallExecuteSequence>
 
     <CustomAction Id='NewerProductFound' Error='A same or newer version of this program appears installed.  Please remove it first if you want to install this version ($(var.Version)).' />
+
+    <CustomAction Id="ChangeNotify" BinaryKey="CustomActions.dll" DllEntry="ShellChangeNotify" />
+    <Binary Id="CustomActions.dll" SourceFile="CustomActions.dll" />
 
     <Icon Id="disfr.icon.exe" SourceFile="..\disfr\AppIcon.ico" />
     <Property Id="ARPPRODUCTICON" Value="disfr.icon.exe" />
