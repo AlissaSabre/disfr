@@ -173,6 +173,10 @@ namespace disfr.Doc
             {
                 AddProp(pair, attr.Name.LocalName, attr.Value);
             }
+            foreach (var context in tu.Elements(X + "context-group").Elements(X + "context"))
+            {
+                AddProp(pair, "context/" + ((string)context.Attribute("context-type") ?? ""), (string)context ?? "");
+            }
             return pair;
         }
 
