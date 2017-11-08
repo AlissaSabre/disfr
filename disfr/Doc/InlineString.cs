@@ -6,6 +6,15 @@ using System.Text;
 
 namespace disfr.Doc
 {
+    /// <summary>
+    /// Represents a sort of a <i>rich</i> text.
+    /// </summary>
+    /// <remarks>
+    /// Many bilingual file supports a notion of <i>tags</i> within text data.
+    /// Some file also supports a notion of <i>special character</i>.
+    /// <see cref="InlineString"/> is a substitution of a <see cref="string"/> type,
+    /// whose contents include not just ordinary characters but also tags and special characters. 
+    /// </remarks>
     public class InlineString : IEnumerable<object>
     {
         private static readonly char[] SpecialChars = new char[]
@@ -45,7 +54,7 @@ namespace disfr.Doc
         /// An accumulated hash value of this object.
         /// </summary>
         /// <remarks>
-        /// The initial value is a magic number determined at random.
+        /// The initial value is a magic number determined by me (chosen at random and fixed.)
         /// </remarks>
         private int _HashCode = 0x5ab0e273;
 
