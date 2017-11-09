@@ -38,10 +38,11 @@ namespace disfr.Doc
             '\uFFA0', '\uFEFF',
         };
 
-        private static readonly Dictionary<char, InlineChar> InlineChars = new Dictionary<char, InlineChar>();
+        private static readonly Dictionary<char, InlineChar> InlineChars;
 
         static InlineString()
         {
+            InlineChars = new Dictionary<char, InlineChar>(SpecialChars.Length * 2);
             foreach (char c in SpecialChars)
             {
                 InlineChars[c] = new InlineChar(c);
@@ -63,7 +64,7 @@ namespace disfr.Doc
             return _Contents.GetEnumerator();
         }
 
-        public IEnumerator<object> GetEnumerator()
+        IEnumerator<object> IEnumerable<object>.GetEnumerator()
         {
             return _Contents.GetEnumerator();
         }
@@ -75,13 +76,13 @@ namespace disfr.Doc
             if (text == null) throw new ArgumentNullException("text");
             if (text == "") return;
             int p = 0, q;
-            while ((q = text.IndexOfAny(SpecialChars, p)) >= 0)
+            while (p < text.Length)
             {
+                for (q = p; q < text.Length && !InlineChars.ContainsKey(text[q]); q++) ;
                 if (q > p) AddString(text.Substring(p, q - p));
-                AddChar(InlineChars[text[q]]);
+                if (q < text.Length) AddChar(InlineChars[text[q]]);
                 p = q + 1;
             }
-            if (p < text.Length) AddString(text.Substring(p));
         }
 
         private void AddString(string text)
@@ -307,9 +308,12 @@ namespace disfr.Doc
     {
         public readonly char Char;
 
+        private readonly string String;
+
         public InlineChar(char char_data)
         {
             Char = char_data;
+            String = Char.ToString();
         }
 
         public override bool Equals(object obj)
@@ -324,7 +328,7 @@ namespace disfr.Doc
 
         public override string ToString()
         {
-            return Char.ToString();
+            return String;
         }
     }
 
