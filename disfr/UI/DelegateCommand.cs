@@ -7,8 +7,20 @@ using System.Windows.Input;
 
 namespace disfr.UI
 {
+    /// <summary>
+    /// The common base class for <see cref="DelegateCommand"/> and its variations.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="DelegateCommandHelper"/> looks for this class to make a magic.
+    /// </remarks>
+    /// <seealso cref="DelegateCommandHelper"/>
+    /// <seealso cref="DelegateCommand"/>
     public abstract class DelegateCommandBase
     {
+        /// <summary>
+        /// Initialize the common parts of <see cref="DelegateCommand"/> and its variations.
+        /// </summary>
+        /// <param name="has_can_execute"></param>
         protected DelegateCommandBase(bool has_can_execute)
         {
             HasCanExecute = has_can_execute;
@@ -44,10 +56,18 @@ namespace disfr.UI
     /// </remarks>
     /// <seealso cref="DelegateCommand{T}"/>
     /// <seealso cref="DelegateCommand{T1,T2}"/>
+    /// <seealso cref="DelegateCommand{T1, T2, T3}"/>
+    /// <seealso cref="DelegateCommand{T1, T2, T3, T4}"/>
     public class DelegateCommand : DelegateCommandBase, ICommand
     {
+        /// <summary>
+        /// The Execute delegate.
+        /// </summary>
         private readonly Action _Execute;
 
+        /// <summary>
+        /// The CanExecute delegate, or null if always true.
+        /// </summary>
         private readonly Func<bool> _CanExecute;
 
         /// <summary>
@@ -74,9 +94,8 @@ namespace disfr.UI
         /// <summary>
         /// Executes this command.
         /// </summary>
-        /// <param name="parameter">Any parameter defined by command semantics.</param>
         /// <remarks>
-        /// It simply invokes the <see cref="Action{T}"/> delegate passed to the constructor.
+        /// It simply invokes the <see cref="Action"/> delegate passed to the constructor.
         /// </remarks>
         public void Execute()
         {
@@ -86,10 +105,9 @@ namespace disfr.UI
         /// <summary>
         /// Tests whether this command can execute.
         /// </summary>
-        /// <param name="parameter">Any parameter defined by command semantics.</param>
         /// <returns>true if it can.</returns>
         /// <remarks>
-        /// It invokes the <see cref="Predicate{T}"/> delegate passed to the constructor,
+        /// It invokes the <see cref="Func{TResult}"/> delegate passed to the constructor,
         /// or always returns true if the delegate was null.
         /// </remarks>
         public bool CanExecute()
@@ -132,11 +150,16 @@ namespace disfr.UI
     /// an <see cref="Exception"/> is thrown.
     /// </remarks>
     /// <seealso cref="DelegateCommand"/>
-    /// <seealso cref="DelegateCommand{T1,T2}"/>
     public class DelegateCommand<T> : DelegateCommandBase, ICommand
     {
+        /// <summary>
+        /// The Execute delegate.
+        /// </summary>
         private readonly Action<T> _Execute;
 
+        /// <summary>
+        /// The CanExecute delegate, or null if always true.
+        /// </summary>
         private readonly Func<T, bool> _CanExecute;
 
         /// <summary>
@@ -178,7 +201,7 @@ namespace disfr.UI
         /// <param name="parameter">Any parameter defined by command semantics.</param>
         /// <returns>true if it can.</returns>
         /// <remarks>
-        /// It invokes the <see cref="Func{T,bool}"/> delegate passed to the constructor,
+        /// It invokes the <see cref="Func{T, TResult}"/> delegate passed to the constructor,
         /// or always returns true if the delegate was null.
         /// </remarks>
         public bool CanExecute(T parameter)
@@ -224,10 +247,17 @@ namespace disfr.UI
     /// an <see cref="Exception"/> is thrown.
     /// Extra elements are silently ignored.
     /// </remarks>
+    /// <seealso cref="DelegateCommand"/>
     public class DelegateCommand<T1, T2> : DelegateCommandBase, ICommand
     {
+        /// <summary>
+        /// The Execute delegate.
+        /// </summary>
         private readonly Action<T1, T2> _Execute;
 
+        /// <summary>
+        /// The CanExecute delegate, or null if always true.
+        /// </summary>
         private readonly Func<T1, T2, bool> _CanExecute;
 
         /// <summary>
@@ -271,7 +301,7 @@ namespace disfr.UI
         /// <param name="parameter2">Second parameter defined by command semantics.</param>
         /// <returns>true if it can.</returns>
         /// <remarks>
-        /// It invokes the <see cref="Func{T1,T2,bool}"/> delegate passed to the constructor,
+        /// It invokes the <see cref="Func{T1, T2, TResult}"/> delegate passed to the constructor,
         /// or always returns true if the delegate was null.
         /// </remarks>
         public bool CanExecute(T1 parameter1, T2 parameter2)
@@ -325,10 +355,17 @@ namespace disfr.UI
     /// an <see cref="Exception"/> is thrown.
     /// Extra elements are silently ignored.
     /// </remarks>
+    /// <seealso cref="DelegateCommand"/>
     public class DelegateCommand<T1, T2, T3> : DelegateCommandBase, ICommand
     {
+        /// <summary>
+        /// The Execute delegate.
+        /// </summary>
         private readonly Action<T1, T2, T3> _Execute;
 
+        /// <summary>
+        /// The CanExecute delegate, or null if always true.
+        /// </summary>
         private readonly Func<T1, T2, T3, bool> _CanExecute;
 
         /// <summary>
@@ -374,7 +411,7 @@ namespace disfr.UI
         /// <param name="parameter3">Third parameter defined by command semantics.</param>
         /// <returns>true if it can.</returns>
         /// <remarks>
-        /// It invokes the <see cref="Func{T1,T2,T3,bool}"/> delegate passed to the constructor,
+        /// It invokes the <see cref="Func{T1, T2, T3, TResult}"/> delegate passed to the constructor,
         /// or always returns true if the delegate was null.
         /// </remarks>
         public bool CanExecute(T1 parameter1, T2 parameter2, T3 parameter3)
@@ -429,10 +466,17 @@ namespace disfr.UI
     /// an <see cref="Exception"/> is thrown.
     /// Extra elements are silently ignored.
     /// </remarks>
+    /// <seealso cref="DelegateCommand"/>
     public class DelegateCommand<T1, T2, T3, T4> : DelegateCommandBase, ICommand
     {
+        /// <summary>
+        /// The Execute delegate.
+        /// </summary>
         private readonly Action<T1, T2, T3, T4> _Execute;
 
+        /// <summary>
+        /// The CanExecute delegate, or null if always true.
+        /// </summary>
         private readonly Func<T1, T2, T3, T4, bool> _CanExecute;
 
         /// <summary>
@@ -480,7 +524,7 @@ namespace disfr.UI
         /// <param name="parameter4">Third parameter defined by command semantics.</param>
         /// <returns>true if it can.</returns>
         /// <remarks>
-        /// It invokes the <see cref="Func{T1,T2,T3,T4,bool}"/> delegate passed to the constructor,
+        /// It invokes the <see cref="Func{T1, T2, T3, T4, TResult}"/> delegate passed to the constructor,
         /// or always returns true if the delegate was null.
         /// </remarks>
         public bool CanExecute(T1 parameter1, T2 parameter2, T3 parameter3, T4 parameter4)
