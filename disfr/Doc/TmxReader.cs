@@ -71,12 +71,16 @@ namespace disfr.Doc
                 assets[i] = asset;
             }
 
+#if true
             var thread_count = Environment.ProcessorCount - 1;
             if (thread_count * MINIMUM_ENTRIES_PER_THREAD > tus.Count)
             {
                 thread_count = tus.Count / MINIMUM_ENTRIES_PER_THREAD;
             }
             if (thread_count < 1) thread_count = 1;
+#else
+            var thread_count = 1;
+#endif
             var threads = new Thread[thread_count];
             var entries_per_thread = (int)Math.Ceiling((double)tus.Count / thread_count);
 

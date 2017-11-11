@@ -47,6 +47,43 @@ namespace disfr.Doc
             {
                 InlineChars[c] = new InlineChar(c);
             }
+            InlineCharChecker = BuildICC();
+        }
+
+        /// <summary>
+        /// A sort of a direct perfect hash table to substitute InlineChars.ContainsKey. 
+        /// </summary>
+        private static readonly char[] InlineCharChecker;
+
+        /// <summary>
+        /// Builds an InlineCharChecker.
+        /// </summary>
+        /// <returns>The InlineCharChecker.</returns>
+        private static char[] BuildICC()
+        {
+            for (int n = SpecialChars.Length; ; n++)
+            {
+                var icc = TryBuildICC(n);
+                if (icc != null) return icc;
+            }
+        }
+
+        /// <summary>
+        /// Tries to build an InlineCharChecker of size <paramref name="size"/>.
+        /// </summary>
+        /// <param name="size">The desired size of the InlineCharChecker.</param>
+        /// <returns>The InlineCharChecker of size <paramref name="size"/>, or null if not found.</returns>
+        private static char[] TryBuildICC(int size)
+        {
+            var icc = new char[size];
+            foreach (var c in SpecialChars)
+            {
+                var i = c % size;
+                if (i == 0 && c != 0) return null;
+                if (icc[i] != 0) return null;
+                icc[i] = c;
+            }
+            return icc;
         }
 
         private readonly List<object> _Contents = new List<object>();
@@ -66,27 +103,26 @@ namespace disfr.Doc
         public void Add(string text)
         {
             if (text == null) throw new ArgumentNullException("text");
-#if false
-            if (text == "") return;
-            int p = 0, q;
-            while (p < text.Length)
+#if !UNSAFE
+            int mod = InlineCharChecker.Length;
+            for (int p = 0, q; p < text.Length; p = q + 1)
             {
-                for (q = p; q < text.Length && !InlineChars.ContainsKey(text[q]); q++) ;
-                if (q > p) AddString(text.Substring(p, q - p));
+                for (q = p; q < text.Length && text[q] != InlineCharChecker[text[q] % mod]; q++) ;
+                if (p < q) AddString(text.Substring(p, q - p));
                 if (q < text.Length) AddChar(InlineChars[text[q]]);
-                p = q + 1;
             }
 #else
             unsafe
             {
-                char* p, q, r;
-                fixed (char* s = text)
+                int mod = InlineCharChecker.Length;
+                fixed (char* s = text, icc = InlineCharChecker)
                 {
-                    r = s + text.Length;
-                    for (p = s; p < r; p = q + 1)
+                    char* r = s + text.Length;
+                    for (char* p = s, q; p < r; p = q + 1)
                     {
-                        for (q = p; q < r && !InlineChars.ContainsKey(*q); q++) ;
-                        if (p < q) AddString(new string(p, 0, (int)(q - p)));
+                        char c;
+                        for (q = p; q < r && (c = *q) != icc[c % mod]; q++) ;
+                        if (p < q) AddString(text.Substring((int)(p - s), (int)(q - p)));
                         if (q < r) AddChar(InlineChars[*q]);
                     }
                 }
