@@ -290,7 +290,7 @@ namespace disfr.UI
 
         public static readonly DependencyProperty QuickFilterProperty =
             DependencyProperty.Register("QuickFilter", typeof(bool), typeof(TableView),
-                new FrameworkPropertyMetadata(QuickFilterChangedCallback) { BindsTwoWayByDefault = true });
+                new FrameworkPropertyMetadata(QuickFilterChangedCallback) { BindsTwoWayByDefault = true, DefaultValue = true });
         
         public bool QuickFilter
         {
