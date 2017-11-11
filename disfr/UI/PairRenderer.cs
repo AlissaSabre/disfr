@@ -74,7 +74,7 @@ namespace disfr.UI
                     var c = ((InlineChar)obj).Char;
                     if (!ShowSpecials || ignore_show_specials)
                     {
-                        g.Append(c.ToString(), Gloss.None);
+                        g.Append(obj.ToString(), Gloss.None);
                     }
                     else if (SpecialCharMap.TryGetValue(c, out visual))
                     {
