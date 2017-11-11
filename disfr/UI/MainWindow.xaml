@@ -66,7 +66,7 @@
                         <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
                     </MenuItem>
                     <MenuItem Header="_Edit">
-                        <MenuItem Header="_Find..." Command="{Binding FindCommand}"/>
+                        <MenuItem Header="_Find..." Command="{x:Static ApplicationCommands.Find}" CommandTarget="{Binding SelectedItem.Content, ElementName=tables}"/>
                         <Separator/>
                         <MenuItem Header="_Copy" Command="{x:Static ApplicationCommands.Copy}" CommandTarget="{Binding SelectedItem.Content, ElementName=tables}"/>
                         <MenuItem Header="Select _All" Command="{x:Static ApplicationCommands.SelectAll}" CommandTarget="{Binding SelectedItem.Content, ElementName=tables}"/>
