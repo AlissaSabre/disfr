@@ -51,14 +51,6 @@ namespace disfr.Doc
 
         private readonly List<object> _Contents = new List<object>();
 
-        /// <summary>
-        /// An accumulated hash value of this object.
-        /// </summary>
-        /// <remarks>
-        /// The initial value is a magic number determined by me (chosen at random and fixed.)
-        /// </remarks>
-        private int _HashCode = 0x5ab0e273;
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _Contents.GetEnumerator();
@@ -74,6 +66,7 @@ namespace disfr.Doc
         public void Add(string text)
         {
             if (text == null) throw new ArgumentNullException("text");
+#if false
             if (text == "") return;
             int p = 0, q;
             while (p < text.Length)
@@ -83,6 +76,22 @@ namespace disfr.Doc
                 if (q < text.Length) AddChar(InlineChars[text[q]]);
                 p = q + 1;
             }
+#else
+            unsafe
+            {
+                char* p, q, r;
+                fixed (char* s = text)
+                {
+                    r = s + text.Length;
+                    for (p = s; p < r; p = q + 1)
+                    {
+                        for (q = p; q < r && !InlineChars.ContainsKey(*q); q++) ;
+                        if (p < q) AddString(new string(p, 0, (int)(q - p)));
+                        if (q < r) AddChar(InlineChars[*q]);
+                    }
+                }
+            }
+#endif
         }
 
         private void AddString(string text)
@@ -92,33 +101,31 @@ namespace disfr.Doc
                 var x = _Contents[_Contents.Count - 1] as string;
                 var y = x + text;
                 _Contents[_Contents.Count - 1] = y;
-                _HashCode = _HashCode - x.GetHashCode() + y.GetHashCode();
             }
             else
             {
                 _Contents.Add(text);
-                _HashCode += (_HashCode >> 9) + text.GetHashCode();
             }
         }
 
         private void AddChar(InlineChar c)
         {
             _Contents.Add(c);
-            _HashCode += (_HashCode >> 1) + c.GetHashCode();
         }
 
         public void Add(InlineTag tag)
         {
             if (tag == null) throw new ArgumentNullException("tag");
             _Contents.Add(tag);
-            _HashCode += (_HashCode >> 7) + tag.GetHashCode();
         }
 
         public InlineString Append(string text) { Add(text); return this; }
 
         public InlineString Append(InlineTag tag) { Add(tag); return this; }
 
-        public InlineString Append(InlineString inline)
+        public InlineString Append(InlineString inline) { Add(inline); return this; }
+
+        public void Add(InlineString inline)
         {
             if (inline == null) throw new ArgumentNullException("inline");
             IEnumerable<object> contents;
@@ -134,23 +141,34 @@ namespace disfr.Doc
             {
                 if (x is string)
                 {
-                    Add((string)x);
+                    AddString((string)x);
                 }
                 else if (x is InlineTag)
                 {
                     Add((InlineTag)x);
+                }
+                else if (x is InlineChar)
+                {
+                    AddChar((InlineChar)x);
                 }
                 else
                 {
                     throw new ApplicationException("internal error");
                 }
             }
-            return this;
         }
 
         public bool IsEmpty { get { return _Contents.Count == 0; } }
 
-        public override int GetHashCode() { return _HashCode; }
+        public override int GetHashCode()
+        {
+            var h = 0x5ab0e273; // a magic number.
+            foreach (var c in _Contents)
+            {
+                h += (h << 9) + c.GetHashCode();
+            }
+            return h;
+        }
 
         public override bool Equals(object obj)
         {

@@ -89,6 +89,14 @@ namespace UnitTestDisfrDoc
         }
 
         [TestMethod]
+        public void Append_4()
+        {
+            var s = new InlineString() { "ab cd " };
+            s.Append(s);
+            s.Is(new InlineString() { "ab cd ab cd " });
+        }
+
+        [TestMethod]
         public void Equals_1()
         {
             var t1 = new InlineTag(Tag.S, "*", "*", "t", null, null, null);
