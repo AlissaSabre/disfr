@@ -86,6 +86,14 @@ namespace disfr.Doc
             return icc;
         }
 
+        /// <summary>
+        /// The contents of this InlineString.
+        /// </summary>
+        /// <remarks>
+        /// Although the element type is declared being object, 
+        /// the list can actually contain elements either of the three types:
+        /// string, InlineTag and InlineChar.
+        /// </remarks>
         private readonly List<object> _Contents = new List<object>();
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -93,13 +101,27 @@ namespace disfr.Doc
             return _Contents.GetEnumerator();
         }
 
-        IEnumerator<object> IEnumerable<object>.GetEnumerator()
+        /// <summary>
+        /// Implements IEnumerator{object}.GetEnumerator().
+        /// </summary>
+        /// <returns>An enumerator.</returns>
+        public IEnumerator<object> GetEnumerator()
         {
             return _Contents.GetEnumerator();
         }
 
+        /// <summary>
+        /// Gets the contents of this InlineString as an enumerable.
+        /// </summary>
         public IEnumerable<object> Contents { get { return _Contents; } }
 
+        /// <summary>
+        /// Add a string at the end to this InlineString.
+        /// </summary>
+        /// <param name="text">The string to add.</param>
+        /// <remarks>
+        /// Any special characters in <paramref name="text"/> will be searched and isolated.
+        /// </remarks>
         public void Add(string text)
         {
             if (text == null) throw new ArgumentNullException("text");
@@ -130,6 +152,13 @@ namespace disfr.Doc
 #endif
         }
 
+        /// <summary>
+        /// Add a string to this InlineString.
+        /// </summary>
+        /// <param name="text">string to add.</param>
+        /// <remarks>
+        /// The string is added as it is; no special characters must occur in <paramref name="text"/>. 
+        /// </remarks>
         private void AddString(string text)
         {
             if (_Contents.Count > 0 && _Contents[_Contents.Count - 1] is string)
@@ -149,31 +178,50 @@ namespace disfr.Doc
             _Contents.Add(c);
         }
 
+        /// <summary>
+        /// Add an inline tag at the end of this inline string.
+        /// </summary>
+        /// <param name="tag"></param>
         public void Add(InlineTag tag)
         {
             if (tag == null) throw new ArgumentNullException("tag");
             _Contents.Add(tag);
         }
 
+        /// <summary>
+        /// Adds a string, returning this instance.
+        /// </summary>
+        /// <param name="text">string to add.</param>
+        /// <returns>this instance.</returns>
         public InlineString Append(string text) { Add(text); return this; }
 
+        /// <summary>
+        /// Adds an inline tag, returning this instance.
+        /// </summary>
+        /// <param name="tag">Inline tag to add.</param>
+        /// <returns>this instance.</returns>
         public InlineString Append(InlineTag tag) { Add(tag); return this; }
 
+        /// <summary>
+        /// Add the contents of another InlineString, returning this instance.
+        /// </summary>
+        /// <param name="inline">InlineString whose contents are added.</param>
+        /// <returns>this instance.</returns>
         public InlineString Append(InlineString inline) { Add(inline); return this; }
 
+        /// <summary>
+        /// Add the contents of another InlineString at the end of this InlineString.
+        /// </summary>
+        /// <param name="inline">InlineString whose contents are added.</param>
         public void Add(InlineString inline)
         {
             if (inline == null) throw new ArgumentNullException("inline");
-            IEnumerable<object> contents;
             if (Object.ReferenceEquals(inline._Contents, _Contents))
             {
-                contents = inline._Contents.ToArray();
+                throw new ArgumentException("Can't add contents of an InlineString to itself.", "inline");
             }
-            else
-            {
-                contents = inline._Contents;
-            }
-            foreach (var x in contents)
+
+            foreach (var x in inline._Contents)
             {
                 if (x is string)
                 {
@@ -194,8 +242,15 @@ namespace disfr.Doc
             }
         }
 
+        /// <summary>
+        /// Gets whether this InlineString represents an empty string.
+        /// </summary>
         public bool IsEmpty { get { return _Contents.Count == 0; } }
 
+        /// <summary>
+        /// Calculates and returns a content based hash code. 
+        /// </summary>
+        /// <returns>The hash code.</returns>
         public override int GetHashCode()
         {
             var h = 0x5ab0e273; // a magic number.
@@ -206,6 +261,11 @@ namespace disfr.Doc
             return h;
         }
 
+        /// <summary>
+        /// Provides contents based equality.
+        /// </summary>
+        /// <param name="obj">Another object to test equality.</param>
+        /// <returns>True if equal.</returns>
         public override bool Equals(object obj)
         {
             if (this == obj) return true;
@@ -231,6 +291,9 @@ namespace disfr.Doc
         }
     }
 
+    /// <summary>
+    /// A type of an inline tag.
+    /// </summary>
     public enum Tag
     {
         /// <summary>
@@ -249,8 +312,14 @@ namespace disfr.Doc
         S,
     };
 
+    /// <summary>
+    /// Represents a tag in an <see cref="InlineString"/>.
+    /// </summary>
     public class InlineTag
     {
+        /// <summary>
+        /// A type of a tag.
+        /// </summary>
         public readonly Tag TagType;
 
         public readonly string Id;

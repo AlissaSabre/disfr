@@ -91,9 +91,12 @@ namespace UnitTestDisfrDoc
         [TestMethod]
         public void Append_4()
         {
-            var s = new InlineString() { "ab cd " };
-            s.Append(s);
-            s.Is(new InlineString() { "ab cd ab cd " });
+            var s = new InlineString() { "ab cd" };
+            var t = new InlineString() { "ef gh" };
+            s.Append(t);
+            s.Is(new InlineString() { "ab cdef gh" });
+            s.Contents.Count().Is(5);
+            AssertEx.Catch<ArgumentException>(() => s.Append(s));
         }
 
         [TestMethod]

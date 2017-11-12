@@ -19,6 +19,7 @@
 
             <local:VisibilityToBooleanConverter x:Key="Visibility2"/>
 
+            <!-- The following style resource is almost a copy of ColumnMenuItem style in MainWindow.xaml with just a slight difference, uh oh :( -->
             <Style x:Key="HeaderContextMenu" TargetType="ContextMenu">
                 <Setter Property="ItemContainerStyle">
                     <Setter.Value>
