@@ -17,6 +17,21 @@
 
             <BooleanToVisibilityConverter x:Key="Visibility"/>
 
+            <local:VisibilityToBooleanConverter x:Key="Visibility2"/>
+
+            <Style x:Key="HeaderContextMenu" TargetType="ContextMenu">
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Header" Value="{Binding Header, Mode=OneTime}"/>
+                            <Setter Property="IsEnabled" Value="{Binding (local:TableView.ColumnInUse), Mode=OneTime}"/>
+                            <Setter Property="IsCheckable" Value="True"/>
+                            <Setter Property="IsChecked" Value="{Binding Visibility, Mode=TwoWay, Converter={StaticResource Visibility2}}"/>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style x:Key="DataGridStyle" TargetType="DataGrid" BasedOn="{StaticResource DisableWhenBusy}">
                 <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
                 <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
@@ -27,14 +42,17 @@
                 <Setter Property="SelectionUnit" Value="Cell"/>
                 <Setter Property="IsReadOnly" Value="True"/>
                 <Setter Property="BorderThickness" Value="0"/>
-
+                
                 <Setter Property="ColumnHeaderStyle">
                     <Setter.Value>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="ContentTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
-                                        <StackPanel>
+                                        <StackPanel Tag="{Binding ElementName=Root}">
+                                            <StackPanel.ContextMenu>
+                                                <ContextMenu Style="{StaticResource HeaderContextMenu}" DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Mode=Self}}" ItemsSource="{Binding Path=Columns}"/>
+                                            </StackPanel.ContextMenu>
                                             <TextBlock Name="HeaderText" Text="{Binding}"/>
                                             <ComboBox Name="FilterBox" IsEditable="True" Margin="0,3,0,0" MinWidth="30"
                                                       Visibility="{Binding QuickFilter, ElementName=Root, Converter={StaticResource Visibility}}"
