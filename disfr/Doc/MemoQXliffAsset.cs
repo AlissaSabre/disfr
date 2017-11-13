@@ -126,7 +126,8 @@ namespace disfr.Doc
                         // It is not easy to use using statement on this ZipArchive under the current flow structure of this method.
                         // It is ultimately a MemoryStream, so there should be no unmaged resource involved, anyway.
                         var zip2 = new ZipArchive(doc.Open(), ZipArchiveMode.Read, true, Encoding.GetEncoding(850));
-                        doc = zip2.GetEntry(DOC_MRD);
+                        // The inner doc.mrd may be under a subdirectory.
+                        doc = zip2.Entries.FirstOrDefault(entry => entry.Name == DOC_MRD);
                         if (doc == null) return;
                     }
                 }
