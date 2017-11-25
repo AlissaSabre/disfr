@@ -90,21 +90,21 @@
             <DataGridTemplateColumn x:Name="Source" Header="Source" ClipboardContentBinding="{Binding Source}" Width="*" CanUserSort="True" SortMemberPath="FlatSource">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <local:GlossyTextBlock GlossyText="{Binding Source}" TextWrapping="Wrap"/>
+                        <local:GlossyTextBlock GlossyText="{Binding Source}"/>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             <DataGridTemplateColumn x:Name="Target2" Header="Old Target" ClipboardContentBinding="{Binding Target2}" Width="*" CanUserSort="True" SortMemberPath="FlatTarget2">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <local:GlossyTextBlock GlossyText="{Binding Target2}" TextWrapping="Wrap"/>
+                        <local:GlossyTextBlock GlossyText="{Binding Target2}"/>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             <DataGridTemplateColumn x:Name="Target" Header="Target" ClipboardContentBinding="{Binding Target}" Width="*" CanUserSort="True" SortMemberPath="FlatTarget">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
-                        <local:GlossyTextBlock GlossyText="{Binding Target}" TextWrapping="Wrap"/>
+                        <local:GlossyTextBlock GlossyText="{Binding Target}"/>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>

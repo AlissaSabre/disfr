@@ -17,6 +17,11 @@ namespace disfr.UI
             InitializeGlossMap();
         }
 
+        public GlossyTextBlock()
+        {
+            TextWrapping = TextWrapping.Wrap;
+        }
+
         public GlossyString GlossyText
         {
             get { return GetValue(GlossyTextProperty) as GlossyString; }
@@ -136,9 +141,10 @@ namespace disfr.UI
             var tb = d as TextBlock;
             var inlines = tb.Inlines;
             inlines.Clear();
-            if (e.NewValue != null)
+            var gs = e.NewValue as GlossyString;
+            if (!GlossyString.IsNullOrEmpty(gs))
             {
-                foreach (var p in ((GlossyString)e.NewValue).AsCollection())
+                foreach (var p in gs.AsCollection())
                 {
                     var entry = GlossMap[(int)p.Gloss];
                     inlines.Add(new Run(p.Text) { Foreground = entry.Foreground, Background = entry.Background, TextDecorations = entry.Decorations });
@@ -148,5 +154,5 @@ namespace disfr.UI
 
 #endif
 
-        }
+    }
 }
