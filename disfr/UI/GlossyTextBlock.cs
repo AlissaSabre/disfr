@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace disfr.UI
 {
-    public class GlossyTextBlock : TextBlock
+    public class GlossyTextBlock : FlowDocumentScrollViewer
     {
         static GlossyTextBlock()
         {
@@ -19,8 +21,20 @@ namespace disfr.UI
 
         public GlossyTextBlock()
         {
-            TextWrapping = TextWrapping.Wrap;
+            IsHitTestVisible = false;
+
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+
+            Paragraph = new Paragraph();
+            Document = new FlowDocument(Paragraph);
+            Document.PagePadding = new Thickness(0);
+            Document.SetBinding(FlowDocument.FontFamilyProperty, new Binding() { Source = this, Path = new PropertyPath(FontFamilyProperty), Mode = BindingMode.OneWay });
+            Document.SetBinding(FlowDocument.FontSizeProperty, new Binding() { Source = this, Path = new PropertyPath(FontSizeProperty), Mode = BindingMode.OneWay });
+            Document.SetBinding(FlowDocument.TextAlignmentProperty, new Binding() { Source = this, Path = new PropertyPath(HorizontalContentAlignmentProperty), Mode = BindingMode.OneWay });
         }
+
+        private readonly Paragraph Paragraph;
 
         public GlossyString GlossyText
         {
@@ -31,61 +45,6 @@ namespace disfr.UI
         public static readonly DependencyProperty GlossyTextProperty =
             DependencyProperty.Register("GlossyText", typeof(GlossyString), typeof(GlossyTextBlock), new PropertyMetadata(GlossyString.Empty, OnGlossyTextChanged));
 
-#if TRADITIONAL
-
-        private static readonly TextDecorationCollection INSUL = new TextDecorationCollection() { new TextDecoration() { Location = TextDecorationLocation.Underline, Pen = new Pen(Brushes.Blue, 2) } };
-        private static readonly TextDecorationCollection DELST = new TextDecorationCollection() { new TextDecoration() { Location = TextDecorationLocation.Strikethrough, Pen = new Pen(Brushes.Red, 2) } };
-
-        private static readonly Brush INS = Brushes.Blue;
-        private static readonly Brush DEL = Brushes.Red;
-        private static readonly Brush TAG = Brushes.White;
-        private static readonly Brush SYM = Brushes.White;
-
-        private static readonly Brush TAGBG = Brushes.Gray;
-        private static readonly Brush SYMBG = Brushes.LightGreen;
-
-        public static void OnGlossyTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var tb = d as TextBlock;
-            var inlines = tb.Inlines;
-            inlines.Clear();
-            foreach (var p in ((GlossyString)e.NewValue).AsCollection())
-            {
-                switch (p.Gloss)
-                {
-                    default:
-                        inlines.Add(new Run(p.Text));
-                        break;
-                    case Gloss.INS:
-                        inlines.Add(new Run(p.Text) { Foreground = INS, TextDecorations = INSUL });
-                        break;
-                    case Gloss.DEL:
-                        inlines.Add(new Run(p.Text) { Foreground = DEL, TextDecorations = DELST });
-                        break;
-                    case Gloss.TAG:
-                        inlines.Add(new Run(p.Text) { Foreground = TAG, Background = TAGBG });
-                        break;
-                    case Gloss.TAG | Gloss.INS:
-                        inlines.Add(new Run(p.Text) { Foreground = INS, Background = TAGBG, TextDecorations = INSUL });
-                        break;
-                    case Gloss.TAG | Gloss.DEL:
-                        inlines.Add(new Run(p.Text) { Foreground = DEL, Background = TAGBG, TextDecorations = DELST });
-                        break;
-                    case Gloss.SYM:
-                        inlines.Add(new Run(p.Text) { Background = SYMBG });
-                        break;
-                    case Gloss.SYM | Gloss.INS:
-                        inlines.Add(new Run(p.Text) { Foreground = INS, Background = SYMBG, TextDecorations = INSUL });
-                        break;
-                    case Gloss.SYM | Gloss.DEL:
-                        inlines.Add(new Run(p.Text) { Foreground = DEL, Background = SYMBG, TextDecorations = DELST });
-                        break;
-
-                }
-            }
-        }
-
-#else
         private class GlossEntry
         {
             public Brush Foreground;
@@ -138,8 +97,8 @@ namespace disfr.UI
 
         public static void OnGlossyTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var tb = d as TextBlock;
-            var inlines = tb.Inlines;
+            var control = d as GlossyTextBlock;
+            var inlines = control.Paragraph.Inlines;
             inlines.Clear();
             var gs = e.NewValue as GlossyString;
             if (!GlossyString.IsNullOrEmpty(gs))
@@ -151,8 +110,5 @@ namespace disfr.UI
                 }
             }
         }
-
-#endif
-
     }
 }
