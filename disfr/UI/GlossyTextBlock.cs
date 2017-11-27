@@ -95,6 +95,19 @@ namespace disfr.UI
             GlossMap = map;
         }
 
+        /// <summary>
+        /// Given a Pair in a GlossyString, returns a corresponding Run.
+        /// </summary>
+        /// <param name="pair">A pair.</param>
+        /// <returns>A newly created Run.</returns>
+        /// <see cref="GlossyString"/>
+        /// <see cref="Run"/>
+        public static Run GlossyPairToRun(GlossyString.Pair pair)
+        {
+            var entry = GlossMap[(int)pair.Gloss];
+            return new Run(pair.Text) { Foreground = entry.Foreground, Background = entry.Background, TextDecorations = entry.Decorations };
+        }
+
         public static void OnGlossyTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as GlossyTextBlock;
@@ -103,10 +116,9 @@ namespace disfr.UI
             var gs = e.NewValue as GlossyString;
             if (!GlossyString.IsNullOrEmpty(gs))
             {
-                foreach (var p in gs.AsCollection())
+                foreach (var run in gs.AsCollection().Select(GlossyPairToRun))
                 {
-                    var entry = GlossMap[(int)p.Gloss];
-                    inlines.Add(new Run(p.Text) { Foreground = entry.Foreground, Background = entry.Background, TextDecorations = entry.Decorations });
+                    inlines.Add(run);
                 }
             }
         }

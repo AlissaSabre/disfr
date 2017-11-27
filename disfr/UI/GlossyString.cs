@@ -6,6 +6,10 @@ using System.Text;
 
 namespace disfr.UI
 {
+    /// <summary>
+    /// Represents display decorations for a character.
+    /// </summary>
+    /// <see cref="GlossyString"/>
     [Flags]
     public enum Gloss
     {
@@ -22,6 +26,23 @@ namespace disfr.UI
         HIT = 16,
     }
 
+    /// <summary>
+    /// A string-ish type that can represent some display attribution for each character.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// GlossyString is like <see cref="string"/> type,
+    /// but it can also holds some display attribution for each character.
+    /// </para>
+    /// <para>
+    /// A display attribution is dedicated for disfr and is something like
+    /// "this is a tag" or "this is a special symbol", 
+    /// or "this is an inserted fragment" or "this is a deleted fragment".
+    /// </para>
+    /// <para>A display attribution is represented by <see cref="Gloss"/> type.
+    /// You can show a <see cref="GlossyString"/> data to a user by using <see cref="GlossyTextBlock"/>.
+    /// </para>
+    /// </remarks>
     public class GlossyString : System.Collections.IEnumerable
     {
         public struct Pair
