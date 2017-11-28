@@ -290,7 +290,7 @@ namespace disfr.UI
 
         public static readonly DependencyProperty QuickFilterProperty =
             DependencyProperty.Register("QuickFilter", typeof(bool), typeof(TableView),
-                new FrameworkPropertyMetadata(QuickFilterChangedCallback) { BindsTwoWayByDefault = true });
+                new FrameworkPropertyMetadata(QuickFilterChangedCallback) { BindsTwoWayByDefault = true, DefaultValue = true });
         
         public bool QuickFilter
         {
@@ -387,12 +387,14 @@ namespace disfr.UI
             }
             else if (!text.StartsWith(FilterOption.MARKER))
             {
+                // This is the text the user typed in.
                 var regex = new Regex(Regex.Escape(textbox.Text), RegexOptions.IgnoreCase);
                 var grabber = CreateGrabber(column.SortMemberPath);
-                filter = row => regex.IsMatch(grabber(row) ?? ""); // XXX
+                filter = row => regex.IsMatch(grabber(row));
             }
             else
             {
+                // This is the text selected from the drop-down.
                 var match_text = GetFilterOptions(column).FirstOrDefault(w => w.DisplayString == text)?.String;
                 if (match_text == null)
                 {
@@ -403,8 +405,9 @@ namespace disfr.UI
                 }
                 else
                 {
+                    // This is really from the drop-down.
                     var grabber = CreateGrabber(column.SortMemberPath);
-                    filter = row => match_text.Equals(grabber(row) ?? ""); // XXX
+                    filter = row => match_text == grabber(row);
                 }
             }
             column.SetValue(FilterProperty, filter);
@@ -422,14 +425,18 @@ namespace disfr.UI
                 {
                     FilterUpdating = false;
                     var matchers = dataGrid.Columns.Select(c => c.GetValue(FilterProperty) as Func<IRowData, bool>).Where(m => m != null).ToArray();
-                    Controller.ContentsFilter = row =>
+                    switch (matchers.Length)
                     {
-                        foreach (var m in matchers)
-                        {
-                            if (!m(row)) return false;
-                        }
-                        return true;
-                    };
+                        case 0:
+                            Controller.ContentsFilter = null;
+                            break;
+                        case 1:
+                            Controller.ContentsFilter = matchers[0];
+                            break;
+                        default:
+                            Controller.ContentsFilter = row => matchers.All(m => m(row));
+                            break;
+                    }
                 });
             }
         }
@@ -439,17 +446,17 @@ namespace disfr.UI
             if (path.StartsWith("[") && path.EndsWith("]"))
             {
                 var index = int.Parse(path.Substring(1, path.Length - 2));
-                return r => r[index];
+                return r => r[index] ?? "";
             }
 
             var property = typeof(IRowData).GetProperty(path);
             if (property.PropertyType == typeof(string))
             {
-                return r => property.GetValue(r) as string;
+                return r => property.GetValue(r) as string ?? "";
             }
             else
             {
-                return r => property.GetValue(r)?.ToString(); 
+                return r => property.GetValue(r)?.ToString() ?? ""; 
             }
         }
 

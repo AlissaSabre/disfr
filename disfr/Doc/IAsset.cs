@@ -26,12 +26,28 @@ namespace disfr.Doc
         /// </remarks>
         string Original { get; }
         
+        /// <summary>
+        /// The source language code as defined by RFC 4646.
+        /// </summary>
         string SourceLang { get; }
         
+        /// <summary>
+        /// The target language code as defined by RFC 4646.
+        /// </summary>
         string TargetLang { get; }
 
+        /// <summary>
+        /// Sequence of translation pairs that make up this asset.
+        /// </summary>
         IEnumerable<ITransPair> TransPairs { get; }
 
+        /// <summary>
+        /// Sequence of alternative translation pairs.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="AltPairs"/> is primarity to represent alt-trans elements in XLIFF,
+        /// collectively which are often called <i>project translation memory</i>.
+        /// </remarks>
         IEnumerable<ITransPair> AltPairs { get; }
 
         /// <summary>
@@ -39,17 +55,19 @@ namespace disfr.Doc
         /// </summary>
         /// <remarks>
         /// The returned object will be readonly.
+        /// The integer index value in the list is important;
+        /// it will be used to access <see cref="P:ITransPair.Item(Int32)"/>.
         /// </remarks>
         IList<PropInfo> Properties { get; }
     }
 
     /// <summary>
-    /// Represents an additional property of an <see cref="ITransPair"/>.
+    /// Represents an additional property an <see cref="ITransPair"/> instance may have.
     /// </summary>
     public class PropInfo
     {
         /// <summary>
-        /// A key to pass to <see cref="ITransPair[string]"/> to get the property value.
+        /// The name of this property.
         /// </summary>
         public readonly string Key;
 
@@ -58,6 +76,11 @@ namespace disfr.Doc
         /// </summary>
         public readonly bool Visible;
 
+        /// <summary>
+        /// Creates an instance.
+        /// </summary>
+        /// <param name="key">The <see cref="Key"/> value.</param>
+        /// <param name="visible">The <see cref="Visible"/> value.</param>
         public PropInfo(string key, bool visible = false)
         {
             Key = key;

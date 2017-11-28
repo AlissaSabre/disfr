@@ -71,12 +71,16 @@ namespace disfr.Doc
                 assets[i] = asset;
             }
 
+#if true
             var thread_count = Environment.ProcessorCount - 1;
             if (thread_count * MINIMUM_ENTRIES_PER_THREAD > tus.Count)
             {
                 thread_count = tus.Count / MINIMUM_ENTRIES_PER_THREAD;
             }
             if (thread_count < 1) thread_count = 1;
+#else
+            var thread_count = 1;
+#endif
             var threads = new Thread[thread_count];
             var entries_per_thread = (int)Math.Ceiling((double)tus.Count / thread_count);
 
@@ -278,7 +282,7 @@ namespace disfr.Doc
             {
                 if (node is XText)
                 {
-                    inline.Append((node as XText).Value);
+                    inline.Add((node as XText).Value);
                 }
                 else if (node is XElement)
                 {
@@ -287,17 +291,17 @@ namespace disfr.Doc
                     var name = e.Name.LocalName;
                     if (ns == X && name == "bpt")
                     {
-                        inline.Append(BuildNativeCodeTag(Tag.B, e, true));
+                        inline.Add(BuildNativeCodeTag(Tag.B, e, true));
                     }
                     else if (ns == X && name == "ept")
                     {
-                        inline.Append(BuildNativeCodeTag(Tag.E, e, true));
+                        inline.Add(BuildNativeCodeTag(Tag.E, e, true));
                     }
                     else if (ns == X && name == "hi")
                     {
-                        inline.Append(BuildNativeCodeTag(Tag.B, e, false));
+                        inline.Add(BuildNativeCodeTag(Tag.B, e, false));
                         BuildInline(inline, e, X);
-                        inline.Append(BuildNativeCodeTag(Tag.E, e, false));
+                        inline.Add(BuildNativeCodeTag(Tag.E, e, false));
                     }
                     else if (ns == X && name == "it")
                     {
@@ -308,12 +312,12 @@ namespace disfr.Doc
                             case "close": type = Tag.E; break;
                             default: type = Tag.S; break;
                         }
-                        inline.Append(BuildNativeCodeTag(type, e, true));
+                        inline.Add(BuildNativeCodeTag(type, e, true));
                     }
                     else if (ns == X && (name == "ph" || name == "ut"))
                     {
                         // Replace a standalone native code element with a standalone inline tag.
-                        inline.Append(BuildNativeCodeTag(Tag.S, e, true));
+                        inline.Add(BuildNativeCodeTag(Tag.S, e, true));
                     }
                     else
                     {
@@ -321,13 +325,13 @@ namespace disfr.Doc
                         // OH, I have no good idea how to handle it.  FIXME.
                         if (string.IsNullOrEmpty((string)e) && !e.HasElements)
                         {
-                            inline.Append(BuildNativeCodeTag(Tag.S, e, false));
+                            inline.Add(BuildNativeCodeTag(Tag.S, e, false));
                         }
                         else
                         {
-                            inline.Append(BuildNativeCodeTag(Tag.B, e, false));
+                            inline.Add(BuildNativeCodeTag(Tag.B, e, false));
                             BuildInline(inline, e, X);
-                            inline.Append(BuildNativeCodeTag(Tag.E, e, false));
+                            inline.Add(BuildNativeCodeTag(Tag.E, e, false));
                         }
                     }
                 }

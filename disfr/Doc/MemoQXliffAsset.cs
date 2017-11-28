@@ -34,6 +34,8 @@ namespace disfr.Doc
 
         private static readonly Regex Marker = new Regex("(?:#L?[1-9][0-9]*#)+");
 
+        private static readonly Regex Marker2 = new Regex("<mmq-label id=\"L[1-9][0-9]*\" ?/>");
+
         //private Dictionary<int, int[]> LabelConv;
 
         private string[] InterSegments = null;
@@ -82,43 +84,11 @@ namespace disfr.Doc
             // Extract the file doc.mrd that contains no translatable contents of source file
             // out of the skeleton zip archive.
 
-            string[] intersegs;
             using (var zip = new ZipArchive(skl_stream, ZipArchiveMode.Read, false, Encoding.GetEncoding(850)))
             {
-                var doc = zip.GetEntry(DOC_MRD);
-                if (doc == null) return;
-                using (var stream = doc.Open())
-                {
-                    // Some memoQ import filter creates a doc.mrd which is a zip archive.
-                    // This version of disfr can't handle such skeleton (unfortunately.)
-                    // I think it's better to detect the case early,
-                    // since such doc.mrd is often big, and Regex.Split could take some time unnecessarily.
-                    //
-                    // Although undocumented
-                    // (and I'm not surprised to see some fundamental feature is undocumented in Microsoft's API definitions),
-                    // the Stream object returned by ZipArchiveEntry.Open() has a CanSeek set to false.
-                    // So, we need to call Open() twice; once to check whether it is a zip, and again to process it.
-                    if (stream.ReadByte() == 0x50 &&
-                        stream.ReadByte() == 0x4B &&
-                        stream.ReadByte() == 0x03 &&
-                        stream.ReadByte() == 0x04)
-                    {
-                        return; 
-                    }
-                }
-                using (var stream = doc.Open())
-                {
-                    intersegs = Marker.Split(new StreamReader(stream, true).ReadToEnd());
-                }
-                for (int i = 0; i < intersegs.Length; i++)
-                {
-                    intersegs[i] = intersegs[i].Replace("##", "#").Replace("\r\n", "\n");
-                }
-
-                // Sanity check against LabConversionTable.
-                // Some XML based bilingual file creates an XML based doc.mrd which uses
-                // XML techniques to identify insertion points of target texts,
-                // which this version of disfr can't handle.
+                // We will make a sanity check against LabConversionTable,
+                // once we got a (draft) InterSetments.
+                var interseg_count = 0;
                 var conv = zip.GetEntry("LabConversionTable.dat");
                 if (conv == null)
                 {
@@ -129,12 +99,77 @@ namespace disfr.Doc
                 }
                 using (var stream = conv.Open())
                 {
-                    var count = XElement.Load(stream).Elements("Item").Count();
-                    if (count + 1 != intersegs.Length) return;
+                    interseg_count = XElement.Load(stream).Elements("Item").Count() + 1;
+                }
+                conv = null;
+
+                var doc = zip.GetEntry(DOC_MRD);
+                if (doc == null) return;
+
+                // Some memoQ import filter creates a doc.mrd which is a zip archive,
+                // that includes the _real_ doc.mrd.
+                // We first try to handle the case.
+                using (var stream = doc.Open())
+                {
+                    if (stream.ReadByte() == 0x50 &&
+                        stream.ReadByte() == 0x4B &&
+                        stream.ReadByte() == 0x03 &&
+                        stream.ReadByte() == 0x04)
+                    {
+                        // It looks like a zip version of doc.mrd.
+                        // Note that, although undocumented
+                        // (and I'm not surprised to see some fundamental feature is undocumented in Microsoft's API definitions),
+                        // the Stream object returned by ZipArchiveEntry.Open() has a CanSeek set to false.
+                        // So, we need to call Open() again.
+                        stream.Close();
+
+                        // It is not easy to use using statement on this ZipArchive under the current flow structure of this method.
+                        // It is ultimately a MemoryStream, so there should be no unmaged resource involved, anyway.
+                        var zip2 = new ZipArchive(doc.Open(), ZipArchiveMode.Read, true, Encoding.GetEncoding(850));
+                        // The inner doc.mrd may be under a subdirectory.
+                        doc = zip2.Entries.FirstOrDefault(entry => entry.Name == DOC_MRD);
+                        if (doc == null) return;
+                    }
+                }
+
+                string[] intersegs;
+
+                // Try to split the doc.mrd in a text method.
+                using (var stream = doc.Open())
+                {
+                    intersegs = Marker.Split(new StreamReader(stream, true).ReadToEnd());
+                }
+                if (intersegs.Length == interseg_count)
+                {
+                    // The count is consistent.  It seems we got the right split.
+                    for (int i = 0; i < intersegs.Length; i++)
+                    {
+                        intersegs[i] = intersegs[i].Replace("##", "#").Replace("\r\n", "\n");
+                    }
+                    InterSegments = intersegs;
+                    return;
+                }
+
+                // Try to split the doc.mrd in an XML method.
+                using (var stream = doc.Open())
+                {
+                    intersegs = Marker2.Split(new StreamReader(stream, true).ReadToEnd());
+                }
+                if (intersegs.Length == interseg_count)
+                {
+                    // The count is consistent.  It seems we finally got the right split.
+                    for (int i = 0; i < intersegs.Length; i++)
+                    {
+                        intersegs[i] = intersegs[i].Replace("\r\n", "\n");
+                    }
+                    InterSegments = intersegs;
+                    return;
                 }
             }
 
-            InterSegments = intersegs;
+            // We can't parse this skeleton.
+            InterSegments = null;
+            return;
         }
 
         protected override IEnumerable<XliffTransPair> ExtractPairs(XElement tu)
@@ -171,15 +206,18 @@ namespace disfr.Doc
             if (!string.IsNullOrEmpty(endingws)) yield return InterSegmentPair(endingws);
 
             // A special case:
-            // If we have a skeleton, and if this is the last segment and is from a subflow,
-            // we put the last inter-segment contents after this segment.
-            // We need to look back for the previous main-flow segment to do so.
-            if (InterSegments != null && !tu.ElementsAfterSelf(X + "trans-unit").Any() && (int?)tu.Attribute(MQ + "lastlabel") == -1)
+            // If we have a skeleton, if this is the last segment, and if there is another inter-segment,
+            // then, we put the last inter-segment content after this segment.
+            // (Note that there should be no more than one remaining inter-segment at the moment.)
+            // We need to look back for the previous main-flow segment to see the case.
+            if (InterSegments != null && !tu.ElementsAfterSelf(X + "trans-unit").Any())
             {
+                var this_last_label = (int?)tu.Attribute(MQ + "lastlabel");
                 var prev_last_label = tu.ElementsBeforeSelf(X + "trans-unit").Select(t => (int?)t.Attribute(MQ + "lastlabel")).LastOrDefault(label => label > 0);
-                if (prev_last_label != null && prev_last_label >= 0 && prev_last_label < InterSegments.Length)
+                var last_label = this_last_label >= 0 ? this_last_label : prev_last_label;
+                if (last_label >= 0 && last_label < InterSegments.Length)
                 {
-                    yield return InterSegmentPair(InterSegments[(int)prev_last_label]);
+                    yield return InterSegmentPair(InterSegments[InterSegments.Length - 1]);
                 }
             }
         }

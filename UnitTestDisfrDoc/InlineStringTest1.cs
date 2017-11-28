@@ -89,6 +89,17 @@ namespace UnitTestDisfrDoc
         }
 
         [TestMethod]
+        public void Append_4()
+        {
+            var s = new InlineString() { "ab cd" };
+            var t = new InlineString() { "ef gh" };
+            s.Append(t);
+            s.Is(new InlineString() { "ab cdef gh" });
+            s.Contents.Count().Is(5);
+            AssertEx.Catch<ArgumentException>(() => s.Append(s));
+        }
+
+        [TestMethod]
         public void Equals_1()
         {
             var t1 = new InlineTag(Tag.S, "*", "*", "t", null, null, null);

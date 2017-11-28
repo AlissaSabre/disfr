@@ -56,6 +56,8 @@ namespace disfr.UI
     /// <seealso cref="DelegateCommand"/>
     /// <seealso cref="DelegateCommand{T}"/>
     /// <seealso cref="DelegateCommand{T1, T2}"/>
+    /// <seealso cref="DelegateCommand{T1, T2, T3}"/>
+    /// <seealso cref="DelegateCommand{T1, T2, T3, T4}"/>
     ///
     public static class DelegateCommandHelper
     {
@@ -100,7 +102,7 @@ namespace disfr.UI
                     continue;
                 }
 
-
+                // A sanity check.
                 if (property.PropertyType == typeof(DelegateCommandBase))
                 {
                     Throw("A command property {0}.{1} has type {2}, which is inappropriate.",
@@ -176,11 +178,22 @@ namespace disfr.UI
             return result;
         }
 
+        /// <summary>
+        /// Formats a message and throws an exception with it.
+        /// </summary>
+        /// <param name="format">Format string as in <see cref="string.Format(string, object[])"/>.</param>
+        /// <param name="args">Arguments for the message.</param>
         private static void Throw(string format, params object[] args)
         {
             throw new DelegateCommandHelperException(string.Format(format, args));
         }
 
+        /// <summary>
+        /// Formats a message and trhows an exception with it with an inner exception.
+        /// </summary>
+        /// <param name="e">The inner exception.</param>
+        /// <param name="format">Format string as in <see cref="string.Format(string, object[])"/>.</param>
+        /// <param name="args">Arguments for the message.</param>
         private static void Throw(Exception e, string format, params object[] args)
         {
             throw new DelegateCommandHelperException(string.Format(format, args), e);
@@ -192,7 +205,22 @@ namespace disfr.UI
     /// </summary>
     public class DelegateCommandHelperException : Exception
     {
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        public DelegateCommandHelperException() { }
+
+        /// <summary>
+        /// Create an instance with a message.
+        /// </summary>
+        /// <param name="message">A message.</param>
         public DelegateCommandHelperException(string message) : base(message) { }
+
+        /// <summary>
+        /// Create an instance with a message and an inner exception.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
         public DelegateCommandHelperException(string message, Exception e) : base(message, e) { }
     }
 }

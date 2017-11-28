@@ -173,6 +173,10 @@ namespace disfr.Doc
             {
                 AddProp(pair, attr.Name.LocalName, attr.Value);
             }
+            foreach (var context in tu.Elements(X + "context-group").Elements(X + "context"))
+            {
+                AddProp(pair, "context/" + ((string)context.Attribute("context-type") ?? ""), (string)context ?? "");
+            }
             return pair;
         }
 
@@ -296,17 +300,17 @@ namespace disfr.Doc
                         else if (ns == X && (name == "x" || name == "ph"))
                         {
                             // Replace a standalone native code element with a standalone inline tag.
-                            Inline.Append(Xliff.BuildNativeCodeTag(Tag.S, e, name == "ph"));
+                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.S, e, name == "ph"));
                         }
                         else if (ns == X && (name == "bx" || name == "bpt"))
                         {
                             // Replace a beginning native code element with a beginning inline tag.
-                            Inline.Append(Xliff.BuildNativeCodeTag(Tag.B, e, name == "bpt"));
+                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.B, e, name == "bpt"));
                         }
                         else if (ns == X && (name == "ex" || name == "ept"))
                         {
                             // Replace an ending native code element with an ending inline tag.
-                            Inline.Append(Xliff.BuildNativeCodeTag(Tag.E, e, name == "ept"));
+                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.E, e, name == "ept"));
                         }
                         else if (ns == X && name == "it")
                         {
@@ -318,7 +322,7 @@ namespace disfr.Doc
                                 case "close": type = Tag.E; break;
                                 default: type = Tag.S; break;
                             }
-                            Inline.Append(Xliff.BuildNativeCodeTag(type, e, true));
+                            Inline.Add(Xliff.BuildNativeCodeTag(type, e, true));
                         }
                         else if (ns == X && name == "g")
                         {
@@ -327,16 +331,16 @@ namespace disfr.Doc
                             // and keep converting its content,
                             // because the g holds instructions in its attributes,
                             // and its content is a part of translatable text.
-                            Inline.Append(Xliff.BuildNativeCodeTag(Tag.B, e, false));
+                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.B, e, false));
                             Parse(e);
-                            Inline.Append(Xliff.BuildNativeCodeTag(Tag.E, e, false));
+                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.E, e, false));
                         }
                         else
                         {
                             // Uunknown element, i.e., some external (no XLIFF) element or a 
                             // misplaced XLIFF element.
                             // OH, I have no good idea how to handle it.  FIXME.
-                            Inline.Append(Xliff.HandleUnknownTag(e));
+                            Inline.Add(Xliff.HandleUnknownTag(e));
                         }
                     }
                     else

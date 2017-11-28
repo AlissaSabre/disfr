@@ -6,6 +6,15 @@ using System.Text;
 
 namespace disfr.Doc
 {
+    /// <summary>
+    /// Represents a sort of a <i>rich</i> text.
+    /// </summary>
+    /// <remarks>
+    /// Many bilingual file supports a notion of <i>tags</i> within text data.
+    /// Some file also supports a notion of <i>special character</i>.
+    /// <see cref="InlineString"/> is a substitution of a <see cref="string"/> type,
+    /// whose contents include not just ordinary characters but also tags and special characters. 
+    /// </remarks>
     public class InlineString : IEnumerable<object>
     {
         private static readonly char[] SpecialChars = new char[]
@@ -29,52 +38,127 @@ namespace disfr.Doc
             '\uFFA0', '\uFEFF',
         };
 
-        private static readonly Dictionary<char, InlineChar> InlineChars = new Dictionary<char, InlineChar>();
+        private static readonly Dictionary<char, InlineChar> InlineChars;
 
         static InlineString()
         {
+            InlineChars = new Dictionary<char, InlineChar>(SpecialChars.Length * 2);
             foreach (char c in SpecialChars)
             {
                 InlineChars[c] = new InlineChar(c);
             }
+            InlineCharChecker = BuildICC();
         }
 
-        private readonly List<object> _Contents = new List<object>();
+        /// <summary>
+        /// A sort of a direct perfect hash table to substitute InlineChars.ContainsKey. 
+        /// </summary>
+        private static readonly char[] InlineCharChecker;
 
         /// <summary>
-        /// An accumulated hash value of this object.
+        /// Builds an InlineCharChecker.
+        /// </summary>
+        /// <returns>The InlineCharChecker.</returns>
+        private static char[] BuildICC()
+        {
+            for (int n = SpecialChars.Length; ; n++)
+            {
+                var icc = TryBuildICC(n);
+                if (icc != null) return icc;
+            }
+        }
+
+        /// <summary>
+        /// Tries to build an InlineCharChecker of size <paramref name="size"/>.
+        /// </summary>
+        /// <param name="size">The desired size of the InlineCharChecker.</param>
+        /// <returns>The InlineCharChecker of size <paramref name="size"/>, or null if not found.</returns>
+        private static char[] TryBuildICC(int size)
+        {
+            var icc = new char[size];
+            foreach (var c in SpecialChars)
+            {
+                var i = c % size;
+                if (i == 0 && c != 0) return null;
+                if (icc[i] != 0) return null;
+                icc[i] = c;
+            }
+            return icc;
+        }
+
+        /// <summary>
+        /// The contents of this InlineString.
         /// </summary>
         /// <remarks>
-        /// The initial value is a magic number determined at random.
+        /// Although the element type is declared being object, 
+        /// the list can actually contain elements either of the three types:
+        /// string, InlineTag and InlineChar.
         /// </remarks>
-        private int _HashCode = 0x5ab0e273;
+        private readonly List<object> _Contents = new List<object>();
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _Contents.GetEnumerator();
         }
 
+        /// <summary>
+        /// Implements IEnumerator{object}.GetEnumerator().
+        /// </summary>
+        /// <returns>An enumerator.</returns>
         public IEnumerator<object> GetEnumerator()
         {
             return _Contents.GetEnumerator();
         }
 
+        /// <summary>
+        /// Gets the contents of this InlineString as an enumerable.
+        /// </summary>
         public IEnumerable<object> Contents { get { return _Contents; } }
 
+        /// <summary>
+        /// Add a string at the end to this InlineString.
+        /// </summary>
+        /// <param name="text">The string to add.</param>
+        /// <remarks>
+        /// Any special characters in <paramref name="text"/> will be searched and isolated.
+        /// </remarks>
         public void Add(string text)
         {
             if (text == null) throw new ArgumentNullException("text");
-            if (text == "") return;
-            int p = 0, q;
-            while ((q = text.IndexOfAny(SpecialChars, p)) >= 0)
+#if !UNSAFE
+            int mod = InlineCharChecker.Length;
+            for (int p = 0, q; p < text.Length; p = q + 1)
             {
-                if (q > p) AddString(text.Substring(p, q - p));
-                AddChar(InlineChars[text[q]]);
-                p = q + 1;
+                for (q = p; q < text.Length && text[q] != InlineCharChecker[text[q] % mod]; q++) ;
+                if (p < q) AddString(text.Substring(p, q - p));
+                if (q < text.Length) AddChar(InlineChars[text[q]]);
             }
-            if (p < text.Length) AddString(text.Substring(p));
+#else
+            unsafe
+            {
+                int mod = InlineCharChecker.Length;
+                fixed (char* s = text, icc = InlineCharChecker)
+                {
+                    char* r = s + text.Length;
+                    for (char* p = s, q; p < r; p = q + 1)
+                    {
+                        char c;
+                        for (q = p; q < r && (c = *q) != icc[c % mod]; q++) ;
+                        if (p < q) AddString(text.Substring((int)(p - s), (int)(q - p)));
+                        if (q < r) AddChar(InlineChars[*q]);
+                    }
+                }
+            }
+#endif
         }
 
+        /// <summary>
+        /// Add a string to this InlineString.
+        /// </summary>
+        /// <param name="text">string to add.</param>
+        /// <remarks>
+        /// The string is added as it is; no special characters must occur in <paramref name="text"/>. 
+        /// </remarks>
         private void AddString(string text)
         {
             if (_Contents.Count > 0 && _Contents[_Contents.Count - 1] is string)
@@ -82,66 +166,106 @@ namespace disfr.Doc
                 var x = _Contents[_Contents.Count - 1] as string;
                 var y = x + text;
                 _Contents[_Contents.Count - 1] = y;
-                _HashCode = _HashCode - x.GetHashCode() + y.GetHashCode();
             }
             else
             {
                 _Contents.Add(text);
-                _HashCode += (_HashCode >> 9) + text.GetHashCode();
             }
         }
 
         private void AddChar(InlineChar c)
         {
             _Contents.Add(c);
-            _HashCode += (_HashCode >> 1) + c.GetHashCode();
         }
 
+        /// <summary>
+        /// Add an inline tag at the end of this inline string.
+        /// </summary>
+        /// <param name="tag"></param>
         public void Add(InlineTag tag)
         {
             if (tag == null) throw new ArgumentNullException("tag");
             _Contents.Add(tag);
-            _HashCode += (_HashCode >> 7) + tag.GetHashCode();
         }
 
+        /// <summary>
+        /// Adds a string, returning this instance.
+        /// </summary>
+        /// <param name="text">string to add.</param>
+        /// <returns>this instance.</returns>
         public InlineString Append(string text) { Add(text); return this; }
 
+        /// <summary>
+        /// Adds an inline tag, returning this instance.
+        /// </summary>
+        /// <param name="tag">Inline tag to add.</param>
+        /// <returns>this instance.</returns>
         public InlineString Append(InlineTag tag) { Add(tag); return this; }
 
-        public InlineString Append(InlineString inline)
+        /// <summary>
+        /// Add the contents of another InlineString, returning this instance.
+        /// </summary>
+        /// <param name="inline">InlineString whose contents are added.</param>
+        /// <returns>this instance.</returns>
+        public InlineString Append(InlineString inline) { Add(inline); return this; }
+
+        /// <summary>
+        /// Add the contents of another InlineString at the end of this InlineString.
+        /// </summary>
+        /// <param name="inline">InlineString whose contents are added.</param>
+        public void Add(InlineString inline)
         {
             if (inline == null) throw new ArgumentNullException("inline");
-            IEnumerable<object> contents;
             if (Object.ReferenceEquals(inline._Contents, _Contents))
             {
-                contents = inline._Contents.ToArray();
+                throw new ArgumentException("Can't add contents of an InlineString to itself.", "inline");
             }
-            else
-            {
-                contents = inline._Contents;
-            }
-            foreach (var x in contents)
+
+            foreach (var x in inline._Contents)
             {
                 if (x is string)
                 {
-                    Add((string)x);
+                    AddString((string)x);
                 }
                 else if (x is InlineTag)
                 {
                     Add((InlineTag)x);
+                }
+                else if (x is InlineChar)
+                {
+                    AddChar((InlineChar)x);
                 }
                 else
                 {
                     throw new ApplicationException("internal error");
                 }
             }
-            return this;
         }
 
+        /// <summary>
+        /// Gets whether this InlineString represents an empty string.
+        /// </summary>
         public bool IsEmpty { get { return _Contents.Count == 0; } }
 
-        public override int GetHashCode() { return _HashCode; }
+        /// <summary>
+        /// Calculates and returns a content based hash code. 
+        /// </summary>
+        /// <returns>The hash code.</returns>
+        public override int GetHashCode()
+        {
+            var h = 0x5ab0e273; // a magic number.
+            foreach (var c in _Contents)
+            {
+                h += (h << 9) + c.GetHashCode();
+            }
+            return h;
+        }
 
+        /// <summary>
+        /// Provides contents based equality.
+        /// </summary>
+        /// <param name="obj">Another object to test equality.</param>
+        /// <returns>True if equal.</returns>
         public override bool Equals(object obj)
         {
             if (this == obj) return true;
@@ -167,6 +291,9 @@ namespace disfr.Doc
         }
     }
 
+    /// <summary>
+    /// A type of an inline tag.
+    /// </summary>
     public enum Tag
     {
         /// <summary>
@@ -185,8 +312,14 @@ namespace disfr.Doc
         S,
     };
 
+    /// <summary>
+    /// Represents a tag in an <see cref="InlineString"/>.
+    /// </summary>
     public class InlineTag
     {
+        /// <summary>
+        /// A type of a tag.
+        /// </summary>
         public readonly Tag TagType;
 
         public readonly string Id;
@@ -298,9 +431,12 @@ namespace disfr.Doc
     {
         public readonly char Char;
 
+        private readonly string String;
+
         public InlineChar(char char_data)
         {
             Char = char_data;
+            String = Char.ToString();
         }
 
         public override bool Equals(object obj)
@@ -315,7 +451,7 @@ namespace disfr.Doc
 
         public override string ToString()
         {
-            return Char.ToString();
+            return String;
         }
     }
 

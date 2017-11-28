@@ -6,7 +6,7 @@ namespace Diff
 {
     /// <summary>
     /// A variation of the greedy algorithm by Eugene W. Myers (1986). O((M+N)*D).
-    /// It means this algorithm works fast if given two lists are _similar_.
+    /// It means this algorithm runs faster if given two lists are more _similar_.
     /// </summary>
     public class GreedyDiffer2 : DifferBase
     {

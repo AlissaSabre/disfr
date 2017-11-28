@@ -270,7 +270,7 @@ namespace disfr.UI
 
         private void Font_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var dlg = new ColorFontDialog();
+            var dlg = new ColorFontDialog(showColorPicker: false);
             dlg.Font = FontInfo.GetControlFont(tables.SelectedContent as Control);
             if (dlg.ShowDialog() == true)
             {
