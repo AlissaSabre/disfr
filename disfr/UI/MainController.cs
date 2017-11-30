@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using Dragablz;
 
 using disfr.Doc;
+using disfr.Plugin;
 using disfr.Writer;
 
 namespace disfr.UI
@@ -66,6 +67,8 @@ namespace disfr.UI
         }
 
         #endregion
+
+        public IEnumerable<string> PluginNames { get { return PluginManager.Current.PluginNames; } }
 
         #region OpenCommand
 

@@ -30,6 +30,23 @@ namespace disfr.UI
             appAuth.Text = string.Format("Produced by {0}", version.CompanyName);
         }
 
+        private IEnumerable<string> _PluginNames;
+
+        public IEnumerable<string> PluginNames
+        {
+            get { return _PluginNames; }
+            set
+            {
+                _PluginNames = value;
+                var text = string.Join("\r\n", value);
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    text = "(No plugins)";
+                }
+                plugin.Text = text;
+            }
+        }
+
         private void ok_Click(object sender, RoutedEventArgs e)
         {
             Close();

@@ -291,7 +291,7 @@ namespace disfr.UI
 
         private void About_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            new AboutDialog() { Owner = this }.ShowDialog();
+            new AboutDialog() { Owner = this, PluginNames = Controller.PluginNames }.ShowDialog();
             e.Handled = true;
         }
 
