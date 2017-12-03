@@ -492,6 +492,10 @@ namespace disfr.UI
 
         #endregion
 
+        private void dataGrid_CopyingRowClipboardContent(object sender, DataGridRowClipboardEventArgs e)
+        {
+
+        }
     }
 
     #region class VisibilityToBooleanConverter
