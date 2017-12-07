@@ -434,6 +434,8 @@ namespace disfr.UI
                             {
                                 if (dataGrid.Items.Contains(s.Item))
                                 {
+                                    // DataGridCellInfo has a lot of private/internal members.
+                                    // We need to _reset_ them after the filter updates.
                                     dataGrid.SelectedCells.Add(new DataGridCellInfo(s.Item, s.Column));
                                 }
                             }
