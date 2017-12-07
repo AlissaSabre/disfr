@@ -424,6 +424,27 @@ namespace disfr.UI
                 Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
                 {
                     FilterUpdating = false;
+
+                    var selected = dataGrid.SelectedCells.Where(info => info.IsValid).ToArray();
+                    if (selected.Length > 0)
+                    {
+                        Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
+                        {
+                            foreach (var s in selected)
+                            {
+                                if (dataGrid.Items.Contains(s.Item))
+                                {
+                                    dataGrid.SelectedCells.Add(new DataGridCellInfo(s.Item, s.Column));
+                                }
+                            }
+                            if (dataGrid.SelectedCells.Count > 0)
+                            {
+                                var s = dataGrid.SelectedCells[0];
+                                dataGrid.ScrollIntoView(s.Item, s.Column);
+                            }
+                        });
+                    }
+
                     var matchers = dataGrid.Columns.Select(c => c.GetValue(FilterProperty) as Func<IRowData, bool>).Where(m => m != null).ToArray();
                     switch (matchers.Length)
                     {
