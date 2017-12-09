@@ -372,7 +372,72 @@ namespace disfr.UI
             });
         }
 
-        private bool FilterUpdating = false;
+        /// <summary>
+        /// A stripped down version of <see cref="DataGridCellInfo"/>.
+        /// </summary>
+        /// <remarks>
+        /// Despite its simple documentation on MSDN,
+        /// <see cref="DataGridCellInfo"/> is a complex data type with a lot of hidden (i.e., private/internal) members.
+        /// <see cref="CellLocator"/> is its stripped down version that holds only information we need.  
+        /// </remarks>
+        private class CellLocator
+        {
+            public readonly object Item;
+            public readonly DataGridColumn Column;
+
+            public CellLocator(object item, DataGridColumn column)
+            {
+                Item = item;
+                Column = column;
+            }
+        }
+
+        /// <summary>
+        /// List of selected cells before the filter started updating.
+        /// </summary>
+        private readonly List<CellLocator> SelectedCells = new List<CellLocator>();
+
+        private void dataGrid_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            // Save the currently selected cells in SelectedCells,
+            // so that we can preserve the selection across filter changes.
+            SelectedCells.Clear();
+            SelectedCells.AddRange(dataGrid.SelectedCells.Select(ci => new CellLocator(ci.Item, ci.Column)));
+        }
+
+        private bool _FilterUpdating = false;
+
+        /// <summary>
+        /// Indicates whether we are in a process of updating row filter.
+        /// </summary>
+        /// <remarks>
+        /// Tracking of selected cells in <see cref="SelectedCells"/> stopped when this property is set to true.
+        /// There are two purposes of this behaviour:
+        /// (1) The filter change in the controller (i.e., setting <see cref="ITableController.ContentsFilter"/>)
+        /// likely fire <see cref="INotifyPropertyChanged.PropertyChanged"/> event,
+        /// causing all cells to be deselected.
+        /// We don't want to reflect that deselection to <see cref="SelectedCells"/>.
+        /// (2) If the user misspelled in filter box, it is possible that the entire rows are filtered out.
+        /// I want to recover the original selection when he/she hits several BS keys to correct the spelling.
+        /// To do so, the dynamic selection changes during the typing of filter 
+        /// needs to be off from <see cref="SelectedCells"/> updates.
+        /// </remarks>
+        private bool FilterUpdating
+        {
+            get { return _FilterUpdating; }
+            set
+            {
+                _FilterUpdating = value;
+                if (value)
+                {
+                    dataGrid.SelectedCellsChanged -= dataGrid_SelectedCellsChanged;
+                }
+                else
+                {
+                    dataGrid.SelectedCellsChanged += dataGrid_SelectedCellsChanged;
+                }
+            }
+        }
 
         private void FilterBox_TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -423,30 +488,7 @@ namespace disfr.UI
                 FilterUpdating = true;
                 Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
                 {
-                    FilterUpdating = false;
-
-                    var selected = dataGrid.SelectedCells.Where(info => info.IsValid).ToArray();
-                    if (selected.Length > 0)
-                    {
-                        Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
-                        {
-                            foreach (var s in selected)
-                            {
-                                if (dataGrid.Items.Contains(s.Item))
-                                {
-                                    // DataGridCellInfo has a lot of private/internal members.
-                                    // We need to _reset_ them after the filter updates.
-                                    dataGrid.SelectedCells.Add(new DataGridCellInfo(s.Item, s.Column));
-                                }
-                            }
-                            if (dataGrid.SelectedCells.Count > 0)
-                            {
-                                var s = dataGrid.SelectedCells[0];
-                                dataGrid.ScrollIntoView(s.Item, s.Column);
-                            }
-                        });
-                    }
-
+                    // Create a new filter (reflecting the text box updates) and set it to the controller. 
                     var matchers = dataGrid.Columns.Select(c => c.GetValue(FilterProperty) as Func<IRowData, bool>).Where(m => m != null).ToArray();
                     switch (matchers.Length)
                     {
@@ -460,6 +502,24 @@ namespace disfr.UI
                             Controller.ContentsFilter = row => matchers.All(m => m(row));
                             break;
                     }
+
+                    // Select all cells (that passed the filter) that was selected previously.
+                    foreach (var s in SelectedCells)
+                    {
+                        if (dataGrid.Items.Contains(s.Item))
+                        {
+                            dataGrid.SelectedCells.Add(new DataGridCellInfo(s.Item, s.Column));
+                        }
+                    }
+
+                    // If any selected cell passed the filter, make it viewable on the window.
+                    if (dataGrid.SelectedCells.Count > 0)
+                    {
+                        var s = dataGrid.SelectedCells[0];
+                        dataGrid.ScrollIntoView(s.Item, s.Column);
+                    }
+
+                    FilterUpdating = false;
                 });
             }
         }
