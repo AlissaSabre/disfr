@@ -577,7 +577,6 @@ namespace disfr.UI
 
         private void dataGrid_CopyingRowClipboardContent(object sender, DataGridRowClipboardEventArgs e)
         {
-
         }
     }
 

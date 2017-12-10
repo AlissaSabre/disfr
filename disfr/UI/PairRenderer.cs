@@ -31,16 +31,19 @@ namespace disfr.UI
         private const char OPAR = '{';
         private const char CPAR = '}';
 
-        private static Dictionary<char, string> SpecialCharMap = new Dictionary<char, string>()
+        private static readonly Dictionary<char, string> SpecialCharMap = new Dictionary<char, string>()
         {
-            { '\u0009', "\u2192\t" }, /* → */
-            { '\u000A', "\u21B5\n" }, /* ↵ */
-            { '\u000D', "\u2190" }, /* ← */
-            { '\u0020', "\u22C5\u200B" }, /* ⋅ */
-            { '\u00A0', "\u00AC" }, /* ¬ */
-            { '\u2029', "\u00B6\n" }, /* ¶ */
-            { '\u3000', "\u2610\u200B" }, /* ☐ */
+            { '\u0009', "\u2192\t" },       /* → */
+            { '\u000A', "\u21B5\n" },       /* ↵ */
+            { '\u000D', "\u2190" },         /* ← */
+            { '\u0020', "\u22C5\u200B" },   /* ⋅ */
+            { '\u00A0', "\u00AC" },         /* ¬ */
+            { '\u200B', "\u007C\u200B" },   /* | */
+            { '\u2029', "\u00B6\n" },       /* ¶ */
+            { '\u3000', "\u2610\u200B" },   /* ☐ */
         };
+
+        private const string ZWSP = "\u200B";
 
         public int Serial(AssetData asset, int serial)
         {
@@ -59,7 +62,7 @@ namespace disfr.UI
             return ShowRawId ? id : TrimId(id, asset.IdTrimChars);
         }
 
-        public GlossyString GlossyFromInline(InlineString text, bool ignore_show_specials = false)
+        public GlossyString GlossyFromInline(InlineString text)
         {
             var g = new GlossyString();
             foreach (var obj in text.Contents)
@@ -72,38 +75,43 @@ namespace disfr.UI
                 {
                     string visual;
                     var c = ((InlineChar)obj).Char;
-                    if (!ShowSpecials || ignore_show_specials)
+                    if (!ShowSpecials)
                     {
                         g.Append(obj.ToString(), Gloss.None);
                     }
                     else if (SpecialCharMap.TryGetValue(c, out visual))
                     {
-                        g.Append(visual, Gloss.SYM);
+                        g.Append(obj.ToString(), Gloss.SYM);
+                        g.Append(visual, Gloss.ALT);
                     }
                     else
                     {
-                        g.Append(string.Format("(U+{0:X4})", (int)c), Gloss.SYM);
+                        g.Append(obj.ToString(), Gloss.SYM);
+                        g.Append(string.Format("(U+{0:X4})", (int)c), Gloss.ALT);
                     }
                 }
                 else if (obj is InlineTag)
                 {
                     var tag = (InlineTag)obj;
+                    string t;
                     switch (ShowTag)
                     {
                         case TagShowing.None:
+                            t = null;
                             break;
                         case TagShowing.Name:
-                            g.Append(BuildTagString(tag, tag.Number.ToString()), Gloss.TAG);
+                            t = BuildTagString(tag, tag.Number.ToString());
                             break;
                         case TagShowing.Disp:
-                            g.Append(Enclose(tag.Display) ?? BuildTagString(tag, tag.Name), Gloss.TAG);
+                            t = Enclose(tag.Display) ?? BuildTagString(tag, tag.Name);
                             break;
                         case TagShowing.Code:
-                            g.Append(tag.Code ?? BuildTagString(tag, "*"), Gloss.TAG);
+                            t = tag.Code ?? BuildTagString(tag, "*");
                             break;
                         default:
                             throw new ApplicationException("internal error");
                     }
+                    if (t != null) g.Append(t, Gloss.TAG);
                 }
                 else
                 {

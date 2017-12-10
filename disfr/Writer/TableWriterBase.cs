@@ -44,6 +44,9 @@ namespace disfr.Writer
             map[(int)(Gloss.SYM | Gloss.COM)] = "SYM";
             map[(int)(Gloss.SYM | Gloss.INS)] = "SYM INS";
             map[(int)(Gloss.SYM | Gloss.DEL)] = "SYM DEL";
+            map[(int)(Gloss.ALT | Gloss.COM)] = "ALT";
+            map[(int)(Gloss.ALT | Gloss.INS)] = "ALT INS";
+            map[(int)(Gloss.ALT | Gloss.DEL)] = "ALT DEL";
 
             GlossLabel = map;
         }

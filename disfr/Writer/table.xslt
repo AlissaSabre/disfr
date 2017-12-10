@@ -21,9 +21,15 @@
   <xsl:template match="disfr:Data">
     <xsl:if test="node()">
       <xsl:element name="{translate(@Path,'[]','__')}">
-        <xsl:value-of select="."/>
+        <xsl:apply-templates select="disfr:Span"/>
       </xsl:element>
     </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="disfr:Span[@Gloss='ALT' or @Gloss='ALT INS' or @Gloss='ALT DEL']" />
+
+  <xsl:template match="disfr:Span">
+    <xsl:value-of select="."/>
   </xsl:template>
 
   <xsl:template match="node()" />
