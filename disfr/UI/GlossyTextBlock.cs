@@ -31,7 +31,7 @@ namespace disfr.UI
             Document.PagePadding = new Thickness(0);
             Document.SetBinding(FlowDocument.FontFamilyProperty, new Binding() { Source = this, Path = new PropertyPath(FontFamilyProperty), Mode = BindingMode.OneWay });
             Document.SetBinding(FlowDocument.FontSizeProperty, new Binding() { Source = this, Path = new PropertyPath(FontSizeProperty), Mode = BindingMode.OneWay });
-            Document.SetBinding(FlowDocument.TextAlignmentProperty, new Binding() { Source = this, Path = new PropertyPath(HorizontalContentAlignmentProperty), Mode = BindingMode.OneWay });
+            Document.SetBinding(FlowDocument.TextAlignmentProperty, new Binding() { Source = this, Path = new PropertyPath(FlowDirectionProperty), Mode = BindingMode.OneWay, Converter = new FlowDirectionToTextAlignmentConverter(), ConverterParameter = "Leading" });
         }
 
         private readonly Paragraph Paragraph;
@@ -121,6 +121,42 @@ namespace disfr.UI
                     inlines.Add(run);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Provides a flow direction neutral way to specify left/right text alignment. 
+    /// </summary>
+    /// <remarks>
+    /// A conversion parameter is mandatory, which is either "Leading" or "Trailing".
+    /// If it is "Leading", the text alignment is to the side that the text starts flowing from.
+    /// If it is "Trailing", the text alignment is to the side that the text flowing toward.
+    /// </remarks>
+    /// <example>
+    /// &lt;TextBox TextAlignment="{Binding FlowDirection, Converter={StaticResource FlowDirectionToTextAlignmentConverter}, ConverterParameter=Trailing}" /&gt; 
+    /// </example>
+    [ValueConversion(typeof(FlowDirection), typeof(TextAlignment))]
+    public class FlowDirectionToTextAlignmentConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is FlowDirection)
+            {
+                var direction = (FlowDirection)value;
+                switch (parameter as string)
+                {
+                    case "Leading":
+                        return (direction == FlowDirection.LeftToRight) ? TextAlignment.Left : TextAlignment.Right;
+                    case "Trailing":
+                        return (direction == FlowDirection.LeftToRight) ? TextAlignment.Right : TextAlignment.Left;
+                }
+            }
+            return DependencyProperty.UnsetValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException(string.Format("{0} supports OneWay conversion only", GetType()));
         }
     }
 }
