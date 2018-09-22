@@ -272,45 +272,10 @@ namespace disfr.Doc
                     display: "{" + id + "}",
                     code: code);
             }
-            else if (element.Name.Namespace == X
-                && (element.Name.LocalName == "ph" || element.Name.LocalName == "bpt" || element.Name.LocalName == "ept")
-                && element.Value?.StartsWith("<mq:") == true)
-            {
-                // In memoQ, ph/bph/eph tags *may* encloses its own tag.
-                var inner = XElement.Parse("<" + element.Value.Substring(4)); // XXX XXX XXX
-                var id = (string)element.Attribute("id") ?? "*";
-                var val = (string)inner.Attribute("val");
-                var disp = DisplayText((string)inner.Attribute("displaytext"), val);
-                return new InlineTag(
-                    type: type,
-                    id: id,
-                    rid: id,
-                    name: element.Name.LocalName,
-                    ctype: null,
-                    display: disp,
-                    code: val);
-            }
             else
             {
                 return base.BuildNativeCodeTag(type, element, has_code);
             }
-        }
-
-        private static string DisplayText(string disp, string val)
-        {
-            if (disp == null)
-            {
-                if (val == null) return null;
-                // Can an ordinary visible character be enclosed in mq:ch?  FIXME.
-                var sb = new StringBuilder();
-                foreach (var c in val) sb.AppendFormat("\\u{0:X4}", (int)c);
-                return sb.ToString();
-            }
-            if (disp.StartsWith("{") && disp.EndsWith("}"))
-            {
-                return "{" + disp + "}"; // XXX XXX XXX XXX XXX XXX
-            }
-            return disp;
         }
 
         protected override IEnumerable<string> GetNotes(XElement unit)
