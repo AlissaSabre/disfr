@@ -241,6 +241,28 @@ namespace disfr.Doc
             };
         }
 
+        protected override IEnumerable<object> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        {
+            if ((string)mrk.Attribute("mtype") == "x-mq-tc")
+            {
+                // mrk[@mtype = 'x-mq-tc'] is a tracked change in memoQ.
+                // For the moment, we discard a deleted section and just merge an inserted section.
+                var tctype = (string)mrk.Attribute(MQ + "tctype");
+                switch (tctype)
+                {
+                    case "del":
+                        return Enumerable.Empty<object>();
+                    case "ins":
+                    default:
+                        return base.ParseMrkElement(mrk, allow_segmentation);
+                }
+            }
+            else
+            {
+                return base.ParseMrkElement(mrk, allow_segmentation);
+            }
+        }
+
         protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
         {
             if (element.Name.LocalName == "x" && element.Name.Namespace == X)
