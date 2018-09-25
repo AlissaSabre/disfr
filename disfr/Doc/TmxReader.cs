@@ -20,7 +20,7 @@ namespace disfr.Doc
 
         public int Priority { get { return 7; } }
 
-        public IEnumerable<IAsset> Read(string filename, int filterindex)
+        public IAssetBundle Read(string filename, int filterindex)
         {
             using (var stream = File.OpenRead(filename))
             {
@@ -34,7 +34,7 @@ namespace disfr.Doc
 
         private static readonly XName LANG = "lang";
 
-        public IEnumerable<IAsset> Read(Stream stream, string package)
+        public IAssetBundle Read(Stream stream, string package)
         {
             XElement tmx;
             try
@@ -181,7 +181,7 @@ namespace disfr.Doc
                 assets[i].TransPairs = pairs;
             }
 
-            return assets.Skip(1);
+            return new SimpleAssetBundle(assets.Skip(1));
         }
 
         /// <summary>

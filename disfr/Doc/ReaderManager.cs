@@ -86,7 +86,7 @@ namespace disfr.Doc
             }
         }
 
-        public IEnumerable<IAsset> Read(string filename, int index = -1)
+        public IAssetBundle Read(string filename, int index = -1)
         {
             if (index < -1) throw new ArgumentOutOfRangeException("index");
 

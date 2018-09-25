@@ -6,6 +6,19 @@ using System.Text;
 namespace disfr.Doc
 {
     /// <summary>
+    /// Represents a series of <see cref="IAsset"/>s.
+    /// </summary>
+    /// <remarks>
+    /// The series of <see cref="IAsset"/> in an IAssetBundle is intended to be shown in a single list,
+    /// as a single uinit of handling.
+    /// They are typically read from a single OS file
+    /// </remarks>
+    public interface IAssetBundle
+    {
+        IEnumerable<IAsset> Assets { get; }
+    }
+
+    /// <summary>
     /// Represents an asset, which corresponds to a file element in XLIFF.
     /// </summary>
     public interface IAsset

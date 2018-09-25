@@ -53,6 +53,6 @@ namespace disfr.Doc
         /// This method tries to read the specified file type only.
         /// If <paramref name="filterindex"/> is a negative value, this method tries to detect the file format among its supported variations.
         /// </remarks>
-        IEnumerable<IAsset> Read(string filename, int filterindex);
+        IAssetBundle Read(string filename, int filterindex);
     }
 }

@@ -14,11 +14,11 @@ namespace UnitTestDisfrDoc
         public void Read_Basic_Xliff1()
         {
             var path = Path.Combine(IDIR, "Xliff1.xliff");
-            var assets = new XliffReader().Read(path, -1);
+            var bundle = new XliffReader().Read(path, -1);
 
-            assets.Count().Is(1);
+            bundle.Assets.Count().Is(1);
 
-            var asset0 = assets.ElementAt(0);
+            var asset0 = bundle.Assets.ElementAt(0);
             asset0.Package.Is(path);
             asset0.Original.Is(@"Graphic Example.psd");
             asset0.SourceLang.Is("en-US");
@@ -54,11 +54,11 @@ namespace UnitTestDisfrDoc
         public void Read_Basic_Xliff2()
         {
             var path = Path.Combine(IDIR, "Xliff2.xliff");
-            var assets = new XliffReader().Read(path, -1);
+            var bundle = new XliffReader().Read(path, -1);
 
-            assets.Count().Is(1);
+            bundle.Assets.Count().Is(1);
 
-            var asset0 = assets.ElementAt(0);
+            var asset0 = bundle.Assets.ElementAt(0);
             asset0.Package.Is(path);
             asset0.Original.Is(@"v12/messages.xml");
             asset0.SourceLang.Is("en-US");

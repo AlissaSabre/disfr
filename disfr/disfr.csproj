@@ -113,6 +113,7 @@
     <Compile Include="Doc\ITransPair.cs" />
     <Compile Include="Doc\ReaderManager.cs" />
     <Compile Include="Doc\SdltmReader.cs" />
+    <Compile Include="Doc\SimpleAssetBundle.cs" />
     <Compile Include="Doc\StringPool.cs" />
     <Compile Include="Doc\TmxReader.cs" />
     <Compile Include="Doc\XliffAsset.cs" />

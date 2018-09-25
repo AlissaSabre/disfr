@@ -33,17 +33,17 @@ namespace disfr.Doc
 
         public int Priority { get { return 10; } }
 
-        public IEnumerable<IAsset> Read(string filename, int filterindex)
+        public IAssetBundle Read(string filename, int filterindex)
         {
             using (var file = File.OpenRead(filename))
             {
                 if (file.IsZip())
                 {
-                    return ReadZip(filename, file, filterindex);
+                    return new SimpleAssetBundle(ReadZip(filename, file, filterindex));
                 }
                 else
                 {
-                    return ReadXliff(filename, file, filterindex);
+                    return new SimpleAssetBundle(ReadXliff(filename, file, filterindex));
                 }
             }
         }

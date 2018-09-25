@@ -88,7 +88,7 @@ namespace disfr.UI
                     {
                         TableController.LoadBilingualAssets(
                             name: "(multiple files)",
-                            assets: filenames.SelectMany(f => ReaderManager.Read(f, index)))
+                            assets: filenames.SelectMany(f => ReaderManager.Read(f, index).Assets))
                     };
                 }
                 else
@@ -96,7 +96,7 @@ namespace disfr.UI
                     result = filenames.Select(f =>
                         TableController.LoadBilingualAssets(
                             name: ReaderManager.FriendlyFilename(f),
-                            assets: ReaderManager.Read(f, index))
+                            assets: ReaderManager.Read(f, index).Assets)
                     ).ToArray();
                 }
                 Console.WriteLine("Elapsed: {0} ms", (DateTime.UtcNow - started).TotalMilliseconds);

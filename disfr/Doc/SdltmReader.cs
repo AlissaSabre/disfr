@@ -20,7 +20,7 @@ namespace disfr.Doc
 
         public int Priority { get { return 10; } }
 
-        public IEnumerable<IAsset> Read(string filename, int filterindex)
+        public IAssetBundle Read(string filename, int filterindex)
         {
             using (var s = File.OpenRead(filename))
             {
@@ -121,7 +121,7 @@ namespace disfr.Doc
                     }
                 }
 
-                return assets;
+                return new SimpleAssetBundle(assets);
             }
             finally
             {
