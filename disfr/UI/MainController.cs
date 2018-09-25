@@ -88,7 +88,7 @@ namespace disfr.UI
                     {
                         TableController.LoadBilingualAssets(
                             name: "(multiple files)",
-                            assets: filenames.SelectMany(f => ReaderManager.Read(f, index).Assets))
+                            assets: ReaderManager.Read(filenames, index).Assets)
                     };
                 }
                 else

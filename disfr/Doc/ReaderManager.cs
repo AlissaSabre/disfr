@@ -139,6 +139,11 @@ namespace disfr.Doc
             throw new IOException(string.Format("Can't read \"{0}\"; file format is incompatible.", Path.GetFileName(filename)));
         }
 
+        public IAssetBundle Read(IEnumerable<string> filenames, int index = -1)
+        {
+            return new CombinedAssetBundle(filenames.Select(f => Read(f, index)));
+        }
+
         public string FriendlyFilename(string filename)
         {
             return Path.GetFileNameWithoutExtension(filename);

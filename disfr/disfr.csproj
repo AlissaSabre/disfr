@@ -106,6 +106,7 @@
     <Compile Include="Diff\Diff.cs" />
     <Compile Include="Diff\DifferBase.cs" />
     <Compile Include="Diff\GreedyDiffer2.cs" />
+    <Compile Include="Doc\CombinedAssetBundle.cs" />
     <Compile Include="Doc\PropertiesManager.cs" />
     <Compile Include="Doc\IAsset.cs" />
     <Compile Include="Doc\IAssetReader.cs" />
