@@ -96,13 +96,15 @@ namespace disfr.UI
         /// <summary>
         /// Load a set of <see cref="IAsset"/>s from a bilingual file into a new TableController.
         /// </summary>
-        /// <param name="name">User friendly name of this table.</param>
-        /// <param name="assets">Assets to load.</param>
+        /// <param name="bundle">Asset bundle that contains entries to show on this table.</param>
         /// <returns>
         /// A newly created and loaded <see cref="ITableController"/> instance.
         /// </returns>
-        public static ITableController LoadBilingualAssets(string name, IEnumerable<IAsset> assets)
+        public static ITableController LoadBilingualAssets(IAssetBundle bundle)
         {
+            var name = bundle.Name;
+            var assets = bundle.Assets;
+
             var renderer = new PairRenderer();
             var asset_array = assets.ToArray();
 

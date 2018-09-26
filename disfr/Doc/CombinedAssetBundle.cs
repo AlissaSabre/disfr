@@ -8,7 +8,7 @@ namespace disfr.Doc
 {
     public class CombinedAssetBundle : IAssetBundle
     {
-        public CombinedAssetBundle(IEnumerable<IAssetBundle> bundles)
+        public CombinedAssetBundle(IEnumerable<IAssetBundle> bundles, string name)
         {
             Bundles = bundles.ToArray();
             _Assets = new List<IAsset>();
@@ -16,7 +16,10 @@ namespace disfr.Doc
             {
                 _Assets.AddRange(b.Assets);
             }
+            Name = name;
         }
+
+        public string Name { get; private set; }
 
         private readonly IAssetBundle[] Bundles;
 

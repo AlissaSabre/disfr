@@ -86,17 +86,13 @@ namespace disfr.UI
                 {
                     result = new[]
                     {
-                        TableController.LoadBilingualAssets(
-                            name: "(multiple files)",
-                            assets: ReaderManager.Read(filenames, index).Assets)
+                        TableController.LoadBilingualAssets(ReaderManager.Read(filenames, index))
                     };
                 }
                 else
                 {
                     result = filenames.Select(f =>
-                        TableController.LoadBilingualAssets(
-                            name: ReaderManager.FriendlyFilename(f),
-                            assets: ReaderManager.Read(f, index).Assets)
+                        TableController.LoadBilingualAssets(ReaderManager.Read(f, index))
                     ).ToArray();
                 }
                 Console.WriteLine("Elapsed: {0} ms", (DateTime.UtcNow - started).TotalMilliseconds);

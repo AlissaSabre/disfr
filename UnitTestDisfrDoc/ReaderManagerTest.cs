@@ -90,6 +90,7 @@ namespace UnitTestDisfrDoc
 
         private class DummyAssetBundle : IAssetBundle
         {
+            public string Name { get { return "DummyAssetBundle"; } }
             public IEnumerable<IAsset> Assets { get; set; }
         }
 

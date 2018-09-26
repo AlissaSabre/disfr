@@ -121,7 +121,7 @@ namespace disfr.Doc
                     }
                 }
 
-                return new SimpleAssetBundle(assets);
+                return new SimpleAssetBundle(assets, ReaderManager.FriendlyFilename(filename));
             }
             finally
             {

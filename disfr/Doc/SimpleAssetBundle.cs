@@ -8,16 +8,20 @@ namespace disfr.Doc
 {
     class SimpleAssetBundle : IAssetBundle
     {
-        public SimpleAssetBundle(IEnumerable<IAsset> assets)
+        public SimpleAssetBundle(IEnumerable<IAsset> assets, string name)
         {
-            _Assets = assets;
+            Assets = assets;
+            Name = name;
         }
 
-        private IEnumerable<IAsset> _Assets;
+        public string Name
+        {
+            get; private set;
+        }
 
         public IEnumerable<IAsset> Assets
         {
-            get { return _Assets; }
+            get; private set;
         }
     }
 }

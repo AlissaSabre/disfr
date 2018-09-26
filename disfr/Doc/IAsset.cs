@@ -15,6 +15,14 @@ namespace disfr.Doc
     /// </remarks>
     public interface IAssetBundle
     {
+        /// <summary>
+        /// User friendly name of this bundle.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// <see cref="IAsset"/>s in this bundle.
+        /// </summary>
         IEnumerable<IAsset> Assets { get; }
     }
 

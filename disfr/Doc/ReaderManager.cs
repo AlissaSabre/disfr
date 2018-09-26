@@ -141,10 +141,10 @@ namespace disfr.Doc
 
         public IAssetBundle Read(IEnumerable<string> filenames, int index = -1)
         {
-            return new CombinedAssetBundle(filenames.Select(f => Read(f, index)));
+            return new CombinedAssetBundle(filenames.Select(f => Read(f, index)), "(multiple files)");
         }
 
-        public string FriendlyFilename(string filename)
+        public static string FriendlyFilename(string filename)
         {
             return Path.GetFileNameWithoutExtension(filename);
         }

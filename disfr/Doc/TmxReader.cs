@@ -24,7 +24,7 @@ namespace disfr.Doc
         {
             using (var stream = File.OpenRead(filename))
             {
-                return Read(stream, filename);
+                return new SimpleAssetBundle(Read(stream, filename), ReaderManager.FriendlyFilename(filename));
             }
         }
 
@@ -34,7 +34,7 @@ namespace disfr.Doc
 
         private static readonly XName LANG = "lang";
 
-        public IAssetBundle Read(Stream stream, string package)
+        public IEnumerable<IAsset> Read(Stream stream, string package)
         {
             XElement tmx;
             try
@@ -181,7 +181,7 @@ namespace disfr.Doc
                 assets[i].TransPairs = pairs;
             }
 
-            return new SimpleAssetBundle(assets.Skip(1));
+            return assets.Skip(1);
         }
 
         /// <summary>

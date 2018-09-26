@@ -39,11 +39,11 @@ namespace disfr.Doc
             {
                 if (file.IsZip())
                 {
-                    return new SimpleAssetBundle(ReadZip(filename, file, filterindex));
+                    return new SimpleAssetBundle(ReadZip(filename, file, filterindex), ReaderManager.FriendlyFilename(filename));
                 }
                 else
                 {
-                    return new SimpleAssetBundle(ReadXliff(filename, file, filterindex));
+                    return new SimpleAssetBundle(ReadXliff(filename, file, filterindex), ReaderManager.FriendlyFilename(filename));
                 }
             }
         }
