@@ -299,10 +299,10 @@ namespace disfr.Doc
                 && element.Value?.StartsWith("<mq:") == true)
             {
                 // In memoQ, ph/bph/eph tags *may* encloses its own tag.
-                var inner = XElement.Parse("<" + element.Value.Substring(4)); // XXX XXX XXX
                 var id = (string)element.Attribute("id") ?? "*";
-                var val = (string)inner.Attribute("val");
-                var disp = DisplayText((string)inner.Attribute("displaytext"), val);
+                var mq_native = MQNativeCode.Parse(element.Value);
+                var val = mq_native.Attr("val");
+                var disp = DisplayText(mq_native.Attr("displaytext"), val);
                 return new InlineTag(
                     type: type,
                     id: id,
@@ -315,6 +315,52 @@ namespace disfr.Doc
             else
             {
                 return base.BuildNativeCodeTag(type, element, has_code);
+            }
+        }
+
+        /// <summary>
+        /// Parses memoQ native codes enclosed in XLIFF ph/bpt/ept tags.
+        /// </summary>
+        /// <remarks>
+        /// A memoQ native code just looks like an XML fragment at a glance, but it is NOT.
+        /// It apparently requires a unique white-space normalization of <i>attribute</i> values,
+        /// that violates a mandate in XML specification.
+        /// Hence, we can't use any conforming XML parser.
+        /// </remarks>
+        protected class MQNativeCode
+        {
+            public string Tag { get; private set; }
+
+            private readonly IDictionary<string, string> Attrs;
+
+            private MQNativeCode(string tag, IDictionary<string, string> attrs)
+            {
+                Tag = tag;
+                Attrs = attrs;
+            }
+
+            public string Attr(string name)
+            {
+                string value;
+                Attrs.TryGetValue(name, out value);
+                return value;
+            }
+
+            private static readonly Regex ParseRE
+                = new Regex("^<mq:(?<t>[a-zA-Z0-9_.-]+)\\s+(?:(?<a>[a-zA-Z0-9_.-]+)\\s*=\\s*(?:\"(?<v>[^\"]*)\"|'(?<v>[^']*)')\\s*)*/>");
+
+            public static MQNativeCode Parse(string code)
+            {
+                var match = ParseRE.Match(code);
+                if (!match.Success) return null;
+                var attrs = new Dictionary<string, string>();
+                var names = match.Groups["a"].Captures;
+                var values = match.Groups["v"].Captures;
+                for (int i = 0; i < names.Count && i < values.Count; i++)
+                {
+                    attrs[names[i].Value] = values[i].Value;
+                }
+                return new MQNativeCode(match.Groups["t"].Value, attrs);
             }
         }
 
