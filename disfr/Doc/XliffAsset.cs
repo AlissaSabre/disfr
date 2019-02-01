@@ -221,6 +221,7 @@ namespace disfr.Doc
             return new ContentParser(this, true).Parse(element).GetSequence();
         }
 
+        // Provides parsing of text contents (of elements such as source or target)
         protected class ContentParser
         {
             public ContentParser(XliffAsset xliff, bool allow_segmentation)
@@ -260,9 +261,34 @@ namespace disfr.Doc
                 }
             }
 
-            private void Add(XElement mrk)
+            private void Add(object obj)
             {
-                GetSequence().Add(mrk);
+                if (obj is XElement)
+                {
+                    GetSequence().Add((XElement)obj);
+                }
+                else if (obj is XText)
+                {
+                    Inline.Append(((XText)obj).Value);
+                }
+                else if (obj is InlineString)
+                {
+                    Inline.Append((InlineString)obj);
+                }
+                else if (obj is InlineTag)
+                {
+                    Inline.Append((InlineTag)obj);
+                }
+            }
+
+            private void AddInline(InlineString s)
+            {
+                Inline.Add(s);
+            }
+
+            private void AddString(string s)
+            {
+                Inline.Add(s);
             }
 
             public ContentParser Parse(XElement elem)
@@ -272,7 +298,7 @@ namespace disfr.Doc
                 {
                     if (n.NodeType == XmlNodeType.Text)
                     {
-                        Inline.Append(((XText)n).Value);
+                        Add(n);
                     }
                     else if (n.NodeType == XmlNodeType.Element)
                     {
@@ -281,36 +307,25 @@ namespace disfr.Doc
                         var name = e.Name.LocalName;
                         if (ns == X && name == "mrk")
                         {
-                            // mrk tags are _markers_ for CAT tools.
-                            // We take care of the XLIFF segmentation spec.
-                            // Uses of other mrk tags are CAT software dependent.
-                            // Most of their uses are
-                            // invisible to translators, although there MAY BE some that
-                            // are visible.  For the moment, we ignore the start end end tags, 
-                            // leaving the content.
-                            if (AllowSegmentation && (string)e.Attribute("mtype") == "seg")
+                            foreach (var obj in Xliff.ParseMrkElement(e, AllowSegmentation))
                             {
-                                Add(e);
-                            }
-                            else
-                            {
-                                Parse(e);
+                                Add(obj);
                             }
                         }
                         else if (ns == X && (name == "x" || name == "ph"))
                         {
                             // Replace a standalone native code element with a standalone inline tag.
-                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.S, e, name == "ph"));
+                            Add(Xliff.BuildNativeCodeTag(Tag.S, e, name == "ph"));
                         }
                         else if (ns == X && (name == "bx" || name == "bpt"))
                         {
                             // Replace a beginning native code element with a beginning inline tag.
-                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.B, e, name == "bpt"));
+                            Add(Xliff.BuildNativeCodeTag(Tag.B, e, name == "bpt"));
                         }
                         else if (ns == X && (name == "ex" || name == "ept"))
                         {
                             // Replace an ending native code element with an ending inline tag.
-                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.E, e, name == "ept"));
+                            Add(Xliff.BuildNativeCodeTag(Tag.E, e, name == "ept"));
                         }
                         else if (ns == X && name == "it")
                         {
@@ -322,7 +337,7 @@ namespace disfr.Doc
                                 case "close": type = Tag.E; break;
                                 default: type = Tag.S; break;
                             }
-                            Inline.Add(Xliff.BuildNativeCodeTag(type, e, true));
+                            Add(Xliff.BuildNativeCodeTag(type, e, true));
                         }
                         else if (ns == X && name == "g")
                         {
@@ -331,16 +346,16 @@ namespace disfr.Doc
                             // and keep converting its content,
                             // because the g holds instructions in its attributes,
                             // and its content is a part of translatable text.
-                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.B, e, false));
+                            Add(Xliff.BuildNativeCodeTag(Tag.B, e, false));
                             Parse(e);
-                            Inline.Add(Xliff.BuildNativeCodeTag(Tag.E, e, false));
+                            Add(Xliff.BuildNativeCodeTag(Tag.E, e, false));
                         }
                         else
                         {
                             // Uunknown element, i.e., some external (no XLIFF) element or a 
                             // misplaced XLIFF element.
                             // OH, I have no good idea how to handle it.  FIXME.
-                            Inline.Add(Xliff.HandleUnknownTag(e));
+                            Add(Xliff.HandleUnknownTag(e));
                         }
                     }
                     else
@@ -349,6 +364,26 @@ namespace disfr.Doc
                     }
                 }
                 return this;
+            }
+        }
+
+        protected virtual IEnumerable<object> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        {
+            // mrk tags are _markers_ for CAT tools.
+            // We take care of the XLIFF segmentation spec.
+            // Uses of other mrk tags are CAT software dependent.
+            // Most of their uses are
+            // invisible to translators, although there MAY BE some that
+            // are visible.  For the moment, we ignore the start and end tags, 
+            // leaving the content.
+
+            if (allow_segmentation && (string)mrk.Attribute("mtype") == "seg")
+            {
+                return new object[] { mrk };
+            }
+            else
+            {
+                return new ContentParser(this, allow_segmentation).Parse(mrk).GetSequence();
             }
         }
 

@@ -241,8 +241,31 @@ namespace disfr.Doc
             };
         }
 
+        protected override IEnumerable<object> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        {
+            if ((string)mrk.Attribute("mtype") == "x-mq-tc")
+            {
+                // mrk[@mtype = 'x-mq-tc'] is a tracked change in memoQ.
+                // For the moment, we discard a deleted section and just merge an inserted section.
+                var tctype = (string)mrk.Attribute(MQ + "tctype");
+                switch (tctype)
+                {
+                    case "del":
+                        return Enumerable.Empty<object>();
+                    case "ins":
+                    default:
+                        return base.ParseMrkElement(mrk, allow_segmentation);
+                }
+            }
+            else
+            {
+                return base.ParseMrkElement(mrk, allow_segmentation);
+            }
+        }
+
         protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
         {
+            MQNativeCode mq_native;
             if (element.Name.LocalName == "x" && element.Name.Namespace == X)
             {
                 // In memoQ, x placeholder refers to a skeleton.
@@ -272,10 +295,156 @@ namespace disfr.Doc
                     display: "{" + id + "}",
                     code: code);
             }
+            else if (element.Name.Namespace == X
+                && (element.Name.LocalName == "ph" || element.Name.LocalName == "bpt" || element.Name.LocalName == "ept")
+                && ((mq_native = MQNativeCode.Parse(element.Value)) != null))
+            {
+                // In memoQ, ph/bph/eph tags *may* enclose memoQ's own native tag notation.
+                var id = (string)element.Attribute("id") ?? "*";
+                var val = mq_native.Attr("val");
+                var disp = DisplayText(mq_native.Attr("displaytext"), val);
+                return new InlineTag(
+                    type: type,
+                    id: id,
+                    rid: id,
+                    name: element.Name.LocalName,
+                    ctype: null,
+                    display: disp,
+                    code: val);
+            }
             else
             {
                 return base.BuildNativeCodeTag(type, element, has_code);
             }
+        }
+
+        /// <summary>
+        /// A memoQ native code tag enclosed in an XLIFF ph/bpt/ept tag.
+        /// </summary>
+        /// <remarks>
+        /// A memoQ native code just looks like an XML fragment at a glance, but it is NOT.
+        /// It apparently requires a unique white-space normalization of <i>attribute</i> values,
+        /// that violates a mandate in XML specification.
+        /// Also, a closing tab (enclosed in ept) may have its own attributes.
+        /// For example, </mq:rtx displaytext="]]" val="]]">
+        /// Hence, we can't use an ordinary XML parser.
+        /// </remarks>
+        protected class MQNativeCode
+        {
+            /// <summary>
+            /// Name of the memoQ native code tag (excluding "mq:".)
+            /// </summary>
+            public string TagName { get; private set; }
+
+            private readonly IDictionary<string, string> Attrs;
+
+            private MQNativeCode(string tag, IDictionary<string, string> attrs)
+            {
+                TagName = tag;
+                Attrs = attrs;
+            }
+
+            /// <summary>
+            /// Returns an attribute value of the memoQ native code tag.
+            /// </summary>
+            /// <param name="name">Name of an attribute.</param>
+            /// <returns>Attribute value of the memoQ native code tag of <paramref name="name"/>,
+            /// or null if no attribute of that name presents.</returns>
+            public string Attr(string name)
+            {
+                string value;
+                Attrs.TryGetValue(name, out value);
+                return value;
+            }
+
+            /// <summary>
+            /// A regular expression to match a memoQ's own tag notation.
+            /// </summary>
+            /// <remarks>
+            /// It has an expression "/?" just after the initial "&lt;" and before the final "&gt;".
+            /// The legal combination is either "&lt; ... /&gt;" for ph, "&lt; ... &gt;" for btp and "&lt;/ ... &gt;" for ept.
+            /// (I'm too lazy not to verify it, though.)
+            /// </remarks>
+            private static readonly Regex ParseRE
+                = new Regex("^</?mq:(?<t>[a-zA-Z0-9_.-]+)\\s+(?:(?<a>[a-zA-Z0-9_.-]+)\\s*=\\s*(?:\"(?<v>[^\"]*)\"|'(?<v>[^']*)')\\s*)*/?>");
+
+            /// <summary>
+            /// Parse a memoQ native code tag notation.
+            /// </summary>
+            /// <param name="code">memoQ native code tag notation to parse.</param>
+            /// <returns>Parsed memoQ native code,
+            /// or null if <paramref name="code"/> is not a memoQ native code tag notation.</returns>
+            public static MQNativeCode Parse(string code)
+            {
+                if (code == null) return null;
+                var match = ParseRE.Match(code);
+                if (!match.Success) return null;
+                var attrs = new Dictionary<string, string>();
+                var names = match.Groups["a"].Captures;
+                var values = match.Groups["v"].Captures;
+                for (int i = 0; i < names.Count && i < values.Count; i++)
+                {
+                    attrs[names[i].Value] = DecodeEntities(values[i].Value);
+                }
+                return new MQNativeCode(match.Groups["t"].Value, attrs);
+            }
+
+            private static readonly Regex EntityRE = new Regex("&[a-z]+;");
+
+            private static readonly IDictionary<string, string> Entities = new Dictionary<string, string>()
+            {
+                { "&amp;", "&" },
+                { "&lt;", "<" },
+                { "&gt;", ">" },
+                { "&quot;", "\"" },
+                { "&apos;", "'" },
+            };
+
+            private static string DecodeEntities(string value)
+            {
+                var decoded = new StringBuilder(value.Length);
+                int p = 0;
+                foreach (Match m in EntityRE.Matches(value))
+                {
+                    decoded.Append(value.Substring(p, m.Index - p));
+                    string s;
+                    if (Entities.TryGetValue(m.Value, out s))
+                    {
+                        decoded.Append(s);
+                    }
+                    else
+                    {
+                        decoded.Append(m.Value);
+                    }
+                    p = m.Index + m.Length;
+                }
+                if (p == 0)
+                {
+                    return value;
+                }
+                else
+                {
+                    decoded.Append(value.Substring(p));
+                    return decoded.ToString();
+                }
+            }
+        }
+
+        private static string DisplayText(string disp, string val)
+        {
+            if (disp == null)
+            {
+                if (val == null) return null;
+                // Can an ordinary visible character be enclosed in mq:ch?  FIXME.
+                var sb = new StringBuilder();
+                foreach (var c in val) sb.AppendFormat("\\u{0:X4}", (int)c);
+                return sb.ToString();
+            }
+            if (disp.StartsWith("{") && disp.EndsWith("}"))
+            {
+                return "{" + disp + "}"; // XXX XXX XXX XXX XXX XXX
+            }
+            return disp;
         }
 
         protected override IEnumerable<string> GetNotes(XElement unit)

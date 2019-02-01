@@ -106,6 +106,24 @@ namespace disfr.Doc
             return p;
         }
 
+        protected override IEnumerable<object> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        {
+            switch ((string)mrk.Attribute("mtype"))
+            {
+                case "x-sdl-deleted":
+                    // This is a deleted section in change tracking.
+                    // For the moment, we just discard it.
+                    return Enumerable.Empty<object>();
+
+                case "x-sdl-added":
+                    // This is an added (inserted) section in change tracking.
+                    // For the moment, we just handle it in an ordinary content.
+                    /* fall though */
+                default:
+                    return base.ParseMrkElement(mrk, allow_segmentation);
+            }
+        }
+
         protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
         {
             var tag_name = element.Name.LocalName;
