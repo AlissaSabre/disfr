@@ -265,6 +265,7 @@ namespace disfr.Doc
 
         protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
         {
+            MQNativeCode mq_native;
             if (element.Name.LocalName == "x" && element.Name.Namespace == X)
             {
                 // In memoQ, x placeholder refers to a skeleton.
@@ -296,11 +297,10 @@ namespace disfr.Doc
             }
             else if (element.Name.Namespace == X
                 && (element.Name.LocalName == "ph" || element.Name.LocalName == "bpt" || element.Name.LocalName == "ept")
-                && element.Value?.StartsWith("<mq:") == true)
+                && ((mq_native = MQNativeCode.Parse(element.Value)) != null))
             {
-                // In memoQ, ph/bph/eph tags *may* encloses its own tag.
+                // In memoQ, ph/bph/eph tags *may* enclose memoQ's own native tag notation.
                 var id = (string)element.Attribute("id") ?? "*";
-                var mq_native = MQNativeCode.Parse(element.Value);
                 var val = mq_native.Attr("val");
                 var disp = DisplayText(mq_native.Attr("displaytext"), val);
                 return new InlineTag(
@@ -319,26 +319,37 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Parses memoQ native codes enclosed in XLIFF ph/bpt/ept tags.
+        /// A memoQ native code tag enclosed in an XLIFF ph/bpt/ept tag.
         /// </summary>
         /// <remarks>
         /// A memoQ native code just looks like an XML fragment at a glance, but it is NOT.
         /// It apparently requires a unique white-space normalization of <i>attribute</i> values,
         /// that violates a mandate in XML specification.
-        /// Hence, we can't use any conforming XML parser.
+        /// Also, a closing tab (enclosed in ept) may have its own attributes.
+        /// For example, </mq:rtx displaytext="]]" val="]]">
+        /// Hence, we can't use an ordinary XML parser.
         /// </remarks>
         protected class MQNativeCode
         {
-            public string Tag { get; private set; }
+            /// <summary>
+            /// Name of the memoQ native code tag (excluding "mq:".)
+            /// </summary>
+            public string TagName { get; private set; }
 
             private readonly IDictionary<string, string> Attrs;
 
             private MQNativeCode(string tag, IDictionary<string, string> attrs)
             {
-                Tag = tag;
+                TagName = tag;
                 Attrs = attrs;
             }
 
+            /// <summary>
+            /// Returns an attribute value of the memoQ native code tag.
+            /// </summary>
+            /// <param name="name">Name of an attribute.</param>
+            /// <returns>Attribute value of the memoQ native code tag of <paramref name="name"/>,
+            /// or null if no attribute of that name presents.</returns>
             public string Attr(string name)
             {
                 string value;
@@ -346,11 +357,26 @@ namespace disfr.Doc
                 return value;
             }
 
+            /// <summary>
+            /// A regular expression to match a memoQ's own tag notation.
+            /// </summary>
+            /// <remarks>
+            /// It has an expression "/?" just after the initial "&lt;" and before the final "&gt;".
+            /// The legal combination is either "&lt; ... /&gt;" for ph, "&lt; ... &gt;" for btp and "&lt;/ ... &gt;" for ept.
+            /// (I'm too lazy not to verify it, though.)
+            /// </remarks>
             private static readonly Regex ParseRE
-                = new Regex("^<mq:(?<t>[a-zA-Z0-9_.-]+)\\s+(?:(?<a>[a-zA-Z0-9_.-]+)\\s*=\\s*(?:\"(?<v>[^\"]*)\"|'(?<v>[^']*)')\\s*)*/>");
+                = new Regex("^</?mq:(?<t>[a-zA-Z0-9_.-]+)\\s+(?:(?<a>[a-zA-Z0-9_.-]+)\\s*=\\s*(?:\"(?<v>[^\"]*)\"|'(?<v>[^']*)')\\s*)*/?>");
 
+            /// <summary>
+            /// Parse a memoQ native code tag notation.
+            /// </summary>
+            /// <param name="code">memoQ native code tag notation to parse.</param>
+            /// <returns>Parsed memoQ native code,
+            /// or null if <paramref name="code"/> is not a memoQ native code tag notation.</returns>
             public static MQNativeCode Parse(string code)
             {
+                if (code == null) return null;
                 var match = ParseRE.Match(code);
                 if (!match.Success) return null;
                 var attrs = new Dictionary<string, string>();
@@ -358,9 +384,49 @@ namespace disfr.Doc
                 var values = match.Groups["v"].Captures;
                 for (int i = 0; i < names.Count && i < values.Count; i++)
                 {
-                    attrs[names[i].Value] = values[i].Value;
+                    attrs[names[i].Value] = DecodeEntities(values[i].Value);
                 }
                 return new MQNativeCode(match.Groups["t"].Value, attrs);
+            }
+
+            private static readonly Regex EntityRE = new Regex("&[a-z]+;");
+
+            private static readonly IDictionary<string, string> Entities = new Dictionary<string, string>()
+            {
+                { "&amp;", "&" },
+                { "&lt;", "<" },
+                { "&gt;", ">" },
+                { "&quot;", "\"" },
+                { "&apos;", "'" },
+            };
+
+            private static string DecodeEntities(string value)
+            {
+                var decoded = new StringBuilder(value.Length);
+                int p = 0;
+                foreach (Match m in EntityRE.Matches(value))
+                {
+                    decoded.Append(value.Substring(p, m.Index - p));
+                    string s;
+                    if (Entities.TryGetValue(m.Value, out s))
+                    {
+                        decoded.Append(s);
+                    }
+                    else
+                    {
+                        decoded.Append(m.Value);
+                    }
+                    p = m.Index + m.Length;
+                }
+                if (p == 0)
+                {
+                    return value;
+                }
+                else
+                {
+                    decoded.Append(value.Substring(p));
+                    return decoded.ToString();
+                }
             }
         }
 
