@@ -203,6 +203,7 @@ namespace disfr.UI
     /// <summary>
     /// An Exception to indicate the <see cref="DelegateCommandHelper.GetHelp(object)"/> has detected an error.
     /// </summary>
+    [Serializable]
     public class DelegateCommandHelperException : Exception
     {
         /// <summary>

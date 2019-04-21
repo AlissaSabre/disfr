@@ -15,9 +15,11 @@ namespace disfr.Writer
 
         public static WriterManager Current { get { return _Current ?? CreateInstance(); } }
 
+        private static readonly object Lock = new object();
+
         private static WriterManager CreateInstance()
         {
-            lock (typeof(WriterManager))
+            lock (Lock)
             {
                 if (_Current == null)
                 {

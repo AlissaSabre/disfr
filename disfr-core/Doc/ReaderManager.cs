@@ -20,9 +20,11 @@ namespace disfr.Doc
 
         public static ReaderManager Current { get { return _Current ?? CreateInstance(); } }
 
+        private static readonly object Lock = new object();
+
         private static ReaderManager CreateInstance()
         {
-            lock (typeof(ReaderManager))
+            lock (Lock)
             {
                 if (_Current == null)
                 {
