@@ -13,11 +13,11 @@ namespace disfr.Plugin
 
     public interface IReaderPlugin : IPlugin
     {
-        disfr.Doc.IAssetReader CreateAssetReader();
+        IReader CreateReader();
     }
 
     public interface IWriterPlugin : IPlugin
     {
-        disfr.Writer.IRowsWriter CreateRowWriter();
+        IWriter CreateWriter();
     }
 }

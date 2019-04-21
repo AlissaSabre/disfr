@@ -29,7 +29,7 @@ namespace disfr.Writer
                     manager.Add(new XmlTableWriter());
 
                     // Add plugin writers.
-                    manager.AddRange(PluginManager.Current.Writers);
+                    manager.AddRange(PluginManager.Current.Writers.Cast<IRowsWriter>());
 
                     // Add a debug writer.  (I want it listed last, since it is least useful for ordinary users.)
                     manager.Add(new XmlDebugTreeWriter());

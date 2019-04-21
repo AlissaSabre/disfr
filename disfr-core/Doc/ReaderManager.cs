@@ -34,7 +34,7 @@ namespace disfr.Doc
                     manager.Add(new SdltmReader());
 
                     // Add plugin readers.
-                    manager.AddRange(PluginManager.Current.Readers);
+                    manager.AddRange(PluginManager.Current.Readers.Cast<IAssetReader>());
 
                     _Current = manager;
                 }

@@ -6,11 +6,16 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-using IReader = disfr.Doc.IAssetReader;
-using IWriter = disfr.Writer.IRowsWriter;
-
 namespace disfr.Plugin
 {
+    public interface IReader
+    {
+    }
+
+    public interface IWriter
+    {
+    }
+
     public class PluginManager
     {
         private static PluginManager _Current = null;
@@ -35,11 +40,11 @@ namespace disfr.Plugin
                         var plugin = assembly.CreateInstance(type.ToString());
                         if (plugin is IReaderPlugin)
                         {
-                            reader_plugins.Add(((IReaderPlugin)plugin).CreateAssetReader());
+                            reader_plugins.Add(((IReaderPlugin)plugin).CreateReader());
                         }
                         if (plugin is IWriterPlugin)
                         {
-                            writer_plugins.Add(((IWriterPlugin)plugin).CreateRowWriter());
+                            writer_plugins.Add(((IWriterPlugin)plugin).CreateWriter());
                         }
                     }
                 }

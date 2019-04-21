@@ -13,7 +13,7 @@ namespace disfr.Doc
     /// This is one of the two interfaces you must implement when you create a plug-in to support a new file format.
     /// </remarks>
     /// <see cref="disfr.Plugin.IPlugin"/>
-    public interface IAssetReader
+    public interface IAssetReader : disfr.Plugin.IReader
     {
         /// <summary>
         /// The name of this asset reader.

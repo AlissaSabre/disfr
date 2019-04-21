@@ -8,7 +8,7 @@ using disfr.UI;
 
 namespace disfr.Writer
 {
-    public interface IRowsWriter
+    public interface IRowsWriter : disfr.Plugin.IWriter
     {
         string Name { get; }
 
