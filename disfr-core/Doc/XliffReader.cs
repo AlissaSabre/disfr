@@ -39,16 +39,16 @@ namespace disfr.Doc
             {
                 if (file.IsZip())
                 {
-                    return new SimpleAssetBundle(ReadZip(filename, file, filterindex), ReaderManager.FriendlyFilename(filename));
+                    return ReadZip(filename, file, filterindex);
                 }
                 else
                 {
-                    return new SimpleAssetBundle(ReadXliff(filename, file, filterindex), ReaderManager.FriendlyFilename(filename));
+                    return ReadXliff(filename, file, filterindex);
                 }
             }
         }
 
-        private static IEnumerable<IAsset> ReadZip(string filename, Stream file, int filterindex)
+        private static IAssetBundle ReadZip(string filename, Stream file, int filterindex)
         {
             // If this is a MS-DOS compatible zip file, 
             // the filenames are encoded with the created machine's OEM codepage, 
@@ -74,15 +74,15 @@ namespace disfr.Doc
                 {
                     using (var f = entry.Open())
                     {
-                        var a = ReadXliff(filename, f, filterindex, entry);
-                        if (a != null) assets.AddRange(a);
+                        var bundle = ReadXliff(filename, f, filterindex, entry);
+                        if (bundle != null) assets.AddRange(bundle.Assets);
                     }
                 }
-                return assets.Count == 0 ? null : assets;
+                return assets.Count == 0 ? null : new SimpleAssetBundle(assets, ReaderManager.FriendlyFilename(filename));
             }
         }
 
-        private static IEnumerable<IAsset> ReadXliff(string filename, Stream file, int filterindex, ZipArchiveEntry entry = null)
+        private static IAssetBundle ReadXliff(string filename, Stream file, int filterindex, ZipArchiveEntry entry = null)
         {
             var parser = new XliffParser();
             parser.Filename = filename;

@@ -20,7 +20,7 @@ namespace disfr.Doc
 
         public ZipArchiveEntry ZipEntry;
 
-        public IEnumerable<IAsset> Read(Stream stream)
+        public IAssetBundle Read(Stream stream)
         {
             XElement xliff;
             try
@@ -81,7 +81,7 @@ namespace disfr.Doc
                 Flavour = DetectFlavour(xliff);
             }
 
-            return xliff.Elements(X + "file").Select(CreateAsset).ToArray();
+            return new SimpleAssetBundle(xliff.Elements(X + "file").Select(CreateAsset).ToArray(), ReaderManager.FriendlyFilename(Filename));
         }
 
         /// <summary>

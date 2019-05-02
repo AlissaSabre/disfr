@@ -46,16 +46,13 @@ namespace disfr.Doc
             IDataReader reader = null;
             try
             {
-                var b = new SQLiteConnectionStringBuilder()
-                {
-                    DataSource = filename,
-                };
                 try
                 {
+                    var b = new SQLiteConnectionStringBuilder() { DataSource = filename };
                     connection = new SQLiteConnection(b.ConnectionString);
                     connection.Open();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     return null;
                 }
