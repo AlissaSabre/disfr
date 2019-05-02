@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28307.438
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr", "disfr\disfr.csproj", "{1A3654B0-0F44-4CED-A7A2-E7835FFDEA49}"
+	ProjectSection(ProjectDependencies) = postProject
+		{38BA914A-DEEA-4590-8168-AC31C9480797} = {38BA914A-DEEA-4590-8168-AC31C9480797}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestDisfr", "UnitTestDisfr\UnitTestDisfr.csproj", "{FAAC6E56-E922-4400-B97D-52F6066BEFBA}"
 EndProject
@@ -19,6 +22,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CustomActions", "CustomActions\CustomActions.vcxproj", "{C03F7F77-F01D-468F-B13D-1C8D7A53846F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr-core", "disfr-core\disfr-core.csproj", "{52C27A7F-355E-4BBC-8F0D-546FB11EF689}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr.sdltm", "disfr.sdltm\disfr.sdltm.csproj", "{38BA914A-DEEA-4590-8168-AC31C9480797}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +106,18 @@ Global
 		{52C27A7F-355E-4BBC-8F0D-546FB11EF689}.Release|x64.Build.0 = Release|Any CPU
 		{52C27A7F-355E-4BBC-8F0D-546FB11EF689}.Release|x86.ActiveCfg = Release|Any CPU
 		{52C27A7F-355E-4BBC-8F0D-546FB11EF689}.Release|x86.Build.0 = Release|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Debug|x64.Build.0 = Debug|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Debug|x86.Build.0 = Debug|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Release|x64.ActiveCfg = Release|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Release|x64.Build.0 = Release|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Release|x86.ActiveCfg = Release|Any CPU
+		{38BA914A-DEEA-4590-8168-AC31C9480797}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

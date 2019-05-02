@@ -8,13 +8,29 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace disfr.Doc
+using disfr.Plugin;
+using disfr.Doc;
+
+namespace disfr.sdltm
 {
+    /// <summary>
+    /// disfr plugin for reading Studio TM (*.sdltm) files.
+    /// </summary>
+    public class SdltmReaderPlugin : IReaderPlugin
+    {
+        public string Name { get { return "SdltmReader"; } }
+
+        public IReader CreateReader() { return new SdltmReader(); }
+    }
+
+    /// <summary>
+    /// Asset reader for Studio TM.
+    /// </summary>
     public class SdltmReader : IAssetReader
     {
         private static readonly string[] _FIlterString = { "Studio Translation Memory|*.sdltm" };
 
-        public IList<string> FilterString {  get { return _FIlterString; } }
+        public IList<string> FilterString { get { return _FIlterString; } }
 
         public string Name { get { return "SdltmReader"; } }
 
@@ -22,6 +38,9 @@ namespace disfr.Doc
 
         public IAssetBundle Read(string filename, int filterindex)
         {
+            // An sdltm file is an SQLite database.
+            // Quickly check the signature will accelerate auto-detection processes.
+            // (I know the following code looks silly.)
             using (var s = File.OpenRead(filename))
             {
                 if (s.ReadByte() != 'S' || 
@@ -46,16 +65,20 @@ namespace disfr.Doc
             IDataReader reader = null;
             try
             {
+                // Try to open the file.
+
                 try
                 {
                     var b = new SQLiteConnectionStringBuilder() { DataSource = filename };
                     connection = new SQLiteConnection(b.ConnectionString);
                     connection.Open();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }
+
+                // Some sanity check.
 
                 var version = ExecScalar(connection, @"SELECT value FROM parameters WHERE name = 'VERSION'") as string;
                 if (version?.StartsWith("8.") != true) return null;
@@ -64,6 +87,9 @@ namespace disfr.Doc
                 var tm_max = ExecScalarValue<int>(connection, @"SELECT max(id) FROM translation_memories");
                 var tm_count = tm_max - tm_min + 1;
                 if (tm_count <= 0 || tm_count > 1000) return null;
+
+                // Read asset metadata.
+                // An asset corresponds to a memory in an sdltm file.
 
                 var assets = new SdltmAsset[tm_count];
 
@@ -82,6 +108,8 @@ namespace disfr.Doc
                 reader.Close();
                 reader.Dispose();
                 reader = null;
+
+                // Read the contents of assets (memories).
 
                 var pool = new StringPool();
                 var matcher = new TagMatcher();
@@ -109,6 +137,8 @@ namespace disfr.Doc
                 reader.Dispose();
                 reader = null;
 
+                // Fix the serial numbers.
+
                 int serial = 0;
                 foreach (var asset in assets)
                 {
@@ -117,6 +147,8 @@ namespace disfr.Doc
                         pair.Serial = ++serial;
                     }
                 }
+
+                // That's all.
 
                 return new SimpleAssetBundle(assets, ReaderManager.FriendlyFilename(filename));
             }
@@ -128,6 +160,13 @@ namespace disfr.Doc
             }
         }
 
+        /// <summary>
+        /// Executes an SQL query and returns the first matching data. 
+        /// </summary>
+        /// <param name="connection">A connection to a Database.</param>
+        /// <param name="sql">An SQL statement.</param>
+        /// <returns>Data from the first column of the first row in the result set, or null otherwise.</returns>
+        /// <remarks>Data absense is indicated by a null.  <see cref="DBNull"/> object is never returned.</remarks>
         protected static object ExecScalar(IDbConnection connection, string sql)
         {
             using (var cmd = connection.CreateCommand())
@@ -139,11 +178,24 @@ namespace disfr.Doc
             }
         }
 
+        /// <summary>
+        /// Executes an SQL query and returns the first matching data as type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of the result data.</typeparam>
+        /// <param name="connection">A connection to a Database.</param>
+        /// <param name="sql">An SQL statement.</param>
+        /// <returns>Data from the first column of the first row in the result set.</returns>
         protected static T ExecScalarValue<T>(IDbConnection connection, string sql)
         {
             return (T)Convert.ChangeType(ExecScalar(connection, sql), typeof(T));
         }
 
+        /// <summary>
+        /// Executes an SQL query and returns the result set as an <see cref="IDataReader"/>.
+        /// </summary>
+        /// <param name="connection">A connection to a Database.</param>
+        /// <param name="sql">An SQL statement.</param>
+        /// <returns>Result set.</returns>
         protected static IDataReader ExecReader(IDbConnection connection, string sql)
         {
             using (var cmd = connection.CreateCommand())
@@ -153,6 +205,11 @@ namespace disfr.Doc
             }
         }
 
+        /// <summary>
+        /// Parse an XML fragment representing a source/target content into <see cref="InlineString"/>.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         protected static InlineString GetInlineString(string text)
         {
             var inline = new InlineString();
@@ -265,6 +322,13 @@ namespace disfr.Doc
         }
     }
 
+    /// <summary>
+    /// Asset from Studio TM.
+    /// </summary>
+    /// <remarks>
+    /// This asset supports four fixed additional properties:
+    /// creation_date, creation_user, change_date and change_user.
+    /// </remarks>
     class SdltmAsset : IAsset
     {
         public string Package { get; internal set; }
@@ -293,6 +357,9 @@ namespace disfr.Doc
         public IList<PropInfo> Properties { get { return _Properties; } }
     }
 
+    /// <summary>
+    /// Translation pair from Studio TM.
+    /// </summary>
     class SdltmPair : ITransPair
     {
         public int Serial { get; internal set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace disfr.Doc
 {
-    class SimpleAssetBundle : IAssetBundle
+    public class SimpleAssetBundle : IAssetBundle
     {
         public SimpleAssetBundle(IEnumerable<IAsset> assets, string name)
         {

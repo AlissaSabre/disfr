@@ -28,7 +28,7 @@ namespace disfr.Plugin
             var writer_plugins = new List<IWriter>();
 
             // I have no plan to register this program into GAC, 
-            // so the plugins should be on a same folder as disfr.exe
+            // so the plugins should be on a same folder as disfr-core.dll
             var plugin_folder = Path.GetDirectoryName(this.GetType().Assembly.Location);
             foreach (var dll in Directory.EnumerateFiles(plugin_folder, "disfr.*.dll"))
             {
