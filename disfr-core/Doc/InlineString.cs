@@ -10,92 +10,28 @@ namespace disfr.Doc
     /// Represents a sort of a <i>rich</i> text.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Many bilingual files support a notion of <i>tags</i> within text data.
     /// Some also support some additional properties for emphasis, insertion or deletion.
     /// <see cref="InlineString"/> is a substitution of a <see cref="string"/> type,
     /// whose contents include not just ordinary characters but also tags with some properties. 
+    /// </para>
+    /// <para>
     /// Note that we used to support <i>special characters</i> in InlineString.
-    /// I now consider they blongs to presentation but infoset,
+    /// I now consider they blong to presentation but infoset,
     /// so the support for special characters in InlineString has been removed.
+    /// It is now included in <see cref="disfr.UI.PairRenderer"/>.
+    /// </para>
     /// </remarks>
     public class InlineString : IEnumerable<object>
     {
-        //private static readonly char[] SpecialChars = new char[]
-        //{
-        //    '\u0000', '\u0001', '\u0002', '\u0003', '\u0004', '\u0005', '\u0006', '\u0007', 
-        //    '\u0008', '\u0009', '\u000A', '\u000B', '\u000C', '\u000D', '\u000E', '\u000F',
-        //    '\u0010', '\u0011', '\u0012', '\u0013', '\u0014', '\u0015', '\u0016', '\u0017',
-        //    '\u0018', '\u0019', '\u001A', '\u001B', '\u001C', '\u001D', '\u001E', '\u001F',
-        //    '\u0020', '\u007F', 
-        //    '\u0080', '\u0081', '\u0082', '\u0083', '\u0084', '\u0085', '\u0086', '\u0087',
-        //    '\u0088', '\u0089', '\u008A', '\u008B', '\u008C', '\u008D', '\u008E', '\u008F',
-        //    '\u0090', '\u0091', '\u0092', '\u0093', '\u0094', '\u0095', '\u0096', '\u0097',
-        //    '\u0098', '\u0099', '\u009A', '\u009B', '\u009C', '\u009D', '\u009E', '\u009F',
-        //    '\u00A0', 
-        //    '\u1680', '\u180E',
-        //    '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006', '\u2007',
-        //    '\u2008', '\u2009', '\u200A', '\u200B', '\u200C', '\u200D',
-        //    '\u2028', '\u2029', '\u202F', '\u205F',
-        //    '\u2060', '\u2061', '\u2062', '\u2063',
-        //    '\u3000', '\u3164',
-        //    '\uFFA0', '\uFEFF',
-        //};
-
-        //private static readonly Dictionary<char, InlineChar> InlineChars;
-
-        //static InlineString()
-        //{
-        //    InlineChars = new Dictionary<char, InlineChar>(SpecialChars.Length * 2);
-        //    foreach (char c in SpecialChars)
-        //    {
-        //        InlineChars[c] = new InlineChar(c);
-        //    }
-        //    InlineCharChecker = BuildICC();
-        //}
-
-        ///// <summary>
-        ///// A sort of a direct perfect hash table to substitute InlineChars.ContainsKey. 
-        ///// </summary>
-        //private static readonly char[] InlineCharChecker;
-
-        ///// <summary>
-        ///// Builds an InlineCharChecker.
-        ///// </summary>
-        ///// <returns>The InlineCharChecker.</returns>
-        //private static char[] BuildICC()
-        //{
-        //    for (int n = SpecialChars.Length; ; n++)
-        //    {
-        //        var icc = TryBuildICC(n);
-        //        if (icc != null) return icc;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Tries to build an InlineCharChecker of size <paramref name="size"/>.
-        ///// </summary>
-        ///// <param name="size">The desired size of the InlineCharChecker.</param>
-        ///// <returns>The InlineCharChecker of size <paramref name="size"/>, or null if not found.</returns>
-        //private static char[] TryBuildICC(int size)
-        //{
-        //    var icc = new char[size];
-        //    foreach (var c in SpecialChars)
-        //    {
-        //        var i = c % size;
-        //        if (i == 0 && c != 0) return null;
-        //        if (icc[i] != 0) return null;
-        //        icc[i] = c;
-        //    }
-        //    return icc;
-        //}
-
         /// <summary>
         /// The contents of this InlineString.
         /// </summary>
         /// <remarks>
         /// Although the element type is declared being object, 
-        /// the list can actually contain elements either of the three types:
-        /// string, InlineTag and InlineChar.
+        /// the list can actually contain elements either of the two types:
+        /// string and InlineTag.
         /// </remarks>
         private readonly List<object> _Contents = new List<object>();
 
@@ -128,31 +64,6 @@ namespace disfr.Doc
         public void Add(string text)
         {
             if (text == null) throw new ArgumentNullException("text");
-//#if !UNSAFE
-//            int mod = InlineCharChecker.Length;
-//            for (int p = 0, q; p < text.Length; p = q + 1)
-//            {
-//                for (q = p; q < text.Length && text[q] != InlineCharChecker[text[q] % mod]; q++) ;
-//                if (p < q) AddString(text.Substring(p, q - p));
-//                if (q < text.Length) AddChar(InlineChars[text[q]]);
-//            }
-//#else
-//            unsafe
-//            {
-//                int mod = InlineCharChecker.Length;
-//                fixed (char* s = text, icc = InlineCharChecker)
-//                {
-//                    char* r = s + text.Length;
-//                    for (char* p = s, q; p < r; p = q + 1)
-//                    {
-//                        char c;
-//                        for (q = p; q < r && (c = *q) != icc[c % mod]; q++) ;
-//                        if (p < q) AddString(text.Substring((int)(p - s), (int)(q - p)));
-//                        if (q < r) AddChar(InlineChars[*q]);
-//                    }
-//                }
-//            }
-//#endif
             AddString(text);
         }
 
@@ -175,11 +86,6 @@ namespace disfr.Doc
             {
                 _Contents.Add(text);
             }
-        }
-
-        private void AddChar(InlineChar c)
-        {
-            _Contents.Add(c);
         }
 
         /// <summary>
@@ -235,11 +141,7 @@ namespace disfr.Doc
                 {
                     Add((InlineTag)x);
                 }
-                else if (x is InlineChar)
-                {
-                    AddChar((InlineChar)x);
-                }
-                else
+               else
                 {
                     throw new ApplicationException("internal error");
                 }
@@ -428,34 +330,6 @@ namespace disfr.Doc
         public override string ToString()
         {
             return "{" + Name + ";" + Id + "}";
-        }
-    }
-
-    public class InlineChar
-    {
-        public readonly char Char;
-
-        private readonly string String;
-
-        public InlineChar(char char_data)
-        {
-            Char = char_data;
-            String = Char.ToString();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return (obj is InlineChar) && ((InlineChar)obj).Char == Char;
-        }
-
-        public override int GetHashCode()
-        {
-            return Char.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return String;
         }
     }
 

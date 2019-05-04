@@ -69,10 +69,6 @@ namespace disfr.Writer
             {
                 return item;
             }
-            else if (item is InlineChar)
-            {
-                return ((InlineChar)item).Char;
-            }
             else if (item is InlineTag)
             {
                 // Create a TMX <ph> tag for any tag.  
