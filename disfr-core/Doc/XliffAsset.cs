@@ -79,6 +79,22 @@ namespace disfr.Doc
             PropMan.Put(ref pair._Props, key, value);
         }
 
+        /// <summary>
+        /// Extracts a series of <see cref="XliffTransPair"/>'s from a single XLIFF tu element.
+        /// </summary>
+        /// <param name="tu">XLIFF trans-unit element.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// In the standard XLIFF, a trans-unit element may or may not be segmented using mrk[@mtype='seg'] elements.
+        /// This method detects the case and returns a series of trans-pairs based on the segments.
+        /// Otherwise, a single trans-pair is returned for a single trans-unit element.
+        /// </para>
+        /// <para>
+        /// Note that a subclass may <i>add</i>more trans-pairs to those from standard XLIFF specificataion,
+        /// based on any CAT-tool specific extensions.
+        /// </para>
+        /// </remarks>
         protected virtual IEnumerable<XliffTransPair> ExtractPairs(XElement tu)
         {
             if (SegmentationAllowed &&
@@ -93,24 +109,18 @@ namespace disfr.Doc
             }
         }
 
-        private static int CompareRuns(object x, object y)
+        // This method will be cast to Comparison{Segment} delegate,
+        // but it doesn't perform real comparison.
+        // It is actually like EqualityComparer{Segment}.Equals(Segment, Segment).
+        // Current Diff.Diff.Compare(IList{Segment}, IList{Segment}, Comparison{Segment}) works fine with it.
+        private static int CompareRuns(Segment x, Segment y)
         {
-            var xx = x as XElement;
-            var yy = y as XElement;
+            var xx = x.Element;
+            var yy = y.Element;
             if (xx == null && yy == null) return 0;
             if (xx == null || yy == null) return -1;
             if ((string)xx.Attribute("mid") == (string)yy.Attribute("mid")) return 0;
             return -1;
-        }
-
-        protected bool IsMrkSeg(XNode node)
-        {
-            if (!(node is XElement)) return false;
-            var element = node as XElement;
-            if (element.Name.Namespace != X) return false;
-            if (element.Name.LocalName != "mrk") return false;
-            if ((string)element.Attribute("mtype") != "seg") return false;
-            return true;
         }
 
         protected virtual IEnumerable<XliffTransPair> SegmentAndExtractPairs(XElement tu)
@@ -134,17 +144,17 @@ namespace disfr.Doc
             }
         }
 
-        protected virtual XliffTransPair ExtractSegmentedPair(object src, object tgt, string slang, string tlang, IEnumerable<string> notes)
+        protected virtual XliffTransPair ExtractSegmentedPair(Segment src, Segment tgt, string slang, string tlang, IEnumerable<string> notes)
         {
-            var selem = src as XElement;
-            var telem = tgt as XElement;
+            var selem = src.Element;
+            var telem = tgt.Element;
 
             var pair = new XliffTransPair()
             {
                 Serial = (selem != null) || (telem != null) ? 1 : -1,
                 Id = (string)selem?.Attribute("mid") ?? (string)telem?.Attribute("mid") ?? "*",
-                Source = (selem != null) ? GetInline(selem) : (src as InlineString ?? new InlineString()),
-                Target = (telem != null) ? GetInline(telem) : (tgt as InlineString ?? new InlineString()),
+                Source = (selem != null) ? GetInline(selem) : src.InlineString ?? new InlineString(),
+                Target = (telem != null) ? GetInline(telem) : tgt.InlineString ?? new InlineString(),
                 SourceLang = slang,
                 TargetLang = tlang,
             };
@@ -213,15 +223,47 @@ namespace disfr.Doc
             var seq = new ContentParser(this, false).Parse(element).GetSequence();
             if (seq.Count == 0) return new InlineString();
             if (seq.Count != 1) throw new Exception("Internal Error");
-            return (InlineString)seq[0];
+            if (seq[0]?.InlineString is null) throw new Exception("Internal Error");
+            return seq[0].InlineString;
         }
 
-        protected List<object> GetInlineSegments(XElement element)
+        protected List<Segment> GetInlineSegments(XElement element)
         {
             return new ContentParser(this, true).Parse(element).GetSequence();
         }
 
-        // Provides parsing of text contents (of elements such as source or target)
+        /// <summary>
+        /// Represents a segment in a trans-unit.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If XLIFF standard segmentation (using mrk[@stype='seg']) is NOT used,
+        /// The entire contents of source or target is a single segment.
+        /// If XLIFF standard segmentation is used,
+        /// the contents of each mrk element as well as each of remaining contents between mrk elements
+        /// forms a segment.
+        /// </para>
+        /// <para>
+        /// One and only one of <see cref="Element"/> and <see cref="InlineString"/> is non-null.
+        /// If <see cref="Element"/> is non-null, this <see cref="Segment"/> is from an mrk element.
+        /// If <see cref="InlineString"/> is non-null, this <see cref="Segment"/> is
+        /// from the contents outside of mrk element.
+        /// </para>
+        /// </remarks>
+        protected class Segment
+        {
+            public readonly XElement Element;
+
+            public readonly InlineString InlineString;
+
+            public Segment(XElement element) { Element = element; }
+
+            public Segment(InlineString inline) { InlineString = inline; }
+        }
+
+        /// <summary>
+        /// Provides parsing of mixed text contents (of elements such as source or target)
+        /// </summary>
         protected class ContentParser
         {
             public ContentParser(XliffAsset xliff, bool allow_segmentation)
@@ -237,58 +279,48 @@ namespace disfr.Doc
 
             private readonly bool AllowSegmentation;
 
-            private readonly List<object> _Sequence = new List<object>();
+            private readonly List<Segment> _Sequence = new List<Segment>();
 
-            public List<object> GetSequence()
+            public List<Segment> GetSequence()
             {
                 FlushInline();
                 return _Sequence;
             }
 
-            private InlineBuilder _Inline = null;
+            private InlineBuilder _InterSegment = null;
 
-            private InlineBuilder Inline
+            private InlineBuilder InterSegment
             {
-                get { return _Inline ?? (_Inline = new InlineBuilder()); }
+                get { return _InterSegment ?? (_InterSegment = new InlineBuilder()); }
             }
 
             private void FlushInline()
             {
-                if (_Inline != null)
+                if (_InterSegment != null)
                 {
-                    _Sequence.Add(_Inline.ToInlineString());
-                    _Inline = null;
+                    _Sequence.Add(new Segment(_InterSegment.ToInlineString()));
+                    _InterSegment = null;
                 }
             }
 
-            private void Add(object obj)
+            private void Add(XElement element)
             {
-                if (obj is XElement)
-                {
-                    GetSequence().Add((XElement)obj);
-                }
-                else if (obj is XText)
-                {
-                    Inline.Append(((XText)obj).Value);
-                }
-                else if (obj is InlineString)
-                {
-                    Inline.Append((InlineString)obj);
-                }
-                else if (obj is InlineTag)
-                {
-                    Inline.Append((InlineTag)obj);
-                }
+                GetSequence().Add(new Segment(element));
             }
 
-            private void AddInline(InlineString s)
+            private void Add(string text)
             {
-                Inline.Add(s);
+                InterSegment.Append(text);
             }
 
-            private void AddString(string s)
+            private void Add(InlineString text)
             {
-                Inline.Add(s);
+                InterSegment.Append(text);
+            }
+
+            private void Add(InlineTag tag)
+            {
+                InterSegment.Append(tag);
             }
 
             public ContentParser Parse(XElement elem)
@@ -298,7 +330,7 @@ namespace disfr.Doc
                 {
                     if (n.NodeType == XmlNodeType.Text)
                     {
-                        Add(n);
+                        Add((n as XText).Value);
                     }
                     else if (n.NodeType == XmlNodeType.Element)
                     {
@@ -307,9 +339,20 @@ namespace disfr.Doc
                         var name = e.Name.LocalName;
                         if (ns == X && name == "mrk")
                         {
-                            foreach (var obj in Xliff.ParseMrkElement(e, AllowSegmentation))
+                            foreach (var segment in Xliff.ParseMrkElement(e, AllowSegmentation))
                             {
-                                Add(obj);
+                                if (segment.Element != null)
+                                {
+                                    Add(segment.Element);
+                                }
+                                else if (segment.InlineString != null)
+                                {
+                                    Add(segment.InlineString);
+                                }
+                                else
+                                {
+                                    throw new ApplicationException("Internal Error");
+                                }
                             }
                         }
                         else if (ns == X && (name == "x" || name == "ph"))
@@ -367,7 +410,7 @@ namespace disfr.Doc
             }
         }
 
-        protected virtual IEnumerable<object> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        protected virtual IEnumerable<Segment> ParseMrkElement(XElement mrk, bool allow_segmentation)
         {
             // mrk tags are _markers_ for CAT tools.
             // We take care of the XLIFF segmentation spec.
@@ -379,7 +422,7 @@ namespace disfr.Doc
 
             if (allow_segmentation && (string)mrk.Attribute("mtype") == "seg")
             {
-                return new object[] { mrk };
+                return new [] { new Segment(mrk) };
             }
             else
             {

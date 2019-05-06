@@ -106,14 +106,14 @@ namespace disfr.Doc
             return p;
         }
 
-        protected override IEnumerable<object> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        protected override IEnumerable<Segment> ParseMrkElement(XElement mrk, bool allow_segmentation)
         {
             switch ((string)mrk.Attribute("mtype"))
             {
                 case "x-sdl-deleted":
                     // This is a deleted section in change tracking.
                     // For the moment, we just discard it.
-                    return Enumerable.Empty<object>();
+                    return Enumerable.Empty<Segment>();
 
                 case "x-sdl-added":
                     // This is an added (inserted) section in change tracking.

@@ -88,15 +88,10 @@ namespace disfr.Doc
             _Contents.Add(tag);
         }
 
-        public void AddRange(IEnumerable<InlineElement> contents)
+        internal void InternalAddRange(IEnumerable<InlineElement> contents)
         {
-            if (contents == null) throw new ArgumentNullException("contents");
             foreach (var element in contents)
             {
-                if (element is null)
-                {
-                    throw new ArgumentException("Contains a null InlineElement.", "contents");
-                }
                 if (element is InlineText)
                 {
                     var inline_text = (InlineText)element;
@@ -237,7 +232,7 @@ namespace disfr.Doc
             else
             {
                 var builder = new InlineBuilder();
-                builder.AddRange(contents);
+                builder.InternalAddRange(contents);
                 _Contents = builder.Contents.ToArray();
             }
         }
@@ -343,7 +338,7 @@ namespace disfr.Doc
     /// </summary>
     /// <remarks>
     /// InlineTag is <i>mostly</i> immutable.
-    /// The only exception is that the <see cref="Number"/> property can be
+    /// An exception is that the <see cref="Number"/> property can be
     /// assigned a value after an instance has been created,
     /// but its value can't be changed once assigned.
     /// In other words, an <see cref="InlineTag"/> instance has only two states:
@@ -519,7 +514,5 @@ namespace disfr.Doc
 
     public abstract class InlineElement
     {
-
     }
-
 }

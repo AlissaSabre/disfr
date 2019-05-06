@@ -241,7 +241,7 @@ namespace disfr.Doc
             };
         }
 
-        protected override IEnumerable<object> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        protected override IEnumerable<Segment> ParseMrkElement(XElement mrk, bool allow_segmentation)
         {
             if ((string)mrk.Attribute("mtype") == "x-mq-tc")
             {
@@ -251,7 +251,7 @@ namespace disfr.Doc
                 switch (tctype)
                 {
                     case "del":
-                        return Enumerable.Empty<object>();
+                        return Enumerable.Empty<Segment>();
                     case "ins":
                     default:
                         return base.ParseMrkElement(mrk, allow_segmentation);
