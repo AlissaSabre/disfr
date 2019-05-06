@@ -142,9 +142,9 @@ namespace disfr.UI
             var g = new GlossyString();
             foreach (var obj in text.Contents)
             {
-                if (obj is string)
+                if (obj is InlineText)
                 {
-                    var str = (string)obj;
+                    var str = (obj as InlineText).Text;
                     if (!ShowSpecials || ignore_show_specials)
                     {
                         g.Append(str, Gloss.None);

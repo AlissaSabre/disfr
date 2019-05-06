@@ -30,8 +30,8 @@ namespace UnitTestDisfrDoc
 
             pairs0[0].Serial.Is(1);
             pairs0[0].Id.Is("1");
-            pairs0[0].Source.Is("Quetzal");
-            pairs0[0].Target.Is("Quetzal");
+            pairs0[0].Source.ToString().Is("Quetzal");
+            pairs0[0].Target.ToString().Is("Quetzal");
             pairs0[0].SourceLang.Is("en-US");
             pairs0[0].TargetLang.Is("ja-JP");
 

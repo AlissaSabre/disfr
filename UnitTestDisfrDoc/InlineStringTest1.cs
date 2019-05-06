@@ -14,14 +14,38 @@ namespace UnitTestDisfrDoc
         public void Ctors()
         {
             var a = new InlineString();
-            a.Is(new object[0]);
+            a.Contents.Is(new InlineElement[0]);
+            a.IsEmpty.IsTrue();
         }
 
         [TestMethod]
         public void CollectionInitializer()
         {
-            new InlineString() { "abc" }.Is(new object[] { "abc" });
-            new InlineString() { "abc", "def", "ghi" }.Is(new object[] { "abcdefghi" });
+            new InlineString() { "abc" }.Is(new InlineElement[] { new InlineText("abc") });
+            new InlineString() { "abc", "def", "ghi" }.Is(new InlineElement[] { new InlineText("abcdefghi") });
+        }
+
+        [TestMethod]
+        public void IsEmpty_1()
+        {
+            var s = new InlineString();
+            s.IsEmpty.IsTrue();
+            s.Contents.Count().Is(0);
+            s.Append("");
+            s.IsEmpty.IsTrue();
+            s.Contents.Count().Is(0);
+            s.Append("a");
+            s.IsEmpty.IsFalse();
+            s.Contents.Count().Is(1);
+        }
+
+        [TestMethod]
+        public void IsEmpty_2()
+        {
+            var s = new InlineString();
+            s.IsEmpty.IsTrue();
+            s.Append(new InlineTag(Tag.S, "*", "*", "t", null, null, null));
+            s.IsEmpty.IsFalse();
         }
 
         [TestMethod]
@@ -34,19 +58,19 @@ namespace UnitTestDisfrDoc
             s.Append("");
             s.Is();
             s.Append("abc");
-            s.Is("abc");
+            s.Is(new InlineText("abc"));
             s.Append("def");
-            s.Is("abcdef");
+            s.Is(new InlineText("abcdef"));
             s.Append("");
-            s.Is("abcdef");
+            s.Is(new InlineText("abcdef"));
             s.Append(t1);
-            s.Is("abcdef", t1);
+            s.Is(new InlineText("abcdef"), t1);
             s.Append(t2);
-            s.Is("abcdef", t1, t2);
+            s.Is(new InlineText("abcdef"), t1, t2);
             s.Append("");
-            s.Is("abcdef", t1, t2);
+            s.Is(new InlineText("abcdef"), t1, t2);
             s.Append("xyz");
-            s.Is("abcdef", t1, t2, "xyz");
+            s.Is(new InlineText("abcdef"), t1, t2, new InlineText("xyz"));
         }
 
         [TestMethod]
@@ -67,7 +91,7 @@ namespace UnitTestDisfrDoc
             s.Append("abc");
             AssertEx.Catch<ArgumentNullException>(() => s.Append((string)null));
             AssertEx.Catch<ArgumentNullException>(() => s.Append((InlineTag)null));
-            s.Is(t, "abc");
+            s.Is(t, new InlineText("abc"));
         }
 
         [TestMethod]
@@ -77,15 +101,15 @@ namespace UnitTestDisfrDoc
             var t2 = new InlineTag(Tag.S, "*", "*", "t2", null, null, null);
 
             var s = new InlineString() { "abc", t1, t2 };
-            s.Is("abc", t1, t2);
+            s.Is(new InlineText("abc"), t1, t2);
             s.Append(new InlineString() { "def", t1 });
-            s.Is("abc", t1, t2, "def", t1);
+            s.Is(new InlineText("abc"), t1, t2, new InlineText("def"), t1);
             s.Append(new InlineString());
-            s.Is("abc", t1, t2, "def", t1);
+            s.Is(new InlineText("abc"), t1, t2, new InlineText("def"), t1);
             s.Append(new InlineString() { t1, t2, "ghi" });
-            s.Is("abc", t1, t2, "def", t1, t1, t2, "ghi");
+            s.Is(new InlineText("abc"), t1, t2, new InlineText("def"), t1, t1, t2, new InlineText("ghi"));
             s.Append(new InlineString() { "jkl", t2 });
-            s.Is("abc", t1, t2, "def", t1, t1, t2, "ghijkl", t2);
+            s.Is(new InlineText("abc"), t1, t2, new InlineText("def"), t1, t1, t2, new InlineText("ghijkl"), t2);
         }
 
         [TestMethod]
@@ -95,7 +119,7 @@ namespace UnitTestDisfrDoc
             var t = new InlineString() { "ef gh" };
             s.Append(t);
             s.Is(new InlineString() { "ab cdef gh" });
-            s.Contents.Count().Is(5);
+            s.Contents.Count().Is(1);
             AssertEx.Catch<ArgumentException>(() => s.Append(s));
         }
 
@@ -356,59 +380,59 @@ namespace UnitTestDisfrDoc
         }
     }
 
-    [TestClass]
-    public class InlineCharTest1
-    {
-        [TestMethod]
-        public void Ctor_1()
-        {
-            new InlineChar('\u0020');
-            new InlineChar('\u0009');
-        }
+    //[TestClass]
+    //public class InlineCharTest1
+    //{
+    //    [TestMethod]
+    //    public void Ctor_1()
+    //    {
+    //        new InlineChar('\u0020');
+    //        new InlineChar('\u0009');
+    //    }
 
-        [TestMethod]
-        public void Equals_1()
-        {
-            new InlineChar('\u0020').Equals(new InlineChar('\u0020')).Is(true);
-            new InlineChar('\u0009').Equals(new InlineChar('\u0009')).Is(true);
-            new InlineChar('\u0020').Equals(new InlineChar('\u0009')).Is(false);
-            new InlineChar('\u0009').Equals(new InlineChar('\u0020')).Is(false);
-            new InlineChar('\u0020').Equals("\u0020").Is(false);
-            new InlineChar('\u0020').Equals('\u0020').Is(false);
-        }
+    //    [TestMethod]
+    //    public void Equals_1()
+    //    {
+    //        new InlineChar('\u0020').Equals(new InlineChar('\u0020')).Is(true);
+    //        new InlineChar('\u0009').Equals(new InlineChar('\u0009')).Is(true);
+    //        new InlineChar('\u0020').Equals(new InlineChar('\u0009')).Is(false);
+    //        new InlineChar('\u0009').Equals(new InlineChar('\u0020')).Is(false);
+    //        new InlineChar('\u0020').Equals("\u0020").Is(false);
+    //        new InlineChar('\u0020').Equals('\u0020').Is(false);
+    //    }
 
-        private static readonly char[] GetHashCode_TestData_1 =
-        {
-            '\u0009', '\u000A', '\u000D', '\u0020', '\u00A0',
-            '\u1680', '\u180E',
-            '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006', '\u2007',
-            '\u2008', '\u2009', '\u200A', '\u200B', '\u200C', '\u200D',
-            '\u2028', '\u2029', '\u202F', '\u205F',
-            '\u2060', '\u2061', '\u2062', '\u2063',
-            '\u3000', '\u3064',
-            '\uFFA0', '\uFEFF',
-        };
+    //    private static readonly char[] GetHashCode_TestData_1 =
+    //    {
+    //        '\u0009', '\u000A', '\u000D', '\u0020', '\u00A0',
+    //        '\u1680', '\u180E',
+    //        '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006', '\u2007',
+    //        '\u2008', '\u2009', '\u200A', '\u200B', '\u200C', '\u200D',
+    //        '\u2028', '\u2029', '\u202F', '\u205F',
+    //        '\u2060', '\u2061', '\u2062', '\u2063',
+    //        '\u3000', '\u3064',
+    //        '\uFFA0', '\uFEFF',
+    //    };
 
-        [TestMethod]
-        public void GetHashCode_1()
-        {
-            foreach (char c in GetHashCode_TestData_1)
-            {
-                foreach (char d in GetHashCode_TestData_1)
-                {
-                    (new InlineChar(c).GetHashCode() == new InlineChar(d).GetHashCode())
-                        .Is(c == d, string.Format("{0:X} vs {1:X}", (int)c, (int)d)); 
-                }
-            }
-        }
+    //    [TestMethod]
+    //    public void GetHashCode_1()
+    //    {
+    //        foreach (char c in GetHashCode_TestData_1)
+    //        {
+    //            foreach (char d in GetHashCode_TestData_1)
+    //            {
+    //                (new InlineChar(c).GetHashCode() == new InlineChar(d).GetHashCode())
+    //                    .Is(c == d, string.Format("{0:X} vs {1:X}", (int)c, (int)d)); 
+    //            }
+    //        }
+    //    }
 
-        [TestMethod]
-        public void Char_1()
-        {
-            new InlineChar('\u0020').Char.Is('\u0020');
-            new InlineChar('\u0009').Char.Is('\u0009');
-        }
-    }
+    //    [TestMethod]
+    //    public void Char_1()
+    //    {
+    //        new InlineChar('\u0020').Char.Is('\u0020');
+    //        new InlineChar('\u0009').Char.Is('\u0009');
+    //    }
+    //}
 
     public static class InlineString_ExtensionMethods
     {

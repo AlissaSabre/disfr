@@ -23,17 +23,12 @@ namespace disfr.Doc
     /// It is now included in <see cref="disfr.UI.PairRenderer"/>.
     /// </para>
     /// </remarks>
-    public class InlineString : IEnumerable<object>
+    public class InlineString : IEnumerable<InlineElement>
     {
         /// <summary>
         /// The contents of this InlineString.
         /// </summary>
-        /// <remarks>
-        /// Although the element type is declared being object, 
-        /// the list can actually contain elements either of the two types:
-        /// string and InlineTag.
-        /// </remarks>
-        private readonly List<object> _Contents = new List<object>();
+        private readonly List<InlineElement> _Contents = new List<InlineElement>();
 
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -41,10 +36,10 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Implements IEnumerator{object}.GetEnumerator().
+        /// Implements IEnumerator{InlineElement}.GetEnumerator().
         /// </summary>
         /// <returns>An enumerator.</returns>
-        public IEnumerator<object> GetEnumerator()
+        public IEnumerator<InlineElement> GetEnumerator()
         {
             return _Contents.GetEnumerator();
         }
@@ -52,44 +47,50 @@ namespace disfr.Doc
         /// <summary>
         /// Gets the contents of this InlineString as an enumerable.
         /// </summary>
-        public IEnumerable<object> Contents { get { return _Contents; } }
+        public IEnumerable<InlineElement> Contents { get { return _Contents; } }
 
         /// <summary>
-        /// Add a string at the end to this InlineString.
+        /// Adds a text at the end to this InlineString.
         /// </summary>
-        /// <param name="text">The string to add.</param>
-        /// <remarks>
-        /// Any special characters in <paramref name="text"/> will be searched and isolated.
-        /// </remarks>
+        /// <param name="text">The text to add.</param>
         public void Add(string text)
         {
             if (text == null) throw new ArgumentNullException("text");
-            AddString(text);
+            AddString(text, null);
         }
 
         /// <summary>
-        /// Add a string to this InlineString.
+        /// Adds an inline text at the end.
         /// </summary>
-        /// <param name="text">string to add.</param>
-        /// <remarks>
-        /// The string is added as it is; no special characters must occur in <paramref name="text"/>. 
-        /// </remarks>
-        private void AddString(string text)
+        /// <param name="text">The inline text to add.</param>
+        public void Add(InlineText text)
         {
-            if (_Contents.Count > 0 && _Contents[_Contents.Count - 1] is string)
+            if (text == null) throw new ArgumentNullException("text");
+            AddString(text.Text, text);
+        }
+
+        /// <summary>
+        /// Adds a string text or an inline text at the end of this InlineString.
+        /// </summary>
+        /// <param name="text">A string version of the text.</param>
+        /// <param name="inline_text">An InlineText version of the text if available, or null otherwise.</param>
+        private void AddString(string text, InlineText inline_text)
+        {
+            if (text.Length == 0) return;
+            if (_Contents.Count > 0 && _Contents[_Contents.Count - 1] is InlineText)
             {
-                var x = _Contents[_Contents.Count - 1] as string;
-                var y = x + text;
-                _Contents[_Contents.Count - 1] = y;
+                var x = _Contents[_Contents.Count - 1] as InlineText;
+                var y = x.Text + text;
+                _Contents[_Contents.Count - 1] = new InlineText(y);
             }
             else
             {
-                _Contents.Add(text);
+                _Contents.Add(inline_text ?? new InlineText(text));
             }
         }
 
         /// <summary>
-        /// Add an inline tag at the end of this inline string.
+        /// Adds an inline tag at the end of this inline string.
         /// </summary>
         /// <param name="tag"></param>
         public void Add(InlineTag tag)
@@ -104,6 +105,13 @@ namespace disfr.Doc
         /// <param name="text">string to add.</param>
         /// <returns>this instance.</returns>
         public InlineString Append(string text) { Add(text); return this; }
+
+        /// <summary>
+        /// Adds an inline text, returning this instance.
+        /// </summary>
+        /// <param name="text">InlineText to add.</param>
+        /// <returns>this instance.</returns>
+        public InlineString Append(InlineText text) { Add(text); return this; }
 
         /// <summary>
         /// Adds an inline tag, returning this instance.
@@ -123,6 +131,9 @@ namespace disfr.Doc
         /// Add the contents of another InlineString at the end of this InlineString.
         /// </summary>
         /// <param name="inline">InlineString whose contents are added.</param>
+        /// <remarks>
+        /// This method works like a concatenation, though the first InlineString is updated.
+        /// </remarks>
         public void Add(InlineString inline)
         {
             if (inline == null) throw new ArgumentNullException("inline");
@@ -133,13 +144,13 @@ namespace disfr.Doc
 
             foreach (var x in inline._Contents)
             {
-                if (x is string)
+                if (x is InlineText)
                 {
-                    AddString((string)x);
+                    Add((x as InlineText).Text);
                 }
                 else if (x is InlineTag)
                 {
-                    Add((InlineTag)x);
+                    Add(x as InlineTag);
                 }
                else
                 {
@@ -159,10 +170,11 @@ namespace disfr.Doc
         /// <returns>The hash code.</returns>
         public override int GetHashCode()
         {
+            var shift = 9; // an arbitrarily chosen number.
             var h = 0x5ab0e273; // a magic number.
             foreach (var c in _Contents)
             {
-                h += (h << 9) + c.GetHashCode();
+                h += (h << shift) + c.GetHashCode();
             }
             return h;
         }
@@ -221,7 +233,7 @@ namespace disfr.Doc
     /// <summary>
     /// Represents a tag in an <see cref="InlineString"/>.
     /// </summary>
-    public class InlineTag
+    public class InlineTag : InlineElement
     {
         /// <summary>
         /// A type of a tag.
@@ -331,6 +343,66 @@ namespace disfr.Doc
         {
             return "{" + Name + ";" + Id + "}";
         }
+    }
+
+    /// <summary>
+    /// Represents a text portion in <see cref="InlineString"/>.
+    /// </summary>
+    /// <remarks>
+    /// InlineText is immutable.
+    /// </remarks>
+    public class InlineText : InlineElement
+    {
+        /// <summary>
+        /// The Text data.
+        /// </summary>
+        public readonly string Text;
+
+        public InlineText(string text)
+        {
+            if (text == null) throw new ArgumentNullException("text");
+            Text = text;
+        }
+
+        public override int GetHashCode()
+        {
+            return Text.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Text == (obj as InlineText)?.Text;
+        }
+
+        public override string ToString()
+        {
+            return Text;
+        }
+
+        public static bool operator ==(InlineText x, InlineText y)
+        {
+            return x?.Text == y?.Text;
+        }
+
+        public static bool operator !=(InlineText x, InlineText y)
+        {
+            return x?.Text != y?.Text;
+        }
+
+        public static explicit operator string(InlineText x)
+        {
+            return x?.Text;
+        }
+
+        public static implicit operator InlineText(string s)
+        {
+            return s == null ? null : new InlineText(s);
+        }
+    }
+
+    public class InlineElement
+    {
+
     }
 
 }
