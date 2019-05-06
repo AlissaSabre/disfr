@@ -55,19 +55,19 @@ namespace disfr.Writer
                         new XAttribute(LANG, data.SourceLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawSource.Contents.Select(ConvertContent))),
+                            data.RawSource.Select(ConvertContent))),
                     new XElement(X + "tuv",
                         new XAttribute(LANG, data.TargetLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawTarget.Contents.Select(ConvertContent))));
+                            data.RawTarget.Select(ConvertContent))));
         }
 
-        private object ConvertContent(object item)
+        private XNode ConvertContent(InlineElement item)
         {
-            if (item is string)
+            if (item is InlineText)
             {
-                return item;
+                return new XText(item.ToString());
             }
             else if (item is InlineTag)
             {

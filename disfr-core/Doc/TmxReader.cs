@@ -271,12 +271,12 @@ namespace disfr.Doc
 
         private static InlineString GetInline(XElement elem, XNamespace X)
         {
-            var inline = new InlineString();
+            var inline = new InlineBuilder();
             BuildInline(inline, elem, X);
-            return inline;
+            return inline.ToInlineString();
         }
 
-        private static void BuildInline(InlineString inline, XElement elem, XNamespace X)
+        private static void BuildInline(InlineBuilder inline, XElement elem, XNamespace X)
         {
             foreach (var node in elem.Nodes())
             {

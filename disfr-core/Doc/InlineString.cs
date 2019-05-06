@@ -7,36 +7,30 @@ using System.Text;
 namespace disfr.Doc
 {
     /// <summary>
-    /// Represents a sort of a <i>rich</i> text.
+    /// Creates an <see cref="InlineString"/>.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// Many bilingual files support a notion of <i>tags</i> within text data.
-    /// Some also support some additional properties for emphasis, insertion or deletion.
-    /// <see cref="InlineString"/> is a substitution of a <see cref="string"/> type,
-    /// whose contents include not just ordinary characters but also tags with some properties. 
-    /// </para>
-    /// <para>
-    /// Note that we used to support <i>special characters</i> in InlineString.
-    /// I now consider they blong to presentation but infoset,
-    /// so the support for special characters in InlineString has been removed.
-    /// It is now included in <see cref="disfr.UI.PairRenderer"/>.
-    /// </para>
+    /// This is the <see cref="InlineString"/> counterpart of <see cref="StringBuilder"/>,
+    /// though its functionality is limited.
     /// </remarks>
-    public class InlineString : IEnumerable<InlineElement>
+    public class InlineBuilder : IEnumerable<InlineElement>
     {
         /// <summary>
-        /// The contents of this InlineString.
+        /// The contents of the <see cref="InlineString"/> being built.
         /// </summary>
         private readonly List<InlineElement> _Contents = new List<InlineElement>();
 
+        /// <summary>
+        /// Implements <see cref="IEnumerable.GetEnumerator()"/>.
+        /// </summary>
+        /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _Contents.GetEnumerator();
         }
 
         /// <summary>
-        /// Implements IEnumerator{InlineElement}.GetEnumerator().
+        /// Implements <see cref="IEnumerable{InlineElement}.GetEnumerator()"/>
         /// </summary>
         /// <returns>An enumerator.</returns>
         public IEnumerator<InlineElement> GetEnumerator()
@@ -45,14 +39,9 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Gets the contents of this InlineString as an enumerable.
+        /// Adds a <see cref="String"/> at the end of the <see cref="InlineString"/> being built.
         /// </summary>
-        public IEnumerable<InlineElement> Contents { get { return _Contents; } }
-
-        /// <summary>
-        /// Adds a text at the end to this InlineString.
-        /// </summary>
-        /// <param name="text">The text to add.</param>
+        /// <param name="text">The string to add.</param>
         public void Add(string text)
         {
             if (text == null) throw new ArgumentNullException("text");
@@ -60,9 +49,9 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Adds an inline text at the end.
+        /// Adds an <see cref="InlineText"/> at the end of the <see cref="InlineString"/> being built.
         /// </summary>
-        /// <param name="text">The inline text to add.</param>
+        /// <param name="text">The <see cref="InlineText"/> to add.</param>
         public void Add(InlineText text)
         {
             if (text == null) throw new ArgumentNullException("text");
@@ -70,7 +59,7 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Adds a string text or an inline text at the end of this InlineString.
+        /// Actually adds a string text or an inline text.
         /// </summary>
         /// <param name="text">A string version of the text.</param>
         /// <param name="inline_text">An InlineText version of the text if available, or null otherwise.</param>
@@ -90,13 +79,38 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Adds an inline tag at the end of this inline string.
+        /// Adds an inline tag at the end of the <see cref="InlineString"/> being built.
         /// </summary>
-        /// <param name="tag"></param>
+        /// <param name="tag"><see cref="InlineTag"/> to add.</param>
         public void Add(InlineTag tag)
         {
             if (tag == null) throw new ArgumentNullException("tag");
             _Contents.Add(tag);
+        }
+
+        public void AddRange(IEnumerable<InlineElement> contents)
+        {
+            if (contents == null) throw new ArgumentNullException("contents");
+            foreach (var element in contents)
+            {
+                if (element is null)
+                {
+                    throw new ArgumentException("Contains a null InlineElement.", "contents");
+                }
+                if (element is InlineText)
+                {
+                    var inline_text = (InlineText)element;
+                    AddString(inline_text.Text, inline_text);
+                }
+                else if (element is InlineTag)
+                {
+                    _Contents.Add((InlineTag)element);
+                }
+                else
+                {
+                    throw new ApplicationException("internal error");
+                }
+            }
         }
 
         /// <summary>
@@ -104,45 +118,38 @@ namespace disfr.Doc
         /// </summary>
         /// <param name="text">string to add.</param>
         /// <returns>this instance.</returns>
-        public InlineString Append(string text) { Add(text); return this; }
+        public InlineBuilder Append(string text) { Add(text); return this; }
 
         /// <summary>
         /// Adds an inline text, returning this instance.
         /// </summary>
         /// <param name="text">InlineText to add.</param>
         /// <returns>this instance.</returns>
-        public InlineString Append(InlineText text) { Add(text); return this; }
+        public InlineBuilder Append(InlineText text) { Add(text); return this; }
 
         /// <summary>
         /// Adds an inline tag, returning this instance.
         /// </summary>
         /// <param name="tag">Inline tag to add.</param>
         /// <returns>this instance.</returns>
-        public InlineString Append(InlineTag tag) { Add(tag); return this; }
+        public InlineBuilder Append(InlineTag tag) { Add(tag); return this; }
 
         /// <summary>
         /// Add the contents of another InlineString, returning this instance.
         /// </summary>
         /// <param name="inline">InlineString whose contents are added.</param>
         /// <returns>this instance.</returns>
-        public InlineString Append(InlineString inline) { Add(inline); return this; }
+        public InlineBuilder Append(InlineString inline) { Add(inline); return this; }
 
         /// <summary>
-        /// Add the contents of another InlineString at the end of this InlineString.
+        /// Adds (the contents of) an <see cref="InlineString"/> at the end of the <see cref="InlineString"/> being built.
         /// </summary>
-        /// <param name="inline">InlineString whose contents are added.</param>
-        /// <remarks>
-        /// This method works like a concatenation, though the first InlineString is updated.
-        /// </remarks>
+        /// <param name="inline"><see cref="InlineString"/> to add.</param>
         public void Add(InlineString inline)
         {
             if (inline == null) throw new ArgumentNullException("inline");
-            if (Object.ReferenceEquals(inline._Contents, _Contents))
-            {
-                throw new ArgumentException("Can't add contents of an InlineString to itself.", "inline");
-            }
 
-            foreach (var x in inline._Contents)
+            foreach (var x in inline)
             {
                 if (x is InlineText)
                 {
@@ -152,7 +159,7 @@ namespace disfr.Doc
                 {
                     Add(x as InlineTag);
                 }
-               else
+                else
                 {
                     throw new ApplicationException("internal error");
                 }
@@ -160,9 +167,110 @@ namespace disfr.Doc
         }
 
         /// <summary>
+        /// Gets the contents of the <see cref="InlineString"/> being built.
+        /// </summary>
+        public IEnumerable<InlineElement> Contents { get { return _Contents; } }
+
+        /// <summary>
         /// Gets whether this InlineString represents an empty string.
         /// </summary>
         public bool IsEmpty { get { return _Contents.Count == 0; } }
+
+        public InlineString ToInlineString()
+        {
+            return new InlineString(_Contents);
+        }
+    }
+
+    /// <summary>
+    /// Represents a sort of a <i>rich</i> text.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Many bilingual files support a notion of <i>tags</i> within text data.
+    /// Some also support some additional properties for emphasis, insertion or deletion.
+    /// <see cref="InlineString"/> is a substitution of a <see cref="string"/> type,
+    /// whose contents include not just ordinary characters but also tags with some properties. 
+    /// </para>
+    /// <para>
+    /// Note that we used to support <i>special characters</i> in InlineString.
+    /// I now consider they blong to presentation but infoset,
+    /// so the support for special characters in InlineString has been removed.
+    /// It is now included in <see cref="disfr.UI.PairRenderer"/>.
+    /// </para>
+    /// </remarks>
+    public class InlineString : IEnumerable<InlineElement>
+    {
+        private static readonly InlineElement[] EMPTY_CONTENTS = new InlineElement[0]; // Array.Empty<InlineElement>()
+
+        public InlineString()
+        {
+            _Contents = EMPTY_CONTENTS;
+        }
+
+        public InlineString(string text)
+        {
+            if (text == null) throw new ArgumentNullException("text");
+            if (text.Length == 0)
+            {
+                _Contents = EMPTY_CONTENTS;
+            }
+            else
+            {
+                _Contents = new InlineText[] { text };
+            }
+        }
+
+        public InlineString(params InlineElement[] contents) : this(contents as IEnumerable<InlineElement>) { }
+
+        public InlineString(IEnumerable<InlineElement> contents)
+        {
+            var array = contents as InlineElement[] ?? contents.ToArray();
+            if (array == null || array.Length == 0)
+            {
+                _Contents = EMPTY_CONTENTS;
+            }
+            else if (array.Length == 1)
+            {
+                _Contents = array;
+            }
+            else
+            {
+                var builder = new InlineBuilder();
+                builder.AddRange(contents);
+                _Contents = builder.Contents.ToArray();
+            }
+        }
+
+        internal InlineString(List<InlineElement> contents)
+        {
+            _Contents = contents.ToArray();
+        }
+
+        private readonly InlineElement[] _Contents;
+
+        /// <summary>
+        /// Implements <see cref="IEnumerable.GetEnumerator()"/>.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /// <summary>
+        /// Implements <see cref="IEnumerable{InlineElement}.GetEnumerator()"/>
+        /// </summary>
+        /// <returns>An enumerator.</returns>
+        public IEnumerator<InlineElement> GetEnumerator()
+        {
+            return Array.AsReadOnly(_Contents).GetEnumerator();
+        }
+
+        /// <summary>
+        /// Gets whether this InlineString represents an empty string.
+        /// </summary>
+        public bool IsEmpty { get { return _Contents.Length == 0; } }
 
         /// <summary>
         /// Calculates and returns a content based hash code. 
@@ -189,8 +297,8 @@ namespace disfr.Doc
             if (this == obj) return true;
             var that = obj as InlineString;
             if (that == null) return false;
-            if (that._Contents.Count != _Contents.Count) return false;
-            for (int i = 0; i < _Contents.Count; i++)
+            if (that._Contents.Length != _Contents.Length) return false;
+            for (int i = 0; i < _Contents.Length; i++)
             {
                 if (!that._Contents[i].Equals(_Contents[i])) return false;
             }
@@ -205,7 +313,7 @@ namespace disfr.Doc
         /// </returns>
         public override string ToString()
         {
-            return String.Concat(_Contents);
+            return string.Concat<InlineElement>(_Contents);
         }
     }
 
@@ -233,6 +341,15 @@ namespace disfr.Doc
     /// <summary>
     /// Represents a tag in an <see cref="InlineString"/>.
     /// </summary>
+    /// <remarks>
+    /// InlineTag is <i>mostly</i> immutable.
+    /// The only exception is that the <see cref="Number"/> property can be
+    /// assigned a value after an instance has been created,
+    /// but its value can't be changed once assigned.
+    /// In other words, an <see cref="InlineTag"/> instance has only two states:
+    /// whether <see cref="Number"/> is not assigned yet or already assigned,
+    /// and the transition of the state is one-way.
+    /// </remarks>
     public class InlineTag : InlineElement
     {
         /// <summary>
@@ -400,7 +517,7 @@ namespace disfr.Doc
         }
     }
 
-    public class InlineElement
+    public abstract class InlineElement
     {
 
     }

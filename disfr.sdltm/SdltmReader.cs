@@ -212,7 +212,7 @@ namespace disfr.sdltm
         /// <returns></returns>
         protected static InlineString GetInlineString(string text)
         {
-            var inline = new InlineString();
+            var inline = new InlineBuilder();
             foreach (var elem in XElement.Parse(text).Elements("Elements").Elements())
             {
                 switch (elem.Name.LocalName)
@@ -229,7 +229,7 @@ namespace disfr.sdltm
                         break;
                 }
             }
-            return inline;
+            return inline.ToInlineString();
         }
 
         protected static InlineTag GetInlineTag(XElement tag)

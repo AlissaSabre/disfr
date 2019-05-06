@@ -245,18 +245,18 @@ namespace disfr.Doc
                 return _Sequence;
             }
 
-            private InlineString _Inline = null;
+            private InlineBuilder _Inline = null;
 
-            private InlineString Inline
+            private InlineBuilder Inline
             {
-                get { return _Inline ?? (_Inline = new InlineString()); }
+                get { return _Inline ?? (_Inline = new InlineBuilder()); }
             }
 
             private void FlushInline()
             {
                 if (_Inline != null)
                 {
-                    _Sequence.Add(_Inline);
+                    _Sequence.Add(_Inline.ToInlineString());
                     _Inline = null;
                 }
             }
@@ -406,15 +406,16 @@ namespace disfr.Doc
             var name = element.Name.ToString();
             if (string.IsNullOrEmpty(element.Value))
             {
-                return new InlineString() { new InlineTag(Tag.S, id, rid, name, null, null, null) };
+                return new InlineString(new InlineTag(Tag.S, id, rid, name, null, null, null));
             }
             else
             {
                 // Assume the contents of this element is a translatable text.
-                return new InlineString()
+                return new InlineBuilder()
                     .Append(new InlineTag(Tag.B, id, rid, name, null, null, null))
                     .Append(GetInline(element))
-                    .Append(new InlineTag(Tag.E, id, rid, name, null, null, null));
+                    .Append(new InlineTag(Tag.E, id, rid, name, null, null, null))
+                    .ToInlineString();
             }
         }
 

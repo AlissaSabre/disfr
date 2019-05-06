@@ -137,14 +137,14 @@ namespace disfr.UI
             return ShowRawId ? id : TrimId(id, asset.IdTrimChars);
         }
 
-        public GlossyString GlossyFromInline(InlineString text, bool ignore_show_specials = false)
+        public GlossyString GlossyFromInline(InlineString inline, bool ignore_show_specials = false)
         {
             var g = new GlossyString();
-            foreach (var obj in text.Contents)
+            foreach (var element in inline)
             {
-                if (obj is InlineText)
+                if (element is InlineText)
                 {
-                    var str = (obj as InlineText).Text;
+                    var str = (element as InlineText).Text;
                     if (!ShowSpecials || ignore_show_specials)
                     {
                         g.Append(str, Gloss.None);
@@ -177,9 +177,9 @@ namespace disfr.UI
                         g.Append(str.Substring(p), Gloss.None);
                     }
                 }
-                else if (obj is InlineTag)
+                else if (element is InlineTag)
                 {
-                    var tag = (InlineTag)obj;
+                    var tag = (InlineTag)element;
                     switch (ShowTag)
                     {
                         case TagShowing.None:
@@ -218,18 +218,18 @@ namespace disfr.UI
             return OPAR + label + CPAR;
         }
 
-        public string FlatFromInline(InlineString text)
+        public string FlatFromInline(InlineString inline)
         {
             var sb = new StringBuilder();
-            foreach (var obj in text.Contents)
+            foreach (var element in inline)
             {
-                if (obj is string)
+                if (element is InlineText)
                 {
-                    sb.Append(obj);
+                    sb.Append(element);
                 }
-                else if (obj is InlineTag)
+                else if (element is InlineTag)
                 {
-                    // discard all tags.
+                    // discard all tags for the moment.
                 }
                 else
                 {
@@ -254,7 +254,7 @@ namespace disfr.UI
         {
             if (ShowTag != TagShowing.Name && ShowTag != TagShowing.Disp) return null;
             var sb = new StringBuilder();
-            foreach (var tag in text.Contents.OfType<InlineTag>())
+            foreach (var tag in text.OfType<InlineTag>())
             {
                 if (sb.Length > 0) sb.AppendLine();
                 if (!string.IsNullOrWhiteSpace(tag.Code))

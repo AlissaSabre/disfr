@@ -229,7 +229,7 @@ namespace disfr.Doc
         /// <returns>XliffTransPair instance that wraps the given text.</returns>
         private XliffTransPair InterSegmentPair(string text)
         {
-            var inline = new InlineString() { text };
+            var inline = new InlineString(text);
             return new XliffTransPair()
             {
                 Serial = -1,

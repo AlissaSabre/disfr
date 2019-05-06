@@ -59,7 +59,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChainingAssertion.MSTest.cs" />
-    <Compile Include="InlineStringTest1.cs" />
+    <Compile Include="InlineStringTest.cs" />
+    <Compile Include="InlineString_ExtensionMethods.cs" />
     <Compile Include="PairVisualizer.cs" />
     <Compile Include="ReaderManagerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +68,9 @@
     <Compile Include="ReaderTestBase.cs" />
     <Compile Include="TmxReaderTest.cs" />
     <Compile Include="SdltmReaderTest.cs" />
+    <Compile Include="InlineBuilderTest.cs" />
+    <Compile Include="InlineTextTest.cs" />
+    <Compile Include="InlineTagTest.cs" />
     <Compile Include="XliffReaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -98,9 +102,9 @@
       <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
       <Name>disfr-core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\disfr\disfr.csproj">
-      <Project>{1a3654b0-0f44-4ced-a7a2-e7835ffdea49}</Project>
-      <Name>disfr</Name>
+    <ProjectReference Include="..\disfr.sdltm\disfr.sdltm.csproj">
+      <Project>{38ba914a-deea-4590-8168-ac31c9480797}</Project>
+      <Name>disfr.sdltm</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
