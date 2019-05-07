@@ -220,16 +220,16 @@ namespace disfr.Doc
 
         protected InlineString GetInline(XElement element)
         {
-            var seq = new ContentParser(this, false).Parse(element).GetSequence();
+            var seq = GetSegmentedContent(element);
             if (seq.Count == 0) return new InlineString();
             if (seq.Count != 1) throw new Exception("Internal Error");
             if (seq[0]?.InlineString is null) throw new Exception("Internal Error");
             return seq[0].InlineString;
         }
 
-        protected List<Segment> GetInlineSegments(XElement element)
+        protected IList<Segment> GetInlineSegments(XElement element)
         {
-            return new ContentParser(this, true).Parse(element).GetSequence();
+            return GetSegmentedContent(element, true);
         }
 
         /// <summary>
@@ -262,23 +262,91 @@ namespace disfr.Doc
         }
 
         /// <summary>
+        /// Analyzes contents of an XML element as a (possibly segmented) XLIFF inline text. 
+        /// </summary>
+        /// <param name="elem">The element whose contents is analyzed.</param>
+        /// <param name="allow_segmentation">true if the standard XLIFF segmentation is allowed.</param>
+        /// <returns>A series of segments.</returns>
+        protected IList<Segment> GetSegmentedContent(XElement elem, bool allow_segmentation = false)
+        {
+            // Why should we return an empty sequence rather than throwing an ArgumentNullException?  Fixme.
+            if (elem == null) return new Segment[0];
+
+            var builder = new SegmentSequenceBuilder();
+            foreach (var n in elem.Nodes())
+            {
+                if (n.NodeType == XmlNodeType.Text)
+                {
+                    builder.Add((n as XText).Value);
+                }
+                else if (n.NodeType == XmlNodeType.Element)
+                {
+                    var e = (XElement)n;
+                    var ns = e.Name.Namespace;
+                    var name = e.Name.LocalName;
+                    if (ns == X && name == "mrk")
+                    {
+                        builder.Add(ParseMrkElement(e, allow_segmentation));
+                    }
+                    else if (ns == X && (name == "x" || name == "ph"))
+                    {
+                        // Replace a standalone native code element with a standalone inline tag.
+                        builder.Add(BuildNativeCodeTag(Tag.S, e, name == "ph"));
+                    }
+                    else if (ns == X && (name == "bx" || name == "bpt"))
+                    {
+                        // Replace a beginning native code element with a beginning inline tag.
+                        builder.Add(BuildNativeCodeTag(Tag.B, e, name == "bpt"));
+                    }
+                    else if (ns == X && (name == "ex" || name == "ept"))
+                    {
+                        // Replace an ending native code element with an ending inline tag.
+                        builder.Add(BuildNativeCodeTag(Tag.E, e, name == "ept"));
+                    }
+                    else if (ns == X && name == "it")
+                    {
+                        // Replace an isolated native code element with an appropriate inline tag.
+                        Tag type;
+                        switch ((string)e.Attribute("pos"))
+                        {
+                            case "open": type = Tag.B; break;
+                            case "close": type = Tag.E; break;
+                            default: type = Tag.S; break;
+                        }
+                        builder.Add(BuildNativeCodeTag(type, e, true));
+                    }
+                    else if (ns == X && name == "g")
+                    {
+                        // If this is an XLIFF g element, 
+                        // replace start and end tags with inline tags,
+                        // and keep converting its content,
+                        // because the g holds instructions in its attributes,
+                        // and its content is a part of translatable text.
+                        builder.Add(BuildNativeCodeTag(Tag.B, e, false));
+                        builder.Add(GetSegmentedContent(e, allow_segmentation));
+                        builder.Add(BuildNativeCodeTag(Tag.E, e, false));
+                    }
+                    else
+                    {
+                        // Uunknown element, i.e., some external (no XLIFF) element or a 
+                        // misplaced XLIFF element.
+                        // OH, I have no good idea how to handle it.  FIXME.
+                        builder.Add(HandleUnknownTag(e));
+                    }
+                }
+                else
+                {
+                    // Silently discard any other nodes; e.g., comment or pi. 
+                }
+            }
+            return builder.GetSequence();
+        }
+
+        /// <summary>
         /// Provides parsing of mixed text contents (of elements such as source or target)
         /// </summary>
-        protected class ContentParser
+        protected class SegmentSequenceBuilder
         {
-            public ContentParser(XliffAsset xliff, bool allow_segmentation)
-            {
-                Xliff = xliff;
-                X = xliff.X;
-                AllowSegmentation = allow_segmentation;
-            }
-
-            private readonly XliffAsset Xliff;
-
-            private readonly XNamespace X;
-
-            private readonly bool AllowSegmentation;
-
             private readonly List<Segment> _Sequence = new List<Segment>();
 
             public List<Segment> GetSequence()
@@ -303,110 +371,43 @@ namespace disfr.Doc
                 }
             }
 
-            private void Add(XElement element)
+            public void Add(XElement element)
             {
                 GetSequence().Add(new Segment(element));
             }
 
-            private void Add(string text)
+            public void Add(string text)
             {
                 InterSegment.Append(text);
             }
 
-            private void Add(InlineString text)
+            public void Add(InlineString text)
             {
                 InterSegment.Append(text);
             }
 
-            private void Add(InlineTag tag)
+            public void Add(InlineTag tag)
             {
                 InterSegment.Append(tag);
             }
 
-            public ContentParser Parse(XElement elem)
+            public void Add(IEnumerable<Segment> segments)
             {
-                if (elem == null) return this;
-                foreach (var n in elem.Nodes())
+                foreach (var segment in segments)
                 {
-                    if (n.NodeType == XmlNodeType.Text)
+                    if (segment.Element != null)
                     {
-                        Add((n as XText).Value);
+                        Add(segment.Element);
                     }
-                    else if (n.NodeType == XmlNodeType.Element)
+                    else if (segment.InlineString != null)
                     {
-                        var e = (XElement)n;
-                        var ns = e.Name.Namespace;
-                        var name = e.Name.LocalName;
-                        if (ns == X && name == "mrk")
-                        {
-                            foreach (var segment in Xliff.ParseMrkElement(e, AllowSegmentation))
-                            {
-                                if (segment.Element != null)
-                                {
-                                    Add(segment.Element);
-                                }
-                                else if (segment.InlineString != null)
-                                {
-                                    Add(segment.InlineString);
-                                }
-                                else
-                                {
-                                    throw new ApplicationException("Internal Error");
-                                }
-                            }
-                        }
-                        else if (ns == X && (name == "x" || name == "ph"))
-                        {
-                            // Replace a standalone native code element with a standalone inline tag.
-                            Add(Xliff.BuildNativeCodeTag(Tag.S, e, name == "ph"));
-                        }
-                        else if (ns == X && (name == "bx" || name == "bpt"))
-                        {
-                            // Replace a beginning native code element with a beginning inline tag.
-                            Add(Xliff.BuildNativeCodeTag(Tag.B, e, name == "bpt"));
-                        }
-                        else if (ns == X && (name == "ex" || name == "ept"))
-                        {
-                            // Replace an ending native code element with an ending inline tag.
-                            Add(Xliff.BuildNativeCodeTag(Tag.E, e, name == "ept"));
-                        }
-                        else if (ns == X && name == "it")
-                        {
-                            // Replace an isolated native code element with an appropriate inline tag.
-                            Tag type;
-                            switch ((string)e.Attribute("pos"))
-                            {
-                                case "open": type = Tag.B; break;
-                                case "close": type = Tag.E; break;
-                                default: type = Tag.S; break;
-                            }
-                            Add(Xliff.BuildNativeCodeTag(type, e, true));
-                        }
-                        else if (ns == X && name == "g")
-                        {
-                            // If this is an XLIFF g element, 
-                            // replace start and end tags with inline tags,
-                            // and keep converting its content,
-                            // because the g holds instructions in its attributes,
-                            // and its content is a part of translatable text.
-                            Add(Xliff.BuildNativeCodeTag(Tag.B, e, false));
-                            Parse(e);
-                            Add(Xliff.BuildNativeCodeTag(Tag.E, e, false));
-                        }
-                        else
-                        {
-                            // Uunknown element, i.e., some external (no XLIFF) element or a 
-                            // misplaced XLIFF element.
-                            // OH, I have no good idea how to handle it.  FIXME.
-                            Add(Xliff.HandleUnknownTag(e));
-                        }
+                        Add(segment.InlineString);
                     }
                     else
                     {
-                        // Silently discard any other nodes; e.g., comment or pi. 
+                        throw new ApplicationException("Internal Error");
                     }
                 }
-                return this;
             }
         }
 
@@ -426,7 +427,7 @@ namespace disfr.Doc
             }
             else
             {
-                return new ContentParser(this, allow_segmentation).Parse(mrk).GetSequence();
+                return GetSegmentedContent(mrk, allow_segmentation);
             }
         }
 
