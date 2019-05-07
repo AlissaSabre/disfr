@@ -68,6 +68,53 @@ namespace UnitTestDisfrDoc
         }
 
         [TestMethod]
+        public void Read_Crafted_00()
+        {
+            var path = Path.Combine(IDIR, "Crafted00.xliff");
+            var bundle = new XliffReader().Read(path, -1);
+
+            bundle.Assets.Count().Is(1);
+            {
+                var a0 = bundle.Assets.ElementAt(0);
+                a0.Package.Is(path);
+                a0.Original.Is("Crafted00");
+                a0.SourceLang.Is("en-US");
+                a0.TargetLang.IsNull();
+                a0.TransPairs.Count().Is(0);
+                a0.AltPairs.Count().Is(0);
+                a0.Properties.Count().Is(0);
+            }
+        }
+
+        [TestMethod]
+        public void Read_Crafted_00a()
+        {
+            var path = Path.Combine(IDIR, "Crafted00a.xliff");
+            var bundle = new XliffReader().Read(path, -1);
+
+            bundle.Assets.Count().Is(1);
+            {
+                var a0 = bundle.Assets.ElementAt(0);
+                a0.Package.Is(path);
+                a0.Original.Is("Crafted00a");
+                a0.SourceLang.Is("en-US");
+                a0.TargetLang.Is("x-xyz");
+                a0.TransPairs.Count().Is(1);
+                a0.AltPairs.Count().Is(0);
+                a0.Properties.Count().Is(0);
+
+                var p0 = a0.TransPairs.ElementAt(0);
+                p0.Serial.Is(1);
+                p0.Id.Is("1");
+                p0.Source.ToString().Is("");
+                p0.Target.ToString().Is("");
+                p0.SourceLang.Is("en-US");
+                p0.TargetLang.Is("x-xyz");
+                p0.Notes?.Count().Is(0);
+            }
+        }
+
+        [TestMethod]
         public void Read_Comprehensive_Xliff1()
         {
             Comprehensive(new XliffReader(), @"Xliff1.xliff");

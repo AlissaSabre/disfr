@@ -72,6 +72,7 @@ namespace disfr.Doc
             if (Materialized) return;
             _TransPairs = _TransPairs.ToList();
             _AltPairs = _AltPairs.ToList();
+            Materialized = true;
         }
 
         protected virtual void AddProp(XliffTransPair pair, string key, string value)

@@ -86,6 +86,15 @@
     <None Include="Expected\XuanZang.dump" />
     <None Include="packages.config" />
     <None Include="Samples\Configuring_Spelling_Checker.doc.sdlxliff" />
+    <None Include="Samples\Crafted00a.xliff">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Crafted00.xliff">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Samples\Crafted01.xliff">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Samples\git.html_jpn.mqxlz" />
     <None Include="Samples\Language_Support.doc.sdlxliff" />
     <None Include="Samples\my_memory.doc" />
@@ -93,6 +102,9 @@
     <None Include="Samples\New_features.ppt.sdlxliff" />
     <None Include="Samples\Readme.md" />
     <None Include="Samples\tea-party.sdltm" />
+    <None Include="Samples\Crafted02.xliff">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Samples\Xliff1.xliff" />
     <None Include="Samples\Xliff2.xliff" />
     <None Include="Samples\XuanZang.tmx" />
