@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -194,6 +195,7 @@ namespace disfr.Doc
     /// It is now included in <see cref="disfr.UI.PairRenderer"/>.
     /// </para>
     /// </remarks>
+    [DebuggerDisplay("{DebuggerDisplay}")]
     public class InlineString : IEnumerable<InlineElement>
     {
         private static readonly InlineElement[] EMPTY_CONTENTS = new InlineElement[0]; // Array.Empty<InlineElement>()
@@ -303,13 +305,29 @@ namespace disfr.Doc
         /// <summary>
         /// Get a string representation of this InlineString.
         /// </summary>
-        /// <returns>
-        /// This method is primarily for debug purposes.
-        /// </returns>
+        /// <returns>The string representation.</returns>
+        /// <remarks>
+        /// This is equivalent to call <see cref="ToString(InlineToString)"/> with <see cref="InlineToString.Normal"/>.
+        /// </remarks>
         public override string ToString()
         {
             return string.Concat<InlineElement>(_Contents);
         }
+
+        /// <summary>
+        /// Get a string representation of this InlineString.
+        /// </summary>
+        /// <param name="options">A set of options to control the string representation.</param>
+        /// <returns>The string representation.</returns>
+        public string ToString(InlineToString options)
+        {
+            return string.Concat(_Contents.Select(inline => inline.ToString(options)));
+        }
+
+        /// <summary>
+        /// Debugger's text presentation of this object.
+        /// </summary>
+        private string DebuggerDisplay => ToString(InlineToString.Debug);
     }
 
     /// <summary>
@@ -446,14 +464,30 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Get a string representation of this InlineTag.
+        /// Gets a string representation of this InlineTag.
         /// </summary>
-        /// <returns>
-        /// A string primarily for debug purposes.
-        /// </returns>
-        public override string ToString()
+        /// <param name="options">A set of options to control the string representation.</param>
+        /// <returns>The string representation.</returns>
+        /// <remarks>
+        /// This method of <see cref="InlineTag"/> only cares <see cref="InlineToString.TagMask"/> flags.
+        /// </remarks>
+        public override string ToString(InlineToString options)
         {
-            return "{" + Name + ";" + Id + "}";
+            switch (options & InlineToString.TagMask)
+            {
+                case InlineToString.TagDebug:
+                    return string.Format("{0}{1};{2}{3}", '{', Name, Id, '}');
+                case InlineToString.TagHidden:
+                    return "";
+                case InlineToString.TagCode:
+                    return Code;
+                case InlineToString.TagNumber:
+                    return string.Format("{0}{1}{2}", '{', Number, '}');
+                case InlineToString.TagLabel:
+                    return string.Format("{0}{1}{2}", '{', Name, '}');
+                default:
+                    throw new ApplicationException("Internal Error");
+            }
         }
     }
 
@@ -486,11 +520,6 @@ namespace disfr.Doc
             return Text == (obj as InlineText)?.Text;
         }
 
-        public override string ToString()
-        {
-            return Text;
-        }
-
         public static bool operator ==(InlineText x, InlineText y)
         {
             return x?.Text == y?.Text;
@@ -510,9 +539,103 @@ namespace disfr.Doc
         {
             return s == null ? null : new InlineText(s);
         }
+
+        /// <summary>
+        /// Gets a string representation of this InlineText.
+        /// </summary>
+        /// <param name="options">A set of options to control the string representation.</param>
+        /// <returns>The string representation.</returns>
+        /// <remarks>
+        /// This method of <see cref="InlineText"/> only cares <see cref="InlineToString.TextMask"/> flags.
+        /// </remarks>
+        public override string ToString(InlineToString options)
+        {
+            return Text;
+        }
     }
 
+    [DebuggerDisplay("{DebuggerDisplay}")]
     public abstract class InlineElement
     {
+        /// <summary>
+        /// Gets a string representation of this InlineElement.
+        /// </summary>
+        /// <returns>A string representation.</returns>
+        /// <remarks>
+        /// This is equivalent to call <see cref="ToString(InlineToString)"/> with <see cref="InlineToString.Normal"/>
+        /// </remarks>
+        public override string ToString()
+        {
+            return ToString(InlineToString.Normal);
+        }
+
+        /// <summary>
+        /// Gets a string representation of this InlineElement.
+        /// </summary>
+        /// <param name="options">A set of options to control the string representation.</param>
+        /// <returns>The string representation.</returns>
+        public abstract string ToString(InlineToString options);
+
+        /// <summary>
+        /// Debugger's text presentation of this object.
+        /// </summary>
+        private string DebuggerDisplay => ToString(InlineToString.Debug);
+    }
+
+    /// <summary>
+    /// Options to control <see cref="InlineElement.ToString(InlineToString)"/> and <see cref="InlineString.ToString(InlineToString)"/>.
+    /// </summary>
+    [Flags]
+    public enum InlineToString
+    {
+        /// <summary>
+        /// A representation suitable for normal uses.
+        /// </summary>
+        Normal = TagCode | TextLatest,
+
+        /// <summary>
+        /// A representation suitable for debugging.
+        /// </summary>
+        Debug = TagDebug | TextDebug,
+
+        /// <summary>
+        /// Any tag is hidden completely.
+        /// </summary>
+        TagHidden = 0,
+
+        /// <summary>
+        /// Any tag is replaced by its code.
+        /// </summary>
+        TagCode = 1,
+
+        /// <summary>
+        /// Any tag is replaced by a representation based on a local matching number.
+        /// </summary>
+        TagNumber = 2,
+
+        /// <summary>
+        /// Any tag is replaced by its label.
+        /// </summary>
+        TagLabel = 3,
+
+        /// <summary>
+        /// Any tag is replaced by a representation suitable for debugging.
+        /// </summary>
+        TagDebug = 4,
+
+        /// <summary>
+        /// Mask for Tag-controlling options.
+        /// </summary>
+        TagMask = TagDebug | TagHidden | TagCode | TagNumber | TagLabel,
+
+        TextLatest = 16 * 0,
+
+        TextOld = 16 * 1,
+
+        TextAll = 16 * 2,
+
+        TextDebug = 16 * 3,
+
+        TextMask = TextDebug | TextLatest | TextOld | TextAll,
     }
 }
