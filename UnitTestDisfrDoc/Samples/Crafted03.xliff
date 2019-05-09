@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xliff version="1.2">
+  <file original="Crafted03" source-language="en-US" target-language="x-xyz" tool="nothing" datatype="crafted">
+    <body xml:space="preserve">
+      <trans-unit id="301">
+        <source xml:lang="en-US">Reordering of tags</source>
+        <target xml:lang="x-xyz">Reordering of tags</target>
+      </trans-unit>
+      <trans-unit id="302">
+        <source xml:lang="en-US">bpt/ept: abc <bpt id="302.1" rid="302r1">[CODE1]</bpt>text1<ept id="302.2" rid="302r1">[/CODE1]</ept> def <bpt id="302.3" rid="302r2">[CODE2]</bpt>text2<ept id="302.4" rid="302r2">[/CODE1]</ept> ghi.</source>
+        <target xml:lang="x-xyz">bpt/ept: ABC <bpt id="302.3" rid="302r2">[CODE2]</bpt>TEXT2<ept id="302.4" rid="302r2">[/CODE1]</ept> DEF <bpt id="302.1" rid="302r1">[CODE1]</bpt>TEXT1<ept id="302.2" rid="302r1">[/CODE1]</ept> GHI.</target>
+      </trans-unit>
+      <trans-unit id="303">
+        <source xml:lang="en-US">bx/ex: abc <bx id="303.1" rid="303r1"/>text1<ex id="303.2" rid="303r1"/> def <bx id="303.3" rid="303r2"/>text1<ex id="303.4" rid="303r2"/> ghi.</source>
+        <target xml:lang="x-xyz">bx/ex: ABC <bx id="303.3" rid="303r2"/>TEXT2<ex id="303.4" rid="303r2"/> DEF <bx id="303.1" rid="303r1"/>TEXT1<ex id="303.2" rid="303r1"/> GHI.</target>
+      </trans-unit>
+      <trans-unit id="304">
+        <source xml:lang="en-US">g: abc <g id="304.1">text1</g> def <g id="304.2">text2</g> ghi.</source>
+        <target xml:lang="x-xyz">g: ABC <g id="304.2">TEXT2</g> DEF <g id="304.1">TEXT1</g> GHI.</target>
+      </trans-unit>
+      <trans-unit id="305">
+        <source xml:lang="en-US">ph: abc <ph id="305.1">[CODE]</ph>text1<ph id="305.2">[/CODE]</ph> def <ph id="305.3">[CODE]</ph>text2<ph id="305.4">[/CODE]</ph> ghi.</source>
+        <target xml:lang="x-xyz">ph: ABC <ph id="305.3">[CODE]</ph>TEXT2<ph id="305.4">[/CODE]</ph> DEF <ph id="305.1">[CODE]</ph>TEXT1<ph id="305.2">[/CODE]</ph> GHI.</target>
+      </trans-unit>
+      <trans-unit id="306">
+        <source xml:lang="en-US">x: abc <x id="306.1"/>text1<x id="306.2"/> def <x id="306.3"/>text2<x id="306.4"/> ghi.</source>
+        <target xml:lang="x-xyz">x: ABC <x id="306.3"/>TEXT2<x id="306.4"/> DEF <x id="306.1"/>TEXT1<x id="306.2"/> GHI.</target>
+      </trans-unit>
+      <trans-unit id="307">
+        <source xml:lang="en-US">it: abc <it id="307.1" pos="open" rid="307r1">[CODE]</it>text1<it id="307.2" pos="close" rid="307r1">[/CODE]</it> def <it id="307.3" pos="open" rid="307r2">[CODE]</it>text2<it id="307.4" pos="close" rid="307r2">[/CODE]</it> ghi.</source>
+        <target xml:lang="x-xyz">it: ABC <it id="307.3" pos="open" rid="307r2">[CODE]</it>TEXT2<it id="307.4" pos="close" rid="307r2">[/CODE]</it> DEF <it id="307.1" pos="open" rid="307r1">[CODE]</it>TEXT1<it id="307.2" pos="close" rid="307r1">[/CODE]</it> GHI.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+
