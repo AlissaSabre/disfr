@@ -319,8 +319,8 @@ namespace UnitTestDisfrDoc
             {
                 var p = a.TransPairs.ElementAt(0);
                 p.Id.Is("301");
-                p.Source.DebuggerDisplay.Is("Reordering of tags");
-                p.Target.DebuggerDisplay.Is("Reordering of tags");
+                p.Source.DebuggerDisplay.Is("Reordering of tags: abc [CODE1]text1[/CODE1] def [CODE2]text2[/CODE2] ghi.");
+                p.Target.DebuggerDisplay.Is("Reordering of tags: ABC [CODE2]TEXT2[/CODE2] DEF [CODE1]TEXT1[/CODE1] GHI.");
             }
             {
                 var p = a.TransPairs.ElementAt(1);
