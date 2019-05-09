@@ -327,48 +327,14 @@ namespace UnitTestDisfrDoc
                 p.Id.Is("302");
                 p.Source.DebuggerDisplay.Is("bpt/ept: abc {bpt;302.1}text1{ept;302.2} def {bpt;302.3}text2{ept;302.4} ghi.");
                 p.Target.DebuggerDisplay.Is("bpt/ept: ABC {bpt;302.3}TEXT2{ept;302.4} DEF {bpt;302.1}TEXT1{ept;302.2} GHI.");
-                var s = p.Source.OfType<InlineTag>().ToArray();
-                var t = p.Target.OfType<InlineTag>().ToArray();
-                s[0].IsNot(t[0]);
-                s[0].IsNot(t[1]);
-                s[0].Is(t[2]);
-                s[0].IsNot(t[3]);
-                s[1].IsNot(t[0]);
-                s[1].IsNot(t[1]);
-                s[1].IsNot(t[2]);
-                s[1].Is(t[3]);
-                s[2].Is(t[0]);
-                s[2].IsNot(t[1]);
-                s[2].IsNot(t[2]);
-                s[2].IsNot(t[3]);
-                s[3].IsNot(t[0]);
-                s[3].Is(t[1]);
-                s[3].IsNot(t[2]);
-                s[3].IsNot(t[3]);
+                VerifyTagOrderChanged(p);
             }
             {
                 var p = a.TransPairs.ElementAt(2);
                 p.Id.Is("303");
                 p.Source.DebuggerDisplay.Is("bx/ex: abc {bx;303.1}text1{ex;303.2} def {bx;303.3}text1{ex;303.4} ghi.");
                 p.Target.DebuggerDisplay.Is("bx/ex: ABC {bx;303.3}TEXT2{ex;303.4} DEF {bx;303.1}TEXT1{ex;303.2} GHI.");
-                var s = p.Source.OfType<InlineTag>().ToArray();
-                var t = p.Target.OfType<InlineTag>().ToArray();
-                s[0].IsNot(t[0]);
-                s[0].IsNot(t[1]);
-                s[0].Is(t[2]);
-                s[0].IsNot(t[3]);
-                s[1].IsNot(t[0]);
-                s[1].IsNot(t[1]);
-                s[1].IsNot(t[2]);
-                s[1].Is(t[3]);
-                s[2].Is(t[0]);
-                s[2].IsNot(t[1]);
-                s[2].IsNot(t[2]);
-                s[2].IsNot(t[3]);
-                s[3].IsNot(t[0]);
-                s[3].Is(t[1]);
-                s[3].IsNot(t[2]);
-                s[3].IsNot(t[3]);
+                VerifyTagOrderChanged(p);
             }
             {
                 var p = a.TransPairs.ElementAt(3);
@@ -376,24 +342,7 @@ namespace UnitTestDisfrDoc
                 p.Id.Is("304");
                 p.Source.DebuggerDisplay.Is("g: abc {g;304.1}text1{g;304.1} def {g;304.2}text2{g;304.2} ghi.");
                 p.Target.DebuggerDisplay.Is("g: ABC {g;304.2}TEXT2{g;304.2} DEF {g;304.1}TEXT1{g;304.1} GHI.");
-                var s = p.Source.OfType<InlineTag>().ToArray();
-                var t = p.Target.OfType<InlineTag>().ToArray();
-                s[0].IsNot(t[0]);
-                s[0].IsNot(t[1]);
-                s[0].Is(t[2]);
-                s[0].IsNot(t[3]);
-                s[1].IsNot(t[0]);
-                s[1].IsNot(t[1]);
-                s[1].IsNot(t[2]);
-                s[1].Is(t[3]);
-                s[2].Is(t[0]);
-                s[2].IsNot(t[1]);
-                s[2].IsNot(t[2]);
-                s[2].IsNot(t[3]);
-                s[3].IsNot(t[0]);
-                s[3].Is(t[1]);
-                s[3].IsNot(t[2]);
-                s[3].IsNot(t[3]);
+                VerifyTagOrderChanged(p);
             }
             {
                 var p = a.TransPairs.ElementAt(4);
@@ -401,24 +350,7 @@ namespace UnitTestDisfrDoc
                 p.Id.Is("305");
                 p.Source.DebuggerDisplay.Is("ph: abc {ph;305.1}text1{ph;305.2} def {ph;305.3}text2{ph;305.4} ghi.");
                 p.Target.DebuggerDisplay.Is("ph: ABC {ph;305.3}TEXT2{ph;305.4} DEF {ph;305.1}TEXT1{ph;305.2} GHI.");
-                var s = p.Source.OfType<InlineTag>().ToArray();
-                var t = p.Target.OfType<InlineTag>().ToArray();
-                s[0].IsNot(t[0]);
-                s[0].IsNot(t[1]);
-                s[0].Is(t[2]);
-                s[0].IsNot(t[3]);
-                s[1].IsNot(t[0]);
-                s[1].IsNot(t[1]);
-                s[1].IsNot(t[2]);
-                s[1].Is(t[3]);
-                s[2].Is(t[0]);
-                s[2].IsNot(t[1]);
-                s[2].IsNot(t[2]);
-                s[2].IsNot(t[3]);
-                s[3].IsNot(t[0]);
-                s[3].Is(t[1]);
-                s[3].IsNot(t[2]);
-                s[3].IsNot(t[3]);
+                VerifyTagOrderChanged(p);
             }
             {
                 var p = a.TransPairs.ElementAt(5);
@@ -428,22 +360,7 @@ namespace UnitTestDisfrDoc
                 p.Target.DebuggerDisplay.Is("x: ABC {x;306.3}TEXT2{x;306.4} DEF {x;306.1}TEXT1{x;306.2} GHI.");
                 var s = p.Source.OfType<InlineTag>().ToArray();
                 var t = p.Target.OfType<InlineTag>().ToArray();
-                s[0].IsNot(t[0]);
-                s[0].IsNot(t[1]);
-                s[0].Is(t[2]);
-                s[0].IsNot(t[3]);
-                s[1].IsNot(t[0]);
-                s[1].IsNot(t[1]);
-                s[1].IsNot(t[2]);
-                s[1].Is(t[3]);
-                s[2].Is(t[0]);
-                s[2].IsNot(t[1]);
-                s[2].IsNot(t[2]);
-                s[2].IsNot(t[3]);
-                s[3].IsNot(t[0]);
-                s[3].Is(t[1]);
-                s[3].IsNot(t[2]);
-                s[3].IsNot(t[3]);
+                VerifyTagOrderChanged(p);
             }
             {
                 var p = a.TransPairs.ElementAt(6);
@@ -451,25 +368,30 @@ namespace UnitTestDisfrDoc
                 p.Id.Is("307");
                 p.Source.DebuggerDisplay.Is("it: abc {it;307.1}text1{it;307.2} def {it;307.3}text2{it;307.4} ghi.");
                 p.Target.DebuggerDisplay.Is("it: ABC {it;307.3}TEXT2{it;307.4} DEF {it;307.1}TEXT1{it;307.2} GHI.");
-                var s = p.Source.OfType<InlineTag>().ToArray();
-                var t = p.Target.OfType<InlineTag>().ToArray();
-                s[0].IsNot(t[0]);
-                s[0].IsNot(t[1]);
-                s[0].Is(t[2]);
-                s[0].IsNot(t[3]);
-                s[1].IsNot(t[0]);
-                s[1].IsNot(t[1]);
-                s[1].IsNot(t[2]);
-                s[1].Is(t[3]);
-                s[2].Is(t[0]);
-                s[2].IsNot(t[1]);
-                s[2].IsNot(t[2]);
-                s[2].IsNot(t[3]);
-                s[3].IsNot(t[0]);
-                s[3].Is(t[1]);
-                s[3].IsNot(t[2]);
-                s[3].IsNot(t[3]);
+                VerifyTagOrderChanged(p);
             }
+        }
+
+        private static void VerifyTagOrderChanged(ITransPair p)
+        {
+            var s = p.Source.OfType<InlineTag>().ToArray();
+            var t = p.Target.OfType<InlineTag>().ToArray();
+            s[0].IsNot(t[0]);
+            s[0].IsNot(t[1]);
+            s[0].Is(t[2]);
+            s[0].IsNot(t[3]);
+            s[1].IsNot(t[0]);
+            s[1].IsNot(t[1]);
+            s[1].IsNot(t[2]);
+            s[1].Is(t[3]);
+            s[2].Is(t[0]);
+            s[2].IsNot(t[1]);
+            s[2].IsNot(t[2]);
+            s[2].IsNot(t[3]);
+            s[3].IsNot(t[0]);
+            s[3].Is(t[1]);
+            s[3].IsNot(t[2]);
+            s[3].IsNot(t[3]);
         }
     }
 }
