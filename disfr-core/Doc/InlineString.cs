@@ -325,13 +325,16 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Debugger's text presentation of this object.
+        /// Gets presentation of this object.
         /// </summary>
-        private string DebuggerDisplay => ToString(InlineToString.Debug);
+        /// <remarks>
+        /// It is for VisualStudio debuggers and for testing.
+        /// </remarks>
+        public string DebuggerDisplay => ToString(InlineToString.Debug);
     }
 
     /// <summary>
-    /// A type of an inline tag.
+    /// A type (direction/association) of an inline tag.
     /// </summary>
     public enum Tag
     {
@@ -396,13 +399,6 @@ namespace disfr.Doc
 
         private readonly int _HashCode;
 
-        private static readonly int[] TagHash =
-        {
-            0x494096b1,
-            0x75003b1a,
-            0x62c97b81,
-        };
-
         /// <summary>
         /// Creates an instance.
         /// </summary>
@@ -429,7 +425,7 @@ namespace disfr.Doc
             Code = code;
 
             _HashCode =
-                TagHash[(int)type] +
+                type.GetHashCode() +
                 id.GetHashCode() * 3 +
                 rid.GetHashCode() * 5 +
                 name.GetHashCode() * 17;
@@ -577,9 +573,12 @@ namespace disfr.Doc
         public abstract string ToString(InlineToString options);
 
         /// <summary>
-        /// Debugger's text presentation of this object.
+        /// Gets presentation of this object.
         /// </summary>
-        private string DebuggerDisplay => ToString(InlineToString.Debug);
+        /// <remarks>
+        /// It is for VisualStudio debuggers and for testing.
+        /// </remarks>
+        public string DebuggerDisplay => ToString(InlineToString.Debug);
     }
 
     /// <summary>

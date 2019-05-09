@@ -23,8 +23,8 @@
         <target xml:lang="x-xyz">ph: ABC <ph id="205.1">[CODE]</ph> DEF.</target>
       </trans-unit>
       <trans-unit id="206">
-        <source xml:lang="en-US">x: abc <x id="205.1"/> def.</source>
-        <target xml:lang="x-xyz">x: ABC <x id="205.1"/> DEF.</target>
+        <source xml:lang="en-US">x: abc <x id="206.1"/> def.</source>
+        <target xml:lang="x-xyz">x: ABC <x id="206.1"/> DEF.</target>
       </trans-unit>
       <trans-unit id="207">
         <source xml:lang="en-US">it: abc <it id="207.1" pos="open" rid="207r1">[CODE]</it>text<it id="207.2" pos="close" rid="207r1">[/CODE]</it> def.</source>

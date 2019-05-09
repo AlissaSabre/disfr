@@ -68,7 +68,7 @@ namespace disfr.Doc
         protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
         {
             // WorldServer appears to place the real native code in x attribute,
-            // making the contents of an element a display string, if any.
+            // while making the contents of an element a display string, if any.
             return new InlineTag(
                 type: type,
                 id: (string)element.Attribute("id"),

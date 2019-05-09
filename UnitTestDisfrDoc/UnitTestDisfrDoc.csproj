@@ -71,7 +71,9 @@
     <Compile Include="InlineBuilderTest.cs" />
     <Compile Include="InlineTextTest.cs" />
     <Compile Include="InlineTagTest.cs" />
-    <Compile Include="XliffReaderTest.cs" />
+    <Compile Include="XliffReaderBasicTest.cs" />
+    <Compile Include="XliffReaderComrehensiveTest.cs" />
+    <Compile Include="XliffReaderCraftedTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Expected\Configuring_Spelling_Checker.doc.dump" />
