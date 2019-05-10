@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <xliff version="1.2">
-  <file original="Crafted03" source-language="en-US" target-language="x-xyz" tool="nothing" datatype="crafted">
-    <body xml:space="preserve">
+  <file original="Crafted03" source-language="en-US" target-language="x-xyz" tool="nothing" datatype="crafted" xml:space="preserve">
+    <body>
       <trans-unit id="301">
         <source xml:lang="en-US">Reordering of tags: abc [CODE1]text1[/CODE1] def [CODE2]text2[/CODE2] ghi.</source>
         <target xml:lang="x-xyz">Reordering of tags: ABC [CODE2]TEXT2[/CODE2] DEF [CODE1]TEXT1[/CODE1] GHI.</target>
