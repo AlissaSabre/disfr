@@ -55,32 +55,34 @@ namespace disfr.Writer
                         new XAttribute(LANG, data.SourceLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawSource.Select(ConvertContent))),
+                            data.RawSource.ElementsWithProperties.Select(ConvertContent))),
                     new XElement(X + "tuv",
                         new XAttribute(LANG, data.TargetLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawTarget.Select(ConvertContent))));
+                            data.RawTarget.ElementsWithProperties.Select(ConvertContent))));
         }
 
-        private XNode ConvertContent(InlineElement item)
+        private XNode ConvertContent(InlineElementWithProperty element_with_property)
         {
-            if (item is InlineText)
-            {
-                return new XText(item.ToString());
-            }
-            else if (item is InlineTag)
-            {
-                // Create a TMX <ph> tag for any tag.  
-                var tag = item as InlineTag;
-                return new XElement(X + "ph",
-                    new XAttribute("x", tag.Number),
-                    "{" + tag.Number + "}");
-            }
-            else
-            {
-                throw new Exception("Internal error");
-            }
+            throw new NotImplementedException();
+
+            //if (item is InlineText)
+            //{
+            //    return new XText(item.ToString());
+            //}
+            //else if (item is InlineTag)
+            //{
+            //    // Create a TMX <ph> tag for any tag.  
+            //    var tag = item as InlineTag;
+            //    return new XElement(X + "ph",
+            //        new XAttribute("x", tag.Number),
+            //        "{" + tag.Number + "}");
+            //}
+            //else
+            //{
+            //    throw new Exception("Internal error");
+            //}
         }
     }
 }

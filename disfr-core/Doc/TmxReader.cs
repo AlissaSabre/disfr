@@ -358,7 +358,7 @@ namespace disfr.Doc
         {
             pool.Clear();
             int n = 0;
-            foreach (var tag in source.OfType<InlineTag>())
+            foreach (var tag in source.Tags)
             {
                 pool[tag] = tag.Number = ++n;
             }
@@ -367,7 +367,7 @@ namespace disfr.Doc
 
         private static InlineString MatchTags(Dictionary<InlineTag, int> pool, InlineString target)
         {
-            foreach (var tag in target.OfType<InlineTag>())
+            foreach (var tag in target.Tags)
             {
                 int m;
                 pool.TryGetValue(tag, out m);

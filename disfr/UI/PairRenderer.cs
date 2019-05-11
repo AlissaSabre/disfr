@@ -140,7 +140,7 @@ namespace disfr.UI
         public GlossyString GlossyFromInline(InlineString inline, bool ignore_show_specials = false)
         {
             var g = new GlossyString();
-            foreach (var element in inline)
+            foreach (var element in inline.Elements)
             {
                 if (element is InlineText)
                 {
@@ -221,7 +221,7 @@ namespace disfr.UI
         public string FlatFromInline(InlineString inline)
         {
             var sb = new StringBuilder();
-            foreach (var element in inline)
+            foreach (var element in inline.Elements)
             {
                 if (element is InlineText)
                 {
@@ -254,7 +254,7 @@ namespace disfr.UI
         {
             if (ShowTag != TagShowing.Name && ShowTag != TagShowing.Disp) return null;
             var sb = new StringBuilder();
-            foreach (var tag in text.OfType<InlineTag>())
+            foreach (var tag in text.Tags)
             {
                 if (sb.Length > 0) sb.AppendLine();
                 if (!string.IsNullOrWhiteSpace(tag.Code))

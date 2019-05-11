@@ -281,8 +281,8 @@ namespace disfr.sdltm
 
             public void MatchTags(InlineString source, InlineString target, string source_xml, string target_xml)
             {
-                var st = source.OfType<InlineTag>().ToList();
-                var tt = target.OfType<InlineTag>().ToList();
+                var st = source.Tags.ToList();
+                var tt = target.Tags.ToList();
 
                 var sx = XElement.Parse(source_xml).Elements(ELEM).Elements(TAG).ToList();
                 var tx = XElement.Parse(target_xml).Elements(ELEM).Elements(TAG).ToList();

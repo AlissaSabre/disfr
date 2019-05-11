@@ -471,11 +471,11 @@ namespace disfr.Doc
         {
             var dict = new Dictionary<InlineTag, int>();
             int i = 0;
-            foreach (var tag in source.OfType<InlineTag>())
+            foreach (var tag in source.Tags)
             {
                 dict[tag] = tag.Number = ++i;
             }
-            foreach (var tag in target.OfType<InlineTag>())
+            foreach (var tag in target.Tags)
             {
                 int j;
                 dict.TryGetValue(tag, out j);

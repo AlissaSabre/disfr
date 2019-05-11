@@ -40,6 +40,15 @@ namespace disfr.Doc
         }
 
         /// <summary>
+        /// Gets or sets an inline property to be applied to the inline elements to be added.
+        /// </summary>
+        public InlineProperty Property
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
         /// Adds a <see cref="String"/> at the end of the <see cref="InlineString"/> being built.
         /// </summary>
         /// <param name="text">The string to add.</param>
@@ -145,7 +154,7 @@ namespace disfr.Doc
         {
             if (inline == null) throw new ArgumentNullException("inline");
 
-            foreach (var x in inline)
+            foreach (var x in inline.Elements)
             {
                 if (x is InlineText)
                 {
@@ -208,7 +217,7 @@ namespace disfr.Doc
     /// </para>
     /// </remarks>
     [DebuggerDisplay("{DebuggerDisplay}")]
-    public class InlineString : IEnumerable<InlineElement>
+    public class InlineString
     {
         private static readonly InlineElement[] EMPTY_CONTENTS = new InlineElement[0]; // Array.Empty<InlineElement>()
 
@@ -277,22 +286,19 @@ namespace disfr.Doc
         private readonly InlineElement[] _Contents;
 
         /// <summary>
-        /// Implements <see cref="IEnumerable.GetEnumerator()"/>.
+        /// Gets all elements with their properties.
         /// </summary>
-        /// <returns></returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        public IEnumerable<InlineElementWithProperty> ElementsWithProperties { get { throw new NotImplementedException(); } }
 
         /// <summary>
-        /// Implements <see cref="IEnumerable{InlineElement}.GetEnumerator()"/>
+        /// Gets all elements in this inline string.
         /// </summary>
-        /// <returns>An enumerator.</returns>
-        public IEnumerator<InlineElement> GetEnumerator()
-        {
-            return Array.AsReadOnly(_Contents).GetEnumerator();
-        }
+        public IEnumerable<InlineElement> Elements { get { return _Contents; } }
+
+        /// <summary>
+        /// Gets all tags in this inline string.
+        /// </summary>
+        public IEnumerable<InlineTag> Tags { get { return _Contents.OfType<InlineTag>(); } }
 
         /// <summary>
         /// Gets whether this InlineString represents an empty string.
@@ -361,6 +367,27 @@ namespace disfr.Doc
         /// It is for VisualStudio debuggers and for testing.
         /// </remarks>
         public string DebuggerDisplay => ToString(InlineToString.Debug);
+    }
+
+    public struct InlineElementWithProperty
+    {
+        public InlineElement Element;
+
+        public InlineProperty Property;
+    }
+
+    /// <summary>
+    /// Represents a property designated for a part of an <see cref="InlineString"/>.
+    /// </summary>
+    public enum InlineProperty
+    {
+        None = 0,
+
+        Ins,
+
+        Del,
+
+        Emp,
     }
 
     /// <summary>

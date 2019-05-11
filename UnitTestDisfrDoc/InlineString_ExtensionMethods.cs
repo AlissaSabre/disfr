@@ -13,6 +13,11 @@ namespace UnitTestDisfrDoc
             tag.Is(new InlineTag(type, id, rid, name, ctype, display, code));
         }
 
+        public static void Is(this InlineString inline, params InlineElement[] elements)
+        {
+            inline.Elements.Is(elements);
+        }
+
         public static List<InlineElement> Contents(this InlineBuilder inline)
         {
             return inline.AsDynamic()._Contents;

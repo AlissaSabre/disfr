@@ -112,7 +112,7 @@ namespace UnitTestDisfrDoc
                 p.Source.DebuggerDisplay.Is("bpt/ept: abc {bpt;202.1}text{ept;202.2} def.");
                 p.Target.DebuggerDisplay.Is("bpt/ept: ABC {bpt;202.1}TEXT{ept;202.2} DEF.");
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(0);
+                    var t = p.Source.Tags.ElementAt(0);
                     t.TagType.Is(Tag.B);
                     t.Id.Is("202.1");
                     t.Rid.Is("202r1");
@@ -123,7 +123,7 @@ namespace UnitTestDisfrDoc
                     t.Number.Is(1);
                 }
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(1);
+                    var t = p.Source.Tags.ElementAt(1);
                     t.TagType.Is(Tag.E);
                     t.Id.Is("202.2");
                     t.Rid.Is("202r1");
@@ -134,7 +134,7 @@ namespace UnitTestDisfrDoc
                     t.Number.Is(2);
                 }
                 {
-                    var t = p.Target.OfType<InlineTag>().ElementAt(0);
+                    var t = p.Target.Tags.ElementAt(0);
                     t.TagType.Is(Tag.B);
                     t.Id.Is("202.1");
                     t.Rid.Is("202r1");
@@ -145,7 +145,7 @@ namespace UnitTestDisfrDoc
                     t.Number.Is(1);
                 }
                 {
-                    var t = p.Target.OfType<InlineTag>().ElementAt(1);
+                    var t = p.Target.Tags.ElementAt(1);
                     t.TagType.Is(Tag.E);
                     t.Id.Is("202.2");
                     t.Rid.Is("202r1");
@@ -155,7 +155,7 @@ namespace UnitTestDisfrDoc
                     t.Code.Is("[/CODE]");
                     t.Number.Is(2);
                 }
-                p.Target.OfType<InlineTag>().Is(p.Source.OfType<InlineTag>());
+                p.Target.Tags.Is(p.Source.Tags);
             }
             {
                 var p = a.TransPairs.ElementAt(2);
@@ -164,7 +164,7 @@ namespace UnitTestDisfrDoc
                 p.Source.DebuggerDisplay.Is("bx/ex: abc {bx;203.1}text{ex;203.2} def.");
                 p.Target.DebuggerDisplay.Is("bx/ex: ABC {bx;203.1}TEXT{ex;203.2} DEF.");
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(0);
+                    var t = p.Source.Tags.ElementAt(0);
                     t.TagType.Is(Tag.B);
                     t.Id.Is("203.1");
                     t.Rid.Is("203r1");
@@ -175,7 +175,7 @@ namespace UnitTestDisfrDoc
                     t.Number.Is(1);
                 }
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(1);
+                    var t = p.Source.Tags.ElementAt(1);
                     t.TagType.Is(Tag.E);
                     t.Id.Is("203.2");
                     t.Rid.Is("203r1");
@@ -185,7 +185,7 @@ namespace UnitTestDisfrDoc
                     t.Code.IsNull();
                     t.Number.Is(2);
                 }
-                p.Target.OfType<InlineTag>().Is(p.Source.OfType<InlineTag>());
+                p.Target.Tags.Is(p.Source.Tags);
             }
             {
                 var p = a.TransPairs.ElementAt(3);
@@ -194,7 +194,7 @@ namespace UnitTestDisfrDoc
                 p.Source.DebuggerDisplay.Is("g: abc {g;204.1}text{g;204.1} def.");
                 p.Target.DebuggerDisplay.Is("g: ABC {g;204.1}TEXT{g;204.1} DEF.");
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(0);
+                    var t = p.Source.Tags.ElementAt(0);
                     t.TagType.Is(Tag.B);
                     t.Id.Is("204.1");
                     t.Rid.Is("204.1");
@@ -205,7 +205,7 @@ namespace UnitTestDisfrDoc
                     t.Number.Is(1);
                 }
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(1);
+                    var t = p.Source.Tags.ElementAt(1);
                     t.TagType.Is(Tag.E);
                     t.Id.Is("204.1");
                     t.Rid.Is("204.1");
@@ -215,7 +215,7 @@ namespace UnitTestDisfrDoc
                     t.Code.IsNull();
                     t.Number.Is(2);
                 }
-                p.Target.OfType<InlineTag>().Is(p.Source.OfType<InlineTag>());
+                p.Target.Tags.Is(p.Source.Tags);
             }
             {
                 var p = a.TransPairs.ElementAt(4);
@@ -224,7 +224,7 @@ namespace UnitTestDisfrDoc
                 p.Source.DebuggerDisplay.Is("ph: abc {ph;205.1}text{ph;205.2} def.");
                 p.Target.DebuggerDisplay.Is("ph: ABC {ph;205.1}TEXT{ph;205.2} DEF.");
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(0);
+                    var t = p.Source.Tags.ElementAt(0);
                     t.TagType.Is(Tag.S);
                     t.Id.Is("205.1");
                     t.Rid.Is("205.1");
@@ -235,7 +235,7 @@ namespace UnitTestDisfrDoc
                     t.Number.Is(1);
                 }
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(1);
+                    var t = p.Source.Tags.ElementAt(1);
                     t.TagType.Is(Tag.S);
                     t.Id.Is("205.2");
                     t.Rid.Is("205.2");
@@ -245,7 +245,7 @@ namespace UnitTestDisfrDoc
                     t.Code.Is("[/CODE]");
                     t.Number.Is(2);
                 }
-                p.Target.OfType<InlineTag>().Is(p.Source.OfType<InlineTag>());
+                p.Target.Tags.Is(p.Source.Tags);
             }
             {
                 var p = a.TransPairs.ElementAt(5);
@@ -254,7 +254,7 @@ namespace UnitTestDisfrDoc
                 p.Source.DebuggerDisplay.Is("x: abc {x;206.1}text{x;206.2} def.");
                 p.Target.DebuggerDisplay.Is("x: ABC {x;206.1}TEXT{x;206.2} DEF.");
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(0);
+                    var t = p.Source.Tags.ElementAt(0);
                     t.TagType.Is(Tag.S);
                     t.Id.Is("206.1");
                     t.Rid.Is("206.1");
@@ -265,7 +265,7 @@ namespace UnitTestDisfrDoc
                     t.Number.Is(1);
                 }
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(1);
+                    var t = p.Source.Tags.ElementAt(1);
                     t.TagType.Is(Tag.S);
                     t.Id.Is("206.2");
                     t.Rid.Is("206.2");
@@ -275,7 +275,7 @@ namespace UnitTestDisfrDoc
                     t.Code.IsNull();
                     t.Number.Is(2);
                 }
-                p.Target.OfType<InlineTag>().Is(p.Source.OfType<InlineTag>());
+                p.Target.Tags.Is(p.Source.Tags);
             }
             {
                 var p = a.TransPairs.ElementAt(6);
@@ -284,7 +284,7 @@ namespace UnitTestDisfrDoc
                 p.Source.DebuggerDisplay.Is("it: abc {it;207.1}text{it;207.2} def.");
                 p.Target.DebuggerDisplay.Is("it: ABC {it;207.1}TEXT{it;207.2} DEF.");
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(0);
+                    var t = p.Source.Tags.ElementAt(0);
                     t.TagType.Is(Tag.B);
                     t.Id.Is("207.1");
                     t.Rid.Is("207r1");
@@ -295,7 +295,7 @@ namespace UnitTestDisfrDoc
                     t.Number.Is(1);
                 }
                 {
-                    var t = p.Source.OfType<InlineTag>().ElementAt(1);
+                    var t = p.Source.Tags.ElementAt(1);
                     t.TagType.Is(Tag.E);
                     t.Id.Is("207.2");
                     t.Rid.Is("207r1");
@@ -305,7 +305,7 @@ namespace UnitTestDisfrDoc
                     t.Code.Is("[/CODE]");
                     t.Number.Is(2);
                 }
-                p.Target.OfType<InlineTag>().Is(p.Source.OfType<InlineTag>());
+                p.Target.Tags.Is(p.Source.Tags);
             }
         }
 
@@ -358,8 +358,8 @@ namespace UnitTestDisfrDoc
                 p.Id.Is("306");
                 p.Source.DebuggerDisplay.Is("x: abc {x;306.1}text1{x;306.2} def {x;306.3}text2{x;306.4} ghi.");
                 p.Target.DebuggerDisplay.Is("x: ABC {x;306.3}TEXT2{x;306.4} DEF {x;306.1}TEXT1{x;306.2} GHI.");
-                var s = p.Source.OfType<InlineTag>().ToArray();
-                var t = p.Target.OfType<InlineTag>().ToArray();
+                var s = p.Source.Tags.ToArray();
+                var t = p.Target.Tags.ToArray();
                 VerifyTagOrderChanged(p);
             }
             {
@@ -374,8 +374,8 @@ namespace UnitTestDisfrDoc
 
         private static void VerifyTagOrderChanged(ITransPair p)
         {
-            var s = p.Source.OfType<InlineTag>().ToArray();
-            var t = p.Target.OfType<InlineTag>().ToArray();
+            var s = p.Source.Tags.ToArray();
+            var t = p.Target.Tags.ToArray();
             s[0].IsNot(t[0]);
             s[0].IsNot(t[1]);
             s[0].Is(t[2]);
