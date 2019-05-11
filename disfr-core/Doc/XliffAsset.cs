@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace disfr.Doc
@@ -114,7 +113,7 @@ namespace disfr.Doc
         // but it doesn't perform real comparison.
         // It is actually like EqualityComparer{Segment}.Equals(Segment, Segment).
         // Current Diff.Diff.Compare(IList{Segment}, IList{Segment}, Comparison{Segment}) works fine with it.
-        private static int CompareRuns(Segment x, Segment y)
+        private static int CompareRuns(SegmentData x, SegmentData y)
         {
             var xx = x.Element;
             var yy = y.Element;
@@ -145,7 +144,7 @@ namespace disfr.Doc
             }
         }
 
-        protected virtual XliffTransPair ExtractSegmentedPair(Segment src, Segment tgt, string slang, string tlang, IEnumerable<string> notes)
+        protected virtual XliffTransPair ExtractSegmentedPair(SegmentData src, SegmentData tgt, string slang, string tlang, IEnumerable<string> notes)
         {
             var selem = src.Element;
             var telem = tgt.Element;
@@ -154,8 +153,8 @@ namespace disfr.Doc
             {
                 Serial = (selem != null) || (telem != null) ? 1 : -1,
                 Id = (string)selem?.Attribute("mid") ?? (string)telem?.Attribute("mid") ?? "*",
-                Source = (selem != null) ? GetInline(selem) : src.InlineString ?? new InlineString(),
-                Target = (telem != null) ? GetInline(telem) : tgt.InlineString ?? new InlineString(),
+                Source = GetInline(selem) ?? src.InlineString ?? InlineString.Empty,
+                Target = GetInline(telem) ?? tgt.InlineString ?? InlineString.Empty,
                 SourceLang = slang,
                 TargetLang = tlang,
             };
@@ -173,8 +172,8 @@ namespace disfr.Doc
             {
                 Serial = ((string)tu.Attribute("translate") == "no") ? -1 : 1,
                 Id = (string)tu.Attribute("id"),
-                Source = GetInline(source),
-                Target = GetInline(target),
+                Source = GetInline(source) ?? InlineString.Empty,
+                Target = GetInline(target) ?? InlineString.Empty,
                 SourceLang = GetLang(source) ?? SourceLang,
                 TargetLang = GetLang(target) ?? TargetLang,
             };
@@ -208,8 +207,8 @@ namespace disfr.Doc
             var pair = new XliffTransPair()
             {
                 Id = (string)alt.Parent.Attribute("id"),
-                Source = GetInline(source),
-                Target = GetInline(target),
+                Source = GetInline(source) ?? InlineString.Empty,
+                Target = GetInline(target) ?? InlineString.Empty,
                 SourceLang = GetLang(source) ?? SourceLang,
                 TargetLang = GetLang(target) ?? TargetLang,
             };
@@ -221,73 +220,81 @@ namespace disfr.Doc
 
         protected InlineString GetInline(XElement element)
         {
-            var seq = GetSegmentedContent(element);
-            if (seq.Count == 0) return new InlineString();
+            if (element == null) return null;
+            var builder = new SegmentedContentBuilder();
+            SegmentInlineContent(builder, element, false);
+            var seq = builder.GetSequence();
+            if (seq.Count == 0) return InlineString.Empty;
             if (seq.Count != 1) throw new Exception("Internal Error");
             if (seq[0]?.InlineString is null) throw new Exception("Internal Error");
             return seq[0].InlineString;
         }
 
-        protected IList<Segment> GetInlineSegments(XElement element)
+        protected IList<SegmentData> GetInlineSegments(XElement element)
         {
-            return GetSegmentedContent(element, true);
+            var builder = new SegmentedContentBuilder();
+            SegmentInlineContent(builder, element, true);
+            return builder.GetSequence();
         }
 
         /// <summary>
-        /// Represents a segment in a trans-unit.
+        /// Represents a segment or an inter-segment inline content in a trans-unit.
         /// </summary>
         /// <remarks>
         /// <para>
         /// If XLIFF standard segmentation (using mrk[@stype='seg']) is NOT used,
-        /// The entire contents of source or target is a single segment.
+        /// The entire contents of a source or target element is a single segment.
         /// If XLIFF standard segmentation is used,
-        /// the contents of each mrk element as well as each of remaining contents between mrk elements
-        /// forms a segment.
+        /// the contents of each mrk[@mtype='seg'] element corresponds to a <see cref="SegmentData"/> instance,
+        /// as well as each of remaining contents between such mrk elements does.
         /// </para>
         /// <para>
         /// One and only one of <see cref="Element"/> and <see cref="InlineString"/> is non-null.
-        /// If <see cref="Element"/> is non-null, this <see cref="Segment"/> is from an mrk element.
-        /// If <see cref="InlineString"/> is non-null, this <see cref="Segment"/> is
-        /// from the contents outside of mrk element.
+        /// If <see cref="Element"/> is non-null, this <see cref="SegmentData"/> corresponds to an mrk[@mtype='seg'] element.
+        /// If <see cref="InlineString"/> is non-null, this <see cref="SegmentData"/> corresponds to
+        /// the contents outside of mrk element (inter segment).
         /// </para>
         /// </remarks>
-        protected class Segment
+        protected class SegmentData
         {
             public readonly XElement Element;
 
             public readonly InlineString InlineString;
 
-            public Segment(XElement element) { Element = element; }
+            public SegmentData(XElement element) { Element = element; }
 
-            public Segment(InlineString inline) { InlineString = inline; }
+            public SegmentData(InlineString inline) { InlineString = inline; }
         }
 
         /// <summary>
         /// Analyzes contents of an XML element as a (possibly segmented) XLIFF inline text. 
         /// </summary>
+        /// <param name="builder">Results are stored in this object.</param>
         /// <param name="elem">The element whose contents is analyzed.</param>
         /// <param name="allow_segmentation">true if the standard XLIFF segmentation is allowed.</param>
-        /// <returns>A series of segments.</returns>
-        protected IList<Segment> GetSegmentedContent(XElement elem, bool allow_segmentation = false)
+        protected void SegmentInlineContent(SegmentedContentBuilder builder, XElement elem, bool allow_segmentation)
         {
-            // Why should we return an empty sequence rather than throwing an ArgumentNullException?  Fixme.
-            if (elem == null) return new Segment[0];
+            // Why shouldn't we throw ArgumentNullException in this case?  FIXME.
+            if (elem == null) return;
 
-            var builder = new SegmentSequenceBuilder();
             foreach (var n in elem.Nodes())
             {
-                if (n.NodeType == XmlNodeType.Text)
+                if (n is XText)
                 {
                     builder.Add((n as XText).Value);
                 }
-                else if (n.NodeType == XmlNodeType.Element)
+                else if (n is XElement)
                 {
                     var e = (XElement)n;
                     var ns = e.Name.Namespace;
                     var name = e.Name.LocalName;
                     if (ns == X && name == "mrk")
                     {
-                        builder.Add(ParseMrkElement(e, allow_segmentation));
+                        var handled = HandleMarkElement(builder, e, allow_segmentation);
+                        if (!handled)
+                        {
+                            SegmentInlineContent(builder, e, allow_segmentation);
+                        }
                     }
                     else if (ns == X && (name == "x" || name == "ph"))
                     {
@@ -324,112 +331,115 @@ namespace disfr.Doc
                         // because the g holds instructions in its attributes,
                         // and its content is a part of translatable text.
                         builder.Add(BuildNativeCodeTag(Tag.B, e, false));
-                        builder.Add(GetSegmentedContent(e, allow_segmentation));
+                        SegmentInlineContent(builder, e, allow_segmentation);
                         builder.Add(BuildNativeCodeTag(Tag.E, e, false));
                     }
                     else
                     {
-                        // Uunknown element, i.e., some external (no XLIFF) element or a 
+                        // Unknown element, i.e., some external (no XLIFF) element or a 
                         // misplaced XLIFF element.
                         // OH, I have no good idea how to handle it.  FIXME.
-                        builder.Add(HandleUnknownTag(e));
+                        var handled = HandleUnknownTag(builder, e);
+                        if (!handled)
+                        {
+                            var id = "*";
+                            var rid = UniqueNumber.ToString();
+                            if (string.IsNullOrEmpty(e.Value))
+                            {
+                                builder.Add(new InlineTag(Tag.S, id, rid, name, null, null, null));
+                            }
+                            else
+                            {
+                                // Assume the contents of this element is a translatable text.
+                                builder.Add(new InlineTag(Tag.B, id, rid, name, null, null, null));
+                                SegmentInlineContent(builder, e, allow_segmentation);
+                                builder.Add(new InlineTag(Tag.E, id, rid, name, null, null, null));
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    // Silently discard any other nodes; e.g., comment or pi. 
+                    // Silently discard any other nodes, i.e., comment or pi, entirely.
                 }
             }
-            return builder.GetSequence();
         }
 
         /// <summary>
-        /// Provides parsing of mixed text contents (of elements such as source or target)
+        /// A container and builder for a sequence of <see cref="SegmentData"/>.
         /// </summary>
-        protected class SegmentSequenceBuilder
+        protected class SegmentedContentBuilder
         {
-            private readonly List<Segment> _Sequence = new List<Segment>();
+            private readonly List<SegmentData> Sequence = new List<SegmentData>();
 
-            public List<Segment> GetSequence()
+            public List<SegmentData> GetSequence()
             {
-                FlushInline();
-                return _Sequence;
+                Flush();
+                return Sequence;
             }
 
-            private InlineBuilder _InterSegment = null;
+            private readonly InlineBuilder InterSegment = new InlineBuilder();
 
-            private InlineBuilder InterSegment
+            public void Flush()
             {
-                get { return _InterSegment ?? (_InterSegment = new InlineBuilder()); }
-            }
-
-            private void FlushInline()
-            {
-                if (_InterSegment != null)
+                if (!InterSegment.IsEmpty)
                 {
-                    _Sequence.Add(new Segment(_InterSegment.ToInlineString()));
-                    _InterSegment = null;
+                    Sequence.Add(new SegmentData(InterSegment.ToInlineString()));
+                    InterSegment.Clear();
                 }
             }
 
             public void Add(XElement element)
             {
-                GetSequence().Add(new Segment(element));
+                Flush();
+                Sequence.Add(new SegmentData(element));
             }
 
             public void Add(string text)
             {
-                InterSegment.Append(text);
+                InterSegment.Add(text);
             }
 
             public void Add(InlineString text)
             {
-                InterSegment.Append(text);
+                InterSegment.Add(text);
             }
 
             public void Add(InlineTag tag)
             {
-                InterSegment.Append(tag);
-            }
-
-            public void Add(IEnumerable<Segment> segments)
-            {
-                foreach (var segment in segments)
-                {
-                    if (segment.Element != null)
-                    {
-                        Add(segment.Element);
-                    }
-                    else if (segment.InlineString != null)
-                    {
-                        Add(segment.InlineString);
-                    }
-                    else
-                    {
-                        throw new ApplicationException("Internal Error");
-                    }
-                }
+                InterSegment.Add(tag);
             }
         }
 
-        protected virtual IEnumerable<Segment> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        /// <summary>
+        /// Try to handle an mrk element.
+        /// </summary>
+        /// <param name="builder">The builder the contents are fed to.</param>
+        /// <param name="mrk">The mrk element to be handled.</param>
+        /// <param name="allow_segmentation">true if segmentation is allowed at this level.</param>
+        /// <returns>true if <paramref name="mrk"/> has been handled, false otherwise.</returns>
+        protected virtual bool HandleMarkElement(SegmentedContentBuilder builder, XElement mrk, bool allow_segmentation)
         {
             // mrk tags are _markers_ for CAT tools.
             // We take care of the XLIFF segmentation spec.
-            // Uses of other mrk tags are CAT software dependent.
-            // Most of their uses are
-            // invisible to translators, although there MAY BE some that
-            // are visible.  For the moment, we ignore the start and end tags, 
-            // leaving the content.
+            // In the spec.,
+            // mrk[@mtype='seg'] is used for segmentation.
+            // Other standard @mtype are mostly linguistic annotations. 
+            // mrk elements with non-standard @mtype are CAT software dependent.
+            // Most of their uses are invisible to translators,
+            // although there MAY BE some that are visible.
+            // For the moment,
+            // we ignore the start and end tags for all mrk elements, 
+            // leaving the content,
+            // except for those for segmentation.
 
             if (allow_segmentation && (string)mrk.Attribute("mtype") == "seg")
             {
-                return new [] { new Segment(mrk) };
+                builder.Add(mrk);
+                return true;
             }
-            else
-            {
-                return GetSegmentedContent(mrk, allow_segmentation);
-            }
+
+            return false;
         }
 
         protected virtual InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
@@ -444,24 +454,9 @@ namespace disfr.Doc
                 code: has_code ? element.Value : null);
         }
 
-        protected virtual InlineString HandleUnknownTag(XElement element)
+        protected virtual bool HandleUnknownTag(SegmentedContentBuilder builder, XElement element)
         {
-            var id = "*";
-            var rid = UniqueNumber.ToString();
-            var name = element.Name.ToString();
-            if (string.IsNullOrEmpty(element.Value))
-            {
-                return new InlineString(new InlineTag(Tag.S, id, rid, name, null, null, null));
-            }
-            else
-            {
-                // Assume the contents of this element is a translatable text.
-                return new InlineBuilder()
-                    .Append(new InlineTag(Tag.B, id, rid, name, null, null, null))
-                    .Append(GetInline(element))
-                    .Append(new InlineTag(Tag.E, id, rid, name, null, null, null))
-                    .ToInlineString();
-            }
+            return false;
         }
 
         private static readonly XName XML_LANG = XNamespace.Xml + "lang";

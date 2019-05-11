@@ -172,9 +172,21 @@ namespace disfr.Doc
         /// </summary>
         public bool IsEmpty { get { return _Contents.Count == 0; } }
 
+        /// <summary>
+        /// Returns an <see cref="InlineString"/> that corresponds to the contents of this instance.
+        /// </summary>
+        /// <returns></returns>
         public InlineString ToInlineString()
         {
             return new InlineString(_Contents);
+        }
+
+        /// <summary>
+        /// Removes all contents in this instance.
+        /// </summary>
+        public void Clear()
+        {
+            _Contents.Clear();
         }
     }
 
@@ -200,10 +212,28 @@ namespace disfr.Doc
     {
         private static readonly InlineElement[] EMPTY_CONTENTS = new InlineElement[0]; // Array.Empty<InlineElement>()
 
+        /// <summary>
+        /// Creates an empty inline string.
+        /// </summary>
+        /// <remarks>
+        /// Use of this constructor is generally not recommended;
+        /// it is usually better to use <see cref="Empty"/> instead,
+        /// like <see cref="string.Empty"/> is preferred over <see cref="string()"/>.
+        /// </remarks>
         public InlineString()
         {
             _Contents = EMPTY_CONTENTS;
         }
+
+        /// <summary>
+        /// Returns an empty inline string.
+        /// </summary>
+        /// <remarks>
+        /// This object can be shared safely,
+        /// because there is no way to alter its value/contents,
+        /// like an array of length zero.
+        /// </remarks>
+        public static readonly InlineString Empty = new InlineString();
 
         public InlineString(string text)
         {

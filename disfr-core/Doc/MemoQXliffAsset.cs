@@ -241,7 +241,7 @@ namespace disfr.Doc
             };
         }
 
-        protected override IEnumerable<Segment> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        protected override bool HandleMarkElement(SegmentedContentBuilder builder, XElement mrk, bool allow_segmentation)
         {
             if ((string)mrk.Attribute("mtype") == "x-mq-tc")
             {
@@ -251,16 +251,18 @@ namespace disfr.Doc
                 switch (tctype)
                 {
                     case "del":
-                        return Enumerable.Empty<Segment>();
+                        // Ignore this mrk element entirely for the moment.
+                        return true;
                     case "ins":
+                        // Add the contents just as an ordinary inline data.
+                        builder.Add(GetInline(mrk));
+                        return true;
                     default:
-                        return base.ParseMrkElement(mrk, allow_segmentation);
+                        break;
                 }
             }
-            else
-            {
-                return base.ParseMrkElement(mrk, allow_segmentation);
-            }
+
+            return base.HandleMarkElement(builder, mrk, false);
         }
 
         protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)

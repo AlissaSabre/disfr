@@ -106,22 +106,26 @@ namespace disfr.Doc
             return p;
         }
 
-        protected override IEnumerable<Segment> ParseMrkElement(XElement mrk, bool allow_segmentation)
+        protected override bool HandleMarkElement(SegmentedContentBuilder builder, XElement mrk, bool allow_segmentation)
         {
             switch ((string)mrk.Attribute("mtype"))
             {
                 case "x-sdl-deleted":
                     // This is a deleted section in change tracking.
                     // For the moment, we just discard it.
-                    return Enumerable.Empty<Segment>();
+                    return true;
 
                 case "x-sdl-added":
                     // This is an added (inserted) section in change tracking.
                     // For the moment, we just handle it in an ordinary content.
-                    /* fall though */
+                    builder.Add(GetInline(mrk));
+                    return true;
+
                 default:
-                    return base.ParseMrkElement(mrk, allow_segmentation);
+                    break;
             }
+
+            return base.HandleMarkElement(builder, mrk, allow_segmentation);
         }
 
         protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
