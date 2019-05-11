@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xliff version="1.2">
+  <file original="Crafted04" source-language="en-US" target-language="x-xyz" tool="nothing" datatype="crafted" xml:space="preserve">
+    <body>
+      <trans-unit id="401">
+        <source>Segmentation</source>
+        <seg-source><mrk mtype="seg" mid="401a">Segmentation</mrk></seg-source>
+        <target><mrk mtype="seg" mid="401a">SEGMENTATION</mrk></target>
+      </trans-unit>
+      <trans-unit id="402">
+        <source>  Spaces are excluded from the segment.  </source>
+        <seg-source>  <mrk mtype="seg" mid="402a">Spaces are excluded from the segment.</mrk>  </seg-source>
+        <target>  <mrk mtype="seg" mid="402a">SPACES ARE EXCLUDED FROM THE SEGMENT.</mrk>  </target>
+      </trans-unit>
+      <trans-unit id="403">
+        <source>Multiple sentences.  In a trans-unit.  Broken into segments.  </source>
+        <seg-source><mrk mtype="seg" mid="403a">Multiple sentences.</mrk>  <mrk mtype="seg" mid="403b">In a trans-unit.</mrk>  <mrk mtype="seg" mid="403c">Broken into segments.</mrk>  </seg-source>
+        <target><mrk mtype="seg" mid="403a">MULTIPLE SENTENCES.</mrk>  <mrk mtype="seg" mid="403b">IN A trans-unit.</mrk>  <mrk mtype="seg" mid="403c">BROKEN INTO SEGMENTS.</mrk>  </target>
+      </trans-unit>
+      <trans-unit id="404">
+        <source>&#9;[item][bullet/] Multiple sentences.  In a single [I]g[/I]. [ref/][/item] </source>
+        <seg-source>&#9;<g id="404.1"><ph id="404.2">[bullet/]</ph> <mrk mtype="seg" mid="404a">Multiple sentences.</mrk>  <mrk mtype="seg" mid="404b">In a single <g id="404.3">g</g>.</mrk> <ph id="404.4">[ref/]</ph></g> </seg-source>
+        <target>&#9;<g id="404.1"><ph id="404.2">[bullet/]</ph> <mrk mtype="seg" mid="404a">MULTIPLE SENTENCES.</mrk>  <mrk mtype="seg" mid="404b">IN A SINGLE <g id="404.3">g</g>.</mrk> <ph id="404.4">[ref/]</ph></g> </target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+

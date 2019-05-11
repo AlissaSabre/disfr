@@ -94,6 +94,9 @@
     <None Include="Samples\Crafted00.xliff">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Samples\Crafted04.xliff">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Samples\Crafted03.xliff">
       <SubType>Designer</SubType>
     </None>

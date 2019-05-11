@@ -393,5 +393,96 @@ namespace UnitTestDisfrDoc
             s[3].IsNot(t[2]);
             s[3].IsNot(t[3]);
         }
+
+        [TestMethod]
+        public void Read_Crafted_04()
+        {
+            var path = Path.Combine(IDIR, "Crafted04.xliff");
+            var bundle = new XliffReader().Read(path, -1);
+            var a = bundle.Assets.ElementAt(0);
+            var pairs = a.TransPairs.ToArray();
+            {
+                var p = pairs[0];
+                p.Id.Is("401a");
+                p.Source.DebuggerDisplay.Is("Segmentation");
+                p.Target.DebuggerDisplay.Is("SEGMENTATION");
+            }
+            {
+                var p = pairs[1];
+                p.Source.DebuggerDisplay.Is("  ");
+                p.Target.DebuggerDisplay.Is("  ");
+            }
+            {
+                var p = pairs[2];
+                p.Id.Is("402a");
+                p.Source.DebuggerDisplay.Is("Spaces are excluded from the segment.");
+                p.Target.DebuggerDisplay.Is("SPACES ARE EXCLUDED FROM THE SEGMENT.");
+            }
+            {
+                var p = pairs[3];
+                p.Source.DebuggerDisplay.Is("  ");
+            }
+            {
+                var p = pairs[4];
+                p.Id.Is("403a");
+                p.Source.DebuggerDisplay.Is("Multiple sentences.");
+                p.Target.DebuggerDisplay.Is("MULTIPLE SENTENCES.");
+            }
+            {
+                var p = pairs[5];
+                p.Source.DebuggerDisplay.Is("  ");
+                p.Target.DebuggerDisplay.Is("  ");
+            }
+            {
+                var p = pairs[6];
+                p.Id.Is("403b");
+                p.Source.DebuggerDisplay.Is("In a trans-unit.");
+                p.Target.DebuggerDisplay.Is("IN A trans-unit.");
+            }
+            {
+                var p = pairs[7];
+                p.Source.DebuggerDisplay.Is("  ");
+                p.Target.DebuggerDisplay.Is("  ");
+            }
+            {
+                var p = pairs[8];
+                p.Id.Is("403c");
+                p.Source.DebuggerDisplay.Is("Broken into segments.");
+                p.Target.DebuggerDisplay.Is("BROKEN INTO SEGMENTS.");
+            }
+            {
+                var p = pairs[9];
+                p.Source.DebuggerDisplay.Is("  ");
+                p.Target.DebuggerDisplay.Is("  ");
+            }
+            {
+                var p = pairs[10];
+                p.Source.DebuggerDisplay.Is("\u0009{g;404.1}{ph;404.2} ");
+                p.Target.DebuggerDisplay.Is("\u0009{g;404.1}{ph;404.2} ");
+            }
+            {
+                var p = pairs[11];
+                p.Id.Is("404a");
+                p.Source.DebuggerDisplay.Is("Multiple sentences.");
+                p.Target.DebuggerDisplay.Is("MULTIPLE SENTENCES.");
+            }
+            {
+                var p = pairs[12];
+                p.Source.DebuggerDisplay.Is("  ");
+                p.Target.DebuggerDisplay.Is("  ");
+            }
+            {
+                var p = pairs[13];
+                p.Id.Is("404b");
+                p.Source.DebuggerDisplay.Is("In a single {g;404.3}g{g;404.3}.");
+                p.Target.DebuggerDisplay.Is("IN A SINGLE {g;404.3}g{g;404.3}.");
+            }
+            {
+                var p = pairs[14];
+                p.Source.DebuggerDisplay.Is(" {ph;404.4}{g;404.1} ");
+                p.Target.DebuggerDisplay.Is(" {ph;404.4}{g;404.1} ");
+            }
+            pairs.Length.Is(15);
+        }
     }
 }
