@@ -421,6 +421,7 @@ namespace UnitTestDisfrDoc
             {
                 var p = pairs[3];
                 p.Source.DebuggerDisplay.Is("  ");
+                p.Target.DebuggerDisplay.Is("  ");
             }
             {
                 var p = pairs[4];
