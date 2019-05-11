@@ -267,22 +267,18 @@ namespace disfr.Doc
         /// </summary>
         /// <param name="elem">The element whose contents is analyzed.</param>
         /// <param name="allow_segmentation">true if the standard XLIFF segmentation is allowed.</param>
-        /// <param name="b">The builder to append the segmented contents from <paramref name="elem"/> to, or null to start a new segment sequence.</param>
-        /// <returns>
-        /// A new sequence of segments from <paramref name="elem"/> if <paramref name="builder"/> is null, 
-        /// or null if <paramref name="builder"/> is non-null.
-        /// </returns>
-        protected IList<Segment> GetSegmentedContent(XElement elem, bool allow_segmentation = false, SegmentSequenceBuilder builder = null)
+        /// <returns>A series of segments.</returns>
+        protected IList<Segment> GetSegmentedContent(XElement elem, bool allow_segmentation = false)
         {
             // Why should we return an empty sequence rather than throwing an ArgumentNullException?  Fixme.
             if (elem == null) return new Segment[0];
 
-            var b = builder ?? new SegmentSequenceBuilder();
+            var builder = new SegmentSequenceBuilder();
             foreach (var n in elem.Nodes())
             {
                 if (n.NodeType == XmlNodeType.Text)
                 {
-                    b.Add((n as XText).Value);
+                    builder.Add((n as XText).Value);
                 }
                 else if (n.NodeType == XmlNodeType.Element)
                 {
@@ -291,22 +287,22 @@ namespace disfr.Doc
                     var name = e.Name.LocalName;
                     if (ns == X && name == "mrk")
                     {
-                        b.Add(ParseMrkElement(e, allow_segmentation));
+                        builder.Add(ParseMrkElement(e, allow_segmentation));
                     }
                     else if (ns == X && (name == "x" || name == "ph"))
                     {
                         // Replace a standalone native code element with a standalone inline tag.
-                        b.Add(BuildNativeCodeTag(Tag.S, e, name == "ph"));
+                        builder.Add(BuildNativeCodeTag(Tag.S, e, name == "ph"));
                     }
                     else if (ns == X && (name == "bx" || name == "bpt"))
                     {
                         // Replace a beginning native code element with a beginning inline tag.
-                        b.Add(BuildNativeCodeTag(Tag.B, e, name == "bpt"));
+                        builder.Add(BuildNativeCodeTag(Tag.B, e, name == "bpt"));
                     }
                     else if (ns == X && (name == "ex" || name == "ept"))
                     {
                         // Replace an ending native code element with an ending inline tag.
-                        b.Add(BuildNativeCodeTag(Tag.E, e, name == "ept"));
+                        builder.Add(BuildNativeCodeTag(Tag.E, e, name == "ept"));
                     }
                     else if (ns == X && name == "it")
                     {
@@ -318,7 +314,7 @@ namespace disfr.Doc
                             case "close": type = Tag.E; break;
                             default: type = Tag.S; break;
                         }
-                        b.Add(BuildNativeCodeTag(type, e, true));
+                        builder.Add(BuildNativeCodeTag(type, e, true));
                     }
                     else if (ns == X && name == "g")
                     {
@@ -327,16 +323,16 @@ namespace disfr.Doc
                         // and keep converting its content,
                         // because the g holds instructions in its attributes,
                         // and its content is a part of translatable text.
-                        b.Add(BuildNativeCodeTag(Tag.B, e, false));
-                        GetSegmentedContent(e, allow_segmentation, b);
-                        b.Add(BuildNativeCodeTag(Tag.E, e, false));
+                        builder.Add(BuildNativeCodeTag(Tag.B, e, false));
+                        builder.Add(GetSegmentedContent(e, allow_segmentation));
+                        builder.Add(BuildNativeCodeTag(Tag.E, e, false));
                     }
                     else
                     {
                         // Uunknown element, i.e., some external (no XLIFF) element or a 
                         // misplaced XLIFF element.
                         // OH, I have no good idea how to handle it.  FIXME.
-                        b.Add(HandleUnknownTag(e));
+                        builder.Add(HandleUnknownTag(e));
                     }
                 }
                 else
@@ -344,7 +340,7 @@ namespace disfr.Doc
                     // Silently discard any other nodes; e.g., comment or pi. 
                 }
             }
-            return builder is null ? b.GetSequence() : null;
+            return builder.GetSequence();
         }
 
         /// <summary>
