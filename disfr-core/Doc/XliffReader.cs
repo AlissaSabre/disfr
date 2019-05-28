@@ -13,7 +13,7 @@ namespace disfr.Doc
         public enum Flavour
         {
             Auto = -1,
-            Generic = 0,    // Generic must be the default(Flavour).
+            Generic = 0,
             Trados = 1,
             Idiom = 2,
             MemoQ = 3,
@@ -35,20 +35,25 @@ namespace disfr.Doc
 
         public IAssetBundle Read(string filename, int filterindex)
         {
+            return Read(filename, (Flavour)filterindex);
+        }
+
+        public IAssetBundle Read(string filename, Flavour flavour = Flavour.Auto)
+        {
             using (var file = File.OpenRead(filename))
             {
                 if (file.IsZip())
                 {
-                    return ReadZip(filename, file, filterindex);
+                    return ReadZip(filename, file, flavour);
                 }
                 else
                 {
-                    return ReadXliff(filename, file, filterindex);
+                    return ReadXliff(filename, file, flavour);
                 }
             }
         }
 
-        private static IAssetBundle ReadZip(string filename, Stream file, int filterindex)
+        private static IAssetBundle ReadZip(string filename, Stream file, Flavour flavour)
         {
             // If this is a MS-DOS compatible zip file, 
             // the filenames are encoded with the created machine's OEM codepage, 
@@ -74,7 +79,7 @@ namespace disfr.Doc
                 {
                     using (var f = entry.Open())
                     {
-                        var bundle = ReadXliff(filename, f, filterindex, entry);
+                        var bundle = ReadXliff(filename, f, flavour, entry);
                         if (bundle != null) assets.AddRange(bundle.Assets);
                     }
                 }
@@ -82,11 +87,11 @@ namespace disfr.Doc
             }
         }
 
-        private static IAssetBundle ReadXliff(string filename, Stream file, int filterindex, ZipArchiveEntry entry = null)
+        private static IAssetBundle ReadXliff(string filename, Stream file, Flavour flavour, ZipArchiveEntry entry = null)
         {
             var parser = new XliffParser();
             parser.Filename = filename;
-            parser.Flavour = (Flavour)filterindex;
+            parser.Flavour = flavour;
             parser.ZipEntry = entry;
             return parser.Read(file);
         }

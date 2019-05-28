@@ -14,7 +14,7 @@ namespace UnitTestDisfrDoc
         public void Read_Crafted_00()
         {
             var path = Path.Combine(IDIR, "Crafted00.xliff");
-            var bundle = new XliffReader().Read(path, -1);
+            var bundle = new XliffReader().Read(path);
 
             bundle.Assets.Count().Is(1);
             {
@@ -33,7 +33,7 @@ namespace UnitTestDisfrDoc
         public void Read_Crafted_00a()
         {
             var path = Path.Combine(IDIR, "Crafted00a.xliff");
-            var bundle = new XliffReader().Read(path, -1);
+            var bundle = new XliffReader().Read(path);
 
             bundle.Assets.Count().Is(1);
             {
@@ -62,7 +62,7 @@ namespace UnitTestDisfrDoc
         public void Read_Crafted_01()
         {
             var path = Path.Combine(IDIR, "Crafted01.xliff");
-            var bundle = new XliffReader().Read(path, -1);
+            var bundle = new XliffReader().Read(path);
 
             bundle.Assets.Count().Is(1);
             {
@@ -95,7 +95,7 @@ namespace UnitTestDisfrDoc
         public void Read_Crafted_02()
         {
             var path = Path.Combine(IDIR, "Crafted02.xliff");
-            var bundle = new XliffReader().Read(path, -1);
+            var bundle = new XliffReader().Read(path);
             var a = bundle.Assets.ElementAt(0);
             a.TransPairs.Count().Is(7);
             {
@@ -313,7 +313,7 @@ namespace UnitTestDisfrDoc
         public void Read_Crafted_03()
         {
             var path = Path.Combine(IDIR, "Crafted03.xliff");
-            var bundle = new XliffReader().Read(path, -1);
+            var bundle = new XliffReader().Read(path);
             var a = bundle.Assets.ElementAt(0);
             a.TransPairs.Count().Is(7);
             {
@@ -398,7 +398,7 @@ namespace UnitTestDisfrDoc
         public void Read_Crafted_04()
         {
             var path = Path.Combine(IDIR, "Crafted04.xliff");
-            var bundle = new XliffReader().Read(path, -1);
+            var bundle = new XliffReader().Read(path);
             var a = bundle.Assets.ElementAt(0);
             var pairs = a.TransPairs.ToArray();
             {

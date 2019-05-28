@@ -71,6 +71,8 @@
     <Compile Include="InlineBuilderTest.cs" />
     <Compile Include="InlineTextTest.cs" />
     <Compile Include="InlineTagTest.cs" />
+    <Compile Include="TradosXliffReaderTest.cs" />
+    <Compile Include="InlineStringTestBase.cs" />
     <Compile Include="XliffReaderBasicTest.cs" />
     <Compile Include="XliffReaderComrehensiveTest.cs" />
     <Compile Include="XliffReaderCraftedTest.cs" />
@@ -87,6 +89,7 @@
     <None Include="Expected\Xliff2.dump" />
     <None Include="Expected\XuanZang.dump" />
     <None Include="packages.config" />
+    <None Include="Samples\ChangeTracking_Trados_1.sdlxliff" />
     <None Include="Samples\Configuring_Spelling_Checker.doc.sdlxliff" />
     <None Include="Samples\Crafted00a.xliff">
       <SubType>Designer</SubType>

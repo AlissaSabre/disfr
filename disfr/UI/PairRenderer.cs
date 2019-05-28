@@ -140,11 +140,11 @@ namespace disfr.UI
         public GlossyString GlossyFromInline(InlineString inline, bool ignore_show_specials = false)
         {
             var g = new GlossyString();
-            foreach (var element in inline.Elements)
+            foreach (var run in inline.RunsWithProperties.Where(rwp => rwp.Property != InlineProperty.Del).Select(rwp => rwp.Run))
             {
-                if (element is InlineText)
+                if (run is InlineText)
                 {
-                    var str = (element as InlineText).Text;
+                    var str = (run as InlineText).Text;
                     if (!ShowSpecials || ignore_show_specials)
                     {
                         g.Append(str, Gloss.None);
@@ -177,9 +177,9 @@ namespace disfr.UI
                         g.Append(str.Substring(p), Gloss.None);
                     }
                 }
-                else if (element is InlineTag)
+                else if (run is InlineTag)
                 {
-                    var tag = (InlineTag)element;
+                    var tag = (InlineTag)run;
                     switch (ShowTag)
                     {
                         case TagShowing.None:
@@ -220,23 +220,8 @@ namespace disfr.UI
 
         public string FlatFromInline(InlineString inline)
         {
-            var sb = new StringBuilder();
-            foreach (var element in inline.Elements)
-            {
-                if (element is InlineText)
-                {
-                    sb.Append(element);
-                }
-                else if (element is InlineTag)
-                {
-                    // discard all tags for the moment.
-                }
-                else
-                {
-                    throw new ApplicationException("internal error");
-                }
-            }
-            return sb.ToString();
+            // XXX XXX XXX
+            return inline.ToString(InlineToString.Flat);
         }
 
         private const char FIGURE_SPACE = '\u2007';

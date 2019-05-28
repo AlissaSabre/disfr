@@ -55,15 +55,15 @@ namespace disfr.Writer
                         new XAttribute(LANG, data.SourceLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawSource.ElementsWithProperties.Select(ConvertContent))),
+                            data.RawSource.RunsWithProperties.Select(ConvertContent))),
                     new XElement(X + "tuv",
                         new XAttribute(LANG, data.TargetLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawTarget.ElementsWithProperties.Select(ConvertContent))));
+                            data.RawTarget.RunsWithProperties.Select(ConvertContent))));
         }
 
-        private XNode ConvertContent(InlineElementWithProperty element_with_property)
+        private XNode ConvertContent(InlineRunWithProperty element_with_property)
         {
             throw new NotImplementedException();
 

@@ -11,15 +11,23 @@ namespace disfr.Doc
     /// Creates an <see cref="InlineString"/>.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This is the <see cref="InlineString"/> counterpart of <see cref="StringBuilder"/>,
     /// though its functionality is limited.
+    /// </para>
+    /// <para>
+    /// This class implements <see cref="IEnumerable{T}"/> primarily to allow use of collection initializer.
+    /// The actual enumeration of <see cref="InlineRunWithProperty"/> instances is not intended for use by
+    /// application codes.
+    /// (Test and debug codes use it, though.)
+    /// </para>
     /// </remarks>
-    public class InlineBuilder : IEnumerable<InlineElement>
+    public class InlineBuilder : IEnumerable<InlineRunWithProperty>
     {
         /// <summary>
         /// The contents of the <see cref="InlineString"/> being built.
         /// </summary>
-        private readonly List<InlineElement> _Contents = new List<InlineElement>();
+        private readonly List<InlineRunWithProperty> _Contents = new List<InlineRunWithProperty>();
 
         /// <summary>
         /// Implements <see cref="IEnumerable.GetEnumerator()"/>.
@@ -34,7 +42,7 @@ namespace disfr.Doc
         /// Implements <see cref="IEnumerable{InlineElement}.GetEnumerator()"/>
         /// </summary>
         /// <returns>An enumerator.</returns>
-        public IEnumerator<InlineElement> GetEnumerator()
+        public IEnumerator<InlineRunWithProperty> GetEnumerator()
         {
             return _Contents.GetEnumerator();
         }
@@ -42,11 +50,7 @@ namespace disfr.Doc
         /// <summary>
         /// Gets or sets an inline property to be applied to the inline elements to be added.
         /// </summary>
-        public InlineProperty Property
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
+        public InlineProperty Property { get; set; }
 
         /// <summary>
         /// Adds a <see cref="String"/> at the end of the <see cref="InlineString"/> being built.
@@ -55,7 +59,7 @@ namespace disfr.Doc
         public void Add(string text)
         {
             if (text == null) throw new ArgumentNullException("text");
-            AddString(text, null);
+            InternalAddText(text, null);
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace disfr.Doc
         public void Add(InlineText text)
         {
             if (text == null) throw new ArgumentNullException("text");
-            AddString(text.Text, text);
+            InternalAddText(text.Text, text);
         }
 
         /// <summary>
@@ -73,18 +77,19 @@ namespace disfr.Doc
         /// </summary>
         /// <param name="text">A string version of the text.</param>
         /// <param name="inline_text">An InlineText version of the text if available, or null otherwise.</param>
-        private void AddString(string text, InlineText inline_text)
+        internal void InternalAddText(string text, InlineText inline_text)
         {
             if (text.Length == 0) return;
-            if (_Contents.Count > 0 && _Contents[_Contents.Count - 1] is InlineText)
+            if (_Contents.Count > 0
+                && _Contents[_Contents.Count - 1].Property == Property
+                && _Contents[_Contents.Count - 1].Run is InlineText)
             {
-                var x = _Contents[_Contents.Count - 1] as InlineText;
-                var y = x.Text + text;
-                _Contents[_Contents.Count - 1] = new InlineText(y);
+                var x = _Contents[_Contents.Count - 1].Run as InlineText;
+                _Contents[_Contents.Count - 1] = new InlineRunWithProperty(Property, new InlineText(x.Text + text));
             }
             else
             {
-                _Contents.Add(inline_text ?? new InlineText(text));
+                _Contents.Add(new InlineRunWithProperty(Property, inline_text ?? new InlineText(text)));
             }
         }
 
@@ -95,26 +100,33 @@ namespace disfr.Doc
         public void Add(InlineTag tag)
         {
             if (tag == null) throw new ArgumentNullException("tag");
-            _Contents.Add(tag);
+            InternalAddTag(tag);
         }
 
-        internal void InternalAddRange(IEnumerable<InlineElement> contents)
+        internal void InternalAddTag(InlineTag tag)
+        {
+            _Contents.Add(new InlineRunWithProperty(Property, tag));
+        }
+
+        internal void InternalAddRange(IEnumerable<InlineRun> contents)
         {
             foreach (var element in contents)
             {
-                if (element is InlineText)
+                var inline_text = element as InlineText;
+                if (!(inline_text is null))
                 {
-                    var inline_text = (InlineText)element;
-                    AddString(inline_text.Text, inline_text);
+                    InternalAddText(inline_text.Text, inline_text);
+                    continue;
                 }
-                else if (element is InlineTag)
+
+                var inline_tag = element as InlineTag;
+                if (!(inline_tag is null))
                 {
-                    _Contents.Add((InlineTag)element);
+                    InternalAddTag(inline_tag);
+                    continue;
                 }
-                else
-                {
-                    throw new ApplicationException("internal error");
-                }
+
+                throw new ApplicationException("internal error");
             }
         }
 
@@ -139,42 +151,42 @@ namespace disfr.Doc
         /// <returns>this instance.</returns>
         public InlineBuilder Append(InlineTag tag) { Add(tag); return this; }
 
-        /// <summary>
-        /// Add the contents of another InlineString, returning this instance.
-        /// </summary>
-        /// <param name="inline">InlineString whose contents are added.</param>
-        /// <returns>this instance.</returns>
-        public InlineBuilder Append(InlineString inline) { Add(inline); return this; }
+        ///// <summary>
+        ///// Add the contents of another InlineString, returning this instance.
+        ///// </summary>
+        ///// <param name="inline">InlineString whose contents are added.</param>
+        ///// <returns>this instance.</returns>
+        //public InlineBuilder Append(InlineString inline) { Add(inline); return this; }
+
+        ///// <summary>
+        ///// Adds (the contents of) an <see cref="InlineString"/> at the end of the <see cref="InlineString"/> being built.
+        ///// </summary>
+        ///// <param name="inline"><see cref="InlineString"/> to add.</param>
+        //public void Add(InlineString inline)
+        //{
+        //    if (inline == null) throw new ArgumentNullException("inline");
+
+        //    foreach (var x in inline.Contents)
+        //    {
+        //        if (x is InlineText)
+        //        {
+        //            Add((x as InlineText).Text);
+        //        }
+        //        else if (x is InlineTag)
+        //        {
+        //            Add(x as InlineTag);
+        //        }
+        //        else
+        //        {
+        //            throw new ApplicationException("internal error");
+        //        }
+        //    }
+        //}
 
         /// <summary>
-        /// Adds (the contents of) an <see cref="InlineString"/> at the end of the <see cref="InlineString"/> being built.
+        /// Gets the internal contents being built.
         /// </summary>
-        /// <param name="inline"><see cref="InlineString"/> to add.</param>
-        public void Add(InlineString inline)
-        {
-            if (inline == null) throw new ArgumentNullException("inline");
-
-            foreach (var x in inline.Elements)
-            {
-                if (x is InlineText)
-                {
-                    Add((x as InlineText).Text);
-                }
-                else if (x is InlineTag)
-                {
-                    Add(x as InlineTag);
-                }
-                else
-                {
-                    throw new ApplicationException("internal error");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the contents of the <see cref="InlineString"/> being built.
-        /// </summary>
-        public IEnumerable<InlineElement> Contents { get { return _Contents; } }
+        internal List<InlineRunWithProperty> InternalContents { get { return _Contents; } }
 
         /// <summary>
         /// Gets whether this InlineString represents an empty string.
@@ -187,15 +199,20 @@ namespace disfr.Doc
         /// <returns></returns>
         public InlineString ToInlineString()
         {
-            return new InlineString(_Contents);
+            return IsEmpty ? InlineString.Empty : new InlineString(_Contents);
         }
 
         /// <summary>
         /// Removes all contents in this instance.
         /// </summary>
-        public void Clear()
+        /// <param name="keep_property">
+        /// True to keep the current value of <see cref="Property"/> after clear.
+        /// False to reset <see cref="Property"/> to its default value during clear.
+        /// </param>
+        public void Clear(bool keep_property = false)
         {
             _Contents.Clear();
+            if (!keep_property) Property = default(InlineProperty);
         }
     }
 
@@ -210,6 +227,10 @@ namespace disfr.Doc
     /// whose contents include not just ordinary characters but also tags with some properties. 
     /// </para>
     /// <para>
+    /// This version of <see cref="InlineString"/> doesn't implement <see cref="IEnumerable{T}"/>.
+    /// Use <see cref="RunsWithProperties"/>, <see cref="Contents"/> or <see cref="Enumerate(InlineToString)"/> to enumerate contents.
+    /// </para>
+    /// <para>
     /// Note that we used to support <i>special characters</i> in InlineString.
     /// I now consider they blong to presentation but infoset,
     /// so the support for special characters in InlineString has been removed.
@@ -217,9 +238,9 @@ namespace disfr.Doc
     /// </para>
     /// </remarks>
     [DebuggerDisplay("{DebuggerDisplay}")]
-    public class InlineString
+    public class InlineString : IEquatable<InlineString>
     {
-        private static readonly InlineElement[] EMPTY_CONTENTS = new InlineElement[0]; // Array.Empty<InlineElement>()
+        private static readonly InlineRunWithProperty[] EMPTY_CONTENTS = new InlineRunWithProperty[0]; // Array.Empty<InlineRunWithProperty>()
 
         /// <summary>
         /// Creates an empty inline string.
@@ -235,11 +256,10 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Returns an empty inline string.
+        /// Gets an empty inline string.
         /// </summary>
         /// <remarks>
         /// This object can be shared safely,
-        /// because there is no way to alter its value/contents,
         /// like an array of length zero.
         /// </remarks>
         public static readonly InlineString Empty = new InlineString();
@@ -253,52 +273,52 @@ namespace disfr.Doc
             }
             else
             {
-                _Contents = new InlineText[] { text };
+                _Contents = new InlineRunWithProperty[] { new InlineRunWithProperty(text) };
             }
         }
 
-        public InlineString(params InlineElement[] contents) : this(contents as IEnumerable<InlineElement>) { }
+        public InlineString(params InlineRun[] contents) : this(contents as IEnumerable<InlineRun>) { }
 
-        public InlineString(IEnumerable<InlineElement> contents)
+        public InlineString(IEnumerable<InlineRun> contents)
         {
-            var array = contents as InlineElement[] ?? contents.ToArray();
-            if (array == null || array.Length == 0)
-            {
-                _Contents = EMPTY_CONTENTS;
-            }
-            else if (array.Length == 1)
-            {
-                _Contents = array;
-            }
-            else
+            if (contents == null) throw new ArgumentNullException("contents");
+            if (contents.Any())
             {
                 var builder = new InlineBuilder();
                 builder.InternalAddRange(contents);
-                _Contents = builder.Contents.ToArray();
+                _Contents = builder.InternalContents.ToArray();
+            }
+            else
+            {
+                _Contents = EMPTY_CONTENTS;
             }
         }
 
-        internal InlineString(List<InlineElement> contents)
+        internal InlineString(List<InlineRunWithProperty> contents)
         {
             _Contents = contents.ToArray();
         }
 
-        private readonly InlineElement[] _Contents;
+        private readonly InlineRunWithProperty[] _Contents;
 
         /// <summary>
-        /// Gets all elements with their properties.
+        /// Gets all contents with their properties.
         /// </summary>
-        public IEnumerable<InlineElementWithProperty> ElementsWithProperties { get { throw new NotImplementedException(); } }
-
-        /// <summary>
-        /// Gets all elements in this inline string.
-        /// </summary>
-        public IEnumerable<InlineElement> Elements { get { return _Contents; } }
+        /// <remarks>
+        /// This property enumerates all contents, including those usually not presented to the user,
+        /// e.g., a deleted section in a change-tracked document.
+        /// You need to filter runs with properties appropriately 
+        /// </remarks>
+        public IEnumerable<InlineRunWithProperty> RunsWithProperties { get { return _Contents; } }
 
         /// <summary>
         /// Gets all tags in this inline string.
         /// </summary>
-        public IEnumerable<InlineTag> Tags { get { return _Contents.OfType<InlineTag>(); } }
+        /// <remarks>
+        /// This property enumerates all tags, including those usually not presented to the user,
+        /// e.g., a deleted tag in a change-tracked document.
+        /// </remarks>
+        public IEnumerable<InlineTag> Tags { get { return _Contents.Select(rwp => rwp.Run as InlineTag).Where(t => !(t is null)); } }
 
         /// <summary>
         /// Gets whether this InlineString represents an empty string.
@@ -311,13 +331,29 @@ namespace disfr.Doc
         /// <returns>The hash code.</returns>
         public override int GetHashCode()
         {
-            var shift = 9; // an arbitrarily chosen number.
-            var h = 0x5ab0e273; // a magic number.
-            foreach (var c in _Contents)
+            int m = 263; // a number chosen arbitrarily;
+            int h = _Contents.Length ^ 0x5ab0e273; // a magic number chosen arbitrarily.
+            for (int i = _Contents.Length - 1, d = 0; i >= 0; i -= ++d)
             {
-                h += (h << shift) + c.GetHashCode();
+                h = h * m + _Contents[i].Run.GetHashCode();
             }
             return h;
+        }
+
+        /// <summary>
+        /// Provides contents based equality.
+        /// </summary>
+        /// <param name="inline">Another <see cref="InlineString"/> to compare.</param>
+        /// <returns>True if equal.</returns>
+        public bool Equals(InlineString inline)
+        {
+            if (inline == null) return false;
+            if (inline._Contents.Length != _Contents.Length) return false;
+            for (int i = 0; i < _Contents.Length; i++)
+            {
+                if (!inline._Contents[i].Equals(_Contents[i])) return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -327,15 +363,17 @@ namespace disfr.Doc
         /// <returns>True if equal.</returns>
         public override bool Equals(object obj)
         {
-            if (this == obj) return true;
-            var that = obj as InlineString;
-            if (that == null) return false;
-            if (that._Contents.Length != _Contents.Length) return false;
-            for (int i = 0; i < _Contents.Length; i++)
-            {
-                if (!that._Contents[i].Equals(_Contents[i])) return false;
-            }
-            return true;
+            return Equals(obj as InlineString);
+        }
+
+        public static bool operator ==(InlineString x, InlineString y)
+        {
+            return (x is null) ? (y is null) : x.Equals(y);
+        }
+
+        public static bool operator !=(InlineString x, InlineString y)
+        {
+            return !(x == y);
         }
 
         /// <summary>
@@ -347,7 +385,7 @@ namespace disfr.Doc
         /// </remarks>
         public override string ToString()
         {
-            return string.Concat<InlineElement>(_Contents);
+            return ToString(InlineToString.Normal);
         }
 
         /// <summary>
@@ -357,7 +395,26 @@ namespace disfr.Doc
         /// <returns>The string representation.</returns>
         public string ToString(InlineToString options)
         {
-            return string.Concat(_Contents.Select(inline => inline.ToString(options)));
+            var debug = options.HasFlag(InlineToString.TextDebug);
+            var b = new StringBuilder();
+            var prop = InlineProperty.None;
+            foreach (var rwp in _Contents)
+            {
+                if (rwp.Property != InlineProperty.Del || debug)
+                {
+                    var s = rwp.Run.ToString(options);
+                    if (s.Length > 0)
+                    {
+                        if (prop != rwp.Property)
+                        {
+                            prop = rwp.Property;
+                            b.Append('{' + prop + '}');
+                        }
+                        b.Append(s);
+                    }
+                }
+            }
+            return b.ToString();
         }
 
         /// <summary>
@@ -369,11 +426,58 @@ namespace disfr.Doc
         public string DebuggerDisplay => ToString(InlineToString.Debug);
     }
 
-    public struct InlineElementWithProperty
+    /// <summary>
+    /// Represents a run with a property in an <see cref="InlineString"/>.
+    /// </summary>
+    public struct InlineRunWithProperty : IEquatable<InlineRunWithProperty>
     {
-        public InlineElement Element;
+        public readonly InlineProperty Property;
 
-        public InlineProperty Property;
+        public readonly InlineRun Run;
+
+        public InlineRunWithProperty(InlineProperty property, InlineRun run)
+        {
+            if (run is null) throw new ArgumentNullException("run");
+            Property = property;
+            Run = run;
+        }
+
+        public InlineRunWithProperty(InlineRun run)
+        {
+            Property = InlineProperty.None;
+            Run = run;
+        }
+
+        public InlineRunWithProperty(string text)
+        {
+            Property = InlineProperty.None;
+            Run = new InlineText(text);
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)Property + Run.GetHashCode();
+        }
+
+        public bool Equals(InlineRunWithProperty rwp)
+        {
+            return Property == rwp.Property && Run.Equals(rwp.Run); 
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (obj is InlineRunWithProperty) && Equals((InlineRunWithProperty)obj);
+        }
+
+        public static bool operator ==(InlineRunWithProperty x, InlineRunWithProperty y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(InlineRunWithProperty x, InlineRunWithProperty y)
+        {
+            return !x.Equals(y);
+        }
     }
 
     /// <summary>
@@ -423,7 +527,7 @@ namespace disfr.Doc
     /// whether <see cref="Number"/> is not assigned yet or already assigned,
     /// and the transition of the state is one-way.
     /// </remarks>
-    public class InlineTag : InlineElement
+    public class InlineTag : InlineRun, IEquatable<InlineTag>
     {
         /// <summary>
         /// A type of a tag.
@@ -454,8 +558,6 @@ namespace disfr.Doc
             }
         }
 
-        private readonly int _HashCode;
-
         /// <summary>
         /// Creates an instance.
         /// </summary>
@@ -480,40 +582,58 @@ namespace disfr.Doc
             Ctype = ctype;
             Display = display;
             Code = code;
-
-            _HashCode =
-                type.GetHashCode() +
-                id.GetHashCode() * 3 +
-                rid.GetHashCode() * 5 +
-                name.GetHashCode() * 17;
         }
 
         /// <summary>
-        /// Returns a hash value from <see cref="TagType"/>, <see cref="Id"/>, <see cref="Rid"/> and <see cref="Name"/>.
+        /// Returns a hash value.
         /// </summary>
         /// <returns>The hash value.</returns>
-        public override int GetHashCode() { return _HashCode; }
+        /// <remarks>
+        /// Only a subset of members is considered, primarily for performance.
+        /// </remarks>
+        public override int GetHashCode()
+        {
+            return _EqualityComparer.GetHashCode(this);
+        }
 
         /// <summary>
         /// Tests equality to an <see cref="InlineTag"/> object.
         /// </summary>
-        /// <param name="obj">Another <see cref="InlineTag"/> object.</param>
-        /// <returns>True if <paramref name="obj"/> is an equal <see cref="InlineTag"/> object.</returns>
-        /// <remarks>
-        /// Two <see cref="InlineTag"/> objects are considered equal if and only if
-        /// they have equal <see cref="TagType"/>, <see cref="Id"/>, <see cref="Rid"/> and <see cref="Name"/>.
-        /// Other members, i.e., <see cref="Ctype"/>, <see cref="Display"/>, <see cref="Code"/> and <see cref="Number"/>
-        /// are not considered.
-        /// </remarks>
+        /// <param name="tag">Another <see cref="InlineTag"/> object.</param>
+        /// <returns>True if and only if all (public) members of <paramref name="tag"/> have values equal to this object.</returns>
+        public bool Equals(InlineTag tag)
+        {
+            if (tag is null) return false;
+            if (ReferenceEquals(this, tag)) return true;
+            return
+                tag.TagType == TagType &&
+                tag.Id == Id &&
+                tag.Rid == Rid &&
+                tag.Name == Name &&
+                tag.Ctype == Ctype &&
+                tag.Display == Display &&
+                tag.Code == Code &&
+                tag._Number == _Number;
+        }
+
+        /// <summary>
+        /// Tests equality using <see cref="InlineTag.Equals(InlineTag)"/>.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if (object.ReferenceEquals(this, obj)) return true;
-            var that = obj as InlineTag;
-            return !object.ReferenceEquals(that, null) &&
-                that.TagType == TagType &&
-                that.Id == Id &&
-                that.Rid == Rid &&
-                that.Name == Name;
+            return Equals(obj as InlineTag);
+        }
+
+        public static bool operator ==(InlineTag x, InlineTag y)
+        {
+            return (x is null) ? (y is null) : x.Equals(y);
+        }
+
+        public static bool operator !=(InlineTag x, InlineTag y)
+        {
+            return !(x == y);
         }
 
         /// <summary>
@@ -531,7 +651,7 @@ namespace disfr.Doc
                 case InlineToString.TagDebug:
                     return string.Format("{0}{1};{2}{3}", '{', Name, Id, '}');
                 case InlineToString.TagHidden:
-                    return "";
+                    return string.Empty;
                 case InlineToString.TagCode:
                     return Code;
                 case InlineToString.TagNumber:
@@ -542,6 +662,50 @@ namespace disfr.Doc
                     throw new ApplicationException("Internal Error");
             }
         }
+
+        /// <summary>
+        /// Compares two tags by a more loose way than <see cref="InlineTag.Equals(InlineTag)"/>,
+        /// which should be suitable for matching tags in source and target inline strings.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// </para>
+        /// It considers <see cref="InlineTag.TagType"/>, <see cref="InlineTag.Id"/>, 
+        /// <see cref="InlineTag.Rid"/> and <see cref="InlineTag.Name"/> only.
+        /// <para>
+        /// A thread-safe immutable instance of this class is available from <see cref="InlineTag.LooseEqualityComparer"/>.
+        /// </para>
+        /// </remarks>
+        protected class LooseInlineTagEqualityComparer : IEqualityComparer<InlineTag>
+        {
+            public bool Equals(InlineTag x, InlineTag y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                return
+                    x.TagType == y.TagType &&
+                    x.Id == y.Id &&
+                    x.Rid == y.Rid &&
+                    x.Name == y.Name;
+            }
+
+            public int GetHashCode(InlineTag x)
+            {
+                return
+                    x.TagType.GetHashCode() +
+                    x.Id.GetHashCode() * 3 +
+                    x.Rid.GetHashCode() * 5 +
+                    x.Name.GetHashCode() * 17;
+            }
+        }
+
+        private static readonly LooseInlineTagEqualityComparer _EqualityComparer = new LooseInlineTagEqualityComparer();
+
+        /// <summary>
+        /// Gets an <see cref="IEqualityComparer"/> instance that compares tags 
+        /// by a more loose way than <see cref="InlineTag.Equals(InlineTag)"/>,
+        /// which should be suitable for matching tags in source and target inline strings.
+        /// </summary>
+        public static IEqualityComparer<InlineTag> LooseEqualityComparer { get { return _EqualityComparer; } }
     }
 
     /// <summary>
@@ -550,7 +714,7 @@ namespace disfr.Doc
     /// <remarks>
     /// InlineText is immutable.
     /// </remarks>
-    public class InlineText : InlineElement
+    public class InlineText : InlineRun, IEquatable<InlineText>
     {
         /// <summary>
         /// The Text data.
@@ -568,6 +732,11 @@ namespace disfr.Doc
             return Text.GetHashCode();
         }
 
+        public bool Equals(InlineText text)
+        {
+            return Text == text?.Text;
+        }
+
         public override bool Equals(object obj)
         {
             return Text == (obj as InlineText)?.Text;
@@ -583,23 +752,18 @@ namespace disfr.Doc
             return x?.Text != y?.Text;
         }
 
-        public static explicit operator string(InlineText x)
+        public override string ToString()
         {
-            return x?.Text;
-        }
-
-        public static implicit operator InlineText(string s)
-        {
-            return s == null ? null : new InlineText(s);
+            return Text;
         }
 
         /// <summary>
         /// Gets a string representation of this InlineText.
         /// </summary>
-        /// <param name="options">A set of options to control the string representation.</param>
+        /// <param name="options">Not used in <see cref="InlineText.ToString(InlineToString)"/>.</param>
         /// <returns>The string representation.</returns>
         /// <remarks>
-        /// This method of <see cref="InlineText"/> only cares <see cref="InlineToString.TextMask"/> flags.
+        /// This method always returns its <see cref="Text"/>, ignoring <paramref name="options"/>.
         /// </remarks>
         public override string ToString(InlineToString options)
         {
@@ -607,8 +771,23 @@ namespace disfr.Doc
         }
     }
 
+    /// <summary>
+    /// Represents a run in an <see cref="InlineString"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is an abstract class with two subclasses: <see cref="InlineText"/> and <see cref="InlineTag"/>.
+    /// This class as well as its subclasses provide value-based equality via
+    /// overridden <see cref="Object.Equals(object)"/>, == and !=.
+    /// (<see cref="InlineRun"/> doesn't override <see cref="Object.Equals(object)"/>,
+    /// but it is OK.
+    /// An abstract class has no instance of its own, 
+    /// and all its subclasses overrride <see cref="Object.Equals(object)"/> appropriately.
+    /// </para>
+    /// </remarks>
+#pragma warning disable CS0660, CS0661
     [DebuggerDisplay("{DebuggerDisplay}")]
-    public abstract class InlineElement
+    public abstract class InlineRun
     {
         /// <summary>
         /// Gets a string representation of this InlineElement.
@@ -636,10 +815,21 @@ namespace disfr.Doc
         /// It is for VisualStudio debuggers and for testing.
         /// </remarks>
         public string DebuggerDisplay => ToString(InlineToString.Debug);
+
+        public static bool operator ==(InlineRun x, InlineRun y)
+        {
+            return (x is null) ? (y is null) : x.Equals(y);
+        }
+
+        public static bool operator !=(InlineRun x, InlineRun y)
+        {
+            return !(x == y);
+        }
     }
+#pragma warning restore CS0660, CS0661
 
     /// <summary>
-    /// Options to control <see cref="InlineElement.ToString(InlineToString)"/> and <see cref="InlineString.ToString(InlineToString)"/>.
+    /// Options to control <see cref="InlineRun.ToString(InlineToString)"/> and <see cref="InlineString.ToString(InlineToString)"/>.
     /// </summary>
     [Flags]
     public enum InlineToString
@@ -650,14 +840,14 @@ namespace disfr.Doc
         Normal = TagCode | TextLatest,
 
         /// <summary>
+        /// A representation suitable for flat applications.
+        /// </summary>
+        Flat = TagHidden | TextLatest,
+
+        /// <summary>
         /// A representation suitable for debugging.
         /// </summary>
         Debug = TagDebug | TextDebug,
-
-        /// <summary>
-        /// Any tag is hidden completely.
-        /// </summary>
-        TagHidden = 0,
 
         /// <summary>
         /// Any tag is replaced by its code.
@@ -680,18 +870,28 @@ namespace disfr.Doc
         TagDebug = 4,
 
         /// <summary>
+        /// Any tag is hidden completely.
+        /// </summary>
+        TagHidden = 0,
+
+        /// <summary>
         /// Mask for Tag-controlling options.
         /// </summary>
         TagMask = TagDebug | TagHidden | TagCode | TagNumber | TagLabel,
 
+        /// <summary>
+        /// All runs with property change markers.
+        /// </summary>
+        TextDebug = 16 * 1,
+
+        /// <summary>
+        /// Latest runs only.
+        /// </summary>
         TextLatest = 16 * 0,
 
-        TextOld = 16 * 1,
-
-        TextAll = 16 * 2,
-
-        TextDebug = 16 * 3,
-
-        TextMask = TextDebug | TextLatest | TextOld | TextAll,
+        /// <summary>
+        /// Mask for Text presentation options.
+        /// </summary>
+        TextMask = TextDebug | TextLatest,
     }
 }

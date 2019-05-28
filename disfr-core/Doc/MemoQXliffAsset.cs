@@ -255,7 +255,7 @@ namespace disfr.Doc
                         return true;
                     case "ins":
                         // Add the contents just as an ordinary inline data.
-                        builder.Add(GetInline(mrk));
+                        SegmentInlineContent(builder, mrk, false);
                         return true;
                     default:
                         break;

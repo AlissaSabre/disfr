@@ -112,7 +112,7 @@ namespace disfr.Doc
 
                     var tu_props = new List<KeyValuePair<string, string>>();
                     var tu_notes = new List<string>();
-                    var tag_pool = new Dictionary<InlineTag, int>();
+                    var tag_pool = new Dictionary<InlineTag, int>(InlineTag.LooseEqualityComparer);
 
                     for (int index = min; index < max; index++)
                     {

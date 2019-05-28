@@ -111,9 +111,6 @@ namespace UnitTestDisfrDoc
         [TestMethod]
         public void Equals_4()
         {
-            // InlineTag.Equals doesn't see Display string anymore, 
-            // hence InlineString.Equals either.
-
             var t1 = new InlineTag(Tag.S, "*", "*", "t", null, "{t}", null);
             var t2 = new InlineTag(Tag.S, "*", "*", "t", null, "{T}", null);
 
@@ -122,8 +119,8 @@ namespace UnitTestDisfrDoc
 
             s1.Append(t1);
             s2.Append(t2);
-            s1.ToInlineString().Equals(s2.ToInlineString()).Is(true);
-            s2.ToInlineString().Equals(s1.ToInlineString()).Is(true);
+            s1.ToInlineString().Equals(s2.ToInlineString()).IsFalse();
+            s2.ToInlineString().Equals(s1.ToInlineString()).IsFalse();
         }
 
         [TestMethod]

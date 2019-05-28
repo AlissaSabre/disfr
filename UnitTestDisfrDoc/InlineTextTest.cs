@@ -5,7 +5,7 @@ using disfr.Doc;
 namespace UnitTestDisfrDoc
 {
     [TestClass]
-    public class InlineTextTest
+    public class InlineTextTest : InlineStringTestBase
     {
         [TestMethod]
         public void Ctors_1()
@@ -29,6 +29,16 @@ namespace UnitTestDisfrDoc
             new InlineText("a").Equals(null).IsFalse();
             new InlineText("b").Equals(null).IsFalse();
             new InlineText("abc").Equals(null).IsFalse();
+
+            (new InlineText("") == null).IsFalse();
+            (new InlineText("a") == null).IsFalse();
+            (new InlineText("b") == null).IsFalse();
+            (new InlineText("abc") == null).IsFalse();
+
+            (new InlineText("") != null).IsTrue();
+            (new InlineText("a") != null).IsTrue();
+            (new InlineText("b") != null).IsTrue();
+            (new InlineText("abc") != null).IsTrue();
         }
 
         [TestMethod]
@@ -48,6 +58,89 @@ namespace UnitTestDisfrDoc
                 foreach (var s2 in samples)
                 {
                     new InlineText(s1).Equals(new InlineText(s2)).Is(s1 == s2, string.Format("s1 = \"{0}\", s2 = \"{1}\"", s1, s2));
+                    (new InlineText(s1) == new InlineText(s2)).Is(s1 == s2, string.Format("s1 = \"{0}\", s2 = \"{1}\"", s1, s2));
+                    (new InlineText(s1) != new InlineText(s2)).Is(s1 != s2, string.Format("s1 = \"{0}\", s2 = \"{1}\"", s1, s2));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void Equals_3()
+        {
+            InlineText a1 = new InlineText("a");
+            InlineText a2 = new InlineText("a");
+            InlineText b9 = new InlineText("b");
+
+            object x1 = a1;
+            object x2 = a2;
+            object y9 = b9;
+
+            ReferenceEquals(a1, a2).IsFalse();
+            a1.Equals(a1).IsTrue();
+            a1.Equals(a2).IsTrue();
+            a1.Equals(b9).IsFalse();
+#pragma warning disable CS1718
+            (a1 == a1).IsTrue();
+            (a1 == a2).IsTrue();
+            (a1 == b9).IsFalse();
+            (a1 != a1).IsFalse();
+            (a1 != a2).IsFalse();
+            (a2 != b9).IsTrue();
+#pragma warning restore CS1718
+
+            x1.Equals(x1).IsTrue();
+            x1.Equals(x2).IsTrue();
+            x1.Equals(b9).IsFalse();
+#pragma warning disable CS1718
+            (x1 == x1).IsTrue();
+            (x1 == x2).IsFalse();
+            (x1 == y9).IsFalse();
+            (x1 != x1).IsFalse();
+            (x1 != x2).IsTrue();
+            (x1 != y9).IsTrue();
+#pragma warning restore CS1718
+
+            a1.Equals(x1).IsTrue();
+            a1.Equals(x2).IsTrue();
+            a1.Equals(y9).IsFalse();
+#pragma warning disable CS0253
+            (a1 == x1).IsTrue();
+            (a1 == x2).IsFalse();
+            (a1 == y9).IsFalse();
+            (a1 != x1).IsFalse();
+            (a1 != x2).IsTrue();
+            (a1 != y9).IsTrue();
+#pragma warning restore CS0253
+
+            x1.Equals(a1).IsTrue();
+            x1.Equals(a2).IsTrue();
+            x1.Equals(b9).IsFalse();
+#pragma warning disable CS0252
+            (x1 == a1).IsTrue();
+            (x1 == a2).IsFalse();
+            (x1 == b9).IsFalse();
+            (x1 != a1).IsFalse();
+            (x1 != a2).IsTrue();
+            (x2 != b9).IsTrue();
+#pragma warning restore CS0252
+        }
+
+        [TestMethod]
+        public void Equals_4()
+        {
+            new InlineText("").Equals("").IsFalse();
+            new InlineText("a").Equals("a").IsFalse();
+        }
+
+        [TestMethod]
+        public void ToString_1()
+        {
+            foreach (var s in new[] { "", "a", "b", "ab" })
+            {
+                new InlineText(s).ToString().Is(s, string.Format("s = \"{0}\"", s));
+                foreach (var t in InlineToStrings)
+                {
+                    new InlineText(s).ToString(t).Is(s, string.Format("s = \"{0}\", t = \"{1}\"", s, t));
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using disfr.Doc;
@@ -13,14 +14,35 @@ namespace UnitTestDisfrDoc
             tag.Is(new InlineTag(type, id, rid, name, ctype, display, code));
         }
 
-        public static void Is(this InlineString inline, params InlineElement[] elements)
+        public static void Is(this InlineString inline, params object[] items)
         {
-            inline.Elements.Is(elements);
+            inline.RunsWithProperties.Is(Rwps(items));
         }
 
-        public static List<InlineElement> Contents(this InlineBuilder inline)
+        public static void Is(this InlineBuilder builder, params object[] items)
         {
-            return inline.AsDynamic()._Contents;
+            builder.AsEnumerable().Is(Rwps(items));
+        }
+
+        private static IEnumerable<InlineRunWithProperty> Rwps(object[] items)
+        {
+            var prop = default(InlineProperty);
+            for (int i = 0; i < items.Length; i++)
+            {
+                var item = items[i];
+                if (item is string)
+                {
+                    yield return new InlineRunWithProperty(prop, new InlineText((string)item));
+                }
+                else if (item is InlineRun)
+                {
+                    yield return new InlineRunWithProperty(prop, (InlineRun)item);
+                }
+                else if (item is InlineProperty)
+                {
+                    prop = (InlineProperty)item;
+                }
+            }
         }
     }
 }

@@ -118,7 +118,9 @@ namespace disfr.Doc
                 case "x-sdl-added":
                     // This is an added (inserted) section in change tracking.
                     // For the moment, we just handle it in an ordinary content.
-                    builder.Add(GetInline(mrk));
+                    // OH, BTW, can a mrk[@mtype='seg'] occur inside mrk[@mtype='x-sdl-added']?  FIXME.
+                    SegmentInlineContent(builder, mrk, allow_segmentation);
+                    // builder.Add(GetInline(mrk));
                     return true;
 
                 default:

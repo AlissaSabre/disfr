@@ -385,7 +385,7 @@ namespace disfr.Doc
                 if (!InterSegment.IsEmpty)
                 {
                     Sequence.Add(new SegmentData(InterSegment.ToInlineString()));
-                    InterSegment.Clear();
+                    InterSegment.Clear(true);
                 }
             }
 
@@ -396,11 +396,6 @@ namespace disfr.Doc
             }
 
             public void Add(string text)
-            {
-                InterSegment.Add(text);
-            }
-
-            public void Add(InlineString text)
             {
                 InterSegment.Add(text);
             }
@@ -469,7 +464,7 @@ namespace disfr.Doc
 
         protected void MatchTags(InlineString source, InlineString target)
         {
-            var dict = new Dictionary<InlineTag, int>();
+            var dict = new Dictionary<InlineTag, int>(InlineTag.LooseEqualityComparer);
             int i = 0;
             foreach (var tag in source.Tags)
             {
