@@ -6,7 +6,7 @@ using disfr.Doc;
 namespace UnitTestDisfrDoc
 {
     [TestClass]
-    public class InlineTagTest
+    public class InlineTagTest : InlineStringTestBase
     {
         [TestMethod]
         public void Ctors_1()
@@ -213,6 +213,70 @@ namespace UnitTestDisfrDoc
 
             a1.GetHashCode().Is(a2.GetHashCode());
             a1.GetHashCode().IsNot(b1.GetHashCode()); // very likely but not guaranteed
+        }
+
+        [TestMethod]
+        public void ToString_1()
+        {
+            var x = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+            x.ToString().Is("code");
+            x.ToString(InlineToString.TagCode).Is("code");
+            x.ToString(InlineToString.TagDebug).Is("{name;id}");
+            x.ToString(InlineToString.TagHidden).Is("");
+            x.ToString(InlineToString.TagDisplay).Is("{display}");
+            x.ToString(InlineToString.TagNumber).Is("{0}");
+
+            var a = new InlineTag(Tag.S, "x", "y", "a", "link", "{a}", "<a/>");
+            a.ToString().Is("<a/>");
+            a.ToString(InlineToString.TagCode).Is("<a/>");
+            a.ToString(InlineToString.TagDebug).Is("{a;x}");
+            a.ToString(InlineToString.TagHidden).Is("");
+            a.ToString(InlineToString.TagDisplay).Is("{a}");
+            a.ToString(InlineToString.TagNumber).Is("{0}");
+
+            var b = new InlineTag(Tag.S, "x", "y", "b", "link", "{b}", "<b/>");
+            b.ToString().Is("<b/>");
+            b.ToString(InlineToString.TagCode).Is("<b/>");
+            b.ToString(InlineToString.TagDebug).Is("{b;x}");
+            b.ToString(InlineToString.TagHidden).Is("");
+            b.ToString(InlineToString.TagDisplay).Is("{b}");
+            b.ToString(InlineToString.TagNumber).Is("{0}");
+        }
+
+        [TestMethod]
+        public void ToString_2()
+        {
+            var x = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+            foreach (InlineToString its in Enum.GetValues(typeof(InlineToString)))
+            {
+                if (its == InlineToString.TagMask) continue; // XXX
+                x.ToString(its).Is(x.ToString(its & InlineToString.TagMask), string.Format("its = {0}", its));
+            }
+        }
+
+        [TestMethod]
+        public void ToString_3()
+        {
+            var a = new InlineTag(Tag.S, "id", "rid", "name", null, "display", "code");
+            var b = new InlineTag(Tag.S, "id", "rid", "name", "ctype", null, "code");
+            var c = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", null);
+            var d = new InlineTag(Tag.S, "id", "rid", "name", null, null, null);
+
+            b.ToString(InlineToString.TagDisplay).Is("{name}");
+            c.ToString(InlineToString.TagCode).Is("");
+
+            a.ToString().IsNotNull();
+            b.ToString().IsNotNull();
+            c.ToString().IsNotNull();
+            d.ToString().IsNotNull();
+
+            foreach (var its in InlineToStrings)
+            {
+                a.ToString(its).IsNotNull();
+                b.ToString(its).IsNotNull();
+                c.ToString(its).IsNotNull();
+                d.ToString(its).IsNotNull();
+            }
         }
     }
 }

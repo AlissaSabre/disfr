@@ -19,7 +19,7 @@ namespace UnitTestDisfrDoc
 
         protected static readonly InlineToString TagCode = InlineToString.TagCode;
         protected static readonly InlineToString TagDebug = InlineToString.TagDebug;
-        protected static readonly InlineToString TagLabel = InlineToString.TagLabel;
+        protected static readonly InlineToString TagDisplay = InlineToString.TagDisplay;
         protected static readonly InlineToString TagHidden = InlineToString.TagHidden;
         protected static readonly InlineToString TagNumber = InlineToString.TagNumber;
         protected static readonly InlineToString TextDebug = InlineToString.TextDebug;
@@ -27,7 +27,7 @@ namespace UnitTestDisfrDoc
 
         protected static readonly InlineToString[] InlineToStrings =
         {
-            TagCode, TagDebug, TagLabel, TagHidden, TagNumber,
+            TagCode, TagDebug, TagDisplay, TagHidden, TagNumber,
             TextDebug, TextLatest,
         };
     }

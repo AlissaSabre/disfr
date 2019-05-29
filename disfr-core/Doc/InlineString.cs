@@ -529,6 +529,10 @@ namespace disfr.Doc
     /// </remarks>
     public class InlineTag : InlineRun, IEquatable<InlineTag>
     {
+        private const string OPAR = "{";
+
+        private const string CPAR = "}";
+
         /// <summary>
         /// A type of a tag.
         /// </summary>
@@ -649,18 +653,47 @@ namespace disfr.Doc
             switch (options & InlineToString.TagMask)
             {
                 case InlineToString.TagDebug:
-                    return string.Format("{0}{1};{2}{3}", '{', Name, Id, '}');
+                    return string.Format("{0}{1};{2}{3}", OPAR, Name, Id, CPAR);
                 case InlineToString.TagHidden:
                     return string.Empty;
                 case InlineToString.TagCode:
-                    return Code;
+                    return Code ?? string.Empty;
                 case InlineToString.TagNumber:
-                    return string.Format("{0}{1}{2}", '{', Number, '}');
-                case InlineToString.TagLabel:
-                    return string.Format("{0}{1}{2}", '{', Name, '}');
+                    return Enclose(Number);
+                case InlineToString.TagDisplay:
+                    return Enclose(Display, Name);
                 default:
-                    throw new ApplicationException("Internal Error");
+                    throw new ArgumentException("options");
             }
+        }
+
+        /// <summary>
+        /// Produces an enclosed presentation of a tag based on the given candidate properties.
+        /// </summary>
+        /// <param name="items">List of candidate properties.</param>
+        /// <returns>A string of form "{xxx}", where xxx is the string presentation of the first non-null item.</returns>
+        /// <remarks>
+        /// IF the string presentation of the appropriate item is already enclosed in '{' and '}', we don't add our own encloser. 
+        /// </remarks>
+        private static string Enclose(params object[] items)
+        {
+            foreach (var item in items)
+            {
+                if (item != null)
+                {
+                    var s = item.ToString();
+                    if (s.StartsWith(OPAR) && s.EndsWith(CPAR))
+                    {
+                        return s;
+                    }
+                    else
+                    {
+                        return OPAR + s + CPAR;
+                    }
+                }
+            }
+
+            return OPAR + CPAR;
         }
 
         /// <summary>
@@ -862,7 +895,7 @@ namespace disfr.Doc
         /// <summary>
         /// Any tag is replaced by its label.
         /// </summary>
-        TagLabel = 3,
+        TagDisplay = 3,
 
         /// <summary>
         /// Any tag is replaced by a representation suitable for debugging.
@@ -877,7 +910,7 @@ namespace disfr.Doc
         /// <summary>
         /// Mask for Tag-controlling options.
         /// </summary>
-        TagMask = TagDebug | TagHidden | TagCode | TagNumber | TagLabel,
+        TagMask = TagDebug | TagHidden | TagCode | TagNumber | TagDisplay,
 
         /// <summary>
         /// All runs with property change markers.
