@@ -5,7 +5,7 @@ using disfr.Doc;
 
 namespace UnitTestDisfrDoc
 {
-    public class InlineStringTestBase
+    public abstract class InlineStringTestBase
     {
         protected static readonly InlineProperty None = InlineProperty.None;
         protected static readonly InlineProperty Ins = InlineProperty.Ins;
@@ -16,6 +16,13 @@ namespace UnitTestDisfrDoc
         {
             None, Ins, Del, Emp,
         };
+
+        protected InlineStringTest_ExtensionMethods.Rwp Ins_(string text) => InlineStringTest_ExtensionMethods.Rwp.Create(Ins, text);
+        protected InlineStringTest_ExtensionMethods.Rwp Del_(string text) => InlineStringTest_ExtensionMethods.Rwp.Create(Del, text);
+        protected InlineStringTest_ExtensionMethods.Rwp Emp_(string text) => InlineStringTest_ExtensionMethods.Rwp.Create(Emp, text);
+        protected InlineStringTest_ExtensionMethods.Rwp Ins_(InlineRun run) => InlineStringTest_ExtensionMethods.Rwp.Create(Ins, run);
+        protected InlineStringTest_ExtensionMethods.Rwp Del_(InlineRun run) => InlineStringTest_ExtensionMethods.Rwp.Create(Del, run);
+        protected InlineStringTest_ExtensionMethods.Rwp Emp_(InlineRun run) => InlineStringTest_ExtensionMethods.Rwp.Create(Emp, run);
 
         protected static readonly InlineToString TagCode = InlineToString.TagCode;
         protected static readonly InlineToString TagDebug = InlineToString.TagDebug;

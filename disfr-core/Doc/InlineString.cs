@@ -53,6 +53,18 @@ namespace disfr.Doc
         public InlineProperty Property { get; set; }
 
         /// <summary>
+        /// Sets an inline property to <see cref="Property"/>.
+        /// </summary>
+        /// <param name="property">New inline property.</param>
+        /// <remarks>
+        /// This method is intended for use by collection initializers.
+        /// </remarks>
+        public void Add(InlineProperty property)
+        {
+            Property = property;
+        }
+
+        /// <summary>
         /// Adds a <see cref="String"/> at the end of the <see cref="InlineString"/> being built.
         /// </summary>
         /// <param name="text">The string to add.</param>
@@ -97,10 +109,27 @@ namespace disfr.Doc
         /// Adds an inline tag at the end of the <see cref="InlineString"/> being built.
         /// </summary>
         /// <param name="tag"><see cref="InlineTag"/> to add.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="tag"/> is null.</exception>
         public void Add(InlineTag tag)
         {
             if (tag == null) throw new ArgumentNullException("tag");
             InternalAddTag(tag);
+        }
+
+        /// <summary>
+        /// Creates ands add an <see cref="InlineTag"/>.
+        /// </summary>
+        /// <param name="type">Tag type.</param>
+        /// <param name="id">"id" identifier of tag.</param>
+        /// <param name="rid">"rid" identifier of tag.</param>
+        /// <param name="name">Name of this tag, which is usually a local part of the tag name in the bilingual markup language.</param>
+        /// <param name="ctype">A string to indicates a purpose of this tag, as in ctype attribute of XLIFF inline tags.  It may be null.</param>
+        /// <param name="display">A user friendly label of this tag.  It may be null.</param>
+        /// <param name="code">A string representation of underlying code in the source of this tag.  It may be null.</param>
+        /// <exception cref="ArgumentNullException">Any of <paramref name="id"/>, <paramref name="rid"/> or <paramref name="name"/> is null.</exception>
+        public void Add(Tag type, string id, string rid, string name, string ctype = null, string display = null, string code = null)
+        {
+            InternalAddTag(new InlineTag(type, id, rid, name, ctype, display, code));
         }
 
         internal void InternalAddTag(InlineTag tag)

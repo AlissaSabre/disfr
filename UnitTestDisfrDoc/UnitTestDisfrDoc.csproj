@@ -61,7 +61,7 @@
   <ItemGroup>
     <Compile Include="ChainingAssertion.MSTest.cs" />
     <Compile Include="InlineStringTest.cs" />
-    <Compile Include="InlineString_ExtensionMethods.cs" />
+    <Compile Include="InlineStringTest_ExtensionMethods.cs" />
     <Compile Include="PairVisualizer.cs" />
     <Compile Include="ReaderManagerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

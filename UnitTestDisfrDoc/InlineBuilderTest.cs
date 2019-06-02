@@ -53,6 +53,7 @@ namespace UnitTestDisfrDoc
             b.Property.Is(Del);
             b.Add("ghi");
             b.Property.Is(Del);
+            b.Is("abc", Ins_("def"), Del_("ghi"));
         }
 
         [TestMethod]
@@ -71,7 +72,7 @@ namespace UnitTestDisfrDoc
             b.Property = Ins;
             b.Property = Emp;
             b.Add("pqr");
-            b.Is(Ins, "abcdef", Del, "ghijkl", Emp, "mnopqr");
+            b.Is(Ins_("abcdef"), Del_("ghijkl"), Emp_("mnopqr"));
         }
 
         [TestMethod]
@@ -158,6 +159,11 @@ namespace UnitTestDisfrDoc
             s.Is(t, new InlineText("abc"));
         }
 
+        // InlineBuilder.Add(InlineString) and InlineBuilder.Append(InlineString) are removed at
+        // email: alissa_sabre@yahoo.co.jp
+        // commit: 2019-05-28
+        // hash: fe222ee229977bbdc367b9c0ceb2b18a3827a2bf
+
         //[TestMethod]
         //public void Append_3()
         //{
@@ -175,6 +181,120 @@ namespace UnitTestDisfrDoc
         //    s.Append(new InlineString(new InlineText("jkl"), t2));
         //    s.Is(new InlineText("abc"), t1, t2, new InlineText("def"), t1, t1, t2, new InlineText("ghijkl"), t2);
         //}
+
+        [TestMethod]
+        public void Add_1()
+        {
+            var t1 = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+            var t2 = new InlineTag(Tag.S, "ID", "RID", "NAME", "CTYPE", "DISPLAY", "CODE");
+
+            var s = new InlineBuilder();
+            s.Is();
+            s.Add("");
+            s.Is();
+            s.Add("abc");
+            s.Is("abc");
+            s.Add("def");
+            s.Is("abcdef");
+            s.Add("");
+            s.Is("abcdef");
+            s.Add(t1);
+            s.Is("abcdef", t1);
+            s.Add("");
+            s.Is("abcdef", t1);
+            s.Add(t2);
+            s.Is("abcdef", t1, t2);
+            s.Add("");
+            s.Is("abcdef", t1, t2);
+            s.Add("xyz");
+            s.Is("abcdef", t1, t2, "xyz");
+        }
+
+        [TestMethod]
+        public void Add_2()
+        {
+            var s = new InlineBuilder();
+            s.Is();
+            s.Add(Ins);
+            s.Is();
+            s.Add("abc");
+            s.Is(Ins_("abc"));
+            s.Add(Emp);
+            s.Is(Ins_("abc"));
+            s.Add(Del);
+            s.Is(Ins_("abc"));
+            s.Add("def");
+            s.Is(Ins_("abc"), Del_("def"));
+        }
+
+        [TestMethod]
+        public void Add_3()
+        {
+            var t1 = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+            var t2 = new InlineTag(Tag.S, "ID", "RID", "NAME", "CTYPE", "DISPLAY", "CODE");
+
+            var s = new InlineBuilder();
+            s.Is();
+            s.Add(Ins);
+            s.Is();
+            s.Add(t1);
+            s.Is(Ins_(t1));
+            s.Add(Emp);
+            s.Is(Ins_(t1));
+            s.Add(Del);
+            s.Is(Ins_(t1));
+            s.Add(t2);
+            s.Is(Ins_(t1), Del_(t2));
+        }
+
+        [TestMethod]
+        public void Add_4()
+        {
+            var t1 = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+            var t2 = new InlineTag(Tag.S, "ID", "RID", "NAME", "CTYPE", "DISPLAY", "CODE");
+
+            var s = new InlineBuilder();
+            s.Is();
+            s.Add("");
+            s.Is();
+            s.Add("abc");
+            s.Is("abc");
+            s.Add(Ins);
+            s.Add("def");
+            s.Is("abc", Ins_("def"));
+            s.Add("");
+            s.Is("abc", Ins_("def"));
+            s.Add(t1);
+            s.Is("abc", Ins_("def"), Ins_(t1));
+            s.Add("");
+            s.Is("abc", Ins_("def"), Ins_(t1));
+            s.Add(t2);
+            s.Is("abc", Ins_("def"), Ins_(t1), Ins_(t2));
+            s.Add("");
+            s.Is("abc", Ins_("def"), Ins_(t1), Ins_(t2));
+            s.Add(Del);
+            s.Is("abc", Ins_("def"), Ins_(t1), Ins_(t2));
+            s.Add("xyz");
+            s.Is("abc", Ins_("def"), Ins_(t1), Ins_(t2), Del_("xyz"));
+        }
+
+        [TestMethod]
+        public void Add_Tag_1()
+        {
+            var t1 = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+            var t2 = new InlineTag(Tag.S, "ID", "RID", "NAME", "CTYPE", "DISPLAY", "CODE");
+
+            var s = new InlineBuilder();
+            s.Is();
+            s.Add(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+            s.Add(Ins);
+            s.Add(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+            s.Add(Del);
+            s.Add(Tag.S, "ID", "RID", "NAME", "CTYPE", "DISPLAY", "CODE");
+            s.Add(Emp);
+            s.Add(Tag.S, "ID", "RID", "NAME", "CTYPE", "DISPLAY", "CODE");
+            s.Is(t1, Ins_(t1), Del_(t2), Emp_(t2));
+        }
 
         [TestMethod]
         public void Reset_1()
