@@ -26,6 +26,8 @@ namespace UnitTestDisfrDoc
         {
             new InlineBuilder() { "abc" }.Is("abc");
             new InlineBuilder() { "abc", "def", "ghi" }.Is("abcdefghi");
+            new InlineBuilder() { "abc", Ins, "def", None, "ghi" }.Is("abc", Ins_("def"), "ghi");
+            new InlineBuilder() { Ins, "abc", "def", Del, "ghi", Ins, Emp, "jkl" }.Is(Ins_("abcdef"), Del_("ghi"), Emp_("jkl"));
         }
 
         [TestMethod]
@@ -294,6 +296,23 @@ namespace UnitTestDisfrDoc
             s.Add(Emp);
             s.Add(Tag.S, "ID", "RID", "NAME", "CTYPE", "DISPLAY", "CODE");
             s.Is(t1, Ins_(t1), Del_(t2), Emp_(t2));
+        }
+
+        [TestMethod]
+        public void Add_Tag_Exception()
+        {
+            {
+                var b = new InlineBuilder();
+                AssertEx.Catch<ArgumentNullException>(() => b.Add(Tag.S, null, "rid", "name"));
+            }
+            {
+                var b = new InlineBuilder();
+                AssertEx.Catch<ArgumentNullException>(() => b.Add(Tag.S, "id", null, "name"));
+            }
+            {
+                var b = new InlineBuilder();
+                AssertEx.Catch<ArgumentNullException>(() => b.Add(Tag.S, "id", "rid", null));
+            }
         }
 
         [TestMethod]

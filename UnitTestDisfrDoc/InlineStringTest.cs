@@ -7,7 +7,7 @@ using disfr.Doc;
 namespace UnitTestDisfrDoc
 {
     [TestClass]
-    public class InlineStringTest
+    public class InlineStringTest : InlineStringTestBase
     {
         [TestMethod]
         public void Ctors_1()
@@ -124,6 +124,66 @@ namespace UnitTestDisfrDoc
         }
 
         [TestMethod]
+        public void Equals_with_properties_1()
+        {
+            new InlineBuilder() { "abc", "def" }.ToInlineString().Equals(new InlineBuilder() { "abcdef" }.ToInlineString()).IsTrue();
+            new InlineBuilder() { "abc", None, "def" }.ToInlineString().Equals(new InlineBuilder() { "abcdef" }.ToInlineString()).IsTrue();
+
+            new InlineBuilder() { "abc", Ins, "def" }.ToInlineString().Equals(new InlineBuilder() { "abcdef" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Del, "def" }.ToInlineString().Equals(new InlineBuilder() { "abcdef" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Emp, "def" }.ToInlineString().Equals(new InlineBuilder() { "abcdef" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Ins, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Ins, "def" }.ToInlineString()).IsTrue();
+            new InlineBuilder() { "abc", Del, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Ins, "def" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Emp, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Ins, "def" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Ins, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Del, "def" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Del, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Del, "def" }.ToInlineString()).IsTrue();
+            new InlineBuilder() { "abc", Emp, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Del, "def" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Ins, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Emp, "def" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Del, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Emp, "def" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { "abc", Emp, "def" }.ToInlineString().Equals(new InlineBuilder() { "abc", Emp, "def" }.ToInlineString()).IsTrue();
+
+            new InlineBuilder() { Ins, "abc" }.ToInlineString().Equals(new InlineBuilder() { Ins, new string(new[] { 'a', 'b', 'c' }) }.ToInlineString()).IsTrue();
+            new InlineBuilder() { Del, "abc" }.ToInlineString().Equals(new InlineBuilder() { Del, new string(new[] { 'a', 'b', 'c' }) }.ToInlineString()).IsTrue();
+            new InlineBuilder() { Emp, "abc" }.ToInlineString().Equals(new InlineBuilder() { Emp, new string(new[] { 'a', 'b', 'c' }) }.ToInlineString()).IsTrue();
+            new InlineBuilder() { Ins, "abc" }.ToInlineString().Equals(new InlineBuilder() { Ins, "xyz" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { Del, "abc" }.ToInlineString().Equals(new InlineBuilder() { Del, "xyz" }.ToInlineString()).IsFalse();
+            new InlineBuilder() { Emp, "abc" }.ToInlineString().Equals(new InlineBuilder() { Emp, "xyz" }.ToInlineString()).IsFalse();
+        }
+
+        [TestMethod]
+        public void Equals_with_properties_2()
+        {
+            InlineString[] samples =
+            {
+                new InlineString(),
+                new InlineString("abc"),
+                new InlineBuilder() { "abc" }.ToInlineString(),
+                new InlineBuilder() { Ins, "abc" }.ToInlineString(),
+                new InlineBuilder() { Del, "abc" }.ToInlineString(),
+                new InlineBuilder() { Emp, "abc" }.ToInlineString(),
+                new InlineBuilder() { new string(new[] { 'a', 'b', 'c' }) }.ToInlineString(),
+                new InlineBuilder() { Ins, new string(new[] { 'a', 'b', 'c' }) }.ToInlineString(),
+                new InlineBuilder() { Del, new string(new[] { 'a', 'b', 'c' }) }.ToInlineString(),
+                new InlineBuilder() { Emp, new string(new[] { 'a', 'b', 'c' }) }.ToInlineString(),
+                new InlineBuilder() { "abc", None, "def" }.ToInlineString(),
+                new InlineBuilder() { "abc", Ins, "def" }.ToInlineString(),
+                new InlineBuilder() { "abc", Del, "def" }.ToInlineString(),
+                new InlineBuilder() { "abc", Emp, "def" }.ToInlineString(),
+            };
+
+            for (int i = 0; i < samples.Length; i++)
+            {
+                for (int j = 0; j < samples.Length; j++)
+                {
+                    var msg = string.Format("i = {0}, j = {1}", i, j);
+                    var x = samples[i].Equals(samples[j]);
+                    (samples[i] == samples[j]).Is(x, msg);
+                    (samples[i] != samples[j]).Is(!x, msg);
+                }
+            }
+        }
+
+        [TestMethod]
         public void GetHashCode_1()
         {
             var t1 = new InlineTag(Tag.S, "*", "*", "t", null, null, null);
@@ -167,6 +227,50 @@ namespace UnitTestDisfrDoc
             s1.Append(t1);
             s2.Append(t2);
             s1.ToInlineString().GetHashCode().Is(s2.ToInlineString().GetHashCode());
+        }
+
+        [TestMethod]
+        public void ToString_1()
+        {
+            var F = InlineToString.Flat;
+            var N = InlineToString.Normal;
+            var D = InlineToString.Debug;
+            {
+                var s = new InlineBuilder().ToInlineString();
+                s.ToString(F).Is("");
+                s.ToString(N).Is("");
+                s.ToString(D).Is("");
+            }
+            {
+                var s = new InlineBuilder() { "abc" }.ToInlineString();
+                s.ToString(F).Is("abc");
+                s.ToString(N).Is("abc");
+                s.ToString(D).Is("abc");
+            }
+            {
+                var s = new InlineBuilder() { Ins, "abc", Del, "def" }.ToInlineString();
+                s.ToString(F).Is("abc");
+                s.ToString(N).Is("abc");
+                s.ToString(D).Is("{Ins}abc{Del}def");
+            }
+            {
+                var s = new InlineBuilder() { { Tag.S, "id", "rid", "name" } }.ToInlineString();
+                s.ToString(F).Is("");
+                s.ToString(N).Is("");
+                s.ToString(D).Is("{name;id}");
+            }
+            {
+                var s = new InlineBuilder() { { Tag.S, "id", "rid", "name", "ctype", "display", "<code>" } }.ToInlineString();
+                s.ToString(F).Is("");
+                s.ToString(N).Is("<code>");
+                s.ToString(D).Is("{name;id}");
+            }
+            {
+                var s = new InlineBuilder() { Ins, { Tag.S, "id", "rid", "name", "ctype", "display", "<code>" }, Del, "abc" }.ToInlineString();
+                s.ToString(F).Is("");
+                s.ToString(N).Is("<code>");
+                s.ToString(D).Is("{Ins}{name;id}{Del}abc");
+            }
         }
     }
 }

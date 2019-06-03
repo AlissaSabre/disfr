@@ -434,10 +434,10 @@ namespace disfr.Doc
                     var s = rwp.Run.ToString(options);
                     if (s.Length > 0)
                     {
-                        if (prop != rwp.Property)
+                        if (prop != rwp.Property && debug)
                         {
                             prop = rwp.Property;
-                            b.Append('{' + prop + '}');
+                            b.Append("{" + prop + "}");
                         }
                         b.Append(s);
                     }
