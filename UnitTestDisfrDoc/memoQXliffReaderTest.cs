@@ -8,12 +8,12 @@ using disfr.Doc;
 namespace UnitTestDisfrDoc
 {
     [TestClass]
-    public class TradosXliffReaderTest : ReaderTestBase
+    public class MemoQXliffReaderTest : ReaderTestBase
     {
         [TestMethod]
         public void ChangeTracking_1()
         {
-            var path = Path.Combine(IDIR, "ChangeTracking_Trados_1.sdlxliff");
+            var path = Path.Combine(IDIR, "ChangeTracking_memoQ_1.mqxliff");
             var bundle = new XliffReader().Read(path);
             bundle.Assets.Count().Is(1);
             var pairs = bundle.Assets.ElementAt(0).TransPairs.ToArray();
@@ -27,8 +27,8 @@ namespace UnitTestDisfrDoc
                 pairs[0].Source.ToString(InlineToString.Debug).Is("Change Tracking");
                 pairs[1].Source.ToString(InlineToString.Debug).Is("Paragraph #1.");
                 pairs[2].Source.ToString(InlineToString.Debug).Is("Paragraph #2.");
-                pairs[3].Source.ToString(InlineToString.Debug).Is("{g;2}Paragraph{g;2} #3 with {g;5}tags{g;5}.");
-                pairs[4].Source.ToString(InlineToString.Debug).Is("{g;8}Paragraph{g;8} #4 with {g;11}tags{g;11}.");
+                pairs[3].Source.ToString(InlineToString.Debug).Is("{bpt;1}Paragraph{ept;2} #3 with {bpt;3}tags{ept;4}.");
+                pairs[4].Source.ToString(InlineToString.Debug).Is("{bpt;1}Paragraph{ept;2} #4 with {bpt;3}tags{ept;4}.");
 
                 pairs[0].Target.ToString().Is("CHANGE TRACKING");
                 pairs[1].Target.ToString().Is("#1.");
@@ -51,8 +51,8 @@ namespace UnitTestDisfrDoc
                 pairs[0].Target.ToString(InlineToString.Debug).Is("CHANGE TRACKING");
                 pairs[1].Target.ToString(InlineToString.Debug).Is("{Del}PARAGRAPH {None}#1.");
                 pairs[2].Target.ToString(InlineToString.Debug).Is("PARAGRAPH #2{Ins} INSERTED{None}.");
-                pairs[3].Target.ToString(InlineToString.Debug).Is("{Del}{g;2}PARAGRAPH{g;2} #3 {None}WITH {g;5}TAGS{g;5}{Ins}, {g;2}PARAGRAPH{g;2} #3{None}.");
-                pairs[4].Target.ToString(InlineToString.Debug).Is("{g;8}{Del}PARAGRAPH{Ins}ABRACADABRA{None}{g;8} #4 with {g;11}TAGS{g;11}.");
+                pairs[3].Target.ToString(InlineToString.Debug).Is("{Del}{bpt;1}PARAGRAPH{ept;2} #3 {None}WITH {bpt;3}TAGS{ept;4}{Ins}, {bpt;5}PARAGRAPH{ept;6} #3{None}.");
+                pairs[4].Target.ToString(InlineToString.Debug).Is("{bpt;1}{Del}PARAGRAPH{Ins}ABRACADABRA{None}{ept;2} #4 with {bpt;3}TAGS{ept;4}.");
             }
         }
     }

@@ -246,18 +246,21 @@ namespace disfr.Doc
             if ((string)mrk.Attribute("mtype") == "x-mq-tc")
             {
                 // mrk[@mtype = 'x-mq-tc'] is a tracked change in memoQ.
-                // For the moment, we discard a deleted section and just merge an inserted section.
                 var tctype = (string)mrk.Attribute(MQ + "tctype");
                 switch (tctype)
                 {
                     case "del":
-                        // Ignore this mrk element entirely for the moment.
+                        builder.PushProp(InlineProperty.Del);
+                        SegmentInlineContent(builder, mrk, false);
+                        builder.PopProp();
                         return true;
                     case "ins":
-                        // Add the contents just as an ordinary inline data.
+                        builder.PushProp(InlineProperty.Ins);
                         SegmentInlineContent(builder, mrk, false);
+                        builder.PopProp();
                         return true;
                     default:
+                        // Unknown mq:tctype attribute value.  Just pass it to the default mrk processing.
                         break;
                 }
             }

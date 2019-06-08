@@ -380,6 +380,8 @@ namespace disfr.Doc
 
             private readonly InlineBuilder InterSegment = new InlineBuilder();
 
+            private readonly Stack<InlineProperty> PropStack = new Stack<InlineProperty>();
+
             public void Flush()
             {
                 if (!InterSegment.IsEmpty)
@@ -403,6 +405,17 @@ namespace disfr.Doc
             public void Add(InlineTag tag)
             {
                 InterSegment.Add(tag);
+            }
+
+            public void PushProp(InlineProperty prop)
+            {
+                PropStack.Push(InterSegment.Property);
+                InterSegment.Property = prop;
+            }
+
+            public void PopProp()
+            {
+                InterSegment.Property = PropStack.Pop();
             }
         }
 

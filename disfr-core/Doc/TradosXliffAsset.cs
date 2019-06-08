@@ -112,15 +112,18 @@ namespace disfr.Doc
             {
                 case "x-sdl-deleted":
                     // This is a deleted section in change tracking.
-                    // For the moment, we just discard it.
+                    // Can a mrk[@mtype='seg'] occur inside mrk[@mtype='x-sdl-deleted']?  FIXME.
+                    builder.PushProp(InlineProperty.Del);
+                    SegmentInlineContent(builder, mrk, allow_segmentation);
+                    builder.PopProp();
                     return true;
 
                 case "x-sdl-added":
                     // This is an added (inserted) section in change tracking.
-                    // For the moment, we just handle it in an ordinary content.
-                    // OH, BTW, can a mrk[@mtype='seg'] occur inside mrk[@mtype='x-sdl-added']?  FIXME.
+                    // Can a mrk[@mtype='seg'] occur inside mrk[@mtype='x-sdl-added']?  FIXME.
+                    builder.PushProp(InlineProperty.Ins);
                     SegmentInlineContent(builder, mrk, allow_segmentation);
-                    // builder.Add(GetInline(mrk));
+                    builder.PopProp();
                     return true;
 
                 default:
