@@ -424,23 +424,21 @@ namespace disfr.Doc
         /// <returns>The string representation.</returns>
         public string ToString(InlineToString options)
         {
-            var debug = options.HasFlag(InlineToString.TextDebug);
+            var debug = options.HasFlag(InlineToString.ShowProp);
+            var hide = (InlineProperty)(options & InlineToString.HideMask);
             var b = new StringBuilder();
             var prop = InlineProperty.None;
             foreach (var rwp in _Contents)
             {
-                if (rwp.Property != InlineProperty.Del || debug)
+                if ((rwp.Property & hide) == 0)
                 {
                     var s = rwp.Run.ToString(options);
-                    if (s.Length > 0)
+                    if (debug && s.Length > 0 && prop != rwp.Property)
                     {
-                        if (prop != rwp.Property && debug)
-                        {
-                            prop = rwp.Property;
-                            b.Append("{" + prop + "}");
-                        }
-                        b.Append(s);
+                        prop = rwp.Property;
+                        b.Append("{" + prop + "}");
                     }
+                    b.Append(s);
                 }
             }
             return b.ToString();
@@ -512,15 +510,21 @@ namespace disfr.Doc
     /// <summary>
     /// Represents a property designated for a part of an <see cref="InlineString"/>.
     /// </summary>
+    /// <remarks>
+    /// The codes using <see cref="InlineProperty"/> assume that <see cref="None"/> is the default value (i.e., 0).
+    /// You should not change it.
+    /// Also, other values relate to values of <see cref="InlineToString"/>.
+    /// Be careful when you are changing them.
+    /// </remarks>
     public enum InlineProperty
     {
         None = 0,
 
-        Ins,
+        Ins = 0x01,
 
-        Del,
+        Del = 0x02,
 
-        Emp,
+        Emp = 0x04,
     }
 
     /// <summary>
@@ -893,67 +897,100 @@ namespace disfr.Doc
     /// <summary>
     /// Options to control <see cref="InlineRun.ToString(InlineToString)"/> and <see cref="InlineString.ToString(InlineToString)"/>.
     /// </summary>
+    /// <remarks>
+    /// The default value of <see cref="InlineToString"/> is not useful.
+    /// <see cref="Normal"/> designates a practical default behaviour.
+    /// </remarks>
     [Flags]
     public enum InlineToString
     {
         /// <summary>
         /// A representation suitable for normal uses.
         /// </summary>
-        Normal = TagCode | TextLatest,
+        /// <remarks>
+        /// This option shows the latest version of texts with original representation of tags.
+        /// </remarks>
+        Normal = TagCode | HideDel,
+
+        /// <summary>
+        /// A variant of <see cref="Normal"/> to show before-change texts. 
+        /// </summary>
+        /// <remarks>
+        /// This option shows the before-change version of texts with original representation of tags.
+        /// </remarks>
+        Older = TagCode | HideIns,
 
         /// <summary>
         /// A representation suitable for flat applications.
         /// </summary>
-        Flat = TagHidden | TextLatest,
+        /// <remarks>
+        /// This options shows the latest texts with all tags removed.
+        /// </remarks>
+        Flat = TagHidden | HideDel,
 
         /// <summary>
-        /// A representation suitable for debugging.
+        /// A representation suitable for debugging and testing.
         /// </summary>
-        Debug = TagDebug | TextDebug,
+        Debug = TagDebug | ShowProp,
 
         /// <summary>
         /// Any tag is replaced by its code.
         /// </summary>
-        TagCode = 1,
+        TagCode = 0x0100,
 
         /// <summary>
         /// Any tag is replaced by a representation based on a local matching number.
         /// </summary>
-        TagNumber = 2,
+        TagNumber = 0x0200,
 
         /// <summary>
         /// Any tag is replaced by its label.
         /// </summary>
-        TagDisplay = 3,
+        TagDisplay = 0x0400,
 
         /// <summary>
         /// Any tag is replaced by a representation suitable for debugging.
         /// </summary>
-        TagDebug = 4,
+        TagDebug = 0x8000,
 
         /// <summary>
         /// Any tag is hidden completely.
         /// </summary>
-        TagHidden = 0,
+        TagHidden = 0x0000,
 
         /// <summary>
         /// Mask for Tag-controlling options.
         /// </summary>
-        TagMask = TagDebug | TagHidden | TagCode | TagNumber | TagDisplay,
+        TagMask = 0xFF00,
 
         /// <summary>
-        /// All runs with property change markers.
+        /// Hides runs with <see cref="InlineProperty.Ins"/>.
         /// </summary>
-        TextDebug = 16 * 1,
+        HideIns = InlineProperty.Ins,
 
         /// <summary>
-        /// Latest runs only.
+        /// Hides runs with <see cref="InlineProperty.Del"/>.
         /// </summary>
-        TextLatest = 16 * 0,
+        HideDel = InlineProperty.Del,
+
+#if false // For the moment, we have no use case to hide an emphisized run.
+        /// <summary>
+        /// Hides runs with <see cref="InlineProperty.Emp"/>.
+        /// </summary>
+        HideEmp = InlineProperty.Emp,
+#endif
 
         /// <summary>
-        /// Mask for Text presentation options.
+        /// Mask for run hiding options.
         /// </summary>
-        TextMask = TextDebug | TextLatest,
+        HideMask = InlineProperty.Ins | InlineProperty.Del /* | InlineProperty.Emp */,
+
+        /// <summary>
+        /// Shows effective <see cref="InlineProperty"/> values.
+        /// </summary>
+        /// <remarks>
+        /// This is for testing/debugging purpose.
+        /// </remarks>
+        ShowProp = 0x80,
     }
 }

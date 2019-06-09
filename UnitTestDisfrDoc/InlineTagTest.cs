@@ -222,24 +222,24 @@ namespace UnitTestDisfrDoc
             x.ToString().Is("code");
             x.ToString(InlineToString.TagCode).Is("code");
             x.ToString(InlineToString.TagDebug).Is("{name;id}");
-            x.ToString(InlineToString.TagHidden).Is("");
             x.ToString(InlineToString.TagDisplay).Is("{display}");
+            x.ToString(InlineToString.TagHidden).Is("");
             x.ToString(InlineToString.TagNumber).Is("{0}");
 
             var a = new InlineTag(Tag.S, "x", "y", "a", "link", "{a}", "<a/>");
             a.ToString().Is("<a/>");
             a.ToString(InlineToString.TagCode).Is("<a/>");
             a.ToString(InlineToString.TagDebug).Is("{a;x}");
-            a.ToString(InlineToString.TagHidden).Is("");
             a.ToString(InlineToString.TagDisplay).Is("{a}");
+            a.ToString(InlineToString.TagHidden).Is("");
             a.ToString(InlineToString.TagNumber).Is("{0}");
 
             var b = new InlineTag(Tag.S, "x", "y", "b", "link", "{b}", "<b/>");
             b.ToString().Is("<b/>");
             b.ToString(InlineToString.TagCode).Is("<b/>");
             b.ToString(InlineToString.TagDebug).Is("{b;x}");
-            b.ToString(InlineToString.TagHidden).Is("");
             b.ToString(InlineToString.TagDisplay).Is("{b}");
+            b.ToString(InlineToString.TagHidden).Is("");
             b.ToString(InlineToString.TagNumber).Is("{0}");
         }
 
@@ -253,6 +253,15 @@ namespace UnitTestDisfrDoc
                 x.ToString(its).Is(x.ToString(its & InlineToString.TagMask), string.Format("its = {0}", its));
             }
         }
+
+        private static readonly InlineToString[] TagOptions =
+        {
+            InlineToString.TagCode,
+            InlineToString.TagDebug,
+            InlineToString.TagDisplay,
+            InlineToString.TagHidden,
+            InlineToString.TagNumber,
+        };
 
         [TestMethod]
         public void ToString_3()
@@ -270,12 +279,12 @@ namespace UnitTestDisfrDoc
             c.ToString().IsNotNull();
             d.ToString().IsNotNull();
 
-            foreach (var its in InlineToStrings)
+            foreach (var option in TagOptions)
             {
-                a.ToString(its).IsNotNull();
-                b.ToString(its).IsNotNull();
-                c.ToString(its).IsNotNull();
-                d.ToString(its).IsNotNull();
+                a.ToString(option).IsNotNull();
+                b.ToString(option).IsNotNull();
+                c.ToString(option).IsNotNull();
+                d.ToString(option).IsNotNull();
             }
         }
     }
