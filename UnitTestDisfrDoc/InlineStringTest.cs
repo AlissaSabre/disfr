@@ -234,42 +234,56 @@ namespace UnitTestDisfrDoc
         {
             var F = InlineToString.Flat;
             var N = InlineToString.Normal;
+            var L = InlineToString.Older;
             var D = InlineToString.Debug;
             {
                 var s = new InlineBuilder().ToInlineString();
                 s.ToString(F).Is("");
                 s.ToString(N).Is("");
+                s.ToString(L).Is("");
                 s.ToString(D).Is("");
             }
             {
                 var s = new InlineBuilder() { "abc" }.ToInlineString();
                 s.ToString(F).Is("abc");
                 s.ToString(N).Is("abc");
+                s.ToString(L).Is("abc");
                 s.ToString(D).Is("abc");
             }
             {
                 var s = new InlineBuilder() { Ins, "abc", Del, "def" }.ToInlineString();
                 s.ToString(F).Is("abc");
                 s.ToString(N).Is("abc");
+                s.ToString(L).Is("def");
                 s.ToString(D).Is("{Ins}abc{Del}def");
             }
             {
                 var s = new InlineBuilder() { { Tag.S, "id", "rid", "name" } }.ToInlineString();
                 s.ToString(F).Is("");
                 s.ToString(N).Is("");
+                s.ToString(L).Is("");
                 s.ToString(D).Is("{name;id}");
             }
             {
                 var s = new InlineBuilder() { { Tag.S, "id", "rid", "name", "ctype", "display", "<code>" } }.ToInlineString();
                 s.ToString(F).Is("");
                 s.ToString(N).Is("<code>");
+                s.ToString(L).Is("<code>");
                 s.ToString(D).Is("{name;id}");
             }
             {
                 var s = new InlineBuilder() { Ins, { Tag.S, "id", "rid", "name", "ctype", "display", "<code>" }, Del, "abc" }.ToInlineString();
                 s.ToString(F).Is("");
                 s.ToString(N).Is("<code>");
+                s.ToString(L).Is("abc");
                 s.ToString(D).Is("{Ins}{name;id}{Del}abc");
+            }
+            {
+                var s = new InlineBuilder() { Del, { Tag.S, "id", "rid", "name", "ctype", "display", "<code>" }, Ins, "abc" }.ToInlineString();
+                s.ToString(F).Is("abc");
+                s.ToString(N).Is("abc");
+                s.ToString(L).Is("<code>");
+                s.ToString(D).Is("{Del}{name;id}{Ins}abc");
             }
         }
     }
