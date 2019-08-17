@@ -43,7 +43,9 @@
                 <Setter Property="SelectionUnit" Value="Cell"/>
                 <Setter Property="IsReadOnly" Value="True"/>
                 <Setter Property="BorderThickness" Value="0"/>
-                
+                <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+                <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Standard"/>
+
                 <Setter Property="ColumnHeaderStyle">
                     <Setter.Value>
                         <Style TargetType="DataGridColumnHeader">
