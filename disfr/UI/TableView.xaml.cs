@@ -32,6 +32,15 @@ namespace disfr.UI
             InitializeComponent();
             StandardColumns = CreateStandardColumns();
             DataContextChanged += this_DataContextChanged;
+
+            FilterTimer = new DispatcherTimer(
+                TimeSpan.FromSeconds(0.5),
+                DispatcherPriority.ContextIdle,
+                FilterTimer_Tick,
+                Dispatcher)
+            {
+                IsEnabled = false
+            };
         }
 
         #region ColumnInUse attached property
@@ -380,7 +389,7 @@ namespace disfr.UI
         /// <see cref="DataGridCellInfo"/> is a complex data type with a lot of hidden (i.e., private/internal) members.
         /// <see cref="CellLocator"/> is its stripped down version that holds only information we need.  
         /// </remarks>
-        private class CellLocator
+        private struct CellLocator
         {
             public readonly object Item;
             public readonly DataGridColumn Column;
@@ -439,9 +448,30 @@ namespace disfr.UI
             }
         }
 
+        private readonly DispatcherTimer FilterTimer;
+
+        private readonly HashSet<TextBox> PendingFilterTextChanges = new HashSet<TextBox>();
+
         private void FilterBox_TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var textbox = sender as TextBox;
+            FilterTimer.Stop();
+            PendingFilterTextChanges.Add(sender as TextBox);
+            FilterTimer.Start();
+        }
+
+        private void FilterTimer_Tick(object sender, EventArgs e)
+        {
+            FilterTimer.Stop();
+            foreach (var textbox in PendingFilterTextChanges)
+            {
+                UpdateColumnFilter(textbox);
+            }
+            PendingFilterTextChanges.Clear();
+            InstallFilter();
+        }
+
+        private void UpdateColumnFilter(TextBox textbox)
+        {
             var column = textbox.GetValue(ColumnProperty) as DataGridColumn;
 
             Func<IRowData, bool> filter;
@@ -476,7 +506,10 @@ namespace disfr.UI
                 }
             }
             column.SetValue(FilterProperty, filter);
+        }
 
+        private void InstallFilter()
+        {
             // For the moment, we need to enumerate all RowData whenever the ContentsFilter is changed.
             // It takes some significant time.
             // We postpone updating the filter when the user is typing the filter text quickly,
@@ -486,20 +519,21 @@ namespace disfr.UI
             if (!FilterUpdating)
             {
                 FilterUpdating = true;
-                Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (Action)delegate ()
                 {
+                    var cv = dataGrid.Items as CollectionView;
+
                     // Create a new filter (reflecting the text box updates) and set it to the controller. 
                     var matchers = dataGrid.Columns.Select(c => c.GetValue(FilterProperty) as Func<IRowData, bool>).Where(m => m != null).ToArray();
                     switch (matchers.Length)
                     {
                         case 0:
-                            Controller.ContentsFilter = null;
+                            cv.Filter = null;
                             break;
                         case 1:
-                            Controller.ContentsFilter = matchers[0];
+                            cv.Filter = row => matchers[0](row as IRowData);
                             break;
                         default:
-                            Controller.ContentsFilter = row => matchers.All(m => m(row));
+                            cv.Filter = row => matchers.All(m => m(row as IRowData));
                             break;
                     }
 
@@ -520,7 +554,7 @@ namespace disfr.UI
                     }
 
                     FilterUpdating = false;
-                });
+                }
             }
         }
 
