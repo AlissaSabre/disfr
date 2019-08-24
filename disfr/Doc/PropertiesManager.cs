@@ -15,8 +15,23 @@ namespace disfr.Doc
         public int GetIndex(string key)
         {
             int index;
-            if (Indexes.TryGetValue(key, out index)) return index;
-            return Indexes[key] = Indexes.Count;
+            if (!Indexes.TryGetValue(key, out index))
+            {
+                index = Indexes.Count;
+                Indexes.Add(key, index);
+            }
+            return index;
+        }
+
+        public void AddKeys(IEnumerable<string> keys)
+        {
+            foreach (var key in keys)
+            {
+                if (!Indexes.ContainsKey(key))
+                {
+                    Indexes.Add(key, Indexes.Count); 
+                }
+            }
         }
 
         public void Put(ref string[] vector, string key, string value)

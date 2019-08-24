@@ -66,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PairVisualizerTest.cs" />
     <Compile Include="ReaderTestBase.cs" />
+    <Compile Include="StringStream.cs" />
     <Compile Include="TmxReaderTest.cs" />
     <Compile Include="SdltmReaderTest.cs" />
     <Compile Include="XliffReaderTest.cs" />
