@@ -10,8 +10,6 @@ namespace disfr.Doc
 {
     public class TmxReader : IAssetReader
     {
-        private const int MINIMUM_ENTRIES_PER_THREAD = 400;
-
         private static readonly string[] _FilterString = { "TMX Translation Memory|*.tmx" };
 
         public IList<string> FilterString { get { return _FilterString; } }
@@ -71,113 +69,77 @@ namespace disfr.Doc
                 assets[i] = asset;
             }
 
-#if true
-            var thread_count = Environment.ProcessorCount - 1;
-            if (thread_count * MINIMUM_ENTRIES_PER_THREAD > tus.Count)
+            var array_of_list_of_pairs = new List<TmxPair>[langs.Length];
+            for (int i = 0; i < array_of_list_of_pairs.Length; i++) array_of_list_of_pairs[i] = new List<TmxPair>();
+
+            var segs = new XElement[langs.Length];
+            var props = new List<KeyValuePair<string, string>>[langs.Length];
+            var notes = new List<string>[langs.Length];
+            for (int i = 0; i < segs.Length; i++)
             {
-                thread_count = tus.Count / MINIMUM_ENTRIES_PER_THREAD;
+                segs[i] = null;
+                props[i] = new List<KeyValuePair<string, string>>();
+                notes[i] = new List<string>();
             }
-            if (thread_count < 1) thread_count = 1;
-#else
-            var thread_count = 1;
-#endif
-            var threads = new Thread[thread_count];
-            var entries_per_thread = (int)Math.Ceiling((double)tus.Count / thread_count);
 
-            // When accessing array_of_array_of_list_of_pairs[x][y][z], 
-            // x is a thread index, 
-            // y is a language index, 
-            // z is a serial number within the thread-language group.
-            var array_of_array_of_list_of_pairs = new List<TmxPair>[threads.Length][];
+            var tu_props = new List<KeyValuePair<string, string>>();
+            var tu_notes = new List<string>();
+            var tag_pool = new Dictionary<InlineTag, int>();
 
-            for (int thread = 0; thread < threads.Length; thread++)
+            for (int index = 0; index < tus.Count; index++)
             {
-                var array_of_list_of_pairs = new List<TmxPair>[langs.Length];
-                for (int i = 0; i < array_of_list_of_pairs.Length; i++) array_of_list_of_pairs[i] = new List<TmxPair>();
-                array_of_array_of_list_of_pairs[thread] = array_of_list_of_pairs;
+                var tu = tus[index];
 
-                int min = thread * entries_per_thread;
-                int max = Math.Min(min + entries_per_thread, tus.Count); 
-                threads[thread] = new Thread((ThreadStart)delegate
+                CollectProps(tu_props, tu);
+                CollectNotes(tu_notes, tu);
+
+                for (int i = 0; i < segs.Length; i++) segs[i] = null;
+                foreach (var tuv in tu.Elements(X + "tuv"))
                 {
-                    var segs = new XElement[langs.Length];
-                    var props = new List<KeyValuePair<string, string>>[langs.Length];
-                    var notes = new List<string>[langs.Length];
-                    for (int i = 0; i < segs.Length; i++)
+                    for (int i = 0; i < langs.Length; i++)
                     {
-                        segs[i] = null;
-                        props[i] = new List<KeyValuePair<string, string>>();
-                        notes[i] = new List<string>();
-                    }
-
-                    var tu_props = new List<KeyValuePair<string, string>>();
-                    var tu_notes = new List<string>();
-                    var tag_pool = new Dictionary<InlineTag, int>();
-
-                    for (int index = min; index < max; index++)
-                    {
-                        var tu = tus[index];
-
-                        CollectProps(tu_props, tu);
-                        CollectNotes(tu_notes, tu);
-
-                        for (int i = 0; i < segs.Length; i++) segs[i] = null;
-                        foreach (var tuv in tu.Elements(X + "tuv"))
+                        if (Covers(langs[i], Lang(tuv)))
                         {
-                            for (int i = 0; i < langs.Length; i++)
-                            {
-                                if (Covers(langs[i], Lang(tuv)))
-                                {
-                                    segs[i] = tuv.Element(X + "seg");
-                                    CollectProps(props[i], tuv);
-                                    CollectNotes(notes[i], tuv);
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (segs[0] != null)
-                        {
-                            var id = (string)tu.Attribute("tuid") ?? "";
-                            var source = NumberTags(tag_pool, GetInline(segs[0], X));
-                            var source_lang = Lang(segs[0].Parent);
-
-                            for (int i = 1; i < segs.Length; i++)
-                            {
-                                if (segs[i] != null)
-                                {
-                                    var pair = new TmxPair()
-                                    {
-                                        Serial = 0, // XXX
-                                        Id = id,
-                                        Source = source,
-                                        Target = MatchTags(tag_pool, GetInline(segs[i], X)),
-                                        SourceLang = source_lang,
-                                        TargetLang = Lang(segs[i].Parent),
-                                    };
-                                    SetProps(assets[i].PropMan, pair, tu_props, pool);
-                                    SetProps(assets[i].PropMan, pair, props[0], pool);
-                                    SetProps(assets[i].PropMan, pair, props[i], pool);
-                                    pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
-                                    array_of_list_of_pairs[i].Add(pair);
-                                }
-                            }
+                            segs[i] = tuv.Element(X + "seg");
+                            CollectProps(props[i], tuv);
+                            CollectNotes(notes[i], tuv);
+                            break;
                         }
                     }
-                });
-                threads[thread].Start();
+                }
+
+                if (segs[0] != null)
+                {
+                    var id = (string)tu.Attribute("tuid") ?? "";
+                    var source = NumberTags(tag_pool, GetInline(segs[0], X));
+                    var source_lang = Lang(segs[0].Parent);
+
+                    for (int i = 1; i < segs.Length; i++)
+                    {
+                        if (segs[i] != null)
+                        {
+                            var pair = new TmxPair()
+                            {
+                                Serial = 0, // XXX
+                                Id = id,
+                                Source = source,
+                                Target = MatchTags(tag_pool, GetInline(segs[i], X)),
+                                SourceLang = source_lang,
+                                TargetLang = Lang(segs[i].Parent),
+                            };
+                            SetProps(assets[i].PropMan, pair, tu_props, pool);
+                            SetProps(assets[i].PropMan, pair, props[0], pool);
+                            SetProps(assets[i].PropMan, pair, props[i], pool);
+                            pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
+                            array_of_list_of_pairs[i].Add(pair);
+                        }
+                    }
+                }
             }
-            for (int thread = 0; thread < threads.Length; thread++) threads[thread].Join();
 
             for (int i = 1; i < langs.Length; i++)
             {
-                var pairs = new TmxPair[array_of_array_of_list_of_pairs.Sum(x => x[i].Count)];
-                int index = 0;
-                for (int t = 0; t < thread_count; t++)
-                {
-                    array_of_array_of_list_of_pairs[t][i].CopyTo(pairs, index);
-                    index += array_of_array_of_list_of_pairs[t][i].Count;
-                }
+                var pairs = array_of_list_of_pairs[i].ToArray();
                 assets[i].TransPairs = pairs;
             }
 
