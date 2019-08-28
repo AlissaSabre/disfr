@@ -15,17 +15,17 @@ namespace disfr.Doc
     public static class FileUtils
     {
         /// <summary>
-        /// Checks a <see cref="Stream"/> is a ZIP archive.
+        /// Quickly checks a <see cref="Stream"/> looks like a ZIP archive.
         /// </summary>
         /// <param name="file">A ZIP archive stream.</param>
         /// <returns>True if it is a ZIP archive.  False otherwise.</returns>
         /// <exception cref="NotSupportedException"><paramref name="file"/> doesn't support seeking.</exception>
         /// <exception cref="IOException">An I/O error occurred.</exception>
         /// <remarks>
-        /// This method internally changes the current position of the <paramref name="file"/>,
-        /// but it seeks to the original position before returns.
-        /// To do so, <paramref name="file"/> needs to support seeking,
-        /// or it throws <see cref="NotSupportedException"/>.
+        /// This method reads from the <paramref name="file"/>,
+        /// but it seeks to its original position before returning.
+        /// So, <paramref name="file"/> needs to support seeking,
+        /// or this method throws <see cref="NotSupportedException"/>.
         /// </remarks>
         public static bool IsZip(this Stream file)
         {
@@ -44,22 +44,27 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Returns the first XML element in the <see cref="Stream"/> ignoring any children.
+        /// Quickly checks and returns the first XML element in a <see cref="Stream"/>,
+        /// ignoring any child nodes.
         /// </summary>
         /// <param name="file">An XML stream.</param>
         /// <returns>An <see cref="XElement"/> instance with no children,
-        /// or null if the first part of <paramref name="file"/> is not in an XML format.</returns>
+        /// or null if the first part of <paramref name="file"/> does not form an XML document fragment.</returns>
         /// <exception cref="NotSupportedException"><paramref name="file"/> doesn't support seeking.</exception>
         /// <exception cref="IOException">An I/O error occured.</exception>
         /// <remarks>
-        /// This method internally changes the current position of the <paramref name="file"/>,
-        /// but it seeks to the original position before returns.
-        /// To do so, <paramref name="file"/> needs to support seeking,
-        /// or it throws <see cref="NotSupportedException"/>.
+        /// This method reads from the <paramref name="file"/>,
+        /// but it tries to seek to its original position before returning.
+        /// So, <paramref name="file"/> needs to support seeking,
+        /// or this method throws <see cref="NotSupportedException"/> unless <paramref name="read"/> is true.
+        /// If you are working on a <see cref="Stream"/> whose <see cref="Stream.CanSeek"/> is false,
+        /// you can call this method with <paramref name="read"/> set to true
+        /// to get an <see cref="XElement"/> without seeking.
+        /// If you do so, you need to somehow rewind the stream afterwards.
         /// </remarks>
-        public static XElement PeekElementWithoutChildren(this Stream file)
+        public static XElement PeekElementWithoutChildren(this Stream file, bool read = false)
         {
-            var position = file.Position;
+            var position = read ? -1 : file.Position;
             try
             {
                 // I experienced that some import filter (used with some CAT software) 
@@ -83,7 +88,14 @@ namespace disfr.Doc
                     for (int i = 0; i < reader.AttributeCount; i++)
                     {
                         reader.MoveToAttribute(i);
-                        element.Add(new XAttribute(XName.Get(reader.LocalName, reader.NamespaceURI), reader.Value));
+                        if (reader.Name == "xmlns" || reader.Name == "xml")
+                        {
+                            // Linq to XML goes mad on an attribute of this name.  Just ignore it.
+                        }
+                        else
+                        {
+                            element.Add(new XAttribute(XName.Get(reader.LocalName, reader.NamespaceURI), reader.Value));
+                        }
                     }
                     return element;
                 }
@@ -94,7 +106,10 @@ namespace disfr.Doc
             }
             finally
             {
-                file.Position = position;
+                if (position >= 0)
+                {
+                    file.Position = position;
+                }
             }
         }
     }

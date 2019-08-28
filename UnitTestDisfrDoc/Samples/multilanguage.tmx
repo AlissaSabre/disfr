@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<tmx xmlns="http://www.lisa.org/tmx14" version="1.4">
+  <header creationtool="hands" creationtoolversion="0" segtype="sentence" o-tmf="brain" adminlang="en" srclang="*all*" datatype="unknown" />
+  <body>
+    <tu>
+      <tuv xml:lang="en">
+        <seg>Hello World!</seg>
+      </tuv>
+      <tuv xml:lang="zh">
+        <seg>你好世界！</seg>
+      </tuv>
+      <tuv xml:lang="es">
+        <seg>¡Hola Mundo!</seg>
+      </tuv>
+      <tuv xml:lang="fr">
+        <seg>Bonjour monde!</seg>
+      </tuv>
+      <tuv xml:lang="it">
+        <seg>Ciao mondo!</seg>
+      </tuv>
+      <tuv xml:lang="de">
+        <seg>Hallo Welt!</seg>
+      </tuv>
+      <tuv xml:lang="ru">
+        <seg>Привет мир!</seg>
+      </tuv>
+    </tu>
+  </body>
+</tmx>
+

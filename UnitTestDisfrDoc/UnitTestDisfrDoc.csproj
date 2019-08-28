@@ -43,6 +43,7 @@
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.106.0\lib\net45\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -69,6 +70,7 @@
     <Compile Include="StringStream.cs" />
     <Compile Include="TmxReaderTest.cs" />
     <Compile Include="SdltmReaderTest.cs" />
+    <Compile Include="PeekElementWithoutChildrenTest.cs" />
     <Compile Include="XliffReaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +93,7 @@
     <None Include="Samples\New_features.ppt.sdlxliff" />
     <None Include="Samples\Readme.md" />
     <None Include="Samples\tea-party.sdltm" />
+    <None Include="Samples\tmx_sample_document.tmx" />
     <None Include="Samples\Xliff1.xliff" />
     <None Include="Samples\Xliff2.xliff" />
     <None Include="Samples\XuanZang.tmx" />
@@ -101,7 +104,9 @@
       <Name>disfr</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Samples\multilanguage.tmx" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
