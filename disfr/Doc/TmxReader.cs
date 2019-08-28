@@ -34,18 +34,19 @@ namespace disfr.Doc
 
         public IEnumerable<IAsset> Read(Stream stream, string package)
         {
-            XElement tmx;
+            XElement tmx = stream.PeekElementWithoutChildren();
+
+            var X = tmx.Name.Namespace;
+            if (tmx.Name.LocalName != "tmx" || (X != TMX && X != XNamespace.None))
+            {
+                return null;
+            }
+
             try
             {
                 tmx = XElement.Load(stream, LoadOptions.PreserveWhitespace);
             }
             catch (Exception)
-            {
-                return null;
-            }
-
-            var X = tmx.Name.Namespace;
-            if (tmx.Name.LocalName != "tmx" || (X != TMX && X != XNamespace.None))
             {
                 return null;
             }
