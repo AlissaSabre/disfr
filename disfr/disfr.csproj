@@ -145,7 +145,7 @@
     <Compile Include="UI\BilingualRowData.cs" />
     <Compile Include="Doc\XliffParser.cs" />
     <Compile Include="Doc\XliffReader.cs" />
-    <Compile Include="Doc\ZipUtils.cs" />
+    <Compile Include="Doc\FileUtils.cs" />
     <Compile Include="UI\Commands.cs" />
     <Compile Include="UI\MainController.cs" />
     <Compile Include="UI\DelegateCommand.cs" />
