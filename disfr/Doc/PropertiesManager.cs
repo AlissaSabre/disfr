@@ -20,11 +20,14 @@ namespace disfr.Doc
             Indexes = concurrent
                 ? (IDictionary<string, int>)new ConcurrentDictionary<string, int>()
                 : (IDictionary<string, int>)new Dictionary<string, int>();
+            KeyCount = 0;
         }
 
         private readonly object Lock;
 
         private readonly IDictionary<string, int> Indexes;
+
+        private volatile int KeyCount;
 
         private readonly ConcurrentDictionary<string, string> Visibles = new ConcurrentDictionary<string, string>();
 
@@ -35,15 +38,18 @@ namespace disfr.Doc
             {
                 if (Lock == null)
                 {
-                    index = Indexes.Count;
-                    Indexes.Add(key, index);
+                    Indexes.Add(key, KeyCount++);
                 }
                 else
                 {
                     lock (Lock)
                     {
-                        index = Indexes.Count;
-                        if (!((ConcurrentDictionary<string, int>)Indexes).TryAdd(key, index))
+                        index = KeyCount;
+                        if (((ConcurrentDictionary<string, int>)Indexes).TryAdd(key, index))
+                        {
+                            KeyCount++;
+                        }
+                        else
                         {
                             index = Indexes[key];
                         }
@@ -63,7 +69,7 @@ namespace disfr.Doc
                 {
                     if (!Indexes.ContainsKey(key))
                     {
-                        Indexes.Add(key, Indexes.Count);
+                        Indexes.Add(key, KeyCount++);
                     }
                 }
             }
@@ -92,9 +98,10 @@ namespace disfr.Doc
             var v = vector;
             if (v == null || v.Length <= index)
             {
-                var u = new string[Indexes.Count]; // XXX: Or, should we allocate [Index + 1] or in-between?  
+                var u = new string[KeyCount]; // XXX: Or, should we allocate [index + 1] or in-between?  
                 if (v != null) Array.Copy(v, u, v.Length);
-                v = vector = u;
+                vector = u;
+                v = u;
             }
             v[index] = value;
         }
