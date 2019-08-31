@@ -61,9 +61,9 @@ namespace disfr.Doc
 
         public IEnumerable<ITransPair> AltPairs { get { Materialize(); return _AltPairs; } }
 
-        protected readonly PropertiesManager PropMan = new PropertiesManager(); 
+        protected readonly PropertiesManager PropMan = new PropertiesManager(false); 
 
-        public IList<PropInfo> Properties { get { Materialize(); return PropMan.Infos.ToList().AsReadOnly(); } }
+        public IList<PropInfo> Properties { get { Materialize(); return PropMan.Properties; } }
 
         protected bool Materialized = false;
 

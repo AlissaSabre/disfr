@@ -379,9 +379,9 @@ namespace disfr.Doc
 
         public IEnumerable<ITransPair> AltPairs { get { return Enumerable.Empty<ITransPair>(); } }
 
-        internal readonly PropertiesManager PropMan = new PropertiesManager();
+        internal readonly PropertiesManager PropMan = new PropertiesManager(false);
 
-        public IList<PropInfo> Properties { get { return PropMan.Infos.ToList().AsReadOnly(); } }
+        public IList<PropInfo> Properties { get { return PropMan.Properties; } }
     }
 
     class TmxPair : ITransPair
