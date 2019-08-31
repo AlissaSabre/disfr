@@ -356,7 +356,7 @@ namespace disfr.Doc
         }
 
 
-        private static void SetProps(PropertiesManager manager, TmxPair pair, IEnumerable<KeyValuePair<string, string>> props, StringPool pool)
+        private static void SetProps(PropertiesManager manager, TmxPair pair, IEnumerable<KeyValuePair<string, string>> props, IStringPool pool)
         {
             foreach (var kvp in props)
             {
