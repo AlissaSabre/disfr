@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace disfr.Doc
@@ -73,70 +73,89 @@ namespace disfr.Doc
             var array_of_array_of_pairs = new TmxPair[langs.Length][];
             for (int i = 1; i < array_of_array_of_pairs.Length; i++) array_of_array_of_pairs[i] = new TmxPair[tus.Count];
 
-            var segs = new XElement[langs.Length];
-            var props = new List<KeyValuePair<string, string>>[langs.Length];
-            var notes = new List<string>[langs.Length];
-            for (int i = 0; i < segs.Length; i++)
-            {
-                segs[i] = null;
-                props[i] = new List<KeyValuePair<string, string>>();
-                notes[i] = new List<string>();
-            }
-
-            var tu_props = new List<KeyValuePair<string, string>>();
-            var tu_notes = new List<string>();
-            var tag_pool = new Dictionary<InlineTag, int>();
-
-            for (int index = 0; index < tus.Count; index++)
-            {
-                var tu = tus[index];
-
-                CollectProps(tu_props, tu);
-                CollectNotes(tu_notes, tu);
-
-                for (int i = 0; i < segs.Length; i++) segs[i] = null;
-                foreach (var tuv in tu.Elements(X + "tuv"))
+            Parallel.For(0, tus.Count,
+                // Local Init
+                () =>
                 {
+                    var locals = new
+                    {
+                        segs = new XElement[langs.Length],
+                        props = new List<KeyValuePair<string, string>>[langs.Length],
+                        notes = new List<string>[langs.Length],
+
+                        tu_props = new List<KeyValuePair<string, string>>(),
+                        tu_notes = new List<string>(),
+                        tag_pool = new Dictionary<InlineTag, int>(),
+                    };
                     for (int i = 0; i < langs.Length; i++)
                     {
-                        if (Covers(langs[i], Lang(tuv)))
-                        {
-                            segs[i] = tuv.Element(X + "seg");
-                            CollectProps(props[i], tuv);
-                            CollectNotes(notes[i], tuv);
-                            break;
-                        }
+                        locals.props[i] = new List<KeyValuePair<string, string>>();
+                        locals.notes[i] = new List<string>();
                     }
-                }
-
-                if (segs[0] != null)
+                    return locals;
+                },
+                // Body
+                (index, state, locals) =>
                 {
-                    var id = (string)tu.Attribute("tuid") ?? "";
-                    var source = NumberTags(tag_pool, GetInline(segs[0], X));
-                    var source_lang = Lang(segs[0].Parent);
+                    var tu = tus[index];
+                    var segs = locals.segs;
+                    var props = locals.props;
+                    var notes = locals.notes;
+                    var tu_props = locals.tu_props;
+                    var tu_notes = locals.tu_notes;
+                    var tag_pool = locals.tag_pool;
 
-                    for (int i = 1; i < segs.Length; i++)
+                    CollectProps(tu_props, tu);
+                    CollectNotes(tu_notes, tu);
+
+                    for (int i = 0; i < segs.Length; i++) segs[i] = null;
+                    foreach (var tuv in tu.Elements(X + "tuv"))
                     {
-                        if (segs[i] != null)
+                        for (int i = 0; i < langs.Length; i++)
                         {
-                            var pair = new TmxPair()
+                            if (Covers(langs[i], Lang(tuv)))
                             {
-                                Serial = 0, // XXX
-                                Id = id,
-                                Source = source,
-                                Target = MatchTags(tag_pool, GetInline(segs[i], X)),
-                                SourceLang = source_lang,
-                                TargetLang = Lang(segs[i].Parent),
-                            };
-                            SetProps(assets[i].PropMan, pair, tu_props, pool);
-                            SetProps(assets[i].PropMan, pair, props[0], pool);
-                            SetProps(assets[i].PropMan, pair, props[i], pool);
-                            pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
-                            array_of_array_of_pairs[i][index] = pair;
+                                segs[i] = tuv.Element(X + "seg");
+                                CollectProps(props[i], tuv);
+                                CollectNotes(notes[i], tuv);
+                                break;
+                            }
                         }
                     }
-                }
-            }
+
+                    if (segs[0] != null)
+                    {
+                        var id = (string)tu.Attribute("tuid") ?? "";
+                        var source = NumberTags(tag_pool, GetInline(segs[0], X));
+                        var source_lang = Lang(segs[0].Parent);
+
+                        for (int i = 1; i < segs.Length; i++)
+                        {
+                            if (segs[i] != null)
+                            {
+                                var pair = new TmxPair()
+                                {
+                                    Serial = 0, // XXX
+                                    Id = id,
+                                    Source = source,
+                                    Target = MatchTags(tag_pool, GetInline(segs[i], X)),
+                                    SourceLang = source_lang,
+                                    TargetLang = Lang(segs[i].Parent),
+                                };
+                                SetProps(assets[i].PropMan, pair, tu_props, pool);
+                                SetProps(assets[i].PropMan, pair, props[0], pool);
+                                SetProps(assets[i].PropMan, pair, props[i], pool);
+                                pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
+                                array_of_array_of_pairs[i][index] = pair;
+                            }
+                        }
+                    }
+                    return locals;
+                },
+                // Local Finally
+                locals =>
+                { /* do nothing */ }
+            );
 
             for (int i = 1; i < langs.Length; i++)
             {
