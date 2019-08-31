@@ -48,7 +48,9 @@ namespace disfr.Doc
             if (s == null) return null;
             string t;
             if (Pool.TryGetValue(s, out t)) return t;
+#if false
             if ((t = string.IsInterned(s)) != null) s = t;
+#endif
             Pool.Add(s, s);
             return s;
         }
@@ -78,7 +80,9 @@ namespace disfr.Doc
             if (s == null) return null;
             string t;
             if (Pool.TryGetValue(s, out t)) return t;
+#if false
             if ((t = string.IsInterned(s)) != null) s = t;
+#endif
             if (Pool.TryAdd(s, s)) return s;
             return Pool[s];
         }
