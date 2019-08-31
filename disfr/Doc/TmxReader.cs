@@ -398,7 +398,7 @@ namespace disfr.Doc
 
         public IEnumerable<ITransPair> AltPairs { get { return Enumerable.Empty<ITransPair>(); } }
 
-        internal readonly PropertiesManager PropMan = new PropertiesManager(false);
+        internal readonly PropertiesManager PropMan = new PropertiesManager(true);
 
         public IList<PropInfo> Properties { get { return PropMan.Properties; } }
     }
