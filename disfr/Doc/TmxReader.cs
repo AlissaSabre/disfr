@@ -52,7 +52,7 @@ namespace disfr.Doc
             }
 
             var tus = tmx.Element(X + "body").Elements(X + "tu").ToList();
-            var pool = new StringPool();
+            var pool = new ConcurrentStringPool();
 
             string[] langs = DetectLanguages(tmx);
             if (langs == null) return null;
@@ -70,8 +70,8 @@ namespace disfr.Doc
                 assets[i] = asset;
             }
 
-            var array_of_list_of_pairs = new List<TmxPair>[langs.Length];
-            for (int i = 0; i < array_of_list_of_pairs.Length; i++) array_of_list_of_pairs[i] = new List<TmxPair>();
+            var array_of_array_of_pairs = new TmxPair[langs.Length][];
+            for (int i = 1; i < array_of_array_of_pairs.Length; i++) array_of_array_of_pairs[i] = new TmxPair[tus.Count];
 
             var segs = new XElement[langs.Length];
             var props = new List<KeyValuePair<string, string>>[langs.Length];
@@ -132,7 +132,7 @@ namespace disfr.Doc
                             SetProps(assets[i].PropMan, pair, props[0], pool);
                             SetProps(assets[i].PropMan, pair, props[i], pool);
                             pair.AddNotes(tu_notes.Concat(notes[0]).Concat(notes[i]));
-                            array_of_list_of_pairs[i].Add(pair);
+                            array_of_array_of_pairs[i][index] = pair;
                         }
                     }
                 }
@@ -140,7 +140,7 @@ namespace disfr.Doc
 
             for (int i = 1; i < langs.Length; i++)
             {
-                var pairs = array_of_list_of_pairs[i].ToArray();
+                var pairs = array_of_array_of_pairs[i].Where(p => p != null).ToArray();
                 assets[i].TransPairs = pairs;
             }
 
