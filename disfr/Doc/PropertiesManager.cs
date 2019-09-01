@@ -98,10 +98,17 @@ namespace disfr.Doc
             var v = vector;
             if (v == null || v.Length <= index)
             {
-                var u = new string[KeyCount]; // XXX: Or, should we allocate [index + 1] or in-between?  
-                if (v != null) Array.Copy(v, u, v.Length);
-                vector = u;
-                v = u;
+                // A sort of a silly workaround... FIXME. 
+                vector = new string[Math.Max(index + 1, KeyCount)];
+                if (v != null)
+                {
+                    for (int i = 0; i < v.Length; i++)
+                    {
+                        var p = v[i];
+                        if (p != null) vector[i] = p;
+                    }
+                }
+                v = vector;
             }
             v[index] = value;
         }
