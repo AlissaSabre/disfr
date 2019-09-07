@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,6 +32,39 @@ namespace disfr.Doc
         private static readonly XName XML_LANG = XNamespace.Xml + "lang";
 
         private static readonly XName LANG = "lang";
+
+        /// <summary>
+        /// Task-local work variables to be used in <see cref="Parallel.For{TLocal}(int, int, Func{TLocal}, Func{int, ParallelLoopState, TLocal, TLocal}, Action{TLocal})"/>.
+        /// </summary>
+        private class Locals
+        {
+            public readonly XElement[] Segs;
+            public readonly List<KeyValuePair<string, string>>[] Props;
+            public readonly List<string>[] Notes;
+
+            public readonly List<KeyValuePair<string, string>> TuProps;
+            public readonly List<string> TuNotes;
+
+            public readonly Dictionary<InlineTag, int> TagPool;
+
+            public Locals(int languages)
+            {
+                Segs = new XElement[languages];
+                Props = new List<KeyValuePair<string, string>>[languages];
+                Notes = new List<string>[languages];
+
+                for (int i = 0; i < languages; i++)
+                {
+                    Props[i] = new List<KeyValuePair<string, string>>();
+                    Notes[i] = new List<string>();
+                }
+
+                TuProps = new List<KeyValuePair<string, string>>();
+                TuNotes = new List<string>();
+
+                TagPool = new Dictionary<InlineTag, int>();
+            }
+        }
 
         public IEnumerable<IAsset> Read(Stream stream, string package)
         {
@@ -73,37 +107,25 @@ namespace disfr.Doc
             var array_of_array_of_pairs = new TmxPair[langs.Length][];
             for (int i = 1; i < array_of_array_of_pairs.Length; i++) array_of_array_of_pairs[i] = new TmxPair[tus.Count];
 
+            var locals_pool = new ConcurrentStack<Locals>();
             Parallel.For(0, tus.Count,
+                new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 // Local Init
                 () =>
                 {
-                    var locals = new
-                    {
-                        segs = new XElement[langs.Length],
-                        props = new List<KeyValuePair<string, string>>[langs.Length],
-                        notes = new List<string>[langs.Length],
-
-                        tu_props = new List<KeyValuePair<string, string>>(),
-                        tu_notes = new List<string>(),
-                        tag_pool = new Dictionary<InlineTag, int>(),
-                    };
-                    for (int i = 0; i < langs.Length; i++)
-                    {
-                        locals.props[i] = new List<KeyValuePair<string, string>>();
-                        locals.notes[i] = new List<string>();
-                    }
-                    return locals;
+                    Locals locals;
+                    return locals_pool.TryPop(out locals) ? locals : new Locals(langs.Length);
                 },
                 // Body
                 (index, state, locals) =>
                 {
                     var tu = tus[index];
-                    var segs = locals.segs;
-                    var props = locals.props;
-                    var notes = locals.notes;
-                    var tu_props = locals.tu_props;
-                    var tu_notes = locals.tu_notes;
-                    var tag_pool = locals.tag_pool;
+                    var segs = locals.Segs;
+                    var props = locals.Props;
+                    var notes = locals.Notes;
+                    var tu_props = locals.TuProps;
+                    var tu_notes = locals.TuNotes;
+                    var tag_pool = locals.TagPool;
 
                     CollectProps(tu_props, tu);
                     CollectNotes(tu_notes, tu);
@@ -154,8 +176,11 @@ namespace disfr.Doc
                 },
                 // Local Finally
                 locals =>
-                { /* do nothing */ }
+                {
+                    locals_pool.Push(locals);
+                }
             );
+            locals_pool.Clear();
 
             for (int i = 1; i < langs.Length; i++)
             {
