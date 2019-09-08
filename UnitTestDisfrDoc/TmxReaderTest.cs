@@ -62,11 +62,9 @@ namespace UnitTestDisfrDoc
                     + "<tu><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='zh-cn'><seg>a</seg></tuv></tu>"
                     + "<tu><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='zh-tw'><seg>a</seg></tuv></tu>"
                     + POSTAMBLE), "test").ToArray();
-                a.Length.Is(3);
+                a.Length.Is(1);
                 a[0].SourceLang.Is("en");
                 a[0].TargetLang.Is("zh");
-                a[1].TargetLang.Is("zh-cn");
-                a[2].TargetLang.Is("zh-tw");
             }
             {
                 var a = new TmxReader().Read(new StringStream(

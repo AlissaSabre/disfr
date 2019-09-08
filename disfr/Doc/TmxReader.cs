@@ -196,6 +196,10 @@ namespace disfr.Doc
         /// </summary>
         /// <param name="tmx">The &lt;tmx&gt; element.</param>
         /// <returns>An array of language codes, whose element at [0] is the source language.</returns>
+        /// <remarks>
+        /// Language codes are defined being case insensitive.
+        /// This method takes care of that feature.
+        /// </remarks>
         private string[] DetectLanguages(XElement tmx)
         {
             var X = tmx.Name.Namespace;
@@ -229,6 +233,7 @@ namespace disfr.Doc
                 tlangs.Remove(slang);
             }
 
+            tlangs.Sort(StringComparer.OrdinalIgnoreCase);
             tlangs.Insert(0, slang);
             return tlangs.ToArray();
         }
@@ -254,11 +259,11 @@ namespace disfr.Doc
         {
             if (parent.Length == code.Length)
             {
-                return StringComparer.OrdinalIgnoreCase.Equals(parent, code);
+                return code.Equals(parent, StringComparison.OrdinalIgnoreCase);
             }
             else if (parent.Length < code.Length)
             {
-                return code[parent.Length] == '-' && StringComparer.OrdinalIgnoreCase.Equals(parent, code.Substring(0, parent.Length));
+                return code.StartsWith(parent, StringComparison.OrdinalIgnoreCase) && code[parent.Length] == '-';
             }
             else
             {
