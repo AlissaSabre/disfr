@@ -38,7 +38,8 @@ namespace disfr.Doc
             {
                 if (Lock == null)
                 {
-                    Indexes.Add(key, KeyCount++);
+                    index = KeyCount++;
+                    Indexes.Add(key, index);
                 }
                 else
                 {
@@ -57,26 +58,6 @@ namespace disfr.Doc
                 }
             }
             return index;
-        }
-
-        public void AddKeys(IEnumerable<string> keys)
-        {
-            bool taken = false;
-            try
-            {
-                if (Lock != null) Monitor.Enter(Lock, ref taken);
-                foreach (var key in keys)
-                {
-                    if (!Indexes.ContainsKey(key))
-                    {
-                        Indexes.Add(key, KeyCount++);
-                    }
-                }
-            }
-            finally
-            {
-                if (taken) Monitor.Exit(Lock);
-            }
         }
 
         /// <summary>
