@@ -71,6 +71,7 @@
     <Compile Include="TmxReaderTest.cs" />
     <Compile Include="SdltmReaderTest.cs" />
     <Compile Include="PeekElementWithoutChildrenTest.cs" />
+    <Compile Include="PropertiesManagerTest.cs" />
     <Compile Include="XliffReaderTest.cs" />
   </ItemGroup>
   <ItemGroup>
