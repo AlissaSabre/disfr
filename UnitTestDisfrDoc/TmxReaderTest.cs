@@ -101,5 +101,23 @@ namespace UnitTestDisfrDoc
                 a[2].TargetLang.Is("zh");
             }
         }
+
+        [TestMethod]
+        public void language_detection_2()
+        {
+            {
+                var a = new TmxReader().Read(new StringStream(
+                    PREAMBLE_EN
+                    + "<tu><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='ko'><seg>a</seg></tuv></tu>"
+                    + "<tu><tuv xml:lang='en'><seg>b</seg></tuv><tuv xml:lang='ja'><seg>b</seg></tuv></tu>"
+                    + "<tu><tuv xml:lang='en'><seg>c</seg></tuv><tuv xml:lang='JA'><seg>c</seg></tuv></tu>"
+                    + POSTAMBLE), "test").ToArray();
+                a.Length.Is(2);
+                a[0].SourceLang.Is("en");
+                a[0].TargetLang.Is("ja");
+                a[1].SourceLang.Is("en");
+                a[1].TargetLang.Is("ko");
+            }
+        }
     }
 }
