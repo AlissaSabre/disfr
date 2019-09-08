@@ -206,7 +206,7 @@ namespace disfr.Doc
 
             var slang = (string)tmx.Element(X + "header").Attribute("srclang");
 
-            var tlang_variants = tmx.Element(X + "body").Elements(X + "tu").Elements(X + "tuv").Select(Lang).Distinct().Where(t => !Covers(slang, t)).ToList();
+            var tlang_variants = tmx.Element(X + "body").Elements(X + "tu").Elements(X + "tuv").Select(Lang).Distinct(StringComparer.OrdinalIgnoreCase).Where(t => !Covers(slang, t)).ToList();
             var tlangs = tlang_variants.Where(t => !tlang_variants.Any(v => v != t && Covers(v, t))).ToList();
             if (tlangs.Count == 0) return null;
 
