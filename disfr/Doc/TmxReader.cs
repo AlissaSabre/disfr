@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace disfr.Doc
@@ -24,6 +25,23 @@ namespace disfr.Doc
             using (var stream = File.OpenRead(filename))
             {
                 return Read(stream, filename);
+            }
+        }
+
+        public IEnumerable<IAsset> Read(Stream stream, string package)
+        {
+            using (var reader = XmlReader.Create(stream, new XmlReaderSettings()
+            {
+                CheckCharacters = false,
+                DtdProcessing = DtdProcessing.Ignore,
+                XmlResolver = null,
+                CloseInput = false,
+                IgnoreComments = true,
+                IgnoreProcessingInstructions = true,
+                IgnoreWhitespace = false,
+            }))
+            {
+                return Read(reader, package);
             }
         }
 
@@ -54,7 +72,6 @@ namespace disfr.Doc
             }
 
             private IEnumerable<string> TargetLanguages;
-
 
             public IEnumerable<string> GetTargetLanguages()
             {
@@ -121,30 +138,16 @@ namespace disfr.Doc
             }
         }
 
-
-        public IEnumerable<IAsset> Read(Stream stream, string package)
+        public IEnumerable<IAsset> Read(XmlReader reader, string package)
         {
-            XElement tmx = stream.PeekElementWithoutChildren();
+            XElement header;
+            IEnumerable<XElement> tus;
+            if (!ParseEnumerateTmx(reader, out header, out tus)) return null;
 
-            var X = tmx.Name.Namespace;
-            if (tmx.Name.LocalName != "tmx" || (X != TMX && X != XNamespace.None))
-            {
-                return null;
-            }
-
-            try
-            {
-                tmx = XElement.Load(stream, LoadOptions.PreserveWhitespace);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-
-            var tus = tmx.Element(X + "body").Elements(X + "tu");
+            var X = header.Name.Namespace;
             var pool = new ConcurrentStringPool();
 
-            var slang = DetectSourceLanguage(tmx);
+            var slang = DetectSourceLanguage(header);
             if (slang == null) return null;
 
             var propman = new PropertiesManager(true);
@@ -260,13 +263,68 @@ namespace disfr.Doc
         /// Language codes are defined being case insensitive.
         /// This method takes care of that feature.
         /// </remarks>
-        private string DetectSourceLanguage(XElement tmx)
+        private string DetectSourceLanguage(XElement header)
         {
-            var X = tmx.Name.Namespace;
-
-            var slang = (string)tmx.Element(X + "header").Attribute("srclang");
+            var slang = (string)header.Attribute("srclang");
             if (string.Equals(slang, "*all*", StringComparison.OrdinalIgnoreCase)) return null;
             return slang;
+        }
+
+        private bool ParseEnumerateTmx(XmlReader reader, out XElement header, out IEnumerable<XElement> tus)
+        {
+            header = null;
+            tus = null;
+
+            try
+            {
+                reader.MoveToContent();
+                if (reader.NodeType != XmlNodeType.Element ||
+                    reader.LocalName != "tmx" ||
+                    (reader.NamespaceURI != "" &&
+                     reader.NamespaceURI != TMX.NamespaceName)) return false;
+            }
+            catch (XmlException)
+            {
+                // 
+                return false;
+            }
+
+            var tmx_uri = reader.NamespaceURI;
+
+            if (!reader.ReadToDescendant("header", tmx_uri)) return false;
+            header = XNode.ReadFrom(reader) as XElement;
+            if (header == null) return false;
+
+            reader.MoveToContent();
+            if (reader.NodeType != XmlNodeType.Element ||
+                reader.LocalName != "body" ||
+                reader.NamespaceURI != tmx_uri) return false;
+
+            reader.ReadToDescendant("tu", tmx_uri);
+            tus = EnumerateTUs(reader, tmx_uri);
+            return true;
+        }
+
+        private IEnumerable<XElement> EnumerateTUs(XmlReader reader, string tmx_uri)
+        {
+            for (; ;)
+            {
+                reader.MoveToContent();
+                if (reader.NodeType == XmlNodeType.Element &&
+                    reader.LocalName == "tu" &&
+                    reader.NamespaceURI == tmx_uri)
+                {
+                    yield return XNode.ReadFrom(reader) as XElement;
+                }
+                else if (reader.NodeType == XmlNodeType.EndElement)
+                {
+                    yield break;
+                }
+                else
+                {
+                    throw new XmlException("Not a valid TMX file.");
+                }
+            }
         }
 
         /// <summary>
