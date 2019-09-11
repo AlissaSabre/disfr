@@ -109,7 +109,7 @@ namespace disfr.Doc
                 foreach (var list in Store.Values)
                 {
                     list.Sort((x, y) => x == y
-                        ? StringComparer.OrdinalIgnoreCase.Compare(x.TargetLang, y.Target)
+                        ? StringComparer.OrdinalIgnoreCase.Compare(x.TargetLang, y.TargetLang)
                         : Comparer<int>.Default.Compare(x.Serial, y.Serial));
                 }
 
