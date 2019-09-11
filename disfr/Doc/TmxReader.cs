@@ -95,7 +95,9 @@ namespace disfr.Doc
 
                 foreach (var list in Store.Values)
                 {
-                    list.Sort((x, y) => Comparer<int>.Default.Compare(x.Serial, y.Serial));
+                    list.Sort((x, y) => x == y
+                        ? StringComparer.OrdinalIgnoreCase.Compare(x.TargetLang, y.Target)
+                        : Comparer<int>.Default.Compare(x.Serial, y.Serial));
                 }
 
                 TargetLanguages = unique_tlangs;
@@ -307,7 +309,7 @@ namespace disfr.Doc
 
         private IEnumerable<XElement> EnumerateTUs(XmlReader reader, string tmx_uri)
         {
-            for (; ;)
+            for (;;)
             {
                 reader.MoveToContent();
                 if (reader.NodeType == XmlNodeType.Element &&
