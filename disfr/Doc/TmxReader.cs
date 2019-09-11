@@ -53,21 +53,34 @@ namespace disfr.Doc
 
         private class PairStore
         {
-            private readonly object Lock = new object();
-
             private readonly Dictionary<string, List<ITransPair>> Store = new Dictionary<string, List<ITransPair>>(StringComparer.OrdinalIgnoreCase);
 
             public void Add(int index, string tlang, ITransPair pair)
             {
-                lock (Lock)
+                List<ITransPair> list;
+                if (!Store.TryGetValue(tlang, out list))
                 {
-                    List<ITransPair> list;
-                    if (!Store.TryGetValue(tlang, out list))
+                    list = new List<ITransPair>();
+                    Store.Add(tlang, list);
+                }
+                list.Add(pair);
+            }
+
+            public void AddAll(PairStore another)
+            {
+                List<ITransPair> list;
+                foreach (var kvp in another.Store)
+                {
+                    var tlang = kvp.Key;
+                    if (Store.TryGetValue(tlang, out list))
                     {
-                        list = new List<ITransPair>();
+                        list.AddRange(kvp.Value);
+                    }
+                    else
+                    {
+                        list = new List<ITransPair>(kvp.Value);
                         Store.Add(tlang, list);
                     }
-                    list.Add(pair);
                 }
             }
 
@@ -129,6 +142,8 @@ namespace disfr.Doc
 
             public readonly Dictionary<InlineTag, int> TagPool;
 
+            public readonly PairStore Pairs;
+
             public Locals()
             {
                 TSegs = new Dictionary<string, SegPlus>();
@@ -137,6 +152,8 @@ namespace disfr.Doc
                 TuNotes = new List<string>();
 
                 TagPool = new Dictionary<InlineTag, int>();
+
+                Pairs = new PairStore();
             }
         }
 
@@ -153,7 +170,7 @@ namespace disfr.Doc
             if (slang == null) return null;
 
             var propman = new PropertiesManager(true);
-            var pairs = new PairStore();
+
             var locals_pool = new ConcurrentStack<Locals>();
             Parallel.ForEach(tus,
                 new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount },
@@ -171,6 +188,7 @@ namespace disfr.Doc
                     var tu_props = locals.TuProps;
                     var tu_notes = locals.TuNotes;
                     var tag_pool = locals.TagPool;
+                    var pairs = locals.Pairs;
 
                     var sseg = new SegPlus();
                     tsegs.Clear();
@@ -237,10 +255,24 @@ namespace disfr.Doc
                     locals_pool.Push(locals);
                 }
             );
-            locals_pool.Clear();
+
+            PairStore all_pairs = null;
+            for(;;)
+            {
+                Locals locals;
+                if (!locals_pool.TryPop(out locals)) break;
+                if (all_pairs == null)
+                {
+                    all_pairs = locals.Pairs;
+                }
+                else
+                {
+                    all_pairs.AddAll(locals.Pairs);
+                }
+            }
 
             var assets = new List<IAsset>();
-            foreach (var tlang in pairs.GetTargetLanguages())
+            foreach (var tlang in all_pairs.GetTargetLanguages())
             {
                 var asset = new TmxAsset()
                 {
@@ -248,7 +280,7 @@ namespace disfr.Doc
                     Original = string.Format("{0} - {1}", slang, tlang),
                     SourceLang = slang,
                     TargetLang = tlang,
-                    TransPairs = pairs.GetPairs(tlang),
+                    TransPairs = all_pairs.GetPairs(tlang),
                     Properties = propman.Properties,
                 };
                 assets.Add(asset);
