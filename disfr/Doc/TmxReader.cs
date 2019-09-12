@@ -224,27 +224,24 @@ namespace disfr.Doc
                         foreach (var kvp in tsegs)
                         {
                             var target_lang = kvp.Key;
-                            var target_seg = kvp.Value.Seg;
-                            var target_props = kvp.Value.Props;
-                            var target_notes = kvp.Value.Notes;
+                            var tseg = kvp.Value;
 
-                            if (target_seg != null)
+                            var pair = new TmxPair()
                             {
-                                var pair = new TmxPair()
-                                {
-                                    Serial = index + 1,
-                                    Id = id,
-                                    Source = source,
-                                    Target = MatchTags(tag_pool, GetInline(target_seg, X)),
-                                    SourceLang = source_lang,
-                                    TargetLang = target_lang,
-                                };
-                                SetProps(propman, pair, tu_props, pool);
-                                SetProps(propman, pair, sseg.Props, pool);
-                                SetProps(propman, pair, target_props, pool);
-                                pair.AddNotes(tu_notes.Concat(sseg.Notes).Concat(target_notes));
-                                pairs.Add(index, target_lang, pair);
-                            }
+                                Serial = index + 1,
+                                Id = id,
+                                Source = source,
+                                Target = MatchTags(tag_pool, GetInline(tseg.Seg, X)),
+                                SourceLang = source_lang,
+                                TargetLang = target_lang,
+                            };
+
+                            SetProps(propman, pair, tu_props, pool);
+                            SetProps(propman, pair, sseg.Props, pool);
+                            SetProps(propman, pair, tseg.Props, pool);
+                            pair.AddNotes(tu_notes.Concat(sseg.Notes).Concat(tseg.Notes));
+
+                            pairs.Add(index, target_lang, pair);
                         }
                     }
                     return locals;
@@ -270,22 +267,20 @@ namespace disfr.Doc
                     all_pairs.AddAll(locals.Pairs);
                 }
             }
-
-            var assets = new List<IAsset>();
-            foreach (var tlang in all_pairs.GetTargetLanguages())
+            if (all_pairs == null)
             {
-                var asset = new TmxAsset()
-                {
-                    Package = package,
-                    Original = string.Format("{0} - {1}", slang, tlang),
-                    SourceLang = slang,
-                    TargetLang = tlang,
-                    TransPairs = all_pairs.GetPairs(tlang),
-                    Properties = propman.Properties,
-                };
-                assets.Add(asset);
+                return Enumerable.Empty<IAsset>();
             }
-            return assets;
+
+            return all_pairs.GetTargetLanguages().Select(tlang => new TmxAsset()
+            {
+                Package = package,
+                Original = string.Format("{0} - {1}", slang, tlang),
+                SourceLang = slang,
+                TargetLang = tlang,
+                TransPairs = all_pairs.GetPairs(tlang),
+                Properties = propman.Properties,
+            }).ToList();
         }
 
         /// <summary>
