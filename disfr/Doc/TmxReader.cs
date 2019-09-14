@@ -565,23 +565,23 @@ namespace disfr.Doc
 
     class TmxPair : ITransPair
     {
-        public int Serial { get; set; }
+        public int Serial { get; internal set; }
 
-        public string Id { get; set; }
+        public string Id { get; internal set; }
 
-        public InlineString Source { get; set; }
+        public InlineString Source { get; internal set; }
 
-        public InlineString Target { get; set; }
+        public InlineString Target { get; internal set; }
 
-        public string SourceLang { get; set; }
+        public string SourceLang { get; internal set; }
 
-        public string TargetLang { get; set; }
+        public string TargetLang { get; internal set; }
 
         private HashSet<string> _Notes = null;
 
         public IEnumerable<string> Notes { get { return _Notes; } }
 
-        public void AddNotes(IEnumerable<string> notes) { (_Notes ?? (_Notes = new HashSet<string>())).UnionWith(notes); }
+        internal void AddNotes(IEnumerable<string> notes) { (_Notes ?? (_Notes = new HashSet<string>())).UnionWith(notes); }
 
         internal string[] _Props = null;
 
