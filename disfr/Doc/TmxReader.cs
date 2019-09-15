@@ -514,8 +514,8 @@ namespace disfr.Doc
             foreach (var attr in elem.Attributes())
             {
                 if (attr.Name.Namespace == XNamespace.Xml) continue;
-                //if (attr.Name.Namespace == XNamespace.Xmlns) continue;
-                //if (attr.Name == LANG) continue;
+                if (attr.Name.Namespace == XNamespace.Xmlns) continue;
+                if (attr.Name == LANG) continue;
                 yield return new KeyValuePair<string, string>(attr.Name.LocalName, attr.Value);
             }
             foreach (var prop in elem.Elements(X + "prop"))
