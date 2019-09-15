@@ -126,8 +126,8 @@ namespace disfr.Doc
         private struct SegPlus
         {
             public XElement Seg;
-            public List<KeyValuePair<string, string>> Props;
-            public List<string> Notes;
+            public IEnumerable<KeyValuePair<string, string>> Props;
+            public IEnumerable<string> Notes;
         }
 
         /// <summary>
@@ -137,9 +137,6 @@ namespace disfr.Doc
         {
             public readonly Dictionary<string, SegPlus> TSegs;
 
-            public readonly List<KeyValuePair<string, string>> TuProps;
-            public readonly List<string> TuNotes;
-
             public readonly Dictionary<InlineTag, int> TagPool;
 
             public readonly PairStore Pairs;
@@ -147,9 +144,6 @@ namespace disfr.Doc
             public Locals()
             {
                 TSegs = new Dictionary<string, SegPlus>();
-
-                TuProps = new List<KeyValuePair<string, string>>();
-                TuNotes = new List<string>();
 
                 TagPool = new Dictionary<InlineTag, int>();
 
@@ -185,33 +179,31 @@ namespace disfr.Doc
                 {
                     var index = (int)index_long;
                     var tsegs = locals.TSegs;
-                    var tu_props = locals.TuProps;
-                    var tu_notes = locals.TuNotes;
                     var tag_pool = locals.TagPool;
                     var pairs = locals.Pairs;
 
                     var sseg = new SegPlus();
                     tsegs.Clear();
 
-                    CollectProps(ref tu_props, tu);
-                    CollectNotes(ref tu_notes, tu);
+                    var tu_props = CollectProps(tu);
+                    var tu_notes = CollectNotes(tu);
 
                     foreach (var tuv in tu.Elements(X + "tuv"))
                     {
                         var lang = Lang(tuv);
+                        var seg = new SegPlus()
+                        {
+                            Seg = tuv.Element(X + "seg"),
+                            Props = CollectProps(tuv),
+                            Notes = CollectNotes(tuv),
+                        };
                         if (Covers(slang, lang))
                         {
-                            sseg.Seg = tuv.Element(X + "seg");
-                            CollectProps(ref sseg.Props, tuv);
-                            CollectNotes(ref sseg.Notes, tuv);
+                            sseg = seg;
                         }
                         else
                         {
-                            var tseg = new SegPlus();
-                            tseg.Seg = tuv.Element(X + "seg");
-                            CollectProps(ref tseg.Props, tuv);
-                            CollectNotes(ref tseg.Notes, tuv);
-                            tsegs[lang] = tseg;
+                            tsegs[lang] = seg;
                         }
                     }
 
@@ -506,36 +498,42 @@ namespace disfr.Doc
             return target;
         }
 
-        // <paramref name="elem"/> should either be TMX:tu or TMX:tuv.
-        private static void CollectProps(ref List<KeyValuePair<string, string>> props, XElement elem)
+        /// <summary>
+        /// Returns an enumerable containing all properties of a TMX:tu or TMX:tuv element.
+        /// </summary>
+        /// <param name="elem">Either a TMX:tu or TMX:tuv element.</param>
+        /// <returns>An enumerable containing all properties.</returns>
+        /// <remarks>
+        /// Returned enumerable contains both standard and non-standard (per TMX spec.) properties
+        /// expressed both as attribute and as TMX:prop element,
+        /// but it excludes attributes defined by XML spec. and those for language codes.
+        /// </remarks>
+        private static IEnumerable<KeyValuePair<string, string>> CollectProps(XElement elem)
         {
             var X = elem.Name.Namespace;
-            if (props == null)
+            foreach (var attr in elem.Attributes())
             {
-                props = new List<KeyValuePair<string, string>>();
+                if (attr.Name.Namespace == XNamespace.Xml) continue;
+                //if (attr.Name.Namespace == XNamespace.Xmlns) continue;
+                //if (attr.Name == LANG) continue;
+                yield return new KeyValuePair<string, string>(attr.Name.LocalName, attr.Value);
             }
-            else
+            foreach (var prop in elem.Elements(X + "prop"))
             {
-                props.Clear();
+                var type = (string)prop.Attribute("type");
+                if (type == null) continue;
+                yield return new KeyValuePair<string, string>(type, prop.Value);
             }
-            props.AddRange(elem.Attributes().Where(a => a.Name.Namespace != XNamespace.Xml).Select(a => new KeyValuePair<string, string>(a.Name.LocalName, (string)a)));
-            props.AddRange(elem.Elements(X + "prop").Select(p => new KeyValuePair<string, string>((string)p.Attribute("type"), (string)p)));
         }
 
-        private static void CollectNotes(ref List<string> notes, XElement elem)
+        private static IEnumerable<string> CollectNotes(XElement elem)
         {
             var X = elem.Name.Namespace;
-            if (notes == null)
+            foreach (var note in elem.Elements(X + "note"))
             {
-                notes = new List<string>();
+                yield return note.Value;
             }
-            else
-            {
-                notes.Clear();
-            }
-            notes.AddRange(elem.Elements(X + "note").Select(n => (string)n));
         }
-
 
         private static void SetProps(PropertiesManager manager, TmxPair pair, IEnumerable<KeyValuePair<string, string>> props, IStringPool pool)
         {
