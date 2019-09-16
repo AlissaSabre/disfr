@@ -53,7 +53,8 @@ namespace disfr.Doc
 
         private class PairStore
         {
-            private readonly Dictionary<string, List<ITransPair>> Store = new Dictionary<string, List<ITransPair>>(StringComparer.OrdinalIgnoreCase);
+            private readonly Dictionary<string, List<ITransPair>> Store
+                = new Dictionary<string, List<ITransPair>>(StringComparer.OrdinalIgnoreCase);
 
             public void Add(int index, string tlang, ITransPair pair)
             {
@@ -123,30 +124,18 @@ namespace disfr.Doc
             }
         }
 
-        private struct SegPlus
-        {
-            public XElement Seg;
-            public IEnumerable<KeyValuePair<string, string>> Props;
-            public IEnumerable<string> Notes;
-        }
-
         /// <summary>
-        /// Task-local work variables to be used in <see cref="Parallel.For{TLocal}(int, int, Func{TLocal}, Func{int, ParallelLoopState, TLocal, TLocal}, Action{TLocal})"/>.
+        /// Task-local work variables to be used in <see cref="Parallel.ForEach"/>.
         /// </summary>
         private class Locals
         {
-            public readonly Dictionary<string, SegPlus> TSegs;
-
             public readonly Dictionary<InlineTag, int> TagPool;
 
             public readonly PairStore Pairs;
 
             public Locals()
             {
-                TSegs = new Dictionary<string, SegPlus>();
-
                 TagPool = new Dictionary<InlineTag, int>();
-
                 Pairs = new PairStore();
             }
         }
@@ -178,60 +167,46 @@ namespace disfr.Doc
                 (tu, state, index_long, locals) =>
                 {
                     var index = (int)index_long;
-                    var tsegs = locals.TSegs;
-                    var tag_pool = locals.TagPool;
+                    var tag_pool = locals.TagPool; tag_pool.Clear();
                     var pairs = locals.Pairs;
-
-                    var sseg = new SegPlus();
-                    tsegs.Clear();
 
                     var tu_props = CollectProps(tu);
                     var tu_notes = CollectNotes(tu);
 
-                    foreach (var tuv in tu.Elements(X + "tuv"))
-                    {
-                        var lang = Lang(tuv);
-                        var seg = new SegPlus()
-                        {
-                            Seg = tuv.Element(X + "seg"),
-                            Props = CollectProps(tuv),
-                            Notes = CollectNotes(tuv),
-                        };
-                        if (Covers(slang, lang))
-                        {
-                            sseg = seg;
-                        }
-                        else
-                        {
-                            tsegs[lang] = seg;
-                        }
-                    }
-
-                    if (sseg.Seg != null)
+                    var source_tuv = tu.Elements(X + "tuv").FirstOrDefault(tuv => Covers(slang, Lang(tuv)));
+                    if (source_tuv != null)
                     {
                         var id = (string)tu.Attribute("tuid") ?? "";
-                        var source = NumberTags(tag_pool, GetInline(sseg.Seg, X));
-                        var source_lang = Lang(sseg.Seg.Parent);
+                        var source_lang = Lang(source_tuv);
+                        var source_seg = source_tuv.Element(X + "seg");
+                        var source = NumberTags(tag_pool, GetInline(source_seg, X));
+                        var source_props = CollectProps(source_tuv);
+                        var source_notes = CollectNotes(source_tuv);
 
-                        foreach (var kvp in tsegs)
+                        foreach (var target_tuv in tu.Elements(X + "tuv"))
                         {
-                            var target_lang = kvp.Key;
-                            var tseg = kvp.Value;
+                            if (Covers(slang, Lang(target_tuv))) continue;
+
+                            var target_lang = Lang(target_tuv);
+                            var target_seg = target_tuv.Element(X + "seg");
+                            var target = MatchTags(tag_pool, GetInline(target_seg, X));
+                            var target_props = CollectProps(target_tuv);
+                            var target_notes = CollectNotes(target_tuv);
 
                             var pair = new TmxPair()
                             {
                                 Serial = index + 1,
                                 Id = id,
                                 Source = source,
-                                Target = MatchTags(tag_pool, GetInline(tseg.Seg, X)),
+                                Target = target,
                                 SourceLang = source_lang,
                                 TargetLang = target_lang,
                             };
 
                             SetProps(propman, pair, tu_props, pool);
-                            SetProps(propman, pair, sseg.Props, pool);
-                            SetProps(propman, pair, tseg.Props, pool);
-                            pair.AddNotes(tu_notes.Concat(sseg.Notes).Concat(tseg.Notes));
+                            SetProps(propman, pair, source_props, pool);
+                            SetProps(propman, pair, target_props, pool);
+                            pair.AddNotes(tu_notes, source_notes, target_notes);
 
                             pairs.Add(index, target_lang, pair);
                         }
@@ -478,7 +453,6 @@ namespace disfr.Doc
 
         private static InlineString NumberTags(Dictionary<InlineTag, int> pool, InlineString source)
         {
-            pool.Clear();
             int n = 0;
             foreach (var tag in source.OfType<InlineTag>())
             {
@@ -579,7 +553,14 @@ namespace disfr.Doc
 
         public IEnumerable<string> Notes { get { return _Notes; } }
 
-        internal void AddNotes(IEnumerable<string> notes) { (_Notes ?? (_Notes = new HashSet<string>())).UnionWith(notes); }
+        internal void AddNotes(params IEnumerable<string>[] noteses)
+        {
+            if (_Notes == null) _Notes = new HashSet<string>();
+            foreach (var notes in noteses)
+            {
+                _Notes.UnionWith(notes);
+            }
+        }
 
         internal string[] _Props = null;
 
