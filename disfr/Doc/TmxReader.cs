@@ -124,19 +124,6 @@ namespace disfr.Doc
             }
         }
 
-        /// <summary>
-        /// Task-local work variables to be used in <see cref="Parallel.ForEach"/>.
-        /// </summary>
-        private class Locals
-        {
-            public readonly PairStore Pairs;
-
-            public Locals()
-            {
-                Pairs = new PairStore();
-            }
-        }
-
         public IEnumerable<IAsset> Read(XmlReader reader, string package)
         {
             XElement header;
@@ -150,21 +137,20 @@ namespace disfr.Doc
             if (slang == null) return null;
 
             var propman = new PropertiesManager(true);
+            var pair_store_pool = new ConcurrentStack<PairStore>();
 
-            var locals_pool = new ConcurrentStack<Locals>();
             Parallel.ForEach(tus,
                 new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount },
                 // Local Init
                 () =>
                 {
-                    Locals locals;
-                    return locals_pool.TryPop(out locals) ? locals : new Locals();
+                    PairStore pairs;
+                    return pair_store_pool.TryPop(out pairs) ? pairs : new PairStore();
                 },
                 // Body
-                (tu, state, index_long, locals) =>
+                (tu, state, index_long, pairs) =>
                 {
                     var index = (int)index_long;
-                    var pairs = locals.Pairs;
 
                     var tu_props = CollectProps(tu);
                     var tu_notes = CollectNotes(tu);
@@ -209,27 +195,28 @@ namespace disfr.Doc
                             pairs.Add(index, target_lang, pair);
                         }
                     }
-                    return locals;
+                    return pairs;
                 },
                 // Local Finally
-                locals =>
+                pairs =>
                 {
-                    locals_pool.Push(locals);
+                    pair_store_pool.Push(pairs);
                 }
             );
 
+            // Merge pairs in pair_store_pool into a single PairStore.
             PairStore all_pairs = null;
             for(;;)
             {
-                Locals locals;
-                if (!locals_pool.TryPop(out locals)) break;
+                PairStore pairs;
+                if (!pair_store_pool.TryPop(out pairs)) break;
                 if (all_pairs == null)
                 {
-                    all_pairs = locals.Pairs;
+                    all_pairs = pairs;
                 }
                 else
                 {
-                    all_pairs.AddAll(locals.Pairs);
+                    all_pairs.AddAll(pairs);
                 }
             }
             if (all_pairs == null)
