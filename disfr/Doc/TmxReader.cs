@@ -152,28 +152,29 @@ namespace disfr.Doc
                 {
                     var index = (int)index_long;
 
+                    // collect tu info.
+                    var id = (string)tu.Attribute("tuid") ?? "";
                     var tu_props = CollectProps(tu);
                     var tu_notes = CollectNotes(tu);
 
                     var source_tuv = tu.Elements(X + "tuv").FirstOrDefault(tuv => Covers(slang, Lang(tuv)));
                     if (source_tuv != null)
                     {
-                        var id = (string)tu.Attribute("tuid") ?? "";
+                        // collec source tuv info.
                         var source_lang = Lang(source_tuv);
-                        var source_seg = source_tuv.Element(X + "seg");
-                        var source = GetInline(source_seg, X);
+                        var source_inline = GetInline(source_tuv.Element(X + "seg"), X);
                         var source_props = CollectProps(source_tuv);
                         var source_notes = CollectNotes(source_tuv);
 
-                        var tag_pool = NumberTags(source);
+                        var tag_pool = NumberTags(source_inline);
 
                         foreach (var target_tuv in tu.Elements(X + "tuv"))
                         {
                             if (Covers(slang, Lang(target_tuv))) continue;
 
+                            // collet target tuv info.
                             var target_lang = Lang(target_tuv);
-                            var target_seg = target_tuv.Element(X + "seg");
-                            var target = MatchTags(tag_pool, GetInline(target_seg, X));
+                            var target_inline = MatchTags(tag_pool, GetInline(target_tuv.Element(X + "seg"), X));
                             var target_props = CollectProps(target_tuv);
                             var target_notes = CollectNotes(target_tuv);
 
@@ -181,8 +182,8 @@ namespace disfr.Doc
                             {
                                 Serial = index + 1,
                                 Id = id,
-                                Source = source,
-                                Target = target,
+                                Source = source_inline,
+                                Target = target_inline,
                                 SourceLang = source_lang,
                                 TargetLang = target_lang,
                             };
