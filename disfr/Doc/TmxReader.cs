@@ -140,7 +140,7 @@ namespace disfr.Doc
             var pair_store_pool = new ConcurrentStack<PairStore>();
 
             Parallel.ForEach(tus,
-                new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
                 // Local Init
                 () =>
                 {
