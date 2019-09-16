@@ -129,13 +129,10 @@ namespace disfr.Doc
         /// </summary>
         private class Locals
         {
-            public readonly Dictionary<InlineTag, int> TagPool;
-
             public readonly PairStore Pairs;
 
             public Locals()
             {
-                TagPool = new Dictionary<InlineTag, int>();
                 Pairs = new PairStore();
             }
         }
@@ -167,7 +164,6 @@ namespace disfr.Doc
                 (tu, state, index_long, locals) =>
                 {
                     var index = (int)index_long;
-                    var tag_pool = locals.TagPool; tag_pool.Clear();
                     var pairs = locals.Pairs;
 
                     var tu_props = CollectProps(tu);
@@ -179,9 +175,11 @@ namespace disfr.Doc
                         var id = (string)tu.Attribute("tuid") ?? "";
                         var source_lang = Lang(source_tuv);
                         var source_seg = source_tuv.Element(X + "seg");
-                        var source = NumberTags(tag_pool, GetInline(source_seg, X));
+                        var source = GetInline(source_seg, X);
                         var source_props = CollectProps(source_tuv);
                         var source_notes = CollectNotes(source_tuv);
+
+                        var tag_pool = NumberTags(source);
 
                         foreach (var target_tuv in tu.Elements(X + "tuv"))
                         {
@@ -451,23 +449,28 @@ namespace disfr.Doc
                 code: has_code ? elem.Value : null);
         }
 
-        private static InlineString NumberTags(Dictionary<InlineTag, int> pool, InlineString source)
+        private static Dictionary<InlineTag, int> NumberTags(InlineString source)
         {
+            if (!source.HasTags) return null;
+            var pool = new Dictionary<InlineTag, int>();
             int n = 0;
             foreach (var tag in source.OfType<InlineTag>())
             {
                 pool[tag] = tag.Number = ++n;
             }
-            return source;
+            return pool;
         }
 
         private static InlineString MatchTags(Dictionary<InlineTag, int> pool, InlineString target)
         {
-            foreach (var tag in target.OfType<InlineTag>())
+            if (pool != null)
             {
-                int m;
-                pool.TryGetValue(tag, out m);
-                tag.Number = m;
+                foreach (var tag in target.OfType<InlineTag>())
+                {
+                    int m;
+                    pool.TryGetValue(tag, out m);
+                    tag.Number = m;
+                }
             }
             return target;
         }
