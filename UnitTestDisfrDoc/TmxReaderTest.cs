@@ -115,7 +115,7 @@ namespace UnitTestDisfrDoc
                     + POSTAMBLE), "test").ToArray();
                 a.Length.Is(2);
                 a[0].SourceLang.Is("en");
-                a[0].TargetLang.Is("ja");
+                a[0].TargetLang.ToLowerInvariant().Is("ja");
                 a[1].SourceLang.Is("en");
                 a[1].TargetLang.Is("ko");
             }
