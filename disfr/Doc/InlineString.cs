@@ -247,6 +247,8 @@ namespace disfr.Doc
         /// </summary>
         public bool IsEmpty { get { return _Contents.Count == 0; } }
 
+        public bool HasTags { get { return _Contents.Any(obj => obj is InlineTag); } }
+
         /// <summary>
         /// Calculates and returns a content based hash code. 
         /// </summary>
