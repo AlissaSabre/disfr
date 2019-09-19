@@ -538,15 +538,24 @@ namespace disfr.Doc
 
         internal void SetNotes(params IEnumerable<string>[] noteses)
         {
-            var set = new HashSet<string>();
+            // In practice,
+            // a single tu has no more than a few comments,
+            // and a primitive approach works better.
+            var list = new List<string>();
             foreach (var notes in noteses)
             {
-                set.UnionWith(notes);
+                foreach (var note in notes)
+                {
+                    if (!list.Contains(note))
+                    {
+                        list.Add(note);
+                    }
+                }
             }
-            if (set.Count > 0)
+            if (list.Count > 0)
             {
-                var array = new string[set.Count];
-                set.CopyTo(array);
+                var array = new string[list.Count];
+                list.CopyTo(array);
                 Notes = array;
             }
         }
