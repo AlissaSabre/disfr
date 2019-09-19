@@ -187,11 +187,8 @@ namespace disfr.Doc
                                 SourceLang = source_lang,
                                 TargetLang = target_lang,
                             };
-
-                            SetProps(propman, pair, tu_props, pool);
-                            SetProps(propman, pair, source_props, pool);
-                            SetProps(propman, pair, target_props, pool);
-                            pair.AddNotes(tu_notes, source_notes, target_notes);
+                            pair.SetProps(propman, pool, tu_props, source_props, target_props);
+                            pair.SetNotes(tu_notes, source_notes, target_notes);
 
                             pairs.Add(index, target_lang, pair);
                         }
@@ -500,13 +497,6 @@ namespace disfr.Doc
             }
         }
 
-        private static void SetProps(PropertiesManager manager, TmxPair pair, IEnumerable<KeyValuePair<string, string>> props, IStringPool pool)
-        {
-            foreach (var kvp in props)
-            {
-                manager.Put(ref pair._Props, kvp.Key, pool.Intern(kvp.Value));
-            }
-        }
     }
 
     class TmxAsset : IAsset
@@ -540,26 +530,35 @@ namespace disfr.Doc
 
         public string TargetLang { get; internal set; }
 
-        private HashSet<string> _Notes = null;
+        public IEnumerable<string> Notes { get; internal set; }
 
-        public IEnumerable<string> Notes { get { return _Notes; } }
+        private string[] _Props = null;
 
-        internal void AddNotes(params IEnumerable<string>[] noteses)
+        public string this[int key] => (key < _Props?.Length) ? _Props[key] : null;
+
+        internal void SetNotes(params IEnumerable<string>[] noteses)
         {
-            if (_Notes == null) _Notes = new HashSet<string>();
+            var set = new HashSet<string>();
             foreach (var notes in noteses)
             {
-                _Notes.UnionWith(notes);
+                set.UnionWith(notes);
+            }
+            if (set.Count > 0)
+            {
+                var array = new string[set.Count];
+                set.CopyTo(array);
+                Notes = array;
             }
         }
 
-        internal string[] _Props = null;
-
-        public string this[int key]
+        internal void SetProps(PropertiesManager manager, IStringPool pool, params IEnumerable<KeyValuePair<string, string>>[] propses)
         {
-            get
+            foreach (var props in propses)
             {
-                return (key < _Props?.Length) ? _Props[key] : null;
+                foreach (var kvp in props)
+                {
+                    manager.Put(ref _Props, kvp.Key, pool.Intern(kvp.Value));
+                }
             }
         }
     }
