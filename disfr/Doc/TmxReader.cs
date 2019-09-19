@@ -541,6 +541,8 @@ namespace disfr.Doc
             // In practice,
             // a single tu has no more than a few comments,
             // and a primitive approach works better.
+            // It also preserves the order of notes
+            // in their first appearances in the file.
             var list = new List<string>();
             foreach (var notes in noteses)
             {
