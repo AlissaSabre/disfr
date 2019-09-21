@@ -102,7 +102,6 @@ namespace disfr.UI
                             assets: ReaderManager.Read(f, index))
                     ).ToArray();
                 }
-                Console.WriteLine("Elapsed: {0} ms", (DateTime.UtcNow - started).TotalMilliseconds);
                 Array.ForEach(result, tc => { tc.Tag = tag; });
                 return result;
             }).ContinueWith(worker =>
