@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestDisfrWriter
 {
-    [TestClass, Ignore("Not Implemented.")]
+    [TestClass]
     public class TmxWriterTest
     {
         [TestMethod]
