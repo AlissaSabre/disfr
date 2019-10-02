@@ -19,6 +19,7 @@ namespace disfr.UI
         string OpenFilterString { get; }
         string SaveAsFilterString { get; }
         bool Busy { get; set; }
+        IEnumerable<string> PluginNames { get; }
 
         DelegateCommand<string[], int, bool, object> OpenCommand { get; }
         DelegateCommand<string, int, ITableController, ColumnDesc[]> SaveAsCommand { get; }

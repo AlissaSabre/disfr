@@ -27,10 +27,6 @@
   <xsl:variable name="TAG" select="$PURPLE" />
   <xsl:variable name="TAGINS" select="$PURPLE" />
   <xsl:variable name="TAGDEL" select="$PURPLE" />
-  <xsl:variable name="SYM" select="$SILVER" />
-  <xsl:variable name="SYMINS" select="$SILVER" />
-  <xsl:variable name="SYMDEL" select="$SILVER" />
-
 
   <xsl:template match="/d:Tree">
     <Workbook>
@@ -177,21 +173,23 @@
   </xsl:template>
 
   <xsl:template match="d:Span[@Gloss='SYM']">
-    <Font xmlns="http://www.w3.org/TR/REC-html40" html:Color="{$SYM}">
+    <Font xmlns="http://www.w3.org/TR/REC-html40">
       <xsl:value-of select="."/>
     </Font>
   </xsl:template>
 
   <xsl:template match="d:Span[@Gloss='SYM INS']">
-    <Font xmlns="http://www.w3.org/TR/REC-html40" html:Color="{$SYMINS}">
+    <Font xmlns="http://www.w3.org/TR/REC-html40" html:Color="{$INS}">
       <U><xsl:value-of select="."/></U>
     </Font>
   </xsl:template>
 
   <xsl:template match="d:Span[@Gloss='SYM DEL']">
-    <Font xmlns="http://www.w3.org/TR/REC-html40" html:Color="{$SYMDEL}">
+    <Font xmlns="http://www.w3.org/TR/REC-html40" html:Color="{$DEL}">
       <S><xsl:value-of select="."/></S>
     </Font>
   </xsl:template>
+
+  <xsl:template match="d:Span[@Gloss='ALT' or @Gloss='ALT INS' or @GLoss='ALT DEL']" />
 
 </xsl:stylesheet>

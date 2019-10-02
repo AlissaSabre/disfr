@@ -1,0 +1,68 @@
+﻿<?xml version="1.0"?>
+<!-- Example of TMX document -->
+<tmx version="1.4">
+  <header
+   creationtool="XYZTool"
+   creationtoolversion="1.01-023"
+   datatype="PlainText"
+   segtype="sentence"
+   adminlang="en-us"
+   srclang="EN"
+   o-tmf="ABCTransMem"
+   creationdate="20020101T163812Z"
+   creationid="ThomasJ"
+   changedate="20020413T023401Z"
+   changeid="Amity"
+   o-encoding="iso-8859-1"
+ >
+    <note>This is a note at document level.</note>
+    <prop type="RTFPreamble">{\rtf1\ansi\tag etc...{\fonttbl}</prop>
+    <ude name="MacRoman" base="Macintosh">
+      <map unicode="#xF8FF" code="#xF0" ent="Apple_logo" subst="[Apple]"/>
+    </ude>
+  </header>
+  <body>
+    <tu
+     tuid="0001"
+     datatype="Text"
+     usagecount="2"
+     lastusagedate="19970314T023401Z"
+  >
+      <note>Text of a note at the TU level.</note>
+      <prop type="x-Domain">Computing</prop>
+      <prop type="x-Project">P&#x00E6;gasus</prop>
+      <tuv
+       xml:lang="EN"
+       creationdate="19970212T153400Z"
+       creationid="BobW"
+   >
+        <seg>data (with a non-standard character: &#xF8FF;).</seg>
+      </tuv>
+      <tuv
+       xml:lang="FR-CA"
+       creationdate="19970309T021145Z"
+       creationid="BobW"
+       changedate="19970314T023401Z"
+       changeid="ManonD"
+   >
+        <prop type="Origin">MT</prop>
+        <seg>donn&#xE9;es (avec un caract&#xE8;re non standard: &#xF8FF;).</seg>
+      </tuv>
+    </tu>
+    <tu
+     tuid="0002"
+     srclang="*all*"
+  >
+      <prop type="Domain">Cooking</prop>
+      <tuv xml:lang="EN">
+        <seg>menu</seg>
+      </tuv>
+      <tuv xml:lang="FR-CA">
+        <seg>menu</seg>
+      </tuv>
+      <tuv xml:lang="FR-FR">
+        <seg>menu</seg>
+      </tuv>
+    </tu>
+  </body>
+</tmx>

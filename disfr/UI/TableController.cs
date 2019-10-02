@@ -91,7 +91,7 @@ namespace disfr.UI
 
         #endregion
 
-        private readonly PairRenderer Renderer = new PairRenderer();
+        private readonly PairRenderer Renderer;
 
         /// <summary>
         /// Load a set of <see cref="IAsset"/>s from a bilingual file into a new TableController.

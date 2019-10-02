@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace disfr.Doc
 {
@@ -46,9 +47,13 @@ namespace disfr.Doc
                 {
                     return ReadZip(filename, file, flavour);
                 }
-                else
+                else if (IsXliff(file))
                 {
                     return ReadXliff(filename, file, flavour);
+                }
+                else
+                {
+                    return null;
                 }
             }
         }
@@ -77,6 +82,12 @@ namespace disfr.Doc
                 var assets = new List<IAsset>();
                 foreach (var entry in zip.Entries)
                 {
+                    // It seems the stream from ZipEntry.Open() doesn't suppoprt Seek.
+                    // We need a trick here.
+                    using (var f = entry.Open())
+                    {
+                        if (!IsXliff(f, true)) continue;
+                    }
                     using (var f = entry.Open())
                     {
                         var bundle = ReadXliff(filename, f, flavour, entry);
@@ -94,6 +105,14 @@ namespace disfr.Doc
             parser.Flavour = flavour;
             parser.ZipEntry = entry;
             return parser.Read(file);
+        }
+
+        private static bool IsXliff(Stream file, bool read = false)
+        {
+            var root = file.PeekElementWithoutChildren(read);
+            return root != null
+                && root.Name.LocalName == "xliff"
+                && (root.Name.Namespace == XliffAsset.XLIFF || root.Name.Namespace == XNamespace.None);
         }
     }
 }

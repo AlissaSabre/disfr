@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using Dragablz;
 
 using disfr.Doc;
+using disfr.Plugin;
 using disfr.Writer;
 
 namespace disfr.UI
@@ -67,6 +68,8 @@ namespace disfr.UI
 
         #endregion
 
+        public IEnumerable<string> PluginNames { get { return PluginManager.Current.PluginNames; } }
+
         #region OpenCommand
 
         public ReaderManager ReaderManager { get { return ReaderManager.Current; } }
@@ -95,7 +98,6 @@ namespace disfr.UI
                         TableController.LoadBilingualAssets(ReaderManager.Read(f, index))
                     ).ToArray();
                 }
-                Console.WriteLine("Elapsed: {0} ms", (DateTime.UtcNow - started).TotalMilliseconds);
                 Array.ForEach(result, tc => { tc.Tag = tag; });
                 return result;
             }).ContinueWith(worker =>

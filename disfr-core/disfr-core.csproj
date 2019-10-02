@@ -48,6 +48,7 @@
     <Compile Include="Diff\DifferBase.cs" />
     <Compile Include="Diff\GreedyDiffer2.cs" />
     <Compile Include="Doc\CombinedAssetBundle.cs" />
+    <Compile Include="Doc\FileUtils.cs" />
     <Compile Include="Doc\IAsset.cs" />
     <Compile Include="Doc\IAssetReader.cs" />
     <Compile Include="Doc\IdiomXliffAsset.cs" />
@@ -64,7 +65,6 @@
     <Compile Include="Doc\XliffParser.cs" />
     <Compile Include="Doc\XliffReader.cs" />
     <Compile Include="Doc\XliffTransPair.cs" />
-    <Compile Include="Doc\ZipUtils.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

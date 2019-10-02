@@ -26,6 +26,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr.sdltm", "disfr.sdltm\disfr.sdltm.csproj", "{38BA914A-DEEA-4590-8168-AC31C9480797}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestDisfrWriter", "UnitTestDisfrWriter\UnitTestDisfrWriter.csproj", "{7EBAA382-5C4D-4619-89A6-3FC525255450}"
+	ProjectSection(ProjectDependencies) = postProject
+		{52C27A7F-355E-4BBC-8F0D-546FB11EF689} = {52C27A7F-355E-4BBC-8F0D-546FB11EF689}
+		{1A3654B0-0F44-4CED-A7A2-E7835FFDEA49} = {1A3654B0-0F44-4CED-A7A2-E7835FFDEA49}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

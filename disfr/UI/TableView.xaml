@@ -43,7 +43,9 @@
                 <Setter Property="SelectionUnit" Value="Cell"/>
                 <Setter Property="IsReadOnly" Value="True"/>
                 <Setter Property="BorderThickness" Value="0"/>
-                
+                <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
+                <Setter Property="VirtualizingStackPanel.VirtualizationMode" Value="Standard"/>
+
                 <Setter Property="ColumnHeaderStyle">
                     <Setter.Value>
                         <Style TargetType="DataGridColumnHeader">
@@ -80,7 +82,7 @@
         <Binding Path="Name"/>
     </TabItem.Header>
 
-    <DataGrid x:Name="dataGrid" Margin="0,0,0,0" ItemsSource="{Binding Rows}" Style="{StaticResource DataGridStyle}" CanUserSortColumns="True" Sorting="dataGrid_Sorting">
+    <DataGrid x:Name="dataGrid" Margin="0,0,0,0" ItemsSource="{Binding Rows}" Style="{StaticResource DataGridStyle}" CanUserSortColumns="True" Sorting="dataGrid_Sorting" CopyingRowClipboardContent="dataGrid_CopyingRowClipboardContent" SelectedCellsChanged="dataGrid_SelectedCellsChanged">
         <DataGrid.Columns>
             <DataGridTextColumn x:Name="Serial" Header="#" Binding="{Binding Path=Serial, StringFormat=#}"/>
             <DataGridTextColumn x:Name="Asset2" Header="Old Asset" Binding="{Binding Asset2}" Width="80"/>

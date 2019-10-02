@@ -104,6 +104,9 @@
       <DependentUpon>ExceptionDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\DuckOpenFileDialog.cs" />
+    <Compile Include="UI\FindDialog.xaml.cs">
+      <DependentUpon>FindDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\OriginChooserDialog.xaml.cs">
       <DependentUpon>OriginChooserDialog.xaml</DependentUpon>
     </Compile>
@@ -143,6 +146,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\ExceptionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\FindDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

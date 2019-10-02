@@ -10,20 +10,48 @@ namespace disfr.UI
     /// Represents display decorations for a character.
     /// </summary>
     /// <see cref="GlossyString"/>
+    /// <remarks>
+    /// <para>Diff/Edits</para>
+    /// <list type="table">
+    /// <item><term>COM</term><description>Common/Unchanged.</description></item>
+    /// <item><term>INS</term><description>Right-only/Iserted.</description></item>
+    /// <item><term>DEL</term><description>Left-only/Deleted.</description></item>
+    /// </list>
+    /// <para>Tags</para>
+    /// <list type="table">
+    /// <item><term>NOR</term><description>Normal text.</description></item>
+    /// <item><term>TAG</term><description>Inline tag.</description></item>
+    /// <item><term>SYM</term><description>Special symbol.</description></item>
+    /// <item><term>ALT</term><description>Special symbol in visible (alternative) presentation.</description></item>
+    /// </list> 
+    /// </remarks>
     [Flags]
     public enum Gloss
     {
+        /// <summary>Indicates no glosses are applied.</summary>
         None = 0,
 
+        // Diff/edits.
+        /// <summary>Indicates common/unchantes parts.</summary>
         COM = 0,
+        /// <summary>Indicates right-only/inserted parts.</summary>
         INS = 1,
+        /// <summary>Indicates left-only/deleted parts.</summary>
         DEL = 2,
 
+        // Tags
+        /// <summary>Indicates normal texts.</summary>
         NOR = 0,
+        /// <summary>Indicates inline tags.</summary>
         TAG = 4,
+        /// <summary>Indicates special symbols.</summary>
         SYM = 8,
+        /// <summary>Indicates special symbols in alternative presentation.</summary>
+        ALT = 16,
 
-        HIT = 16,
+        // Other
+        /// <summary>Eventually used for hit test.</summary>
+        HIT = 32,
     }
 
     /// <summary>
@@ -182,18 +210,28 @@ namespace disfr.UI
         }
 
         /// <summary>
-        /// Get String (Text) portion of this GlossyString.
+        /// Get String (text) portion of this GlossyString.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
+            return ToString(false);
+        }
+
+        /// <summary>
+        /// Get String (text) portion of this GlossyString using alternate symbol presentation. 
+        /// </summary>
+        /// <returns></returns>
+        public string ToString(bool altsym)
+        {
             if (Pairs.Count == 0) return "";
             if (Pairs.Count == 1) return Pairs[0].Text;
 
+            var to_drop = altsym ? Gloss.SYM : Gloss.ALT;
             var sb = new StringBuilder();
             foreach (var p in Pairs)
             {
-                sb.Append(p.Text);
+                if (!p.Gloss.HasFlag(to_drop)) sb.Append(p.Text);
             }
             return sb.ToString();
         }
