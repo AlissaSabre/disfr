@@ -226,7 +226,7 @@ namespace disfr.Doc
             var seq = builder.GetSequence();
             if (seq.Count == 0) return InlineString.Empty;
             if (seq.Count != 1) throw new Exception("Internal Error");
-            if (seq[0]?.InlineString is null) throw new Exception("Internal Error");
+            if (seq[0]?.InlineString == null) throw new Exception("Internal Error");
             return seq[0].InlineString;
         }
 

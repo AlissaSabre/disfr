@@ -70,7 +70,7 @@ namespace disfr.Doc
         /// <param name="text">The string to add.</param>
         public void Add(string text)
         {
-            if (text == null) throw new ArgumentNullException("text");
+            if (ReferenceEquals(text, null)) throw new ArgumentNullException("text");
             InternalAddText(text, null);
         }
 
@@ -80,7 +80,7 @@ namespace disfr.Doc
         /// <param name="text">The <see cref="InlineText"/> to add.</param>
         public void Add(InlineText text)
         {
-            if (text == null) throw new ArgumentNullException("text");
+            if (ReferenceEquals(text, null)) throw new ArgumentNullException("text");
             InternalAddText(text.Text, text);
         }
 
@@ -112,7 +112,7 @@ namespace disfr.Doc
         /// <exception cref="ArgumentNullException"><paramref name="tag"/> is null.</exception>
         public void Add(InlineTag tag)
         {
-            if (tag == null) throw new ArgumentNullException("tag");
+            if (ReferenceEquals(tag, null)) throw new ArgumentNullException("tag");
             InternalAddTag(tag);
         }
 
@@ -142,14 +142,14 @@ namespace disfr.Doc
             foreach (var element in contents)
             {
                 var inline_text = element as InlineText;
-                if (!(inline_text is null))
+                if (!ReferenceEquals(inline_text, null))
                 {
                     InternalAddText(inline_text.Text, inline_text);
                     continue;
                 }
 
                 var inline_tag = element as InlineTag;
-                if (!(inline_tag is null))
+                if (!ReferenceEquals(inline_tag, null))
                 {
                     InternalAddTag(inline_tag);
                     continue;
@@ -295,7 +295,7 @@ namespace disfr.Doc
 
         public InlineString(string text)
         {
-            if (text == null) throw new ArgumentNullException("text");
+            if (ReferenceEquals(text, null)) throw new ArgumentNullException("text");
             if (text.Length == 0)
             {
                 _Contents = EMPTY_CONTENTS;
@@ -310,7 +310,7 @@ namespace disfr.Doc
 
         public InlineString(IEnumerable<InlineRun> contents)
         {
-            if (contents == null) throw new ArgumentNullException("contents");
+            if (ReferenceEquals(contents, null)) throw new ArgumentNullException("contents");
             if (contents.Any())
             {
                 var builder = new InlineBuilder();
@@ -347,7 +347,7 @@ namespace disfr.Doc
         /// This property enumerates all tags, including those usually not presented to the user,
         /// e.g., a deleted tag in a change-tracked document.
         /// </remarks>
-        public IEnumerable<InlineTag> Tags { get { return _Contents.Select(rwp => rwp.Run as InlineTag).Where(t => !(t is null)); } }
+        public IEnumerable<InlineTag> Tags { get { return _Contents.Select(rwp => rwp.Run).OfType<InlineTag>(); } }
 
         /// <summary>
         /// Gets whether this InlineString represents an empty string.
@@ -378,7 +378,7 @@ namespace disfr.Doc
         /// <returns>True if equal.</returns>
         public bool Equals(InlineString inline)
         {
-            if (inline == null) return false;
+            if (ReferenceEquals(inline, null)) return false;
             if (inline._Contents.Length != _Contents.Length) return false;
             for (int i = 0; i < _Contents.Length; i++)
             {
@@ -399,7 +399,7 @@ namespace disfr.Doc
 
         public static bool operator ==(InlineString x, InlineString y)
         {
-            return (x is null) ? (y is null) : x.Equals(y);
+            return ReferenceEquals(x, null) ? ReferenceEquals(y, null) : x.Equals(y);
         }
 
         public static bool operator !=(InlineString x, InlineString y)
@@ -466,7 +466,7 @@ namespace disfr.Doc
 
         public InlineRunWithProperty(InlineProperty property, InlineRun run)
         {
-            if (run is null) throw new ArgumentNullException("run");
+            if (ReferenceEquals(run, null)) throw new ArgumentNullException("run");
             Property = property;
             Run = run;
         }
@@ -642,8 +642,8 @@ namespace disfr.Doc
         /// <returns>True if and only if all (public) members of <paramref name="tag"/> have values equal to this object.</returns>
         public bool Equals(InlineTag tag)
         {
-            if (tag is null) return false;
-            if (ReferenceEquals(this, tag)) return true;
+            if (ReferenceEquals(tag, null)) return false;
+            if (ReferenceEquals(tag, this)) return true;
             return
                 tag.TagType == TagType &&
                 tag.Id == Id &&
@@ -667,7 +667,7 @@ namespace disfr.Doc
 
         public static bool operator ==(InlineTag x, InlineTag y)
         {
-            return (x is null) ? (y is null) : x.Equals(y);
+            return ReferenceEquals(x, null) ? ReferenceEquals(y, null) : x.Equals(y);
         }
 
         public static bool operator !=(InlineTag x, InlineTag y)
@@ -714,7 +714,7 @@ namespace disfr.Doc
         {
             foreach (var item in items)
             {
-                if (item != null)
+                if (!ReferenceEquals(item, null))
                 {
                     var s = item.ToString();
                     if (s.StartsWith(OPAR) && s.EndsWith(CPAR))
@@ -791,7 +791,7 @@ namespace disfr.Doc
 
         public InlineText(string text)
         {
-            if (text == null) throw new ArgumentNullException("text");
+            if (ReferenceEquals(text, null)) throw new ArgumentNullException("text");
             Text = text;
         }
 
@@ -886,7 +886,7 @@ namespace disfr.Doc
 
         public static bool operator ==(InlineRun x, InlineRun y)
         {
-            return (x is null) ? (y is null) : x.Equals(y);
+            return ReferenceEquals(x, null) ? ReferenceEquals(y, null) : x.Equals(y);
         }
 
         public static bool operator !=(InlineRun x, InlineRun y)
