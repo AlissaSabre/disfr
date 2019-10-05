@@ -20,8 +20,8 @@ namespace disfr.UI
     {
         static PairRenderer()
         {
-            InitializeSpecialCharMap();
-            SpecialCharChecker = BuildSCC(SpecialCharMap);
+            InitializeSpecialCharMaps();
+            SpecialCharChecker = BuildSCC(SpecialCharMapAlt.Keys);
         }
 
         public bool ShowLocalSerial { get; set; }
@@ -56,7 +56,7 @@ namespace disfr.UI
             "\u3000\u3164" +
             "\uFFA0\uFEFF";
 
-        private static readonly Dictionary<char, string> SpecialCharMap = new Dictionary<char, string>()
+        private static readonly Dictionary<char, string> SpecialCharMapAlt = new Dictionary<char, string>()
         {
             { '\u0009', "\u2192\t" }, /* → */
             { '\u000A', "\u21B5\n" }, /* ↵ */
@@ -67,14 +67,21 @@ namespace disfr.UI
             { '\u3000', "\u2610\u200B" }, /* ☐ */
         };
 
-        private static void InitializeSpecialCharMap()
+        private static readonly Dictionary<char, string> SpecialCharMapRaw = new Dictionary<char, string>();
+
+        private static void InitializeSpecialCharMaps()
         {
             foreach (char c in SpecialChars)
             {
-                if (!SpecialCharMap.ContainsKey(c))
+                if (!SpecialCharMapAlt.ContainsKey(c))
                 {
-                    SpecialCharMap[c] = string.Format("(U+{0:X4})", (int)c);
+                    SpecialCharMapAlt[c] = string.Format("(U+{0:X4})", (int)c);
                 }
+            }
+
+            foreach (char c in SpecialCharMapAlt.Keys)
+            {
+                SpecialCharMapRaw[c] = c.ToString();
             }
         }
 
@@ -92,11 +99,11 @@ namespace disfr.UI
         /// </summary>
         /// <param name="map">SpecialCharMap to create SCC for.</param>
         /// <returns>The SpecialCharChecker.</returns>
-        private static char[] BuildSCC<T>(Dictionary<char, T> map)
+        private static char[] BuildSCC(ICollection<char> specials)
         {
-            for (int n = map.Count; ; n++)
+            for (int n = specials.Count; ; n++)
             {
-                var icc = TryBuildSCC(map, n);
+                var icc = TryBuildSCC(specials, n);
                 if (icc != null) return icc;
             }
         }
@@ -107,10 +114,10 @@ namespace disfr.UI
         /// <param name="map">SpecialCharMap to create SCC for.</param>
         /// <param name="size">The desired size of the SpecialCharChecker.</param>
         /// <returns>The SpecialCharChecker of size <paramref name="size"/>, or null if not found.</returns>
-        private static char[] TryBuildSCC<T>(Dictionary<char, T> map, int size)
+        private static char[] TryBuildSCC(ICollection<char> specials, int size)
         {
             var icc = new char[size];
-            foreach (var c in SpecialChars)
+            foreach (var c in specials)
             {
                 var i = c % size;
                 if (i == 0 && c != 0) return null;
@@ -159,8 +166,9 @@ namespace disfr.UI
                             var c = str[q];
                             if (SpecialCharChecker[c % SpecialCharChecker.Length] == c)
                             {
-                                g.Append(str.Substring(p, q - p), Gloss.None);
-                                g.Append(SpecialCharMap[c], Gloss.SYM);
+                                if (q > p) g.Append(str.Substring(p, q - p), Gloss.None);
+                                g.Append(SpecialCharMapRaw[c], Gloss.SYM);
+                                g.Append(SpecialCharMapAlt[c], Gloss.ALT);
                                 p = q + 1;
                             }
 #else
@@ -168,13 +176,17 @@ namespace disfr.UI
                             string special;
                             if (SpecialCharMap.TryGetValue(str[q], out special))
                             {
-                                g.Append(str.Substring(p, q - p), Gloss.None);
-                                g.Append(special, Gloss.SYM);
+                                if (q > p) g.Append(str.Substring(p, q - p), Gloss.None);
+                                g.Append(SpecialCharMapRaw[c], Gloss.SYM);
+                                g.Append(SpecialCharMapAlt[c], Gloss.ALT);
                                 p = q + 1;
                             }
 #endif
                         }
-                        g.Append(str.Substring(p), Gloss.None);
+                        if (p < str.Length)
+                        {
+                            g.Append(str.Substring(p), Gloss.None);
+                        }
                     }
                 }
                 else if (run is InlineTag)
