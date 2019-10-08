@@ -203,27 +203,18 @@ namespace disfr.Doc
             );
 
             // Merge pairs in pair_store_pool into a single PairStore.
-            PairStore all_pairs = null;
-            for(;;)
+            PairStore all_pairs;
+            pair_store_pool.TryPop(out all_pairs);
+            while (!pair_store_pool.IsEmpty)
             {
                 PairStore pairs;
-                if (!pair_store_pool.TryPop(out pairs)) break;
-                if (all_pairs == null)
-                {
-                    all_pairs = pairs;
-                }
-                else
-                {
-                    all_pairs.AddAll(pairs);
-                }
+                pair_store_pool.TryPop(out pairs);
+                all_pairs.AddAll(pairs);
             }
 
-            IEnumerable<IAsset> assets;
-            if (all_pairs == null)
-            {
-                assets = Enumerable.Empty<IAsset>();
-            }
-            else
+            // Wrap pairs in assets, then in an asset bundle. 
+            IEnumerable<IAsset> assets = Enumerable.Empty<IAsset>();
+            if (all_pairs != null)
             {
                 assets = all_pairs.GetTargetLanguages().Select(tlang => new TmxAsset()
                 {
