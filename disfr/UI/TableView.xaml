@@ -52,10 +52,7 @@
                             <Setter Property="ContentTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
-                                        <StackPanel Tag="{Binding ElementName=Root}">
-                                            <StackPanel.ContextMenu>
-                                                <ContextMenu Style="{StaticResource HeaderContextMenu}" DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Mode=Self}}" ItemsSource="{Binding Path=Columns}"/>
-                                            </StackPanel.ContextMenu>
+                                        <StackPanel>
                                             <TextBlock Name="HeaderText" Text="{Binding}"/>
                                             <ComboBox Name="FilterBox" IsEditable="True" Margin="0,3,0,0" MinWidth="30"
                                                       Visibility="{Binding QuickFilter, ElementName=Root, Converter={StaticResource Visibility}}"
@@ -64,6 +61,12 @@
                                                       GotFocus="FilterBox_GotFocus"/>
                                         </StackPanel>
                                     </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Tag" Value="{Binding ElementName=Root}"/>
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu Style="{StaticResource HeaderContextMenu}" DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Mode=Self}}" ItemsSource="{Binding Path=Columns}"/>
                                 </Setter.Value>
                             </Setter>
                         </Style>
