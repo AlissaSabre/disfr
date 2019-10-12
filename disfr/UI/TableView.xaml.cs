@@ -154,6 +154,8 @@ namespace disfr.UI
             set { DataContext = value; }
         }
 
+        private static readonly DataGridLength DataGridLengthStar = new DataGridLength(1.0, DataGridLengthUnitType.Star);
+
         private void this_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // Reset the column organization.
@@ -213,6 +215,16 @@ namespace disfr.UI
                     ElementStyle = FindResource("AdditionalColumnElementStyle") as Style,
                 };
                 column.SetValue(ColumnInUseProperty, true);
+
+                // a sort of a hack to avoid a few columns (containing some very long text) to occupy the entire space.
+                // The following code includes several magic numbers that were determined without grounds.  FIXME.
+                if (table.AllRows.Take(100)
+                    .Select(row => row[props.Index])
+                    .Any(text => text.Length > 50 || text.IndexOf('\n') >= 0))
+                {
+                    column.Width = DataGridLengthStar;
+                }
+
                 dataGrid.Columns.Add(column);
             }
 
