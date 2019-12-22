@@ -19,8 +19,9 @@
 
             <local:VisibilityToBooleanConverter x:Key="Visibility2"/>
 
-            <!-- The following style resource is almost a copy of ColumnMenuItem style in MainWindow.xaml with just a slight difference, uh oh :( -->
+            <!-- The style for ItemContainerStyle is a copy of ColumnMenuItem style in MainWindow.xaml (with minor renaming!), uh oh :( -->
             <Style x:Key="HeaderContextMenu" TargetType="ContextMenu">
+                <Setter Property="ItemsSource" Value="{Binding Path=Columns, Source={x:Reference Root}}" />
                 <Setter Property="ItemContainerStyle">
                     <Setter.Value>
                         <Style TargetType="MenuItem">
@@ -52,10 +53,7 @@
                             <Setter Property="ContentTemplate">
                                 <Setter.Value>
                                     <DataTemplate>
-                                        <StackPanel Tag="{Binding ElementName=Root}">
-                                            <StackPanel.ContextMenu>
-                                                <ContextMenu Style="{StaticResource HeaderContextMenu}" DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Mode=Self}}" ItemsSource="{Binding Path=Columns}"/>
-                                            </StackPanel.ContextMenu>
+                                        <StackPanel>
                                             <TextBlock Name="HeaderText" Text="{Binding}"/>
                                             <ComboBox Name="FilterBox" IsEditable="True" Margin="0,3,0,0" MinWidth="30"
                                                       Visibility="{Binding QuickFilter, ElementName=Root, Converter={StaticResource Visibility}}"
@@ -64,6 +62,11 @@
                                                       GotFocus="FilterBox_GotFocus"/>
                                         </StackPanel>
                                     </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu Style="{StaticResource HeaderContextMenu}"/>
                                 </Setter.Value>
                             </Setter>
                         </Style>
