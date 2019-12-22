@@ -220,7 +220,7 @@ namespace disfr.UI
                 // The following code includes several magic numbers that were determined without grounds.  FIXME.
                 if (table.AllRows.Take(100)
                     .Select(row => row[props.Index])
-                    .Any(text => text.Length > 50 || text.IndexOf('\n') >= 0))
+                    .Any(text => text?.Length > 50 || text?.IndexOf('\n') >= 0))
                 {
                     column.Width = DataGridLengthStar;
                 }
