@@ -63,26 +63,38 @@ namespace disfr.Writer
                             data.RawTarget.RunsWithProperties.Select(ConvertContent))));
         }
 
-        private XNode ConvertContent(InlineRunWithProperty element_with_property)
+        private XNode ConvertContent(InlineRunWithProperty rwp)
         {
-            throw new NotImplementedException();
+            switch (rwp.Property)
+            {
+                case InlineProperty.Del:
+                    return null;
+                case InlineProperty.None:
+                case InlineProperty.Ins:
+                case InlineProperty.Emp:
+                    break;
+                default:
+                    throw new ApplicationException("Internal error");
+            }
 
-            //if (item is InlineText)
-            //{
-            //    return new XText(item.ToString());
-            //}
-            //else if (item is InlineTag)
-            //{
-            //    // Create a TMX <ph> tag for any tag.  
-            //    var tag = item as InlineTag;
-            //    return new XElement(X + "ph",
-            //        new XAttribute("x", tag.Number),
-            //        "{" + tag.Number + "}");
-            //}
-            //else
-            //{
-            //    throw new Exception("Internal error");
-            //}
+            var run = rwp.Run;
+
+            if (run is InlineText)
+            {
+                return new XText(run.ToString());
+            }
+            else if (run is InlineTag)
+            {
+                // Create a TMX <ph> tag for any tag, giving a fake content.
+                var tag = run as InlineTag;
+                return new XElement(X + "ph",
+                    new XAttribute("x", tag.Number),
+                    "{" + tag.Number + "}");
+            }
+            else
+            {
+                throw new ApplicationException("Internal error");
+            }
         }
     }
 }
