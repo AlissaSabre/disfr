@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using disfr.Plugin;
 using disfr.UI;
+using disfr.Doc;
 
 namespace disfr.Writer
 {
@@ -70,7 +71,7 @@ namespace disfr.Writer
             return string.Join("|", Writers.SelectMany(r => r.FilterString));
         }
 
-        public void Write(string filename, int index, IEnumerable<IRowData> data, IColumnDesc[] columns)
+        public void Write(string filename, int index, IEnumerable<ITransPair> data, IColumnDesc[] columns)
         {
             // Unlike ReaderManager, WriterManager doesn't support auto-detection,
             // so the write selection is simpler.

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using disfr.UI;
+using disfr.Doc;
 
 namespace disfr.Writer
 {
@@ -14,6 +15,6 @@ namespace disfr.Writer
 
         IList<string> FilterString { get; }
 
-        void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns);
+        void Write(string filename, int filterindex, IEnumerable<ITransPair> rows, IColumnDesc[] columns);
     }
 }

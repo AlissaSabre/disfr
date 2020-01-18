@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
+using disfr.Doc;
 using IColumnDesc = disfr.Writer.IColumnDesc;
 
 namespace disfr.UI
@@ -242,46 +243,20 @@ namespace disfr.UI
         /// <remarks>
         /// Some <see cref="IRowWriter"/> implementation uses it.
         /// </remarks>
-        public IColumnDesc[] VisibleColumnDescs
+        public IColumnDesc[] ColumnDescs
         {
             get
             {
                 return dataGrid.Columns
                     .Where(c => c.Visibility == Visibility.Visible)
                     .OrderBy(c => c.DisplayIndex)
-                    .Select(c => new VisibleColumnDesc(
+                    .Select(c => RowDataColumnDesc.Create(
                         c.Header.ToString(),
                         (c.ClipboardContentBinding as Binding)?.Path?.Path))
                     .ToArray();
             }
         }
 
-        private class VisibleColumnDesc : IColumnDesc
-        {
-            public VisibleColumnDesc(string header, string path)
-            {
-                Header = header;
-                Path = path;
-            }
-
-            public string Header { get; private set; }
-
-            public string Path { get; private set; }
-
-            public bool IsProp { get { return Path.StartsWith("["); } }
-
-            public object GetContent(IRowData row)
-            {
-                if (IsProp)
-                {
-                    return row[int.Parse(Path.Substring(1, Path.Length - 2))];
-                }
-                else
-                {
-                    return typeof(IRowData).GetProperty(Path).GetValue(row);
-                }
-            }
-        }
 
         private void dataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
@@ -556,7 +531,7 @@ namespace disfr.UI
                 return r => r[index] ?? "";
             }
 
-            var property = typeof(IRowData).GetProperty(path);
+            var property = typeof(IRowData).GetProperty(path) ?? typeof(ITransPair).GetProperty(path);
             if (property.PropertyType == typeof(string))
             {
                 return r => property.GetValue(r) as string ?? "";

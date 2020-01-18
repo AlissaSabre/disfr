@@ -129,6 +129,7 @@
     <Compile Include="UI\TableView.xaml.cs">
       <DependentUpon>TableView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\RowDataColumnDesc.cs" />
     <Compile Include="UI\XamlControl.cs" />
     <Compile Include="Writer\IColumnDesc.cs" />
     <Compile Include="Writer\IRowsWriter.cs" />

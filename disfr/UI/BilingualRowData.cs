@@ -8,7 +8,7 @@ using disfr.Doc;
 
 namespace disfr.UI
 {
-    public class BilingualRowData : IRowData, ITransPair
+    public class BilingualRowData : IRowData
     {
         public BilingualRowData(PairRenderer renderer, AssetData asset, ITransPair pair, int seq)
         {

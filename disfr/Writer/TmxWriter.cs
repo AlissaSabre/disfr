@@ -27,7 +27,7 @@ namespace disfr.Writer
 
         private static readonly XName SPACE = XNamespace.Xml + "space";
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<ITransPair> rows, IColumnDesc[] columns)
         {
             var tmx =
                 new XElement(X + "tmx",
@@ -47,7 +47,7 @@ namespace disfr.Writer
             tmx.Save(filename, SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces);
         }
 
-        private XElement ConvertEntry(IRowData data)
+        private XElement ConvertEntry(ITransPair data)
         {
             return 
                 new XElement(X + "tu",
@@ -55,12 +55,12 @@ namespace disfr.Writer
                         new XAttribute(LANG, data.SourceLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            (data as ITransPair).Source.RunsWithProperties.Select(ConvertContent))),
+                            data.Source.RunsWithProperties.Select(ConvertContent))),
                     new XElement(X + "tuv",
                         new XAttribute(LANG, data.TargetLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            (data as ITransPair).Target.RunsWithProperties.Select(ConvertContent))));
+                            data.Target.RunsWithProperties.Select(ConvertContent))));
         }
 
         private XNode ConvertContent(InlineRunWithProperty rwp)

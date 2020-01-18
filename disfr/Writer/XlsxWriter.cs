@@ -10,6 +10,7 @@ using NetOffice.ExcelApi.Enums;
 using Excel = NetOffice.ExcelApi.Application;
 
 using disfr.UI;
+using disfr.Doc;
 
 namespace disfr.Writer
 {
@@ -25,27 +26,27 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
         {
             switch (filterindex)
             {
-                case 0: WriteXlsx(filename, rows, columns); break;
-                case 1: WriteXmlss(filename, rows, columns); break;
+                case 0: WriteXlsx(filename, pairs, columns); break;
+                case 1: WriteXmlss(filename, pairs, columns); break;
                 default:
                     throw new ArgumentOutOfRangeException("filterindex");
             }
         }
 
-        private static void WriteXmlss(string filename, IEnumerable<IRowData> rows, IColumnDesc[] columns)
+        private static void WriteXmlss(string filename, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
         {
             using (var output = File.Create(filename))
             {
-                var table = CreateXmlTree(rows, columns);
+                var table = CreateXmlTree(pairs, columns);
                 Transform(table, output, "xmlss");
             }
         }
 
-        private static void WriteXlsx(string filename, IEnumerable<IRowData> rows, IColumnDesc[] columns)
+        private static void WriteXlsx(string filename, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
         {
             string tmpname = null;
             try
@@ -53,7 +54,7 @@ namespace disfr.Writer
                 tmpname = CreateTempFile(Path.GetTempPath(), ".xml");
                 using (var output = File.OpenWrite(tmpname))
                 {
-                    var table = CreateXmlTree(rows, columns);
+                    var table = CreateXmlTree(pairs, columns);
                     Transform(table, output, "xmlss");
                 }
 

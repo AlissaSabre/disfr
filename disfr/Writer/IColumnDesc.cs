@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using disfr.UI;
+using disfr.Doc;
 
 namespace disfr.Writer
 {
@@ -13,6 +14,6 @@ namespace disfr.Writer
         string Header { get; }
         string Path { get; }
 
-        object GetContent(IRowData row);
+        object GetContent(ITransPair row);
     }
 }

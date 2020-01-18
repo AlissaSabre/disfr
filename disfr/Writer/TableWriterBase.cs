@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Xml.Xsl;
 
 using disfr.UI;
+using disfr.Doc;
 
 namespace disfr.Writer
 {
@@ -16,17 +17,17 @@ namespace disfr.Writer
     {
         public static readonly XNamespace D = XNamespace.Get("http://github.com/AlissaSabre/disfr/");
 
-        protected static XElement CreateXmlTree(IEnumerable<IRowData> rows, IColumnDesc[] columns)
+        protected static XElement CreateXmlTree(IEnumerable<ITransPair> pair, IColumnDesc[] columns)
         {
             return new XElement(D + "Tree",
                 new XElement(D + "Columns",
                     columns.Select(c => new XElement(D + "Col",
                         new XAttribute("Path", c.Path),
                         c.Header))),
-                rows.Select(r => new XElement(D + "Row",
+                pair.Select(p => new XElement(D + "Row",
                     columns.Select(c => new XElement(D + "Data",
                         new XAttribute("Path", c.Path),
-                        ConvertContent(c.GetContent(r)))))));
+                        ConvertContent(c.GetContent(p)))))));
         }
 
         private static readonly string[] GlossLabel;
@@ -65,10 +66,14 @@ namespace disfr.Writer
             {
                 return new [] { new XText(content as string) };
             }
-            else if (content is GlossyString)
+            //else if (content is GlossyString)
+            //{
+            //    return (content as GlossyString).AsCollection().Select(p =>
+            //        new XElement(D + "Span", new XAttribute("Gloss", GlossLabel[(int)p.Gloss]), p.Text));
+            //}
+            else if (content is InlineString)
             {
-                return (content as GlossyString).AsCollection().Select(p =>
-                    new XElement(D + "Span", new XAttribute("Gloss", GlossLabel[(int)p.Gloss]), p.Text));
+                throw new NotImplementedException();
             }
             else
             {

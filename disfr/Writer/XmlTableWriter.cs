@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using disfr.UI;
+using disfr.Doc;
 
 namespace disfr.Writer
 {
@@ -19,9 +21,9 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
         {
-            var table = CreateXmlTree(rows, columns);
+            var table = CreateXmlTree(pairs, columns);
             using (var output = File.Create(filename))
             {
                 Transform(table, output, "table");
@@ -40,9 +42,9 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
         {
-            CreateXmlTree(rows, columns).Save(filename);
+            CreateXmlTree(pairs, columns).Save(filename);
         }
     }
 }
