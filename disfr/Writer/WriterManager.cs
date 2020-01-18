@@ -70,7 +70,7 @@ namespace disfr.Writer
             return string.Join("|", Writers.SelectMany(r => r.FilterString));
         }
 
-        public void Write(string filename, int index, IEnumerable<IRowData> data, ColumnDesc[] columns)
+        public void Write(string filename, int index, IEnumerable<IRowData> data, IColumnDesc[] columns)
         {
             // Unlike ReaderManager, WriterManager doesn't support auto-detection,
             // so the write selection is simpler.
@@ -91,13 +91,5 @@ namespace disfr.Writer
 
             Writers[i].Write(filename, adjusted_index, data, columns);
         }
-    }
-
-    public class ColumnDesc
-    {
-        public readonly string Header;
-        public readonly string Path;
-
-        public ColumnDesc(string header, string path) { Header = header; Path = path; }
     }
 }

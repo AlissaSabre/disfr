@@ -27,7 +27,7 @@ namespace disfr.Writer
 
         private static readonly XName SPACE = XNamespace.Xml + "space";
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns)
         {
             var tmx =
                 new XElement(X + "tmx",
@@ -55,12 +55,12 @@ namespace disfr.Writer
                         new XAttribute(LANG, data.SourceLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawSource.RunsWithProperties.Select(ConvertContent))),
+                            (data as ITransPair).Source.RunsWithProperties.Select(ConvertContent))),
                     new XElement(X + "tuv",
                         new XAttribute(LANG, data.TargetLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawTarget.RunsWithProperties.Select(ConvertContent))));
+                            (data as ITransPair).Target.RunsWithProperties.Select(ConvertContent))));
         }
 
         private XNode ConvertContent(InlineRunWithProperty rwp)

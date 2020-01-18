@@ -25,7 +25,7 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns)
         {
             switch (filterindex)
             {
@@ -36,7 +36,7 @@ namespace disfr.Writer
             }
         }
 
-        private static void WriteXmlss(string filename, IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        private static void WriteXmlss(string filename, IEnumerable<IRowData> rows, IColumnDesc[] columns)
         {
             using (var output = File.Create(filename))
             {
@@ -45,7 +45,7 @@ namespace disfr.Writer
             }
         }
 
-        private static void WriteXlsx(string filename, IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        private static void WriteXlsx(string filename, IEnumerable<IRowData> rows, IColumnDesc[] columns)
         {
             string tmpname = null;
             try

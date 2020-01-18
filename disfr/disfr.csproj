@@ -130,6 +130,7 @@
       <DependentUpon>TableView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\XamlControl.cs" />
+    <Compile Include="Writer\IColumnDesc.cs" />
     <Compile Include="Writer\IRowsWriter.cs" />
     <Compile Include="Writer\SpaceSensitiveXmlTextWriter.cs" />
     <Compile Include="Writer\TableWriterBase.cs" />

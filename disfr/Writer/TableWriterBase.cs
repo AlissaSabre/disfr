@@ -16,7 +16,7 @@ namespace disfr.Writer
     {
         public static readonly XNamespace D = XNamespace.Get("http://github.com/AlissaSabre/disfr/");
 
-        protected static XElement CreateXmlTree(IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        protected static XElement CreateXmlTree(IEnumerable<IRowData> rows, IColumnDesc[] columns)
         {
             return new XElement(D + "Tree",
                 new XElement(D + "Columns",
@@ -26,7 +26,7 @@ namespace disfr.Writer
                 rows.Select(r => new XElement(D + "Row",
                     columns.Select(c => new XElement(D + "Data",
                         new XAttribute("Path", c.Path),
-                        ConvertContent(r, c))))));
+                        ConvertContent(c.GetContent(r)))))));
         }
 
         private static readonly string[] GlossLabel;
@@ -51,18 +51,8 @@ namespace disfr.Writer
             GlossLabel = map;
         }
 
-        protected static IEnumerable<XNode> ConvertContent(IRowData row, ColumnDesc column)
+        protected static IEnumerable<XNode> ConvertContent(object content)
         {
-            object content = null;
-            if (column.Path.StartsWith("["))
-            {
-                content = row[int.Parse(column.Path.Substring(1, column.Path.Length - 2))];
-            }
-            else
-            {
-                content = typeof(IRowData).GetProperty(column.Path).GetValue(row);
-            }
-
             if (content == null)
             {
                 return null;

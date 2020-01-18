@@ -12,12 +12,31 @@ namespace disfr.UI
     {
         bool Hidden { get; }
 
+        /// <summary>
+        /// Internal sequential number of all rows.
+        /// </summary>
+        /// <remarks>
+        /// This property is used for stabilizing sorting.
+        /// </remarks>
         int Seq { get; }
 
+        /// <summary>
+        /// Serial number of a row.
+        /// </summary>
+        /// <remarks>
+        /// This property is visible to users.
+        /// It was originally intended to simulate memoQ's segment numbering when it reads a foreign XLIFF.
+        /// </remarks>
         int Serial { get; }
 
+        /// <summary>
+        /// Asset name.
+        /// </summary>
         string Asset { get; }
 
+        /// <summary>
+        /// Row (segment) ID as assigned in the original file.
+        /// </summary>
         string Id { get; }
 
         GlossyString Source { get; }
@@ -43,12 +62,6 @@ namespace disfr.UI
         string FlatTarget { get; }
 
         string FlatTarget2 { get; }
-
-        InlineString RawSource { get; }
-
-        InlineString RawTarget { get; }
-
-        InlineString RawTarget2 { get; }
 
         string SourceLang { get; }
 

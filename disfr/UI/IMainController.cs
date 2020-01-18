@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using ColumnDesc = disfr.Writer.ColumnDesc;
+using IColumnDesc = disfr.Writer.IColumnDesc;
 
 namespace disfr.UI
 {
@@ -22,7 +22,7 @@ namespace disfr.UI
         IEnumerable<string> PluginNames { get; }
 
         DelegateCommand<string[], int, bool, object> OpenCommand { get; }
-        DelegateCommand<string, int, ITableController, ColumnDesc[]> SaveAsCommand { get; }
+        DelegateCommand<string, int, ITableController, IColumnDesc[]> SaveAsCommand { get; }
         DelegateCommand<ITableController, string[], object> OpenAltCommand { get; }
         DelegateCommand<ITableController> CloseCommand { get; }
         DelegateCommand<ITableController> CloseExceptCommand { get; }

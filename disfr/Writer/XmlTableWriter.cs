@@ -19,7 +19,7 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns)
         {
             var table = CreateXmlTree(rows, columns);
             using (var output = File.Create(filename))
@@ -40,7 +40,7 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, IColumnDesc[] columns)
         {
             CreateXmlTree(rows, columns).Save(filename);
         }

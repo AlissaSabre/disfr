@@ -18,7 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-using ColumnDesc = disfr.Writer.ColumnDesc;
+using IColumnDesc = disfr.Writer.IColumnDesc;
 
 namespace disfr.UI
 {
@@ -185,7 +185,7 @@ namespace disfr.UI
             // There are many cases that a file contains only one Asset,
             // and Asset column is just redundant in the cases, so hide it in the cases.
             // (but users can still view it if they want.)
-            if (Asset.Visibility == Visibility.Visible && 
+            if (Asset.Visibility == Visibility.Visible &&
                 Asset2.Visibility != Visibility.Visible &&
                 !table.AllRows.Select(r => r.Asset).Distinct().Skip(1).Any())
             {
@@ -216,7 +216,7 @@ namespace disfr.UI
                 dataGrid.Columns.Add(column);
             }
 
-            
+
             // Set FilterOptions attached property to all in-use columns.
             foreach (var column in dataGrid.Columns.Where(GetColumnInUse))
             {
@@ -242,17 +242,44 @@ namespace disfr.UI
         /// <remarks>
         /// Some <see cref="IRowWriter"/> implementation uses it.
         /// </remarks>
-        public ColumnDesc[] VisibleColumnDescs
+        public IColumnDesc[] VisibleColumnDescs
         {
             get
             {
                 return dataGrid.Columns
                     .Where(c => c.Visibility == Visibility.Visible)
                     .OrderBy(c => c.DisplayIndex)
-                    .Select(c => new ColumnDesc(
+                    .Select(c => new VisibleColumnDesc(
                         c.Header.ToString(),
                         (c.ClipboardContentBinding as Binding)?.Path?.Path))
                     .ToArray();
+            }
+        }
+
+        private class VisibleColumnDesc : IColumnDesc
+        {
+            public VisibleColumnDesc(string header, string path)
+            {
+                Header = header;
+                Path = path;
+            }
+
+            public string Header { get; private set; }
+
+            public string Path { get; private set; }
+
+            public bool IsProp { get { return Path.StartsWith("["); } }
+
+            public object GetContent(IRowData row)
+            {
+                if (IsProp)
+                {
+                    return row[int.Parse(Path.Substring(1, Path.Length - 2))];
+                }
+                else
+                {
+                    return typeof(IRowData).GetProperty(Path).GetValue(row);
+                }
             }
         }
 
