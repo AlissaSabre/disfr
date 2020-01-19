@@ -192,7 +192,7 @@ namespace disfr.UI
                 else if (run is InlineTag)
                 {
                     var tag = (InlineTag)run;
-                    var text = tag.ToString((InlineString.Render)ShowTag | InlineString.Render.HideDel);
+                    var text = tag.ToString((InlineString.Render)ShowTag);
                     if (!string.IsNullOrEmpty(text))
                     {
                         g.Append(text, Gloss.TAG);
@@ -207,21 +207,8 @@ namespace disfr.UI
             return g;
         }
 
-        private static string Enclose(string s)
-        {
-            if (s == null) return null;
-            if (s.StartsWith("{") && s.EndsWith("}")) return s;
-            return "{" + s + "}";
-        }
-
-        private static string BuildTagString(InlineTag tag, string label)
-        {
-            return OPAR + label + CPAR;
-        }
-
         public string FlatFromInline(InlineString inline)
         {
-            // XXX XXX XXX
             return inline.ToString(InlineString.RenderFlat);
         }
 
@@ -243,26 +230,16 @@ namespace disfr.UI
             foreach (var tag in text.Tags)
             {
                 if (sb.Length > 0) sb.AppendLine();
-                if (!string.IsNullOrWhiteSpace(tag.Code))
-                {
-                    switch (ShowTag)
-                    {
-                        case TagShowing.Name:
-                            sb.Append(BuildTagString(tag, tag.Number.ToString()));
-                            break;
-                        case TagShowing.Disp:
-                            sb.Append(Enclose(tag.Display) ?? BuildTagString(tag, tag.Name));
-                            break;
-                    }
-                    sb.Append(" = ").Append(tag.Code);
-                }
+                var label = tag.ToString((InlineString.Render)ShowTag);
+                var code = tag.ToString(InlineString.Render.TagCode);
+                sb.Append(label).Append(" = ").Append(code);
             }
             return sb.ToString();
         }
 
         public string Notes(IEnumerable<string> notes)
         {
-            return notes == null ? null : string.Join("\n", notes);
+            return notes == null ? null : string.Join(Environment.NewLine, notes);
         }
     }
 }
