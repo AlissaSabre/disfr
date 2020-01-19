@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using disfr.UI;
 using disfr.Doc;
 
 namespace disfr.Writer
 {
-    public class XmlTableWriter : TableWriterBase, IRowsWriter
+    public class XmlTableWriter : TableWriterBase, IPairsWriter
     {
         public string Name { get { return "XML Table Writer"; } }
 
@@ -21,9 +20,9 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
         {
-            var table = CreateXmlTree(pairs, columns);
+            var table = CreateXmlTree(pairs, columns, render);
             using (var output = File.Create(filename))
             {
                 Transform(table, output, "table");
@@ -31,7 +30,7 @@ namespace disfr.Writer
         }
     }
 
-    public class XmlDebugTreeWriter : TableWriterBase, IRowsWriter
+    public class XmlDebugTreeWriter : TableWriterBase, IPairsWriter
     {
         public string Name { get { return "Debug Tree Writer"; } }
 
@@ -42,9 +41,9 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
         {
-            CreateXmlTree(pairs, columns).Save(filename);
+            CreateXmlTree(pairs, columns, render).Save(filename);
         }
     }
 }

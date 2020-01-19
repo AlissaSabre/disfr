@@ -18,8 +18,7 @@ namespace disfr.UI
         /// An opaque object used by UI components for their own circumstances.
         /// </summary>
         /// <remarks>
-        /// An implementation of <see cref="ITableController"/> only provides a storage.
-        /// It never uses it for its own purpose.
+        /// An implementation of <see cref="ITableController"/> provides a storage.
         /// </remarks>
         object Tag { get; set; }
 
@@ -27,6 +26,9 @@ namespace disfr.UI
         IEnumerable<IRowData> Rows { get; }
         IEnumerable<IRowData> AllRows { get; }
         IEnumerable<AdditionalPropertiesInfo> AdditionalProps { get; }
+
+        TagShowing TagShowing { get; set; }
+        object InlineStringRenderMode { get; }
 
         ITableController LoadAltAssets(string[] origins);
         IEnumerable<string> AltAssetOrigins { get; }

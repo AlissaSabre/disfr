@@ -131,8 +131,9 @@
     </Compile>
     <Compile Include="UI\RowDataColumnDesc.cs" />
     <Compile Include="UI\XamlControl.cs" />
+    <Compile Include="Writer\DefaultColumnDesc.cs" />
     <Compile Include="Writer\IColumnDesc.cs" />
-    <Compile Include="Writer\IRowsWriter.cs" />
+    <Compile Include="Writer\IPairsWriter.cs" />
     <Compile Include="Writer\SpaceSensitiveXmlTextWriter.cs" />
     <Compile Include="Writer\TableWriterBase.cs" />
     <Compile Include="Writer\TmxWriter.cs" />

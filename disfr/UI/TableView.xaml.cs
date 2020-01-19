@@ -257,7 +257,6 @@ namespace disfr.UI
             }
         }
 
-
         private void dataGrid_Sorting(object sender, DataGridSortingEventArgs e)
         {
             // We manage DataGrid sorting in a slightly different way than usual:

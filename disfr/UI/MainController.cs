@@ -130,7 +130,7 @@ namespace disfr.UI
             Busy = true;
             Task.Run(() =>
             {
-                WriterManager.Write(filename, index, table.Rows, columns);
+                WriterManager.Write(filename, index, table.Rows, columns, (InlineString.Render)table.InlineStringRenderMode);
             }).ContinueWith(worker =>
             {
                 if (worker.IsFaulted)

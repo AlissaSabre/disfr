@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using disfr.Plugin;
-using disfr.UI;
 using disfr.Doc;
 
 namespace disfr.Writer
@@ -32,7 +31,7 @@ namespace disfr.Writer
                     manager.Add(new XmlTableWriter());
 
                     // Add plugin writers.
-                    manager.AddRange(PluginManager.Current.Writers.Cast<IRowsWriter>());
+                    manager.AddRange(PluginManager.Current.Writers.Cast<IPairsWriter>());
 
                     // Add a debug writer.  (I want it listed last, since it is least useful for ordinary users.)
                     manager.Add(new XmlDebugTreeWriter());
@@ -43,21 +42,21 @@ namespace disfr.Writer
             }
         }
 
-        private List<IRowsWriter> Writers = new List<IRowsWriter>();
+        private List<IPairsWriter> Writers = new List<IPairsWriter>();
 
-        public void Add(IRowsWriter writer)
+        public void Add(IPairsWriter writer)
         {
             Writers.Add(writer);
             _FilterString = null;
         }
 
-        public void AddRange(IEnumerable<IRowsWriter> writers)
+        public void AddRange(IEnumerable<IPairsWriter> writers)
         {
             Writers.AddRange(writers);
             _FilterString = null;
         }
 
-        public IEnumerable<IRowsWriter> AsEnumerable()
+        public IEnumerable<IPairsWriter> AsEnumerable()
         {
             return Writers;
         }
@@ -71,7 +70,7 @@ namespace disfr.Writer
             return string.Join("|", Writers.SelectMany(r => r.FilterString));
         }
 
-        public void Write(string filename, int index, IEnumerable<ITransPair> data, IColumnDesc[] columns)
+        public void Write(string filename, int index, IEnumerable<ITransPair> data, IColumnDesc[] columns = null, InlineString.Render render = InlineString.RenderNormal)
         {
             // Unlike ReaderManager, WriterManager doesn't support auto-detection,
             // so the write selection is simpler.
@@ -90,7 +89,7 @@ namespace disfr.Writer
 
             if (i >= Writers.Count) throw new ArgumentOutOfRangeException("index");
 
-            Writers[i].Write(filename, adjusted_index, data, columns);
+            Writers[i].Write(filename, adjusted_index, data, columns, render);
         }
     }
 }

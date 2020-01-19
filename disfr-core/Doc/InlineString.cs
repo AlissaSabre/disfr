@@ -269,6 +269,8 @@ namespace disfr.Doc
     [DebuggerDisplay("{DebuggerDisplay}")]
     public class InlineString : IEquatable<InlineString>
     {
+        // Rendering controls.
+
         /// <summary>
         /// Option flags for rendering an <see cref="InlineString"/>.
         /// </summary>
@@ -337,6 +339,8 @@ namespace disfr.Doc
         public const Render RenderFlat = Render.HideDel | Render.TagNone;
 
         public const Render RenderDebug = Render.TagDebug | Render.ShowProp;
+
+        // Internals.
 
         private static readonly InlineRunWithProperty[] EMPTY_CONTENTS = new InlineRunWithProperty[0]; // Array.Empty<InlineRunWithProperty>()
 
@@ -575,6 +579,13 @@ namespace disfr.Doc
         public static bool operator !=(InlineRunWithProperty x, InlineRunWithProperty y)
         {
             return !x.Equals(y);
+        }
+
+        public override string ToString() => ToString(InlineString.RenderNormal);
+
+        public string ToString(InlineString.Render options)
+        {
+            return ((int)options & (int)Property) == 0 ? Run.ToString(options) : string.Empty;
         }
     }
 

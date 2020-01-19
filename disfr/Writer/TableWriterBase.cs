@@ -8,7 +8,6 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Xsl;
 
-using disfr.UI;
 using disfr.Doc;
 
 namespace disfr.Writer
@@ -17,8 +16,15 @@ namespace disfr.Writer
     {
         public static readonly XNamespace D = XNamespace.Get("http://github.com/AlissaSabre/disfr/");
 
-        protected static XElement CreateXmlTree(IEnumerable<ITransPair> pair, IColumnDesc[] columns)
+        protected static XElement CreateXmlTree(IEnumerable<ITransPair> pair, IColumnDesc[] columns, InlineString.Render render_options)
         {
+            if (columns == null) columns = DefaultColumnDesc.DefaultDescs;
+
+            // We make ins/del sections glossy only if both sections are shown (i.e., neither is hidden).
+            var properties_mask = (render_options & (InlineString.Render.HideIns | InlineString.Render.HideDel)) == 0
+                ? 0
+                : ~(int)(InlineProperty.Ins | InlineProperty.Del);
+
             return new XElement(D + "Tree",
                 new XElement(D + "Columns",
                     columns.Select(c => new XElement(D + "Col",
@@ -27,32 +33,30 @@ namespace disfr.Writer
                 pair.Select(p => new XElement(D + "Row",
                     columns.Select(c => new XElement(D + "Data",
                         new XAttribute("Path", c.Path),
-                        ConvertContent(c.GetContent(p)))))));
+                        ConvertContent(c.GetContent(p), render_options, properties_mask))))));
         }
 
         private static readonly string[] GlossLabel;
 
+        private static readonly int GlossLabelShift;
+
         static TableWriterBase()
         {
-            var map = new string[Enum.GetValues(typeof(Gloss)).Cast<int>().Aggregate((x, y) => x | y) + 1];
-
-            map[(int)(Gloss.NOR | Gloss.COM)] = "NOR";
-            map[(int)(Gloss.NOR | Gloss.INS)] = "NOR INS";
-            map[(int)(Gloss.NOR | Gloss.DEL)] = "NOR DEL";
-            map[(int)(Gloss.TAG | Gloss.COM)] = "TAG";
-            map[(int)(Gloss.TAG | Gloss.INS)] = "TAG INS";
-            map[(int)(Gloss.TAG | Gloss.DEL)] = "TAG DEL";
-            map[(int)(Gloss.SYM | Gloss.COM)] = "SYM";
-            map[(int)(Gloss.SYM | Gloss.INS)] = "SYM INS";
-            map[(int)(Gloss.SYM | Gloss.DEL)] = "SYM DEL";
-            map[(int)(Gloss.ALT | Gloss.COM)] = "ALT";
-            map[(int)(Gloss.ALT | Gloss.INS)] = "ALT INS";
-            map[(int)(Gloss.ALT | Gloss.DEL)] = "ALT DEL";
-
+            var n = Enum.GetValues(typeof(InlineProperty)).Cast<int>().Aggregate((x, y) => x | y) + 1;
+            var map = new string[n];
+            map[(int)InlineProperty.None] = "NOR";
+            map[(int)InlineProperty.Ins] = "NOR INS";
+            map[(int)InlineProperty.Del] = "NOR DEL";
+            map[(int)InlineProperty.Emp] = "NOR EMP";
+            map[(int)InlineProperty.None + n] = "TAG";
+            map[(int)InlineProperty.Ins + n] = "TAG INS";
+            map[(int)InlineProperty.Del + n] = "TAG DEL";
+            map[(int)InlineProperty.Emp + n] = "TAG EMP";
             GlossLabel = map;
+            GlossLabelShift = n;
         }
 
-        protected static IEnumerable<XNode> ConvertContent(object content)
+        protected static IEnumerable<XNode> ConvertContent(object content, InlineString.Render render_options, int properties_mask)
         {
             if (content == null)
             {
@@ -66,18 +70,26 @@ namespace disfr.Writer
             {
                 return new [] { new XText(content as string) };
             }
-            //else if (content is GlossyString)
-            //{
-            //    return (content as GlossyString).AsCollection().Select(p =>
-            //        new XElement(D + "Span", new XAttribute("Gloss", GlossLabel[(int)p.Gloss]), p.Text));
-            //}
             else if (content is InlineString)
             {
-                throw new NotImplementedException();
+                return (content as InlineString).RunsWithProperties.Select(rwp =>
+                {
+                    var s = rwp.ToString(render_options);
+                    if (string.IsNullOrEmpty(s))
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        return new XElement(D + "Span",
+                            new XAttribute("Gloss", GlossLabel[(rwp.Run is InlineText ? 0 : GlossLabelShift) + ((int)rwp.Property & properties_mask)]), 
+                            s);
+                    }
+                });
             }
             else if (content is string[])
             {
-                throw new NotImplementedException();
+                return new[] { new XText(string.Join(Environment.NewLine, content as string[])) };
             }
             else
             {

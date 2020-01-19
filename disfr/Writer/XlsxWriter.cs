@@ -9,12 +9,11 @@ using NetOffice.ExcelApi;
 using NetOffice.ExcelApi.Enums;
 using Excel = NetOffice.ExcelApi.Application;
 
-using disfr.UI;
 using disfr.Doc;
 
 namespace disfr.Writer
 {
-    class XlsxWriter : TableWriterBase, IRowsWriter
+    public class XlsxWriter : TableWriterBase, IPairsWriter
     {
         public string Name { get { return "Xlsx Writer"; } }
 
@@ -26,27 +25,27 @@ namespace disfr.Writer
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
         {
             switch (filterindex)
             {
-                case 0: WriteXlsx(filename, pairs, columns); break;
-                case 1: WriteXmlss(filename, pairs, columns); break;
+                case 0: WriteXlsx(filename, pairs, columns, render); break;
+                case 1: WriteXmlss(filename, pairs, columns, render); break;
                 default:
                     throw new ArgumentOutOfRangeException("filterindex");
             }
         }
 
-        private static void WriteXmlss(string filename, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
+        private static void WriteXmlss(string filename, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
         {
             using (var output = File.Create(filename))
             {
-                var table = CreateXmlTree(pairs, columns);
+                var table = CreateXmlTree(pairs, columns, render);
                 Transform(table, output, "xmlss");
             }
         }
 
-        private static void WriteXlsx(string filename, IEnumerable<ITransPair> pairs, IColumnDesc[] columns)
+        private static void WriteXlsx(string filename, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
         {
             string tmpname = null;
             try
@@ -54,7 +53,7 @@ namespace disfr.Writer
                 tmpname = CreateTempFile(Path.GetTempPath(), ".xml");
                 using (var output = File.OpenWrite(tmpname))
                 {
-                    var table = CreateXmlTree(pairs, columns);
+                    var table = CreateXmlTree(pairs, columns, render);
                     Transform(table, output, "xmlss");
                 }
 

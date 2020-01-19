@@ -32,6 +32,11 @@ namespace disfr.UI
 
         public TagShowing ShowTag { get; set; }
 
+        public InlineString.Render InlineStringRenderingMode
+        {
+            get { return InlineString.Render.HideDel | (InlineString.Render)ShowTag; }
+        }
+
         public bool ShowSpecials { get; set; }
 
         private const char OPAR = '{';
