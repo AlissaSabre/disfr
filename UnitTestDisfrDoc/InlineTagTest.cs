@@ -272,7 +272,7 @@ namespace UnitTestDisfrDoc
             var d = new InlineTag(Tag.S, "id", "rid", "name", null, null, null);
 
             b.ToString(InlineString.Render.TagDisplay).Is("{name}");
-            c.ToString(InlineString.Render.TagCode).Is("");
+            c.ToString(InlineString.Render.TagCode).Is("{*}");
 
             a.ToString().IsNotNull();
             b.ToString().IsNotNull();

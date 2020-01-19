@@ -260,8 +260,8 @@ namespace UnitTestDisfrDoc
             {
                 var s = new InlineBuilder() { { Tag.S, "id", "rid", "name" } }.ToInlineString();
                 s.ToString(F).Is("");
-                s.ToString(N).Is("");
-                s.ToString(L).Is("");
+                s.ToString(N).Is("{*}");
+                s.ToString(L).Is("{*}");
                 s.ToString(D).Is("{name;id}");
             }
             {

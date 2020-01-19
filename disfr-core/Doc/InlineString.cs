@@ -761,7 +761,7 @@ namespace disfr.Doc
                 case InlineString.Render.TagNone:
                     return string.Empty;
                 case InlineString.Render.TagCode:
-                    return Code ?? string.Empty;
+                    return Code ?? Enclose("*");
                 case InlineString.Render.TagNumber:
                     return Enclose(Number);
                 case InlineString.Render.TagDisplay:

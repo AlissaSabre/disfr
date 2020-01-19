@@ -10,10 +10,10 @@ namespace disfr.UI
 {
     public enum TagShowing
     {
-        Name,
-        Disp,
-        Code,
-        None,
+        Name = InlineString.Render.TagNumber,
+        Disp = InlineString.Render.TagDisplay,
+        Code = InlineString.Render.TagCode,
+        None = InlineString.Render.TagNone,
     }
 
     public class PairRenderer
@@ -192,21 +192,10 @@ namespace disfr.UI
                 else if (run is InlineTag)
                 {
                     var tag = (InlineTag)run;
-                    switch (ShowTag)
+                    var text = tag.ToString((InlineString.Render)ShowTag | InlineString.Render.HideDel);
+                    if (!string.IsNullOrEmpty(text))
                     {
-                        case TagShowing.None:
-                            break;
-                        case TagShowing.Name:
-                            g.Append(BuildTagString(tag, tag.Number.ToString()), Gloss.TAG);
-                            break;
-                        case TagShowing.Disp:
-                            g.Append(Enclose(tag.Display) ?? BuildTagString(tag, tag.Name), Gloss.TAG);
-                            break;
-                        case TagShowing.Code:
-                            g.Append(tag.Code ?? BuildTagString(tag, "*"), Gloss.TAG);
-                            break;
-                        default:
-                            throw new ApplicationException("internal error");
+                        g.Append(text, Gloss.TAG);
                     }
                 }
                 else
