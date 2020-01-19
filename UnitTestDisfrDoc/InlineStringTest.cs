@@ -232,10 +232,10 @@ namespace UnitTestDisfrDoc
         [TestMethod]
         public void ToString_1()
         {
-            var F = InlineToString.Flat;
-            var N = InlineToString.Normal;
-            var L = InlineToString.Older;
-            var D = InlineToString.Debug;
+            var F = InlineString.RenderFlat;
+            var N = InlineString.RenderNormal;
+            var L = InlineString.RenderOlder;
+            var D = InlineString.RenderDebug;
             {
                 var s = new InlineBuilder().ToInlineString();
                 s.ToString(F).Is("");

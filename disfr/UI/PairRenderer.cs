@@ -233,7 +233,7 @@ namespace disfr.UI
         public string FlatFromInline(InlineString inline)
         {
             // XXX XXX XXX
-            return inline.ToString(InlineToString.Flat);
+            return inline.ToString(InlineString.RenderFlat);
         }
 
         private const char FIGURE_SPACE = '\u2007';

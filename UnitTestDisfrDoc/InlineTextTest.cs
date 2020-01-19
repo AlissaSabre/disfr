@@ -138,7 +138,7 @@ namespace UnitTestDisfrDoc
             foreach (var s in new[] { "", "a", "b", "ab" })
             {
                 new InlineText(s).ToString().Is(s, string.Format("s = \"{0}\"", s));
-                foreach (InlineToString t in Enum.GetValues(typeof(InlineToString)))
+                foreach (InlineString.Render t in Enum.GetValues(typeof(InlineString.Render)))
                 {
                     new InlineText(s).ToString(t).Is(s, string.Format("s = \"{0}\", t = \"{1}\"", s, t));
                 }

@@ -220,47 +220,47 @@ namespace UnitTestDisfrDoc
         {
             var x = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
             x.ToString().Is("code");
-            x.ToString(InlineToString.TagCode).Is("code");
-            x.ToString(InlineToString.TagDebug).Is("{name;id}");
-            x.ToString(InlineToString.TagDisplay).Is("{display}");
-            x.ToString(InlineToString.TagHidden).Is("");
-            x.ToString(InlineToString.TagNumber).Is("{0}");
+            x.ToString(InlineString.Render.TagCode).Is("code");
+            x.ToString(InlineString.Render.TagDebug).Is("{name;id}");
+            x.ToString(InlineString.Render.TagDisplay).Is("{display}");
+            x.ToString(InlineString.Render.TagNone).Is("");
+            x.ToString(InlineString.Render.TagNumber).Is("{0}");
 
             var a = new InlineTag(Tag.S, "x", "y", "a", "link", "{a}", "<a/>");
             a.ToString().Is("<a/>");
-            a.ToString(InlineToString.TagCode).Is("<a/>");
-            a.ToString(InlineToString.TagDebug).Is("{a;x}");
-            a.ToString(InlineToString.TagDisplay).Is("{a}");
-            a.ToString(InlineToString.TagHidden).Is("");
-            a.ToString(InlineToString.TagNumber).Is("{0}");
+            a.ToString(InlineString.Render.TagCode).Is("<a/>");
+            a.ToString(InlineString.Render.TagDebug).Is("{a;x}");
+            a.ToString(InlineString.Render.TagDisplay).Is("{a}");
+            a.ToString(InlineString.Render.TagNone).Is("");
+            a.ToString(InlineString.Render.TagNumber).Is("{0}");
 
             var b = new InlineTag(Tag.S, "x", "y", "b", "link", "{b}", "<b/>");
             b.ToString().Is("<b/>");
-            b.ToString(InlineToString.TagCode).Is("<b/>");
-            b.ToString(InlineToString.TagDebug).Is("{b;x}");
-            b.ToString(InlineToString.TagDisplay).Is("{b}");
-            b.ToString(InlineToString.TagHidden).Is("");
-            b.ToString(InlineToString.TagNumber).Is("{0}");
+            b.ToString(InlineString.Render.TagCode).Is("<b/>");
+            b.ToString(InlineString.Render.TagDebug).Is("{b;x}");
+            b.ToString(InlineString.Render.TagDisplay).Is("{b}");
+            b.ToString(InlineString.Render.TagNone).Is("");
+            b.ToString(InlineString.Render.TagNumber).Is("{0}");
         }
 
-        [TestMethod]
-        public void ToString_2()
-        {
-            var x = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
-            foreach (InlineToString its in Enum.GetValues(typeof(InlineToString)))
-            {
-                if (its == InlineToString.TagMask) continue; // XXX
-                x.ToString(its).Is(x.ToString(its & InlineToString.TagMask), string.Format("its = {0}", its));
-            }
-        }
+        //[TestMethod]
+        //public void ToString_2()
+        //{
+        //    var x = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", "code");
+        //    foreach (InlineString.Render its in Enum.GetValues(typeof(InlineString.Render)))
+        //    {
+        //        if (its == InlineString.RenderTagMask) continue; // XXX
+        //        x.ToString(its).Is(x.ToString(its & InlineString.RenderTagMask), string.Format("its = {0}", its));
+        //    }
+        //}
 
-        private static readonly InlineToString[] TagOptions =
+        private static readonly InlineString.Render[] TagOptions =
         {
-            InlineToString.TagCode,
-            InlineToString.TagDebug,
-            InlineToString.TagDisplay,
-            InlineToString.TagHidden,
-            InlineToString.TagNumber,
+            InlineString.Render.TagCode,
+            InlineString.Render.TagDebug,
+            InlineString.Render.TagDisplay,
+            InlineString.Render.TagNone,
+            InlineString.Render.TagNumber,
         };
 
         [TestMethod]
@@ -271,8 +271,8 @@ namespace UnitTestDisfrDoc
             var c = new InlineTag(Tag.S, "id", "rid", "name", "ctype", "display", null);
             var d = new InlineTag(Tag.S, "id", "rid", "name", null, null, null);
 
-            b.ToString(InlineToString.TagDisplay).Is("{name}");
-            c.ToString(InlineToString.TagCode).Is("");
+            b.ToString(InlineString.Render.TagDisplay).Is("{name}");
+            c.ToString(InlineString.Render.TagCode).Is("");
 
             a.ToString().IsNotNull();
             b.ToString().IsNotNull();

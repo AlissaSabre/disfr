@@ -75,6 +75,10 @@ namespace disfr.Writer
             {
                 throw new NotImplementedException();
             }
+            else if (content is string[])
+            {
+                throw new NotImplementedException();
+            }
             else
             {
                 throw new Exception("Internal error");

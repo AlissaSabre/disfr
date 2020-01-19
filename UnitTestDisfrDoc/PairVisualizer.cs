@@ -60,8 +60,8 @@ namespace UnitTestDisfrDoc
             sb.Append("<Pair>");
             Print(sb, "Serial", pair.Serial);
             Print(sb, "Id", pair.Id);
-            Print(sb, "Source", pair.Source.ToString(InlineToString.Debug));
-            Print(sb, "Target", pair.Target.ToString(InlineToString.Debug));
+            Print(sb, "Source", pair.Source.ToString(InlineString.RenderDebug));
+            Print(sb, "Target", pair.Target.ToString(InlineString.RenderDebug));
             Print(sb, "SourceLang", pair.SourceLang);
             Print(sb, "TargetLang", pair.TargetLang);
             if (pair.Notes != null)
