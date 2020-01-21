@@ -24,6 +24,20 @@ namespace disfr.Doc
         /// <see cref="IAsset"/>s in this bundle.
         /// </summary>
         IEnumerable<IAsset> Assets { get; }
+
+        /// <summary>
+        /// Whether <see cref="Refresh()"/> is effective.
+        /// </summary>
+        bool CanRefresh { get; }
+
+        /// <summary>
+        /// Refresh the contents of this bundle, e.g., by reading from the underlying file again.
+        /// </summary>
+        /// <remarks>
+        /// You can call this method even though <see cref="CanRefresh"/> returns false,
+        /// though nothing happens if you do.
+        /// </remarks>
+        void Refresh();
     }
 
     /// <summary>

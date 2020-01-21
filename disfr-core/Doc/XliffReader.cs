@@ -41,6 +41,15 @@ namespace disfr.Doc
 
         public IAssetBundle Read(string filename, Flavour flavour = Flavour.Auto)
         {
+            var assets = ReadAssets(filename, flavour);
+            if (assets == null) return null;
+            return new SimpleAssetBundle(assets,
+                ReaderManager.FriendlyFilename(filename),
+                () => ReadAssets(filename, flavour));
+        }
+
+        private IEnumerable<IAsset> ReadAssets(string filename, Flavour flavour)
+        {
             using (var file = File.OpenRead(filename))
             {
                 if (file.IsZip())
@@ -58,9 +67,9 @@ namespace disfr.Doc
             }
         }
 
-        private static IAssetBundle ReadZip(string filename, Stream file, Flavour flavour)
+        private static IEnumerable<IAsset> ReadZip(string filename, Stream file, Flavour flavour)
         {
-            // If this is a MS-DOS compatible zip file, 
+            // If this is an MS-DOS compatible zip file, 
             // the filenames are encoded with the created machine's OEM codepage, 
             // which we don't know what it is.
             // Windows assumes it is same as this machine's ANSI.
@@ -90,15 +99,15 @@ namespace disfr.Doc
                     }
                     using (var f = entry.Open())
                     {
-                        var bundle = ReadXliff(filename, f, flavour, entry);
-                        if (bundle != null) assets.AddRange(bundle.Assets);
+                        var a = ReadXliff(filename, f, flavour, entry);
+                        if (a != null) assets.AddRange(a);
                     }
                 }
-                return assets.Count == 0 ? null : new SimpleAssetBundle(assets, ReaderManager.FriendlyFilename(filename));
+                return assets.Count == 0 ? null : assets;
             }
         }
 
-        private static IAssetBundle ReadXliff(string filename, Stream file, Flavour flavour, ZipArchiveEntry entry = null)
+        private static IEnumerable<IAsset> ReadXliff(string filename, Stream file, Flavour flavour, ZipArchiveEntry entry = null)
         {
             var parser = new XliffParser();
             parser.Filename = filename;
