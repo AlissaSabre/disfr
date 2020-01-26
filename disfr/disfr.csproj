@@ -217,10 +217,6 @@
       <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
       <Name>disfr-core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\disfr.sdltm\disfr.sdltm.csproj">
-      <Project>{38ba914a-deea-4590-8168-ac31c9480797}</Project>
-      <Name>disfr.sdltm</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Writer\table.xslt">
