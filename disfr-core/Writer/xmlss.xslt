@@ -17,7 +17,7 @@
   <xsl:variable name="SILVER"     select="'#c0c0c0'" />
   <xsl:variable name="PURPLE"     select="'#800080'" />
 
-  <!-- This is a <i>custom</i> color. -->
+  <!-- This is a custom color. -->
   <xsl:variable name="BRIGHTYELLOW" select="'#ffffaa'" />
   
   <!-- Colors assignment -->
@@ -125,7 +125,7 @@
   </xsl:template>
     
   <xsl:template match="d:Data[d:Span]">
-    <Cell ss:StyleID="CH">
+    <Cell ss:StyleID="OP"><!-- "CH" -->
       <ss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40">
         <xsl:apply-templates select="d:Span"/>
       </ss:Data>
