@@ -28,7 +28,7 @@ disfr-core.dll includes classes for several packages, divided into subfolders.
 * Plugin: A primitive plugin mechanic.
 * Diff: A class library that provides basic functionarity of diff command.
 
-## disfr.dsltm project
+## disfr.sdltm project
 
 This project produces disfr.sdltm.dll,
 a disfr plugin to read sdltm files.
