@@ -81,6 +81,10 @@
 
     </TabItem.Resources>
 
+    <TabItem.CommandBindings>
+        <CommandBinding Command="NavigationCommands.Refresh" Executed="Refresh_Executed" CanExecute="Refresh_CanExecute"/>
+    </TabItem.CommandBindings>
+
     <TabItem.Header>
         <Binding Path="Name"/>
     </TabItem.Header>

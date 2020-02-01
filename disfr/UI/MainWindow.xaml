@@ -77,6 +77,8 @@
                         <Separator/>
                         <MenuItem Header="_Columns" Style="{StaticResource ColumnMenuItem}" ItemsSource="{Binding SelectedItem.Columns, ElementName=tables}"/>
                         <Separator/>
+                        <MenuItem Header="_Refresh" Command="NavigationCommands.Refresh" CommandTarget="{Binding SelectedItem.Content, ElementName=tables}"/>
+                        <Separator/>
                         <MenuItem Header="Asset _Local Serial Numbers" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowLocalSerial, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
                         <MenuItem Header="L_ong Asset Names" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowLongAssetName, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
                         <Separator/>

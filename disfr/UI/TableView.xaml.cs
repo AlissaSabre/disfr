@@ -227,6 +227,17 @@ namespace disfr.UI
             }
         }
 
+        private void Refresh_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void Refresh_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+            e.Handled = true;
+        }
+
         #endregion
 
         public IEnumerable<DataGridColumn> Columns { get { return dataGrid.Columns; } }

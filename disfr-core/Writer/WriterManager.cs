@@ -27,7 +27,7 @@ namespace disfr.Writer
 
                     // Add standard writers.
                     manager.Add(new TmxWriter());
-                    manager.Add(new XlsxWriter());
+                    manager.Add(new XmlssWriter());
                     manager.Add(new XmlTableWriter());
 
                     // Add plugin writers.

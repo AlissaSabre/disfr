@@ -43,7 +43,7 @@ namespace disfr.Writer
         static TableWriterBase()
         {
             var n = Enum.GetValues(typeof(InlineProperty)).Cast<int>().Aggregate((x, y) => x | y) + 1;
-            var map = new string[n];
+            var map = new string[n * 2];
             map[(int)InlineProperty.None] = "NOR";
             map[(int)InlineProperty.Ins] = "NOR INS";
             map[(int)InlineProperty.Del] = "NOR DEL";
