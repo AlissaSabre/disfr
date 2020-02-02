@@ -27,16 +27,10 @@ namespace disfr.Writer
             return ContentHandler(pair);
         }
 
-        public static IColumnDesc Create(string header, string path = null)
+        public static IColumnDesc Create(string header, string path = null, IList<PropInfo> props = null)
         {
             if (header == null) throw new ArgumentNullException("header");
             if (path == null) path = header;
-
-            if (path.StartsWith("[") && path.EndsWith("]"))
-            {
-                var index = int.Parse(path.Substring(1, path.Length - 2));
-                return new DefaultColumnDesc(header, path, pair => pair[index]);
-            }
 
             switch (path)
             {
@@ -47,9 +41,23 @@ namespace disfr.Writer
                 case "SourceLang": return new DefaultColumnDesc(header, path, pair => pair.SourceLang);
                 case "TargetLang": return new DefaultColumnDesc(header, path, pair => pair.TargetLang);
                 case "Notes": return new DefaultColumnDesc(header, path, pair => pair.Notes);
-                default:
-                    throw new ArgumentOutOfRangeException("path", path, "Invalid property name.");
             }
+
+            if (path.StartsWith("[") && path.EndsWith("]"))
+            {
+                var index = int.Parse(path.Substring(1, path.Length - 2));
+                return new DefaultColumnDesc(header, path, pair => pair[index]);
+            }
+
+            for (int i = 0; i < props.Count; i++)
+            {
+                if (path == props[i].Key)
+                {
+                    return new DefaultColumnDesc(header, "[" + i + "]", pair => pair[i]);
+                }
+            }
+
+            throw new ArgumentOutOfRangeException("path", path, "Invalid property name.");
         }
 
         public static IColumnDesc[] DefaultDescs
