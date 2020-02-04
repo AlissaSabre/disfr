@@ -8,33 +8,18 @@ namespace disfr.Doc
 {
     public class SimpleAssetBundle : IAssetBundle
     {
-        private readonly Func<IEnumerable<IAsset>> Reloader;
-
-        public SimpleAssetBundle(IEnumerable<IAsset> assets, string name, Func<IEnumerable<IAsset>> reloader = null)
+        public SimpleAssetBundle(IEnumerable<IAsset> assets, string name)
         {
             Assets = assets;
             Name = name;
-            Reloader = reloader;
         }
 
-        public string Name
-        {
-            get; private set;
-        }
+        public string Name { get; private set; }
 
-        public IEnumerable<IAsset> Assets
-        {
-            get; private set;
-        }
+        public IEnumerable<IAsset> Assets { get; private set; }
 
-        public bool CanRefresh { get { return Reloader != null; } }
+        public bool CanRefresh { get { return false; } }
 
-        public void Refresh()
-        {
-            if (Reloader != null)
-            {
-                Assets = Reloader();
-            }
-        }
+        public void Refresh() { }
     }
 }

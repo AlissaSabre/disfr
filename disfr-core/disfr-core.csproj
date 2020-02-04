@@ -57,6 +57,7 @@
     <Compile Include="Doc\MemoQXliffAsset.cs" />
     <Compile Include="Doc\PropertiesManager.cs" />
     <Compile Include="Doc\ReaderManager.cs" />
+    <Compile Include="Doc\LoaderAssetBundle.cs" />
     <Compile Include="Doc\SimpleAssetBundle.cs" />
     <Compile Include="Doc\StringPool.cs" />
     <Compile Include="Doc\TmxReader.cs" />
