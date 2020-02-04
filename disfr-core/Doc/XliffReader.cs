@@ -41,10 +41,9 @@ namespace disfr.Doc
 
         public IAssetBundle Read(string filename, Flavour flavour = Flavour.Auto)
         {
-            var bundle = new LoaderAssetBundle(
+            return LoaderAssetBundle.Create(
                 ReaderManager.FriendlyFilename(filename),
                 () => ReadAssets(filename, flavour));
-            return bundle.Assets == null ? null : bundle;
         }
 
         private IEnumerable<IAsset> ReadAssets(string filename, Flavour flavour)

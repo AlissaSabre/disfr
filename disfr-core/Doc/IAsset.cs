@@ -31,7 +31,7 @@ namespace disfr.Doc
         bool CanRefresh { get; }
 
         /// <summary>
-        /// Refresh the contents of this bundle, e.g., by reading from the underlying file again.
+        /// Refreshes the contents of this bundle, e.g., by reading from the underlying file again.
         /// </summary>
         /// <remarks>
         /// You can call this method even though <see cref="CanRefresh"/> returns false,

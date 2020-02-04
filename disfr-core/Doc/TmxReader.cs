@@ -22,10 +22,9 @@ namespace disfr.Doc
 
         public IAssetBundle Read(string filename, int filterindex)
         {
-            var bundle = new LoaderAssetBundle(
+            return LoaderAssetBundle.Create(
                 ReaderManager.FriendlyFilename(filename),
                 () => ReadAssets(filename, filterindex));
-            return bundle.Assets == null ? null : bundle; 
         }
 
         private IEnumerable<IAsset> ReadAssets(string filename, int filterindex)
