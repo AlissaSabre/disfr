@@ -14,14 +14,12 @@ namespace disfr.Doc
             Name = name;
         }
 
-        public string Name
-        {
-            get; private set;
-        }
+        public string Name { get; private set; }
 
-        public IEnumerable<IAsset> Assets
-        {
-            get; private set;
-        }
+        public IEnumerable<IAsset> Assets { get; private set; }
+
+        public bool CanRefresh { get { return false; } }
+
+        public void Refresh() { }
     }
 }

@@ -9,53 +9,40 @@ using NetOffice.ExcelApi;
 using NetOffice.ExcelApi.Enums;
 using Excel = NetOffice.ExcelApi.Application;
 
-using disfr.UI;
+using disfr.Plugin;
+using disfr.Doc;
+using disfr.Writer;
 
-namespace disfr.Writer
+namespace disfr.xlsx_writer
 {
-    class XlsxWriter : TableWriterBase, IRowsWriter
+    public class XlsxWriterPlugin : IWriterPlugin
+    {
+        public string Name { get { return "XlsxWriter"; } }
+
+        public IWriter CreateWriter()
+        {
+            return new XlsxWriter();
+        }
+    }
+
+    public class XlsxWriter : TableWriterBase, IPairsWriter
     {
         public string Name { get { return "Xlsx Writer"; } }
 
         private readonly IList<string> _FilterString = new string[]
         {
             "Microsoft Excel File|*.xlsx",
-            "XML Spreadsheet|*.xml",
         };
 
         public IList<string> FilterString { get { return _FilterString; } }
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] columns)
-        {
-            switch (filterindex)
-            {
-                case 0: WriteXlsx(filename, rows, columns); break;
-                case 1: WriteXmlss(filename, rows, columns); break;
-                default:
-                    throw new ArgumentOutOfRangeException("filterindex");
-            }
-        }
-
-        private static void WriteXmlss(string filename, IEnumerable<IRowData> rows, ColumnDesc[] columns)
-        {
-            using (var output = File.Create(filename))
-            {
-                var table = CreateXmlTree(rows, columns);
-                Transform(table, output, "xmlss");
-            }
-        }
-
-        private static void WriteXlsx(string filename, IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        public void Write(string filename, int filterindex_UNUSED, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
         {
             string tmpname = null;
             try
             {
                 tmpname = CreateTempFile(Path.GetTempPath(), ".xml");
-                using (var output = File.OpenWrite(tmpname))
-                {
-                    var table = CreateXmlTree(rows, columns);
-                    Transform(table, output, "xmlss");
-                }
+                XmlssWriter.WriteXmlss(tmpname, pairs, columns, render);
 
                 var excel = new Excel() { Visible = false, Interactive = false, DisplayAlerts = false };
                 try

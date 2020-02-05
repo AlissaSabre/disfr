@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-using disfr.UI;
 using disfr.Doc;
 
 namespace disfr.Writer
 {
-    public class TmxWriter : IRowsWriter
+    public class TmxWriter : IPairsWriter
     {
         private static readonly string[] _FilterString = new[]
         {
@@ -27,7 +26,7 @@ namespace disfr.Writer
 
         private static readonly XName SPACE = XNamespace.Xml + "space";
 
-        public void Write(string filename, int filterindex, IEnumerable<IRowData> rows, ColumnDesc[] columns)
+        public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
         {
             var tmx =
                 new XElement(X + "tmx",
@@ -39,15 +38,15 @@ namespace disfr.Writer
                         new XAttribute("segtype", "block"),
                         new XAttribute("o-tmf", "unknown"),
                         new XAttribute("adminlang", "en"),
-                        new XAttribute("srclang", rows.Select(r => r.SourceLang).First(s => s != null)),
+                        new XAttribute("srclang", pairs.Select(r => r.SourceLang).First(s => s != null)),
                         new XAttribute("datatype", "unknown"),
                         new XAttribute("creationdate", DateTime.UtcNow.ToString(@"yyyyMMdd\THHmmss\Z"))),
                     new XElement(X + "body",
-                        rows.Select(ConvertEntry)));
+                        pairs.Select(ConvertEntry)));
             tmx.Save(filename, SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces);
         }
 
-        private XElement ConvertEntry(IRowData data)
+        private XElement ConvertEntry(ITransPair data)
         {
             return 
                 new XElement(X + "tu",
@@ -55,34 +54,46 @@ namespace disfr.Writer
                         new XAttribute(LANG, data.SourceLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawSource.RunsWithProperties.Select(ConvertContent))),
+                            data.Source.RunsWithProperties.Select(ConvertContent))),
                     new XElement(X + "tuv",
                         new XAttribute(LANG, data.TargetLang),
                         new XElement(X + "seg",
                             new XAttribute(SPACE, "preserve"),
-                            data.RawTarget.RunsWithProperties.Select(ConvertContent))));
+                            data.Target.RunsWithProperties.Select(ConvertContent))));
         }
 
-        private XNode ConvertContent(InlineRunWithProperty element_with_property)
+        private XNode ConvertContent(InlineRunWithProperty rwp)
         {
-            throw new NotImplementedException();
+            switch (rwp.Property)
+            {
+                case InlineProperty.Del:
+                    return null;
+                case InlineProperty.None:
+                case InlineProperty.Ins:
+                case InlineProperty.Emp:
+                    break;
+                default:
+                    throw new ApplicationException("Internal error");
+            }
 
-            //if (item is InlineText)
-            //{
-            //    return new XText(item.ToString());
-            //}
-            //else if (item is InlineTag)
-            //{
-            //    // Create a TMX <ph> tag for any tag.  
-            //    var tag = item as InlineTag;
-            //    return new XElement(X + "ph",
-            //        new XAttribute("x", tag.Number),
-            //        "{" + tag.Number + "}");
-            //}
-            //else
-            //{
-            //    throw new Exception("Internal error");
-            //}
+            var run = rwp.Run;
+
+            if (run is InlineText)
+            {
+                return new XText(run.ToString());
+            }
+            else if (run is InlineTag)
+            {
+                // Create a TMX <ph> tag for any tag, giving a fake content.
+                var tag = run as InlineTag;
+                return new XElement(X + "ph",
+                    new XAttribute("x", tag.Number),
+                    "{" + tag.Number + "}");
+            }
+            else
+            {
+                throw new ApplicationException("Internal error");
+            }
         }
     }
 }

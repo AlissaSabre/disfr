@@ -123,14 +123,14 @@ namespace disfr.UI
 
         public string SaveAsFilterString { get { return WriterManager.FilterString; } }
 
-        public DelegateCommand<string, int, ITableController, ColumnDesc[]> SaveAsCommand { get; private set; }
+        public DelegateCommand<string, int, ITableController, IColumnDesc[]> SaveAsCommand { get; private set; }
 
-        private void SaveAsCommand_Execute(string filename, int index, ITableController table, ColumnDesc[] columns)
+        private void SaveAsCommand_Execute(string filename, int index, ITableController table, IColumnDesc[] columns)
         {
             Busy = true;
             Task.Run(() =>
             {
-                WriterManager.Write(filename, index, table.Rows, columns);
+                WriterManager.Write(filename, index, table.Rows, columns, (InlineString.Render)table.InlineStringRenderMode);
             }).ContinueWith(worker =>
             {
                 if (worker.IsFaulted)
@@ -141,7 +141,7 @@ namespace disfr.UI
             }, Scheduler);
         }
 
-        private bool SaveAsCommand_CanExecute(string filename, int index, ITableController table, ColumnDesc[] columns)
+        private bool SaveAsCommand_CanExecute(string filename, int index, ITableController table, IColumnDesc[] columns)
         {
             return table != null;
         }

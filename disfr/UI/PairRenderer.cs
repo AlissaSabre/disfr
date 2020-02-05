@@ -10,10 +10,10 @@ namespace disfr.UI
 {
     public enum TagShowing
     {
-        Name,
-        Disp,
-        Code,
-        None,
+        Name = InlineString.Render.TagNumber,
+        Disp = InlineString.Render.TagDisplay,
+        Code = InlineString.Render.TagCode,
+        None = InlineString.Render.TagNone,
     }
 
     public class PairRenderer
@@ -31,6 +31,11 @@ namespace disfr.UI
         public bool ShowRawId { get; set; }
 
         public TagShowing ShowTag { get; set; }
+
+        public InlineString.Render InlineStringRenderingMode
+        {
+            get { return InlineString.Render.HideDel | (InlineString.Render)ShowTag; }
+        }
 
         public bool ShowSpecials { get; set; }
 
@@ -192,21 +197,10 @@ namespace disfr.UI
                 else if (run is InlineTag)
                 {
                     var tag = (InlineTag)run;
-                    switch (ShowTag)
+                    var text = tag.ToString((InlineString.Render)ShowTag);
+                    if (!string.IsNullOrEmpty(text))
                     {
-                        case TagShowing.None:
-                            break;
-                        case TagShowing.Name:
-                            g.Append(BuildTagString(tag, tag.Number.ToString()), Gloss.TAG);
-                            break;
-                        case TagShowing.Disp:
-                            g.Append(Enclose(tag.Display) ?? BuildTagString(tag, tag.Name), Gloss.TAG);
-                            break;
-                        case TagShowing.Code:
-                            g.Append(tag.Code ?? BuildTagString(tag, "*"), Gloss.TAG);
-                            break;
-                        default:
-                            throw new ApplicationException("internal error");
+                        g.Append(text, Gloss.TAG);
                     }
                 }
                 else
@@ -218,22 +212,9 @@ namespace disfr.UI
             return g;
         }
 
-        private static string Enclose(string s)
-        {
-            if (s == null) return null;
-            if (s.StartsWith("{") && s.EndsWith("}")) return s;
-            return "{" + s + "}";
-        }
-
-        private static string BuildTagString(InlineTag tag, string label)
-        {
-            return OPAR + label + CPAR;
-        }
-
         public string FlatFromInline(InlineString inline)
         {
-            // XXX XXX XXX
-            return inline.ToString(InlineToString.Flat);
+            return inline.ToString(InlineString.RenderFlat);
         }
 
         private const char FIGURE_SPACE = '\u2007';
@@ -254,26 +235,16 @@ namespace disfr.UI
             foreach (var tag in text.Tags)
             {
                 if (sb.Length > 0) sb.AppendLine();
-                if (!string.IsNullOrWhiteSpace(tag.Code))
-                {
-                    switch (ShowTag)
-                    {
-                        case TagShowing.Name:
-                            sb.Append(BuildTagString(tag, tag.Number.ToString()));
-                            break;
-                        case TagShowing.Disp:
-                            sb.Append(Enclose(tag.Display) ?? BuildTagString(tag, tag.Name));
-                            break;
-                    }
-                    sb.Append(" = ").Append(tag.Code);
-                }
+                var label = tag.ToString((InlineString.Render)ShowTag);
+                var code = tag.ToString(InlineString.Render.TagCode);
+                sb.Append(label).Append(" = ").Append(code);
             }
             return sb.ToString();
         }
 
         public string Notes(IEnumerable<string> notes)
         {
-            return notes == null ? null : string.Join("\n", notes);
+            return notes == null ? null : string.Join(Environment.NewLine, notes);
         }
     }
 }

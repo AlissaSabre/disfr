@@ -58,17 +58,17 @@ namespace disfr.UI
 
         public string FlatTarget2 { get { return null; } }
 
-        public InlineString RawSource { get { return TransPair.Source; } }
-
-        public InlineString RawTarget { get { return TransPair.Target; } }
-
-        public InlineString RawTarget2 { get { return null; } }
-
         public string SourceLang { get { return AssetData.SourceLang; } }
 
         public string TargetLang { get { return AssetData.TargetLang; } }
 
         public object AssetIdentity { get { return AssetData; } }
+
+        InlineString ITransPair.Source { get { return TransPair.Source; } }
+
+        InlineString ITransPair.Target { get { return TransPair.Target; } }
+
+        IEnumerable<string> ITransPair.Notes { get { return TransPair.Notes; } }
     }
 
     public class AssetData

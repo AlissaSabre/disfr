@@ -8,21 +8,26 @@ using disfr.Doc;
 
 namespace disfr.UI
 {
-    public interface IRowData
+    public interface IRowData : ITransPair
     {
         bool Hidden { get; }
 
+        /// <summary>
+        /// Internal sequential number of all rows.
+        /// </summary>
+        /// <remarks>
+        /// This property is used for stabilizing sorting.
+        /// </remarks>
         int Seq { get; }
 
-        int Serial { get; }
-
+        /// <summary>
+        /// Asset name.
+        /// </summary>
         string Asset { get; }
 
-        string Id { get; }
+        new GlossyString Source { get; }
 
-        GlossyString Source { get; }
-
-        GlossyString Target { get; }
+        new GlossyString Target { get; }
 
         int Serial2 { get; }
 
@@ -32,27 +37,15 @@ namespace disfr.UI
 
         GlossyString Target2 { get; }
 
-        string Notes { get; }
+        new string Notes { get; }
 
         string TagList { get; }
-
-        string this[int index] { get; }
 
         string FlatSource { get; }
 
         string FlatTarget { get; }
 
         string FlatTarget2 { get; }
-
-        InlineString RawSource { get; }
-
-        InlineString RawTarget { get; }
-
-        InlineString RawTarget2 { get; }
-
-        string SourceLang { get; }
-
-        string TargetLang { get; }
 
         object AssetIdentity { get; }
     }

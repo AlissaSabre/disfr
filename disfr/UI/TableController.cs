@@ -218,6 +218,11 @@ namespace disfr.UI
             set { Renderer.ShowTag = value; _Rows.Reset(); }
         }
 
+        public object InlineStringRenderMode
+        {
+            get { return Renderer.InlineStringRenderingMode; }
+        }
+
         /// <summary>
         /// Defines how the serial numbers of the rows are presented in this table.
         /// </summary>

@@ -52,7 +52,7 @@ namespace disfr.Plugin
                         plugin_names.Add(string.Format("{0} {1}", ((IPlugin)plugin).Name, version.FileVersion));
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     // Just ignore.
                 }

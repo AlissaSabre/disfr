@@ -57,6 +57,7 @@
     <Compile Include="Doc\MemoQXliffAsset.cs" />
     <Compile Include="Doc\PropertiesManager.cs" />
     <Compile Include="Doc\ReaderManager.cs" />
+    <Compile Include="Doc\LoaderAssetBundle.cs" />
     <Compile Include="Doc\SimpleAssetBundle.cs" />
     <Compile Include="Doc\StringPool.cs" />
     <Compile Include="Doc\TmxReader.cs" />
@@ -68,7 +69,29 @@
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Writer\DefaultColumnDesc.cs" />
+    <Compile Include="Writer\IColumnDesc.cs" />
+    <Compile Include="Writer\IPairsWriter.cs" />
+    <Compile Include="Writer\SpaceSensitiveXmlTextWriter.cs" />
+    <Compile Include="Writer\TableWriterBase.cs" />
+    <Compile Include="Writer\TmxWriter.cs" />
+    <Compile Include="Writer\WriterManager.cs" />
+    <Compile Include="Writer\XmlssWriter.cs" />
+    <Compile Include="Writer\XmlTableWriter.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Writer\table.xslt">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Writer\xmlss.xslt">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y "$(ProjectDir)Writer"\*.xslt "$(TargetDir)"
+xcopy /Y /E /I  "$(TargetDir)." "$(ProjectDir)..\disfr\$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

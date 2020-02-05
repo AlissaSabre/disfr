@@ -217,7 +217,7 @@ namespace disfr.UI
             {
                 var filename = SaveFileDialog.FileName;
                 var index = SaveFileDialog.FilterIndex - 1; // Returned index is 1-based but we expect a 0-based index.
-                Controller.SaveAsCommand.Execute(filename, index, table_view?.Controller, table_view?.VisibleColumnDescs);
+                Controller.SaveAsCommand.Execute(filename, index, table_view?.Controller, table_view?.ColumnDescs);
             }
             else
             {
@@ -230,8 +230,11 @@ namespace disfr.UI
         private void SaveAs_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             var table_view = e.Parameter as TableView;
+            // We omit passing IColumnDesc[] object to column parameter of SaveAsCommand_CanExecute,
+            // because creation of TableView.ColumnDescs requires some overhead, 
+            // but CanExecute doesn't use it actually.
             e.CanExecute = table_view != null &&
-                Controller.SaveAsCommand.CanExecute(null, -1, table_view?.Controller, table_view?.VisibleColumnDescs);
+                Controller.SaveAsCommand.CanExecute(null, -1, table_view?.Controller, null);
             e.Handled = true;
         }
 

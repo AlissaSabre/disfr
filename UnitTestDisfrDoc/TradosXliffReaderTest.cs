@@ -13,10 +13,10 @@ namespace UnitTestDisfrDoc
         [TestMethod]
         public void ChangeTracking_1()
         {
-            var N = InlineToString.Normal;
-            var L = InlineToString.Older;
-            var F = InlineToString.Flat;
-            var D = InlineToString.Debug;
+            var N = InlineString.RenderNormal;
+            var L = InlineString.RenderOlder;
+            var F = InlineString.RenderFlat;
+            var D = InlineString.RenderDebug;
 
             var path = Path.Combine(IDIR, "ChangeTracking_Trados_1.sdlxliff");
             var bundle = new XliffReader().Read(path);

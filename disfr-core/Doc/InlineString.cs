@@ -257,7 +257,7 @@ namespace disfr.Doc
     /// </para>
     /// <para>
     /// This version of <see cref="InlineString"/> doesn't implement <see cref="IEnumerable{T}"/>.
-    /// Use <see cref="RunsWithProperties"/>, <see cref="Contents"/> or <see cref="Enumerate(InlineToString)"/> to enumerate contents.
+    /// Use <see cref="RunsWithProperties"/>, <see cref="Contents"/> or <see cref="Enumerate(Render)"/> to enumerate contents.
     /// </para>
     /// <para>
     /// Note that we used to support <i>special characters</i> in InlineString.
@@ -269,6 +269,79 @@ namespace disfr.Doc
     [DebuggerDisplay("{DebuggerDisplay}")]
     public class InlineString : IEquatable<InlineString>
     {
+        // Rendering controls.
+
+        /// <summary>
+        /// Option flags for rendering an <see cref="InlineString"/>.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <see cref="Render"/> consists of three independent sets of flags.
+        /// </para>
+        /// <para>
+        /// <i>Hide</i> flags control rendering of a section with a particular <see cref="InlineProperty"/>.
+        /// Any combination of the two <i>hide</i> flags is allowed. 
+        /// </para>
+        /// <para>
+        /// <i>Tag</i> flags control rendering of inline tags.
+        /// The <i>tag</i> flags are exclusive; 
+        /// if two <i>tag</i> flags are combined in a single <see cref="Render"/> value,
+        /// the result of rendering is not guaranteed.
+        /// If none of <i>tag</i> flags are specified,
+        /// <see cref="TagCode"/> is assumed.
+        /// </para>
+        /// <para>
+        /// <see cref="ShowProp"/> is a special flag to be used for debugging and testing purposes.
+        /// When this flag is passed to <see cref="InlineString.ToString(Render)"/>,
+        /// it produces some additional information in the rendered string.
+        /// This flag should not be used by an application.
+        /// </para>
+        /// </remarks>
+        [Flags]
+        public enum Render
+        {
+            /// <summary>Doesn't render inserted sections.</summary>
+            HideIns = 0x0001, // The value must be same to InlineProperty.Ins
+
+            /// <summary>Doesn't render deleted sections.</summary>
+            HideDel = 0x0002, // The value must be same to InlineProperty.Del
+
+            /// <summary>Renders tags into nothing, i.e., hides tags.</summary>
+            TagNone = 0x0010,
+
+            /// <summary>Renders tags into underlying codes.</summary>
+            TagCode = 0x0020,
+
+            /// <summary>Renders tags into local numbers.</summary>
+            TagNumber = 0x0040,
+
+            /// <summary>Renders tags into display strings.</summary>
+            TagDisplay = 0x0080,
+
+            /// <summary>Renders tags into debug strings.</summary>
+            TagDebug = 0x0100,
+
+            /// <summary>Shows effective <see cref="InlineProperty"/> values in the rendered texts.</summary>
+            /// <remarks>This flag is only available in <see cref="InlineString.ToString(Render)"/></remarks>
+            ShowProp = 0x2000,
+        }
+
+        internal const Render RenderHideMask = Render.HideIns | Render.HideDel;
+
+        internal const Render RenderTagMask =
+            Render.TagNone | Render.TagCode | Render.TagNumber | Render.TagDisplay | Render.TagDebug;
+
+        /// <summary></summary>
+        public const Render RenderNormal = Render.HideDel | Render.TagCode;
+
+        public const Render RenderOlder = Render.HideIns | Render.TagCode;
+
+        public const Render RenderFlat = Render.HideDel | Render.TagNone;
+
+        public const Render RenderDebug = Render.TagDebug | Render.ShowProp;
+
+        // Internals.
+
         private static readonly InlineRunWithProperty[] EMPTY_CONTENTS = new InlineRunWithProperty[0]; // Array.Empty<InlineRunWithProperty>()
 
         /// <summary>
@@ -412,11 +485,11 @@ namespace disfr.Doc
         /// </summary>
         /// <returns>The string representation.</returns>
         /// <remarks>
-        /// This is equivalent to call <see cref="ToString(InlineToString)"/> with <see cref="InlineToString.Normal"/>.
+        /// This is equivalent to call <see cref="ToString(Render)"/> with <see cref="RenderNormal"/>.
         /// </remarks>
         public override string ToString()
         {
-            return ToString(InlineToString.Normal);
+            return ToString(RenderNormal);
         }
 
         /// <summary>
@@ -424,10 +497,10 @@ namespace disfr.Doc
         /// </summary>
         /// <param name="options">A set of options to control the string representation.</param>
         /// <returns>The string representation.</returns>
-        public string ToString(InlineToString options)
+        public string ToString(Render options)
         {
-            var debug = options.HasFlag(InlineToString.ShowProp);
-            var hide = (InlineProperty)(options & InlineToString.HideMask);
+            var debug = options.HasFlag(Render.ShowProp);
+            var hide = (InlineProperty)(options & RenderHideMask);
             var b = new StringBuilder();
             var prop = InlineProperty.None;
             foreach (var rwp in _Contents)
@@ -452,7 +525,7 @@ namespace disfr.Doc
         /// <remarks>
         /// It is for VisualStudio debuggers and for testing.
         /// </remarks>
-        public string DebuggerDisplay => ToString(InlineToString.Debug);
+        public string DebuggerDisplay => ToString(RenderDebug);
     }
 
     /// <summary>
@@ -507,6 +580,13 @@ namespace disfr.Doc
         {
             return !x.Equals(y);
         }
+
+        public override string ToString() => ToString(InlineString.RenderNormal);
+
+        public string ToString(InlineString.Render options)
+        {
+            return ((int)options & (int)Property) == 0 ? Run.ToString(options) : string.Empty;
+        }
     }
 
     /// <summary>
@@ -515,7 +595,7 @@ namespace disfr.Doc
     /// <remarks>
     /// The codes using <see cref="InlineProperty"/> assume that <see cref="None"/> is the default value (i.e., 0).
     /// You should not change it.
-    /// Also, other values relate to values of <see cref="InlineToString"/>.
+    /// Also, other values relate to values of <see cref="Render"/>.
     /// Be careful when you are changing them.
     /// </remarks>
     public enum InlineProperty
@@ -681,21 +761,21 @@ namespace disfr.Doc
         /// <param name="options">A set of options to control the string representation.</param>
         /// <returns>The string representation.</returns>
         /// <remarks>
-        /// This method of <see cref="InlineTag"/> only cares <see cref="InlineToString.TagMask"/> flags.
+        /// This method of <see cref="InlineTag"/> only cares <see cref="Render.TagMask"/> flags.
         /// </remarks>
-        public override string ToString(InlineToString options)
+        public override string ToString(InlineString.Render options)
         {
-            switch (options & InlineToString.TagMask)
+            switch (options & InlineString.RenderTagMask)
             {
-                case InlineToString.TagDebug:
+                case InlineString.Render.TagDebug:
                     return string.Format("{0}{1};{2}{3}", OPAR, Name, Id, CPAR);
-                case InlineToString.TagHidden:
+                case InlineString.Render.TagNone:
                     return string.Empty;
-                case InlineToString.TagCode:
-                    return Code ?? string.Empty;
-                case InlineToString.TagNumber:
+                case InlineString.Render.TagCode:
+                    return Code ?? Enclose("*");
+                case InlineString.Render.TagNumber:
                     return Enclose(Number);
-                case InlineToString.TagDisplay:
+                case InlineString.Render.TagDisplay:
                     return Enclose(Display, Name);
                 default:
                     throw new ArgumentException("options");
@@ -828,17 +908,18 @@ namespace disfr.Doc
         /// <summary>
         /// Gets a string representation of this InlineText.
         /// </summary>
-        /// <param name="options">Not used in <see cref="InlineText.ToString(InlineToString)"/>.</param>
+        /// <param name="options">Not used in <see cref="InlineText.ToString(Render)"/>.</param>
         /// <returns>The string representation.</returns>
         /// <remarks>
         /// This method always returns its <see cref="Text"/>, ignoring <paramref name="options"/>.
         /// </remarks>
-        public override string ToString(InlineToString options)
+        public override string ToString(InlineString.Render options)
         {
             return Text;
         }
     }
 
+#pragma warning disable CS0660, CS0661
     /// <summary>
     /// Represents a run in an <see cref="InlineString"/>.
     /// </summary>
@@ -851,9 +932,9 @@ namespace disfr.Doc
     /// but it is OK.
     /// An abstract class has no instance of its own, 
     /// and all its subclasses overrride <see cref="Object.Equals(object)"/> appropriately.
+    /// (#pragma warning disable CS0660, CS0661).
     /// </para>
     /// </remarks>
-#pragma warning disable CS0660, CS0661
     [DebuggerDisplay("{DebuggerDisplay}")]
     public abstract class InlineRun
     {
@@ -862,11 +943,11 @@ namespace disfr.Doc
         /// </summary>
         /// <returns>A string representation.</returns>
         /// <remarks>
-        /// This is equivalent to call <see cref="ToString(InlineToString)"/> with <see cref="InlineToString.Normal"/>
+        /// This is equivalent to call <see cref="ToString(InlineString.Render)"/> with <see cref="Render.Normal"/>
         /// </remarks>
         public override string ToString()
         {
-            return ToString(InlineToString.Normal);
+            return ToString(InlineString.RenderNormal);
         }
 
         /// <summary>
@@ -874,7 +955,7 @@ namespace disfr.Doc
         /// </summary>
         /// <param name="options">A set of options to control the string representation.</param>
         /// <returns>The string representation.</returns>
-        public abstract string ToString(InlineToString options);
+        public abstract string ToString(InlineString.Render options);
 
         /// <summary>
         /// Gets presentation of this object.
@@ -882,7 +963,7 @@ namespace disfr.Doc
         /// <remarks>
         /// It is for VisualStudio debuggers and for testing.
         /// </remarks>
-        public string DebuggerDisplay => ToString(InlineToString.Debug);
+        public string DebuggerDisplay => ToString(InlineString.RenderDebug);
 
         public static bool operator ==(InlineRun x, InlineRun y)
         {
@@ -896,15 +977,16 @@ namespace disfr.Doc
     }
 #pragma warning restore CS0660, CS0661
 
+#if false
     /// <summary>
-    /// Options to control <see cref="InlineRun.ToString(InlineToString)"/> and <see cref="InlineString.ToString(InlineToString)"/>.
+    /// Options to control <see cref="InlineRun.ToString(InlineString.Render)"/> and <see cref="InlineString.ToString(InlineString.Render)"/>.
     /// </summary>
     /// <remarks>
-    /// The default value of <see cref="InlineToString"/> is not useful.
+    /// The default value of <see cref="Render"/> is not useful.
     /// <see cref="Normal"/> designates a practical default behaviour.
     /// </remarks>
     [Flags]
-    public enum InlineToString
+    public enum Render
     {
         /// <summary>
         /// A representation suitable for normal uses.
@@ -995,4 +1077,5 @@ namespace disfr.Doc
         /// </remarks>
         ShowProp = 0x80,
     }
+#endif
 }

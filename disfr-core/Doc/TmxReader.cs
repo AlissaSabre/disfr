@@ -22,13 +22,27 @@ namespace disfr.Doc
 
         public IAssetBundle Read(string filename, int filterindex)
         {
+            return LoaderAssetBundle.Create(
+                ReaderManager.FriendlyFilename(filename),
+                () => ReadAssets(filename, filterindex));
+        }
+
+        private IEnumerable<IAsset> ReadAssets(string filename, int filterindex)
+        {
             using (var stream = File.OpenRead(filename))
             {
-                return Read(stream, filename, ReaderManager.FriendlyFilename(filename));
+                return ReadAssets(stream, filename);
             }
         }
 
         public IAssetBundle Read(Stream stream, string package, string filename)
+        {
+            var assets = ReadAssets(stream, package);
+            if (assets == null) return null;
+            return new SimpleAssetBundle(assets, filename);
+        }
+
+        private IEnumerable<IAsset> ReadAssets(Stream stream, string package)
         {
             using (var reader = XmlReader.Create(stream, new XmlReaderSettings()
             {
@@ -41,7 +55,7 @@ namespace disfr.Doc
                 IgnoreWhitespace = false,
             }))
             {
-                return Read(reader, package, filename);
+                return ReadAssets(reader, package);
             }
         }
 
@@ -125,6 +139,13 @@ namespace disfr.Doc
         }
 
         public IAssetBundle Read(XmlReader reader, string package, string filename)
+        {
+            var assets = ReadAssets(reader, package);
+            if (assets == null) return null;
+            return new SimpleAssetBundle(assets, filename);
+        }
+            
+        private IEnumerable<IAsset> ReadAssets(XmlReader reader, string package)
         {
             XElement header;
             IEnumerable<XElement> tus;
@@ -212,11 +233,14 @@ namespace disfr.Doc
                 all_pairs.AddAll(pairs);
             }
 
-            // Wrap pairs in assets, then in an asset bundle. 
-            IEnumerable<IAsset> assets = Enumerable.Empty<IAsset>();
-            if (all_pairs != null)
+            // Wrap pairs in assets and return them.
+            if (all_pairs == null)
             {
-                assets = all_pairs.GetTargetLanguages().Select(tlang => new TmxAsset()
+                return Enumerable.Empty<IAsset>();
+            }
+            else
+            {
+                return all_pairs.GetTargetLanguages().Select(tlang => new TmxAsset()
                 {
                     Package = package,
                     Original = string.Format("{0} - {1}", slang, tlang),
@@ -226,7 +250,6 @@ namespace disfr.Doc
                     Properties = propman.Properties,
                 }).ToList();
             }
-            return new SimpleAssetBundle(assets, filename);
         }
 
         /// <summary>

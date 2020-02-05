@@ -38,6 +38,13 @@ namespace disfr.sdltm
 
         public IAssetBundle Read(string filename, int filterindex)
         {
+            return LoaderAssetBundle.Create(
+                ReaderManager.FriendlyFilename(filename),
+                () => ReadAssets(filename, filterindex));
+        }
+
+        private IEnumerable<IAsset> ReadAssets(string filename, int filterindex)
+        {
             // An sdltm file is an SQLite database.
             // Quickly check the signature will accelerate auto-detection processes.
             // (I know the following code looks silly.)
@@ -150,7 +157,7 @@ namespace disfr.sdltm
 
                 // That's all.
 
-                return new SimpleAssetBundle(assets, ReaderManager.FriendlyFilename(filename));
+                return assets;
             }
             finally
             {

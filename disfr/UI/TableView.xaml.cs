@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -17,8 +18,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
-using ColumnDesc = disfr.Writer.ColumnDesc;
+using disfr.Doc;
+using IColumnDesc = disfr.Writer.IColumnDesc;
 
 namespace disfr.UI
 {
@@ -187,7 +188,7 @@ namespace disfr.UI
             // There are many cases that a file contains only one Asset,
             // and Asset column is just redundant in the cases, so hide it in the cases.
             // (but users can still view it if they want.)
-            if (Asset.Visibility == Visibility.Visible && 
+            if (Asset.Visibility == Visibility.Visible &&
                 Asset2.Visibility != Visibility.Visible &&
                 !table.AllRows.Select(r => r.Asset).Distinct().Skip(1).Any())
             {
@@ -228,7 +229,7 @@ namespace disfr.UI
                 dataGrid.Columns.Add(column);
             }
 
-            
+
             // Set FilterOptions attached property to all in-use columns.
             foreach (var column in dataGrid.Columns.Where(GetColumnInUse))
             {
@@ -236,6 +237,17 @@ namespace disfr.UI
                 var list = table.AllRows.Select(grabber).Distinct().OrderBy(s => string.IsNullOrEmpty(s) ? 0 : 1).ThenBy(s => s).Select(s => FilterOption.Get(s));
                 column.SetValue(FilterOptionsProperty, list);
             }
+        }
+
+        private void Refresh_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void Refresh_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+            e.Handled = true;
         }
 
         #endregion
@@ -254,14 +266,14 @@ namespace disfr.UI
         /// <remarks>
         /// Some <see cref="IRowWriter"/> implementation uses it.
         /// </remarks>
-        public ColumnDesc[] VisibleColumnDescs
+        public IColumnDesc[] ColumnDescs
         {
             get
             {
                 return dataGrid.Columns
                     .Where(c => c.Visibility == Visibility.Visible)
                     .OrderBy(c => c.DisplayIndex)
-                    .Select(c => new ColumnDesc(
+                    .Select(c => RowDataColumnDesc.Create(
                         c.Header.ToString(),
                         (c.ClipboardContentBinding as Binding)?.Path?.Path))
                     .ToArray();
@@ -541,7 +553,7 @@ namespace disfr.UI
                 return r => r[index] ?? "";
             }
 
-            var property = typeof(IRowData).GetProperty(path);
+            var property = typeof(IRowData).GetProperty(path) ?? typeof(ITransPair).GetProperty(path);
             if (property.PropertyType == typeof(string))
             {
                 return r => property.GetValue(r) as string ?? "";

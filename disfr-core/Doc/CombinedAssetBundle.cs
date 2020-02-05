@@ -12,19 +12,36 @@ namespace disfr.Doc
         {
             Bundles = bundles.ToArray();
             _Assets = new List<IAsset>();
+            Name = name;
+            FlattenBundles();
+        }
+
+        private void FlattenBundles()
+        {
+            _Assets.Clear();
             foreach (var b in Bundles)
             {
                 _Assets.AddRange(b.Assets);
             }
-            Name = name;
         }
 
         public string Name { get; private set; }
 
         private readonly IAssetBundle[] Bundles;
 
-        private List<IAsset> _Assets;
+        private readonly List<IAsset> _Assets;
 
         public IEnumerable<IAsset> Assets { get { return _Assets; } }
+
+        public bool CanRefresh => Bundles.Any(b => b.CanRefresh);
+
+        public void Refresh()
+        {
+            foreach (var b in Bundles)
+            {
+                b.Refresh();
+            }
+            FlattenBundles();
+        }
     }
 }
