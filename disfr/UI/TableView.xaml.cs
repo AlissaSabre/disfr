@@ -239,14 +239,19 @@ namespace disfr.UI
             }
         }
 
+        #endregion
+
+        #region Refresh command
+
         private void Refresh_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            Controller.RefreshCommand.Execute();
             e.Handled = true;
         }
 
         private void Refresh_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = Controller.RefreshCommand.CanExecute();
             e.Handled = true;
         }
 

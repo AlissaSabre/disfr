@@ -6,7 +6,9 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 using disfr.Doc;
 
@@ -33,6 +35,8 @@ namespace disfr.UI
         /// </remarks>
         protected TableController(PairRenderer renderer, IAssetBundle bundle)
         {
+            DelegateCommandHelper.GetHelp(this);
+
             Renderer = renderer;
             Bundle = bundle;
 
@@ -114,7 +118,7 @@ namespace disfr.UI
         private void ReloadBilingualAssets()
         {
             var assets = Bundle.Assets.ToArray();
-            LoadBilingualRowData(assets, a => a.TransPairs);
+            ReloadBilingualRowData(assets, a => a.TransPairs);
             Name = Bundle.Name;
 
             // Take care of Alt.
@@ -128,7 +132,7 @@ namespace disfr.UI
                     var alt_name = string.Format("Alt TM {0}", Name);
                     var alt_bundle = new SimpleAssetBundle(alt_assets, alt_name);
                     var alt_instance = new TableController(Renderer.Clone(), alt_bundle);
-                    alt_instance.LoadBilingualRowData(alt_assets, FilteredAltPairs(origins));
+                    alt_instance.ReloadBilingualRowData(alt_assets, CreateFilteredAltPairsGetter(origins));
                     alt_instance.Name = alt_name;
                     return alt_instance;
                 };
@@ -150,7 +154,7 @@ namespace disfr.UI
             }
         }
 
-        private static Func<IAsset, IEnumerable<ITransPair>> FilteredAltPairs(string[] origins)
+        private static Func<IAsset, IEnumerable<ITransPair>> CreateFilteredAltPairsGetter(string[] origins)
         {
             if (origins == null)
             {
@@ -166,10 +170,11 @@ namespace disfr.UI
             }
         }
 
-        private void LoadBilingualRowData(IAsset[] assets, Func<IAsset, IEnumerable<ITransPair>> pairs)
+        private void ReloadBilingualRowData(IAsset[] assets, Func<IAsset, IEnumerable<ITransPair>> get_pairs)
         {
-            var props = new List<AdditionalPropertiesInfo>();
+            var props = _AdditionalProps ?? new List<AdditionalPropertiesInfo>();
             var props_indexes = new Dictionary<string, int>();
+            for (int i = 0; i < props.Count; i++) props_indexes[props[i].Key] = i;
             foreach (var prop in assets.SelectMany(a => a.Properties))
             {
                 int index;
@@ -205,7 +210,7 @@ namespace disfr.UI
                     PropMapper = mapper,
                 };
 
-                foreach (var pair in pairs(asset))
+                foreach (var pair in get_pairs(asset))
                 {
                     rows.Add(new BilingualRowData(Renderer, ad, pair, seq++));
                     if (pair.Serial > 0) serial++;
@@ -214,6 +219,30 @@ namespace disfr.UI
 
             _AdditionalProps = props;
             _Rows.Rows = rows;
+            _Rows.Reset();
+        }
+
+        public DelegateCommand RefreshCommand { get; private set; }
+
+        private void RefreshCommand_Execute()
+        {
+            Task.Run(() =>
+            {
+                Bundle.Refresh();
+            }).ContinueWith(worker =>
+            {
+                if (worker.IsFaulted)
+                {
+                    var e = worker.Exception;
+                    Dispatcher.FromThread(Thread.CurrentThread)?.BeginInvoke((Action)delegate { throw e; });
+                }
+                ReloadBilingualAssets();
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private bool RefreshCommand_CanExecute()
+        {
+            return Bundle.CanRefresh;
         }
 
         /// <summary>

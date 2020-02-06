@@ -35,5 +35,7 @@ namespace disfr.UI
         bool HasAltAssets { get; }
 
         Func<IRowData, bool> ContentsFilter { get; set; }
+
+        DelegateCommand RefreshCommand { get; }
     }
 }
