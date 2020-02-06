@@ -246,5 +246,11 @@ namespace disfr.UI
         {
             return notes == null ? null : string.Join(Environment.NewLine, notes);
         }
+
+        public PairRenderer Clone()
+        {
+            // Currently, a shallow copy is enough to create an independent copy of a PairRenderer.
+            return (PairRenderer)MemberwiseClone();
+        }
     }
 }

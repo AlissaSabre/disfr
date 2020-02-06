@@ -31,9 +31,10 @@ namespace disfr.UI
         /// <remarks>
         /// Use <see cref="LoadBilingualAssets"/> to create a usable instance.
         /// </remarks>
-        protected TableController(PairRenderer renderer)
+        protected TableController(PairRenderer renderer, IAssetBundle bundle)
         {
             Renderer = renderer;
+            Bundle = bundle;
 
             // The following are the default settings whose values are different from default(T).
             // BTW, the default settings should be user configurable. FIXME.
@@ -93,6 +94,8 @@ namespace disfr.UI
 
         private readonly PairRenderer Renderer;
 
+        private readonly IAssetBundle Bundle;
+
         /// <summary>
         /// Load a set of <see cref="IAsset"/>s from a bilingual file into a new TableController.
         /// </summary>
@@ -102,32 +105,38 @@ namespace disfr.UI
         /// </returns>
         public static ITableController LoadBilingualAssets(IAssetBundle bundle)
         {
-            var name = bundle.Name;
-            var assets = bundle.Assets;
-
             var renderer = new PairRenderer();
-            var asset_array = assets.ToArray();
+            var instance = new TableController(renderer, bundle);
+            instance.ReloadBilingualAssets();
+            return instance;
+        }
 
-            // Build an instance.
-            var new_instance = new TableController(renderer);
-            new_instance.LoadBilingualRowData(asset_array, a => a.TransPairs, renderer);
-            new_instance.Name = name;
+        private void ReloadBilingualAssets()
+        {
+            var assets = Bundle.Assets.ToArray();
+            LoadBilingualRowData(assets, a => a.TransPairs);
+            Name = Bundle.Name;
 
             // Take care of Alt.
-            if (asset_array.Any(a => a.AltPairs.Any()))
+            AltLoader = null;
+            AltOriginsLoader = null;
+            if (assets.Any(a => a.AltPairs?.Any() == true))
             {
-                new_instance.AltLoader = delegate(string[] origins)
+                AltLoader = delegate(string[] origins)
                 {
-                    var alt_instance = new TableController(renderer);
-                    alt_instance.LoadBilingualRowData(asset_array, FilteredAltPairs(origins), renderer);
-                    alt_instance.Name = string.Format("Alt TM {0}", name);
+                    var alt_assets = Bundle.Assets.ToArray();
+                    var alt_name = string.Format("Alt TM {0}", Name);
+                    var alt_bundle = new SimpleAssetBundle(alt_assets, alt_name);
+                    var alt_instance = new TableController(Renderer.Clone(), alt_bundle);
+                    alt_instance.LoadBilingualRowData(alt_assets, FilteredAltPairs(origins));
+                    alt_instance.Name = alt_name;
                     return alt_instance;
                 };
 
-                new_instance.AltOriginsLoader = delegate ()
+                AltOriginsLoader = delegate ()
                 {
                     var origins = new HashSet<string>();
-                    foreach (var asset in asset_array)
+                    foreach (var asset in Bundle.Assets)
                     {
                         var origin = asset.Properties.ToList().FindIndex(prop => prop.Key == "origin");
                         if (origin >= 0) 
@@ -139,8 +148,6 @@ namespace disfr.UI
                     return origins.AsEnumerable();
                 };
             }
-
-            return new_instance;
         }
 
         private static Func<IAsset, IEnumerable<ITransPair>> FilteredAltPairs(string[] origins)
@@ -159,7 +166,7 @@ namespace disfr.UI
             }
         }
 
-        private void LoadBilingualRowData(IAsset[] assets, Func<IAsset, IEnumerable<ITransPair>> pairs, PairRenderer renderer)
+        private void LoadBilingualRowData(IAsset[] assets, Func<IAsset, IEnumerable<ITransPair>> pairs)
         {
             var props = new List<AdditionalPropertiesInfo>();
             var props_indexes = new Dictionary<string, int>();
@@ -200,7 +207,7 @@ namespace disfr.UI
 
                 foreach (var pair in pairs(asset))
                 {
-                    rows.Add(new BilingualRowData(renderer, ad, pair, seq++));
+                    rows.Add(new BilingualRowData(Renderer, ad, pair, seq++));
                     if (pair.Serial > 0) serial++;
                 }
             }
