@@ -47,7 +47,8 @@ namespace disfr.UI
         #region ColumnInUse attached property
 
         public static readonly DependencyProperty ColumnInUseProperty =
-            DependencyProperty.Register("ColumnInUse", typeof(bool), typeof(TableView));
+            DependencyProperty.Register("ColumnInUse", typeof(bool), typeof(TableView),
+                new PropertyMetadata(false));
 
         public static void SetColumnInUse(DependencyObject target, bool in_use)
         {
@@ -122,7 +123,7 @@ namespace disfr.UI
 
         private StandardColumnInfo[] CreateStandardColumns()
         {
-            return new[]
+            var columns = new[]
             {
                 new StandardColumnInfo(Serial, r => true),
                 new StandardColumnInfo(Asset, r => true),
@@ -135,6 +136,13 @@ namespace disfr.UI
                 new StandardColumnInfo(Notes, r => !string.IsNullOrWhiteSpace(r.Notes)),
                 new StandardColumnInfo(TagList, r => true),
             };
+#if DEBUG
+            if (columns.Length != dataGrid.Columns.Count)
+            {
+                throw new ApplicationException("Extra DataGridColumn in XAML.");
+            }
+#endif
+            return columns;
         }
 
         private readonly StandardColumnInfo[] StandardColumns;
@@ -157,8 +165,20 @@ namespace disfr.UI
 
         private static readonly DataGridLength DataGridLengthStar = new DataGridLength(1.0, DataGridLengthUnitType.Star);
 
+        /// <summary>
+        /// Handles DataContextChanged event of this TableView instance.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="TableView"/> has no OnDataContextChanged method to override.
+        /// </remarks>
         private void this_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            // We don't need this under the current scenario.
+            if (e.OldValue is ITableController)
+            {
+                (e.OldValue as ITableController).AdditionalPropsChanged -= ITableController_AdditionalPropsChanged;
+            }
+
             // Reset the column organization.
             // This should be useless under the current scenario.
             foreach (var dc in dataGrid.Columns.Except(StandardColumns.Select(sc => sc.Column)).ToList())
@@ -174,14 +194,17 @@ namespace disfr.UI
             var table = e.NewValue as ITableController;
             if (table == null) return;
 
-            // Show / hide standard columns.
-            // Unused standard columns are kept in the list, but users can't view them.
-            // We use a false value of ColumnInUse atatched property to tell the case. 
+            // Subscribe the change notification event.
+            table.AdditionalPropsChanged += ITableController_AdditionalPropsChanged;
+
+            // Update DataGrid columns appropriately for the table we are showing.
+            UpdateColumns();
+
+            // Set the initial visibilities of standard columns.
             foreach (var colInfo in StandardColumns)
             {
-                var in_use = table.AllRows.Any(colInfo.InUse);
-                colInfo.Column.Visibility = in_use ? Visibility.Visible : Visibility.Collapsed;
-                colInfo.Column.SetValue(ColumnInUseProperty, in_use);
+                var col = colInfo.Column;
+                col.Visibility = GetColumnInUse(col) ? Visibility.Visible : Visibility.Collapsed;
             }
 
             // A special handling of Asset column visibility.
@@ -198,6 +221,30 @@ namespace disfr.UI
             // Yet another special handling of TagList column visibility.
             // It is always hidden initially.
             TagList.Visibility = Visibility.Collapsed;
+        }
+
+        private void ITableController_AdditionalPropsChanged(object sender, EventArgs e)
+        {
+            Dispatcher.BeginInvoke((Action)UpdateColumns);
+        }
+
+        private void UpdateColumns()
+        {
+            var table = DataContext as ITableController;
+            if (table == null) return;
+
+            // Use/unuse standard columns.
+            // Unused standard columns are kept in the list, but users can't view them.
+            // We use a false value of ColumnInUse atatched property to tell the case.
+            // Unused (ColumnInUse == false) columns can be used (ColumnInUse == true) in future reloading.
+            // Once used, however, a column will never get back to Unused status.
+            foreach (var colInfo in StandardColumns)
+            {
+                if (!GetColumnInUse(colInfo.Column) && table.AllRows.Any(colInfo.InUse))
+                {
+                    SetColumnInUse(colInfo.Column, true);
+                }
+            }
 
             // Create columns for additional properties.
             // Their initial shown/hidden states are specified by the DOC module via AdditionalProps.
@@ -208,10 +255,15 @@ namespace disfr.UI
             // See TableController.cs for the interaction between the AssetReader and TableController.AdditionalProps. 
             foreach (var props in table.AdditionalProps)
             {
+                var path = "[" + props.Index + "]";
+
+                // Don't add a duplicate column.
+                if (dataGrid.Columns.Any(col => ((col as DataGridTextColumn)?.Binding as Binding)?.Path?.Path == path)) continue;
+
                 var column = new DataGridTextColumn()
                 {
                     Header = props.Key.Replace("_", " "), // XXX: No, we should not do this!
-                    Binding = new Binding("[" + props.Index + "]"),
+                    Binding = new Binding(path),
                     Visibility = props.Visible ? Visibility.Visible : Visibility.Collapsed,
                     ElementStyle = FindResource("AdditionalColumnElementStyle") as Style,
                 };
@@ -228,7 +280,6 @@ namespace disfr.UI
 
                 dataGrid.Columns.Add(column);
             }
-
 
             // Set FilterOptions attached property to all in-use columns.
             foreach (var column in dataGrid.Columns.Where(GetColumnInUse))

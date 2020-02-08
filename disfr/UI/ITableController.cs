@@ -37,5 +37,7 @@ namespace disfr.UI
         Func<IRowData, bool> ContentsFilter { get; set; }
 
         DelegateCommand RefreshCommand { get; }
+
+        event EventHandler AdditionalPropsChanged;
     }
 }

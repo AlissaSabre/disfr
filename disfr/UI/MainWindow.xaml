@@ -22,8 +22,8 @@
                 <Setter Property="ItemContainerStyle">
                     <Setter.Value>
                         <Style TargetType="MenuItem">
-                            <Setter Property="Header" Value="{Binding Header, Mode=OneTime}"/>
-                            <Setter Property="IsEnabled" Value="{Binding (local:TableView.ColumnInUse), Mode=OneTime}"/>
+                            <Setter Property="Header" Value="{Binding Header, Mode=OneWay}"/>
+                            <Setter Property="IsEnabled" Value="{Binding (local:TableView.ColumnInUse), Mode=OneWay}"/>
                             <Setter Property="IsCheckable" Value="True"/>
                             <Setter Property="IsChecked" Value="{Binding Visibility, Mode=TwoWay, Converter={StaticResource Visibility}}"/>
                         </Style>

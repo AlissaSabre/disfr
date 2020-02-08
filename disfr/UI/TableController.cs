@@ -170,6 +170,8 @@ namespace disfr.UI
             }
         }
 
+        public event EventHandler AdditionalPropsChanged;
+
         private void ReloadBilingualRowData(IAsset[] assets, Func<IAsset, IEnumerable<ITransPair>> get_pairs)
         {
             var props = _AdditionalProps ?? new List<AdditionalPropertiesInfo>();
@@ -218,6 +220,7 @@ namespace disfr.UI
             }
 
             _AdditionalProps = props;
+            AdditionalPropsChanged?.Invoke(this, EventArgs.Empty);
             _Rows.Rows = rows;
             _Rows.Reset();
         }
