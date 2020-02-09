@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using disfr.Doc;
+using disfr.sdltm;
 
 namespace UnitTestDisfrDoc
 {

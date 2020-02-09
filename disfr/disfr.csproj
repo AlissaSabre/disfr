@@ -50,11 +50,6 @@
   <ItemGroup>
     <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ExcelApi, Version=1.7.3.0, Culture=neutral, PublicKeyToken=26cf6d85ba68fa54, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetOffice.Excel.Net45.1.7.4.4\lib\net45\ExcelApi.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -64,20 +59,8 @@
       <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NetOffice, Version=1.7.3.0, Culture=neutral, PublicKeyToken=acf636d62c39f8f5, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetOffice.Core.Net45.1.7.4.4\lib\net45\NetOffice.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="OfficeApi, Version=1.7.3.0, Culture=neutral, PublicKeyToken=7c1c3e9d16cace88, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetOffice.Core.Net45.1.7.4.4\lib\net45\OfficeApi.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net45\System.Data.SQLite.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Xml" />
@@ -89,106 +72,80 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="VBIDEApi, Version=1.7.3.0, Culture=neutral, PublicKeyToken=a3637beacf571e8a, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetOffice.Core.Net45.1.7.4.4\lib\net45\VBIDEApi.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WpfColorFontDialog, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WpfColorFontDialog.1.0.5\lib\WpfColorFontDialog.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="WpfColorFontDialog, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfColorFontDialog.1.0.7\lib\net40\WpfColorFontDialog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="Diff\Diff.cs" />
-    <Compile Include="Diff\DifferBase.cs" />
-    <Compile Include="Diff\GreedyDiffer2.cs" />
-    <Compile Include="Doc\PropertiesManager.cs" />
-    <Compile Include="Doc\IAsset.cs" />
-    <Compile Include="Doc\IAssetReader.cs" />
-    <Compile Include="Doc\InlineString.cs" />
-    <Compile Include="Doc\ITransPair.cs" />
-    <Compile Include="Doc\ReaderManager.cs" />
-    <Compile Include="Doc\SdltmReader.cs" />
-    <Compile Include="Doc\StringPool.cs" />
-    <Compile Include="Doc\TmxReader.cs" />
-    <Compile Include="Doc\XliffAsset.cs" />
-    <Compile Include="Doc\TradosXliffAsset.cs" />
-    <Compile Include="Doc\IdiomXliffAsset.cs" />
-    <Compile Include="Doc\MemoQXliffAsset.cs" />
-    <Compile Include="Doc\XliffTransPair.cs" />
-    <Compile Include="UI\ExceptionDialog.xaml.cs">
+    <Compile Include="Dialogs\ExceptionDialog.xaml.cs">
       <DependentUpon>ExceptionDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\DuckOpenFileDialog.cs" />
-    <Compile Include="UI\OriginChooserDialog.xaml.cs">
+    <Compile Include="Dialogs\DuckOpenFileDialog.cs" />
+    <Compile Include="Dialogs\FindDialog.xaml.cs">
+      <DependentUpon>FindDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\OriginChooserDialog.xaml.cs">
       <DependentUpon>OriginChooserDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Writer\IRowsWriter.cs" />
-    <Compile Include="Writer\SpaceSensitiveXmlTextWriter.cs" />
-    <Compile Include="Writer\TableWriterBase.cs" />
-    <Compile Include="Writer\TmxWriter.cs" />
-    <Compile Include="Writer\WriterManager.cs" />
-    <Compile Include="UI\IRowData.cs" />
-    <Compile Include="UI\ITableController.cs" />
-    <Compile Include="Plugin\IPlugin.cs" />
-    <Compile Include="Plugin\PluginManager.cs" />
-    <Compile Include="UI\AboutDialog.xaml.cs">
+    <Compile Include="Table\IRowData.cs" />
+    <Compile Include="Table\ITableController.cs" />
+    <Compile Include="Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\BilingualRowData.cs" />
-    <Compile Include="Doc\XliffParser.cs" />
-    <Compile Include="Doc\XliffReader.cs" />
-    <Compile Include="Doc\ZipUtils.cs" />
-    <Compile Include="UI\Commands.cs" />
-    <Compile Include="UI\MainController.cs" />
-    <Compile Include="UI\DelegateCommand.cs" />
-    <Compile Include="UI\DelegateCommandHelper.cs" />
-    <Compile Include="UI\GlossyString.cs" />
-    <Compile Include="UI\GlossyTextBlock.cs" />
-    <Compile Include="UI\InterTabClient.cs" />
-    <Compile Include="UI\TableController.cs" />
-    <Compile Include="UI\PairRenderer.cs" />
-    <Compile Include="UI\RadioMenuItem.cs" />
-    <Compile Include="UI\TableView.xaml.cs">
+    <Compile Include="Table\BilingualRowData.cs" />
+    <Compile Include="Common\Commands.cs" />
+    <Compile Include="MainWindow\MainController.cs" />
+    <Compile Include="Common\DelegateCommand.cs" />
+    <Compile Include="Common\DelegateCommandHelper.cs" />
+    <Compile Include="Table\GlossyString.cs" />
+    <Compile Include="Table\GlossyTextBlock.cs" />
+    <Compile Include="MainWindow\InterTabClient.cs" />
+    <Compile Include="Table\TableController.cs" />
+    <Compile Include="Table\PairRenderer.cs" />
+    <Compile Include="Dialogs\RadioMenuItem.cs" />
+    <Compile Include="Table\TableView.xaml.cs">
       <DependentUpon>TableView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\XamlControl.cs" />
-    <Compile Include="Writer\XlsxWriter.cs" />
-    <Compile Include="Writer\XmlTableWriter.cs" />
-    <Page Include="UI\AboutDialog.xaml">
+    <Compile Include="Table\RowDataColumnDesc.cs" />
+    <Compile Include="Dialogs\XamlControl.cs" />
+    <Page Include="Dialogs\AboutDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\AppIcon.xaml">
+    <Page Include="AppIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\ExceptionDialog.xaml">
+    <Page Include="Dialogs\ExceptionDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\MainWindow.xaml">
+    <Page Include="Dialogs\FindDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="UI\IMainController.cs" />
-    <Compile Include="UI\MainWindow.xaml.cs">
+    <Page Include="MainWindow\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="MainWindow\IMainController.cs" />
+    <Compile Include="MainWindow\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UI\OriginChooserDialog.xaml">
+    <Page Include="Dialogs\OriginChooserDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Styles.xaml">
+    <Page Include="Common\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\TableView.xaml">
+    <Page Include="Table\TableView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -222,33 +179,20 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\AppIcon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Writer\table.xslt">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Writer\xmlss.xslt">
-      <SubType>Designer</SubType>
-    </Resource>
+    <ProjectReference Include="..\disfr-core\disfr-core.csproj">
+      <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
+      <Name>disfr-core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>COPY /Y "$(ProjectDir)Writer"\*.xslt "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.109.2\build\net45\System.Data.SQLite.Core.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

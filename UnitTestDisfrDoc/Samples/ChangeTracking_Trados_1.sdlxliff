@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns:sdl="http://sdl.com/FileTypes/SdlXliff/1.0" xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2" sdl:version="1.0">
+<doc-info xmlns="http://sdl.com/FileTypes/SdlXliff/1.0">
+<rep-defs>
+<rep-def id="CpD/tjMwi43IyLzl/GFNyIZ5Zzc=">
+<entry tu="72f5545c-9422-46eb-8624-773af51ef0f4" seg="2"/>
+<entry tu="418a742b-090d-41c2-ae1d-2ea2da1c485b" seg="3"/>
+</rep-def>
+<rep-def id="xftaWG0GVgbL7it/AU4q67zFTgI=">
+<entry tu="39309f11-9b82-4511-8fcd-bbfa38899fab" seg="4"/>
+<entry tu="5b227d62-525e-4057-a861-13bc47291e9b" seg="5"/>
+</rep-def>
+</rep-defs>
+<rev-defs>
+<rev-def id="58776bb4-f6a0-4a0d-a0ca-928c5a5e7254" type="Delete" author="Froboz" date="05/04/2019 20:51:02"/>
+<rev-def id="64e894c8-4047-471f-a51a-43dfd0afd004" author="Froboz" date="05/04/2019 20:51:15"/>
+<rev-def id="f0f65012-5a1d-4603-a879-a85b2bf3502c" type="Delete" author="Froboz" date="05/04/2019 20:51:51"/>
+<rev-def id="b92b217c-55de-4c10-9686-c2f957b32cae" author="Froboz" date="05/04/2019 20:52:05"/>
+<rev-def id="ebf1ba96-2d00-4b5a-985d-ea139690fbda" type="Delete" author="Froboz" date="05/04/2019 20:52:19"/>
+<rev-def id="9bbedcaf-7f76-4196-8e23-383a0b4da577" author="Froboz" date="05/04/2019 20:52:22"/>
+</rev-defs>
+</doc-info>
+<file original="C:\Users\Froboz\Documents\Studio 2019\Projects\Samples\en-us\ChangeTracking.html" datatype="x-sdlfilterframework2" source-language="en-us" target-language="ja-JP">
+<header>
+<reference>
+<internal-file form="base64">UEsDBBQAAAAIAPhdrU5imfblcwAAANAAAAARAAAAZmdsaWQweTQuanQwLmh0bWx9j0EKg0AMRfee
+IuC+obbLkE0v4MILZOowCbU6jIHS21dQWhDs6sHjLf4n9efAFWmUfoGbD5FvKmOK0BW5P2xMhKuu
+CLcsTP17QeZWiqQiWaE+nwjzXjZfSeHnCQNDfYGXuQIZu6SZ0PhPfD2KcduC65EPUEsBAjMAFAAA
+AAgA+F2tTmKZ9uVzAAAA0AAAABEAAAAAAAAAAAAAAAAAAAAAAGZnbGlkMHk0Lmp0MC5odG1sUEsF
+BgAAAAABAAEAPwAAAKIAAAAAAA==
+</internal-file>
+</reference>
+<sdl:ref-files>
+<sdl:ref-file uid="0" id="Html.DependencyFileId" name="nwxpxihm.qqz.html" o-path="C:\Users\Froboz\Documents\Studio 2019\Projects\Samples\en-us\ChangeTracking.html" date="05/04/2019 11:47:49" expected-use="Generation"/>
+</sdl:ref-files>
+<file-info xmlns="http://sdl.com/FileTypes/SdlXliff/1.0">
+<value key="SDL:FileId">9f29582c-e8b9-4c6c-ae81-123dda00d6cd</value>
+<value key="SDL:CreationDate">05/04/2019 20:48:06</value>
+<value key="SDL:OriginalFilePath">C:\Users\Froboz\Documents\Studio 2019\Projects\Samples\en-us\ChangeTracking.html</value>
+<value key="SDL:OriginalEncoding">us-ascii</value>
+<value key="SDL:QuickInsertsList">qBold;qItalic;qUnderline;qSubscript;qSuperscript;qSmallCaps</value>
+<value key="NeedsSegmentRenumbering">False</value>
+<value key="HtmlEntityFound">True</value>
+<value key="HeadEntityFound">True</value>
+<value key="BodyEntityFound">True</value>
+<value key="HtmlVersion">html4</value>
+<value key="OperatingSystem">Linux</value>
+<value key="ParagraphTextDirections">
+</value>
+<sniff-info>
+<detected-encoding detection-level="Certain" encoding="us-ascii"/>
+<detected-source-lang detection-level="Guess" lang="en-US"/>
+</sniff-info>
+</file-info>
+<sdl:filetype-info>
+<sdl:filetype-id>Html 5 2.0.0.0</sdl:filetype-id>
+</sdl:filetype-info>
+<fmt-defs xmlns="http://sdl.com/FileTypes/SdlXliff/1.0">
+<fmt-def id="1"/>
+<fmt-def id="2">
+<value key="Bold">True</value>
+</fmt-def>
+<fmt-def id="3">
+<value key="Italic">True</value>
+</fmt-def>
+</fmt-defs>
+<cxt-defs xmlns="http://sdl.com/FileTypes/SdlXliff/1.0">
+<cxt-def id="1" type="LocationDetails" purpose="Location">
+<props>
+<value key="StartsAt">14</value>
+<value key="EndsAt">36</value>
+<value key="SubParagraphUnitCount">0</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+</props>
+</cxt-def>
+<cxt-def id="2" type="sdl:title" color="Control">
+<fmt id="1"/>
+</cxt-def>
+<cxt-def id="3" type="sdl:meta" color="Control">
+<fmt id="1"/>
+</cxt-def>
+<cxt-def id="4" type="sdl:html-control" color="Control">
+<fmt id="1"/>
+</cxt-def>
+<cxt-def id="5" type="LocationDetails" purpose="Location">
+<props>
+<value key="StartsAt">60</value>
+<value key="EndsAt">76</value>
+<value key="SubParagraphUnitCount">0</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+</props>
+</cxt-def>
+<cxt-def id="6" type="sdl:paragraph" color="Control">
+<fmt id="1"/>
+</cxt-def>
+<cxt-def id="7" type="sdl:body" color="Control">
+<fmt id="1"/>
+</cxt-def>
+<cxt-def id="8" type="LocationDetails" purpose="Location">
+<props>
+<value key="StartsAt">81</value>
+<value key="EndsAt">97</value>
+<value key="SubParagraphUnitCount">0</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+</props>
+</cxt-def>
+<cxt-def id="9" type="LocationDetails" purpose="Location">
+<props>
+<value key="StartsAt">102</value>
+<value key="EndsAt">142</value>
+<value key="SubParagraphUnitCount">0</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+</props>
+</cxt-def>
+<cxt-def id="10" type="LocationDetails" purpose="Location">
+<props>
+<value key="StartsAt">147</value>
+<value key="EndsAt">187</value>
+<value key="SubParagraphUnitCount">0</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+</props>
+</cxt-def>
+</cxt-defs>
+<node-defs xmlns="http://sdl.com/FileTypes/SdlXliff/1.0">
+<node-def id="1" parent="2">
+<cxt id="3"/>
+</node-def>
+<node-def id="2">
+<cxt id="4"/>
+</node-def>
+<node-def id="3" parent="1">
+<cxt id="2"/>
+</node-def>
+<node-def id="4" parent="2">
+<cxt id="7"/>
+</node-def>
+<node-def id="5" parent="4">
+<cxt id="6"/>
+</node-def>
+<node-def id="6" parent="4">
+<cxt id="6"/>
+</node-def>
+<node-def id="7" parent="4">
+<cxt id="6"/>
+</node-def>
+<node-def id="8" parent="4">
+<cxt id="6"/>
+</node-def>
+</node-defs>
+<tag-defs xmlns="http://sdl.com/FileTypes/SdlXliff/1.0">
+<tag id="2">
+<bpt name="b" word-end="false">&lt;b&gt;</bpt>
+<bpt-props>
+<value key="FormattingItemBold">True</value>
+<value key="StartTag">b</value>
+<value key="hasCharset">False</value>
+<value key="hasLanguageAttribute">False</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+<value key="ContentProtection">InheritFromParent</value>
+</bpt-props>
+<ept name="b" word-end="false">&lt;/b&gt;</ept>
+<fmt id="2"/>
+</tag>
+<tag id="5">
+<bpt name="i" word-end="false">&lt;i&gt;</bpt>
+<bpt-props>
+<value key="FormattingItemItalic">True</value>
+<value key="StartTag">i</value>
+<value key="hasCharset">False</value>
+<value key="hasLanguageAttribute">False</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+<value key="ContentProtection">InheritFromParent</value>
+</bpt-props>
+<ept name="i" word-end="false">&lt;/i&gt;</ept>
+<fmt id="3"/>
+</tag>
+<tag id="8">
+<bpt name="b" word-end="false">&lt;b&gt;</bpt>
+<bpt-props>
+<value key="FormattingItemBold">True</value>
+<value key="StartTag">b</value>
+<value key="hasCharset">False</value>
+<value key="hasLanguageAttribute">False</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+<value key="ContentProtection">InheritFromParent</value>
+</bpt-props>
+<ept name="b" word-end="false">&lt;/b&gt;</ept>
+<fmt id="2"/>
+</tag>
+<tag id="11">
+<bpt name="i" word-end="false">&lt;i&gt;</bpt>
+<bpt-props>
+<value key="FormattingItemItalic">True</value>
+<value key="StartTag">i</value>
+<value key="hasCharset">False</value>
+<value key="hasLanguageAttribute">False</value>
+<value key="WhitespaceHandling">NormalizeWithXmlSpaceOverride;False</value>
+<value key="ContentProtection">InheritFromParent</value>
+</bpt-props>
+<ept name="i" word-end="false">&lt;/i&gt;</ept>
+<fmt id="3"/>
+</tag>
+</tag-defs>
+</header>
+<body>
+<group>
+<sdl:cxts>
+<sdl:cxt id="1"/>
+<sdl:cxt id="2"/>
+<sdl:cxt id="3"/>
+<sdl:cxt id="4"/>
+<sdl:node id="3"/>
+</sdl:cxts>
+<trans-unit id="ff672808-3433-43dc-9852-6ee2605a24ac">
+<source>Change Tracking</source>
+<seg-source><mrk mtype="seg" mid="1">Change Tracking</mrk></seg-source>
+<target><mrk mtype="seg" mid="1">CHANGE TRACKING</mrk></target>
+<sdl:seg-defs>
+<sdl:seg id="1" conf="Translated" origin="interactive">
+<sdl:value key="SegmentIdentityHash">v4cdt7dAMIJweZ/L+Xlb4F/mfg0=</sdl:value>
+<sdl:value key="created_by">Zork\Froboz</sdl:value>
+<sdl:value key="created_on">05/04/2019 11:48:22</sdl:value>
+<sdl:value key="last_modified_by">Zork\Froboz</sdl:value>
+<sdl:value key="modified_on">05/04/2019 11:48:30</sdl:value>
+</sdl:seg>
+</sdl:seg-defs>
+</trans-unit>
+</group>
+<group>
+<sdl:cxts>
+<sdl:cxt id="5"/>
+<sdl:cxt id="6"/>
+<sdl:cxt id="7"/>
+<sdl:cxt id="4"/>
+<sdl:node id="5"/>
+</sdl:cxts>
+<trans-unit id="72f5545c-9422-46eb-8624-773af51ef0f4">
+<source>Paragraph #1.</source>
+<seg-source><mrk mtype="seg" mid="2">Paragraph #1.</mrk></seg-source>
+<target><mrk mtype="seg" mid="2"><mrk mtype="x-sdl-deleted" sdl:revid="58776bb4-f6a0-4a0d-a0ca-928c5a5e7254">PARAGRAPH </mrk>#1.</mrk></target>
+<sdl:seg-defs>
+<sdl:seg id="2" conf="Translated" origin="interactive">
+<sdl:rep id="CpD/tjMwi43IyLzl/GFNyIZ5Zzc="/>
+<sdl:value key="SegmentIdentityHash">CpD/tjMwi43IyLzl/GFNyIZ5Zzc=</sdl:value>
+<sdl:value key="created_by">Zork\Froboz</sdl:value>
+<sdl:value key="created_on">05/04/2019 11:48:37</sdl:value>
+<sdl:value key="last_modified_by">Zork\Froboz</sdl:value>
+<sdl:value key="modified_on">05/04/2019 11:51:20</sdl:value>
+</sdl:seg>
+</sdl:seg-defs>
+</trans-unit>
+</group>
+<group>
+<sdl:cxts>
+<sdl:cxt id="8"/>
+<sdl:cxt id="6"/>
+<sdl:cxt id="7"/>
+<sdl:cxt id="4"/>
+<sdl:node id="6"/>
+</sdl:cxts>
+<trans-unit id="418a742b-090d-41c2-ae1d-2ea2da1c485b">
+<source>Paragraph #2.</source>
+<seg-source><mrk mtype="seg" mid="3">Paragraph #2.</mrk></seg-source>
+<target><mrk mtype="seg" mid="3">PARAGRAPH #2<mrk mtype="x-sdl-added" sdl:revid="64e894c8-4047-471f-a51a-43dfd0afd004"> INSERTED</mrk>.</mrk></target>
+<sdl:seg-defs>
+<sdl:seg id="3" conf="Translated" origin="interactive">
+<sdl:rep id="CpD/tjMwi43IyLzl/GFNyIZ5Zzc="/>
+<sdl:value key="SegmentIdentityHash">CpD/tjMwi43IyLzl/GFNyIZ5Zzc=</sdl:value>
+<sdl:value key="created_by">Zork\Froboz</sdl:value>
+<sdl:value key="created_on">05/04/2019 11:48:49</sdl:value>
+<sdl:value key="last_modified_by">Zork\Froboz</sdl:value>
+<sdl:value key="modified_on">05/04/2019 11:51:21</sdl:value>
+</sdl:seg>
+</sdl:seg-defs>
+</trans-unit>
+</group>
+<group>
+<sdl:cxts>
+<sdl:cxt id="9"/>
+<sdl:cxt id="6"/>
+<sdl:cxt id="7"/>
+<sdl:cxt id="4"/>
+<sdl:node id="7"/>
+</sdl:cxts>
+<trans-unit id="39309f11-9b82-4511-8fcd-bbfa38899fab">
+<source><g id="2">Paragraph</g> #3 with <g id="5">tags</g>.</source>
+<seg-source><mrk mtype="seg" mid="4"><g id="2">Paragraph</g> #3 with <g id="5">tags</g>.</mrk></seg-source>
+<target><mrk mtype="seg" mid="4"><mrk mtype="x-sdl-deleted" sdl:revid="f0f65012-5a1d-4603-a879-a85b2bf3502c"><g id="2">PARAGRAPH</g> #3 </mrk>WITH <g id="5">TAGS</g><mrk mtype="x-sdl-added" sdl:revid="b92b217c-55de-4c10-9686-c2f957b32cae">, <g id="2">PARAGRAPH</g> #3</mrk>.</mrk></target>
+<sdl:seg-defs>
+<sdl:seg id="4" conf="Translated" origin="interactive">
+<sdl:rep id="xftaWG0GVgbL7it/AU4q67zFTgI="/>
+<sdl:prev-origin origin="source">
+<sdl:rep id="xftaWG0GVgbL7it/AU4q67zFTgI="/>
+<sdl:prev-origin/>
+<sdl:value key="SegmentIdentityHash">xftaWG0GVgbL7it/AU4q67zFTgI=</sdl:value>
+<sdl:value key="created_by">Zork\Froboz</sdl:value>
+<sdl:value key="created_on">05/04/2019 11:49:01</sdl:value>
+<sdl:value key="last_modified_by">Zork\Froboz</sdl:value>
+<sdl:value key="modified_on">05/04/2019 11:49:01</sdl:value>
+</sdl:prev-origin>
+<sdl:value key="SegmentIdentityHash">xftaWG0GVgbL7it/AU4q67zFTgI=</sdl:value>
+<sdl:value key="created_by">Zork\Froboz</sdl:value>
+<sdl:value key="created_on">05/04/2019 11:49:16</sdl:value>
+<sdl:value key="last_modified_by">Zork\Froboz</sdl:value>
+<sdl:value key="modified_on">05/04/2019 11:52:34</sdl:value>
+</sdl:seg>
+</sdl:seg-defs>
+</trans-unit>
+</group>
+<group>
+<sdl:cxts>
+<sdl:cxt id="10"/>
+<sdl:cxt id="6"/>
+<sdl:cxt id="7"/>
+<sdl:cxt id="4"/>
+<sdl:node id="8"/>
+</sdl:cxts>
+<trans-unit id="5b227d62-525e-4057-a861-13bc47291e9b">
+<source><g id="8">Paragraph</g> #4 with <g id="11">tags</g>.</source>
+<seg-source><mrk mtype="seg" mid="5"><g id="8">Paragraph</g> #4 with <g id="11">tags</g>.</mrk></seg-source>
+<target><mrk mtype="seg" mid="5"><g id="8"><mrk mtype="x-sdl-deleted" sdl:revid="ebf1ba96-2d00-4b5a-985d-ea139690fbda">PARAGRAPH</mrk><mrk mtype="x-sdl-added" sdl:revid="9bbedcaf-7f76-4196-8e23-383a0b4da577">ABRACADABRA</mrk></g> #4 with <g id="11">TAGS</g>.</mrk></target>
+<sdl:seg-defs>
+<sdl:seg id="5" conf="Translated" origin="interactive">
+<sdl:rep id="xftaWG0GVgbL7it/AU4q67zFTgI="/>
+<sdl:prev-origin origin="source">
+<sdl:rep id="xftaWG0GVgbL7it/AU4q67zFTgI="/>
+<sdl:prev-origin/>
+<sdl:value key="SegmentIdentityHash">xftaWG0GVgbL7it/AU4q67zFTgI=</sdl:value>
+<sdl:value key="created_by">Zork\Froboz</sdl:value>
+<sdl:value key="created_on">05/04/2019 11:49:06</sdl:value>
+<sdl:value key="last_modified_by">Zork\Froboz</sdl:value>
+<sdl:value key="modified_on">05/04/2019 11:49:06</sdl:value>
+</sdl:prev-origin>
+<sdl:value key="SegmentIdentityHash">xftaWG0GVgbL7it/AU4q67zFTgI=</sdl:value>
+<sdl:value key="created_by">Zork\Froboz</sdl:value>
+<sdl:value key="created_on">05/04/2019 11:49:28</sdl:value>
+<sdl:value key="last_modified_by">Zork\Froboz</sdl:value>
+<sdl:value key="modified_on">05/04/2019 11:52:35</sdl:value>
+</sdl:seg>
+</sdl:seg-defs>
+</trans-unit>
+</group>
+</body>
+</file>
+</xliff>

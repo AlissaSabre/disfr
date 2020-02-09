@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xliff version="1.2">
+  <file original="Crafted02" source-language="en-US" target-language="x-xyz" tool="nothing" datatype="crafted" xml:space="preserve">
+    <body>
+      <trans-unit id="201">
+        <source xml:lang="en-US">Various inline tags for: abc [CODE]text[/CODE] def.</source>
+        <target xml:lang="x-xyz">Various inline tags for: ABC [CODE]TEXT[/CODE] DEF.</target>
+      </trans-unit>
+      <trans-unit id="202">
+        <source xml:lang="en-US">bpt/ept: abc <bpt id="202.1" rid="202r1">[CODE]</bpt>text<ept id="202.2" rid="202r1">[/CODE]</ept> def.</source>
+        <target xml:lang="x-xyz">bpt/ept: ABC <bpt id="202.1" rid="202r1">[CODE]</bpt>TEXT<ept id="202.2" rid="202r1">[/CODE]</ept> DEF.</target>
+      </trans-unit>
+      <trans-unit id="203">
+        <source xml:lang="en-US">bx/ex: abc <bx id="203.1" rid="203r1"/>text<ex id="203.2" rid="203r1"/> def.</source>
+        <target xml:lang="x-xyz">bx/ex: ABC <bx id="203.1" rid="203r1"/>TEXT<ex id="203.2" rid="203r1"/> DEF.</target>
+      </trans-unit>
+      <trans-unit id="204">
+        <source xml:lang="en-US">g: abc <g id="204.1">text</g> def.</source>
+        <target xml:lang="x-xyz">g: ABC <g id="204.1">TEXT</g> DEF.</target>
+      </trans-unit>
+      <trans-unit id="205">
+        <source xml:lang="en-US">ph: abc <ph id="205.1">[CODE]</ph>text<ph id="205.2">[/CODE]</ph> def.</source>
+        <target xml:lang="x-xyz">ph: ABC <ph id="205.1">[CODE]</ph>TEXT<ph id="205.2">[/CODE]</ph> DEF.</target>
+      </trans-unit>
+      <trans-unit id="206">
+        <source xml:lang="en-US">x: abc <x id="206.1"/>text<x id="206.2"/> def.</source>
+        <target xml:lang="x-xyz">x: ABC <x id="206.1"/>TEXT<x id="206.2"/> DEF.</target>
+      </trans-unit>
+      <trans-unit id="207">
+        <source xml:lang="en-US">it: abc <it id="207.1" pos="open" rid="207r1">[CODE]</it>text<it id="207.2" pos="close" rid="207r1">[/CODE]</it> def.</source>
+        <target xml:lang="x-xyz">it: ABC <it id="207.1" pos="open" rid="207r1">[CODE]</it>TEXT<it id="207.2" pos="close" rid="207r1">[/CODE]</it> DEF.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+

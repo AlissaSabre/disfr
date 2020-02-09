@@ -53,8 +53,8 @@ namespace UnitTestDisfrDoc
             string IDIR = @"..\..\Samples";
             string ODIR = @"..\..\Expected";
 
-            var assets = rd.Read(Path.Combine(IDIR, input), -1);
-            var visualized = new PairVisualizer().Visualize(assets);
+            var bundle = rd.Read(Path.Combine(IDIR, input), -1);
+            var visualized = new PairVisualizer().Visualize(bundle.Assets);
             var output = Path.GetFileNameWithoutExtension(input) + ".dump";
             File.WriteAllText(Path.Combine(ODIR, output), visualized);
         }

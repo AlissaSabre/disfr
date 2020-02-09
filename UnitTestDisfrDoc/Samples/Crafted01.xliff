@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xliff version="1.2">
+  <file original="Crafted01" source-language="en-US" target-language="x-xyz" tool="nothing" datatype="creafted" xml:space="preserve">
+    <body>
+      <trans-unit id="101">
+        <source xml:lang="en-US">Simple Text</source>
+        <target xml:lang="x-xyz">Simple Text</target>
+      </trans-unit>
+      <trans-unit id="102">
+        <source xml:lang="en-US">abc def ghi.</source>
+        <target xml:lang="x-xyz">ABC DEF GHI.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+

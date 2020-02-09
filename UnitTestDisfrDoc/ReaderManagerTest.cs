@@ -52,12 +52,12 @@ namespace UnitTestDisfrDoc
             // Reader1 will be listed first in the filter, but
             // Reader2 will be considered first when auto-detecting.
 
-            rm.Read("filename").ElementAt(0).Original.Is("Reader2.-1");
-            rm.Read("filename", 0).ElementAt(0).Original.Is("Reader2.-1");
-            rm.Read("filename", 1).ElementAt(0).Original.Is("Reader1.0");
-            rm.Read("filename", 2).ElementAt(0).Original.Is("Reader1.1");
-            rm.Read("filename", 3).ElementAt(0).Original.Is("Reader2.0");
-            rm.Read("filename", 4).ElementAt(0).Original.Is("Reader2.-1");
+            rm.Read("filename").Assets.ElementAt(0).Original.Is("Reader2.-1");
+            rm.Read("filename", 0).Assets.ElementAt(0).Original.Is("Reader2.-1");
+            rm.Read("filename", 1).Assets.ElementAt(0).Original.Is("Reader1.0");
+            rm.Read("filename", 2).Assets.ElementAt(0).Original.Is("Reader1.1");
+            rm.Read("filename", 3).Assets.ElementAt(0).Original.Is("Reader2.0");
+            rm.Read("filename", 4).Assets.ElementAt(0).Original.Is("Reader2.-1");
             AssertEx.Catch<ArgumentOutOfRangeException>(() => rm.Read("filename", -2));
             AssertEx.Catch<ArgumentOutOfRangeException>(() => rm.Read("filename", 6));
         }
@@ -70,9 +70,9 @@ namespace UnitTestDisfrDoc
             public string Name { get { return "Foo bar reader"; } }
             public int Priority { get { return 1; } }
 
-            public IEnumerable<IAsset> Read(string filename, int filterindex)
+            public IAssetBundle Read(string filename, int filterindex)
             {
-                return new IAsset[] { new DummyAsset() { Package = filename, Original = "Reader1." + filterindex } };
+                return new DummyAssetBundle() { Assets = new IAsset[] { new DummyAsset() { Package = filename, Original = "Reader1." + filterindex } } };
             }
         }
 
@@ -82,10 +82,18 @@ namespace UnitTestDisfrDoc
             public string Name { get { return "John doe reader"; } }
             public int Priority { get { return 2; } }
 
-            public IEnumerable<IAsset> Read(string filename, int filterindex)
+            public IAssetBundle Read(string filename, int filterindex)
             {
-                return new IAsset[] { new DummyAsset() { Package = filename, Original = "Reader2." + filterindex } };
+                return new DummyAssetBundle() { Assets = new IAsset[] { new DummyAsset() { Package = filename, Original = "Reader2." + filterindex } } };
             }
+        }
+
+        private class DummyAssetBundle : IAssetBundle
+        {
+            public string Name { get { return "DummyAssetBundle"; } }
+            public IEnumerable<IAsset> Assets { get; set; }
+            public bool CanRefresh { get { return false; } }
+            public void Refresh() { }
         }
 
         private class DummyAsset : IAsset

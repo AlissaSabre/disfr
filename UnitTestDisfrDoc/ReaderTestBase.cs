@@ -16,8 +16,8 @@ namespace UnitTestDisfrDoc
 
         protected static void Comprehensive(IAssetReader reader, string filename)
         {
-            var assets = reader.Read(Path.Combine(IDIR, filename), -1);
-            var got = new PairVisualizer().Visualize(assets);
+            var bundle = reader.Read(Path.Combine(IDIR, filename), -1);
+            var got = new PairVisualizer().Visualize(bundle.Assets);
 
             var dumpname = Path.GetFileNameWithoutExtension(filename) + ".dump";
             var expected = File.ReadAllText(Path.Combine(ODIR, dumpname));

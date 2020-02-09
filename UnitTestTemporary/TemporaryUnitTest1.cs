@@ -13,8 +13,6 @@ namespace UnitTestTemporary
         [TestMethod]
         public void TestMethod1()
         {
-            "####".Replace("##", "#").Is("##");
-            "###+####+#####".Replace("##", "#").Is("##+##+###");
         }
     }
 }
