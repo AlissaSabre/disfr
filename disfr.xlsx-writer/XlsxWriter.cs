@@ -42,7 +42,7 @@ namespace disfr.xlsx_writer
             try
             {
                 tmpname = CreateTempFile(Path.GetTempPath(), ".xml");
-                XmlssWriter.WriteXmlss(tmpname, pairs, columns, render);
+                new XmlssWriter().Write(tmpname, 0, pairs, columns, render);
 
                 var excel = new Excel() { Visible = false, Interactive = false, DisplayAlerts = false };
                 try

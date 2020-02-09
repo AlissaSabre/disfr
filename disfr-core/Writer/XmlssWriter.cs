@@ -23,16 +23,6 @@ namespace disfr.Writer
 
         public void Write(string filename, int filterindex, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
         {
-            switch (filterindex)
-            {
-                case 0: WriteXmlss(filename, pairs, columns, render); break;
-                default:
-                    throw new ArgumentOutOfRangeException("filterindex");
-            }
-        }
-
-        public static void WriteXmlss(string filename, IEnumerable<ITransPair> pairs, IColumnDesc[] columns, InlineString.Render render)
-        {
             using (var output = File.Create(filename))
             {
                 var table = CreateXmlTree(pairs, columns, render);
