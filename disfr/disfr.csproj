@@ -81,71 +81,71 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
-    <Compile Include="UI\ExceptionDialog.xaml.cs">
+    <Compile Include="Dialogs\ExceptionDialog.xaml.cs">
       <DependentUpon>ExceptionDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\DuckOpenFileDialog.cs" />
-    <Compile Include="UI\FindDialog.xaml.cs">
+    <Compile Include="Dialogs\DuckOpenFileDialog.cs" />
+    <Compile Include="Dialogs\FindDialog.xaml.cs">
       <DependentUpon>FindDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\OriginChooserDialog.xaml.cs">
+    <Compile Include="Dialogs\OriginChooserDialog.xaml.cs">
       <DependentUpon>OriginChooserDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\IRowData.cs" />
-    <Compile Include="UI\ITableController.cs" />
-    <Compile Include="UI\AboutDialog.xaml.cs">
+    <Compile Include="Table\IRowData.cs" />
+    <Compile Include="Table\ITableController.cs" />
+    <Compile Include="Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\BilingualRowData.cs" />
-    <Compile Include="UI\Commands.cs" />
-    <Compile Include="UI\MainController.cs" />
-    <Compile Include="UI\DelegateCommand.cs" />
-    <Compile Include="UI\DelegateCommandHelper.cs" />
-    <Compile Include="UI\GlossyString.cs" />
-    <Compile Include="UI\GlossyTextBlock.cs" />
-    <Compile Include="UI\InterTabClient.cs" />
-    <Compile Include="UI\TableController.cs" />
-    <Compile Include="UI\PairRenderer.cs" />
-    <Compile Include="UI\RadioMenuItem.cs" />
-    <Compile Include="UI\TableView.xaml.cs">
+    <Compile Include="Table\BilingualRowData.cs" />
+    <Compile Include="Common\Commands.cs" />
+    <Compile Include="MainWindow\MainController.cs" />
+    <Compile Include="Common\DelegateCommand.cs" />
+    <Compile Include="Common\DelegateCommandHelper.cs" />
+    <Compile Include="Table\GlossyString.cs" />
+    <Compile Include="Table\GlossyTextBlock.cs" />
+    <Compile Include="MainWindow\InterTabClient.cs" />
+    <Compile Include="Table\TableController.cs" />
+    <Compile Include="Table\PairRenderer.cs" />
+    <Compile Include="Dialogs\RadioMenuItem.cs" />
+    <Compile Include="Table\TableView.xaml.cs">
       <DependentUpon>TableView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\RowDataColumnDesc.cs" />
-    <Compile Include="UI\XamlControl.cs" />
-    <Page Include="UI\AboutDialog.xaml">
+    <Compile Include="Table\RowDataColumnDesc.cs" />
+    <Compile Include="Dialogs\XamlControl.cs" />
+    <Page Include="Dialogs\AboutDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\AppIcon.xaml">
+    <Page Include="AppIcon.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\ExceptionDialog.xaml">
+    <Page Include="Dialogs\ExceptionDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\FindDialog.xaml">
+    <Page Include="Dialogs\FindDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\MainWindow.xaml">
+    <Page Include="MainWindow\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="UI\IMainController.cs" />
-    <Compile Include="UI\MainWindow.xaml.cs">
+    <Compile Include="MainWindow\IMainController.cs" />
+    <Compile Include="MainWindow\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UI\OriginChooserDialog.xaml">
+    <Page Include="Dialogs\OriginChooserDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Styles.xaml">
+    <Page Include="Common\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\TableView.xaml">
+    <Page Include="Table\TableView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -179,9 +179,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\AppIcon.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +187,7 @@
       <Name>disfr-core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

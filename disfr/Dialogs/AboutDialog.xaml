@@ -11,7 +11,7 @@
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
     <Grid>
-        <local:XamlControl Source="/UI/AppIcon.xaml" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" Width="80" Margin="10,10,0,0"/>
+        <local:XamlControl Source="../AppIcon.xaml" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" Width="80" Margin="10,10,0,0"/>
         <TextBlock x:Name="appName" HorizontalAlignment="Left" Margin="110,20,0,0" TextWrapping="Wrap" Text="(appName)" VerticalAlignment="Top"/>
         <TextBlock x:Name="appDesc" HorizontalAlignment="Left" Margin="110,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="(appDesc)"/>
         <TextBlock x:Name="appAuth" HorizontalAlignment="Left" Margin="110,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="(appAuth)"/>
