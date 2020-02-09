@@ -30,11 +30,18 @@ namespace disfr.UI
 
         public bool ShowRawId { get; set; }
 
-        public TagShowing ShowTag { get; set; }
+        public TagShowing TagShowing { get; set; }
+
+        public bool ShowChanges { get; set; }
 
         public InlineString.Render InlineStringRenderingMode
         {
-            get { return InlineString.Render.HideDel | (InlineString.Render)ShowTag; }
+            get
+            {
+                InlineString.Render mode = (InlineString.Render)TagShowing;
+                if (!ShowChanges) mode |= InlineString.Render.HideDel;
+                return mode;
+            }
         }
 
         public bool ShowSpecials { get; set; }
@@ -152,14 +159,42 @@ namespace disfr.UI
         public GlossyString GlossyFromInline(InlineString inline, bool ignore_show_specials = false)
         {
             var g = new GlossyString();
-            foreach (var run in inline.RunsWithProperties.Where(rwp => rwp.Property != InlineProperty.Del).Select(rwp => rwp.Run))
+            foreach (var rwp in inline.RunsWithProperties)
             {
+                Gloss gloss;
+                var prop = rwp.Property;
+                if (ShowChanges)
+                {
+                    switch (prop)
+                    {
+                        case InlineProperty.None: gloss = Gloss.None; break;
+                        case InlineProperty.Ins: gloss = Gloss.INS; break;
+                        case InlineProperty.Del: gloss = Gloss.DEL; break;
+                        case InlineProperty.Emp: gloss = Gloss.EMP; break;
+                        default:
+                            throw new ApplicationException("internal error: unknown InlineProperty value in RWP.");
+                    }
+                }
+                else
+                {
+                    switch (prop)
+                    {
+                        case InlineProperty.None: gloss = Gloss.None; break;
+                        case InlineProperty.Ins: gloss = Gloss.None; break;
+                        case InlineProperty.Del: continue; // XXX
+                        case InlineProperty.Emp: gloss = Gloss.EMP; break;
+                        default:
+                            throw new ApplicationException("internal error: unknown InlineProperty value in RWP.");
+                    }
+                }
+
+                var run = rwp.Run;
                 if (run is InlineText)
                 {
                     var str = (run as InlineText).Text;
                     if (!ShowSpecials || ignore_show_specials)
                     {
-                        g.Append(str, Gloss.None);
+                        g.Append(str, gloss);
                     }
                     else
                     {
@@ -172,8 +207,8 @@ namespace disfr.UI
                             if (SpecialCharChecker[c % SpecialCharChecker.Length] == c)
                             {
                                 if (q > p) g.Append(str.Substring(p, q - p), Gloss.None);
-                                g.Append(SpecialCharMapRaw[c], Gloss.SYM);
-                                g.Append(SpecialCharMapAlt[c], Gloss.ALT);
+                                g.Append(SpecialCharMapRaw[c], gloss | Gloss.SYM);
+                                g.Append(SpecialCharMapAlt[c], gloss | Gloss.ALT);
                                 p = q + 1;
                             }
 #else
@@ -190,22 +225,22 @@ namespace disfr.UI
                         }
                         if (p < str.Length)
                         {
-                            g.Append(str.Substring(p), Gloss.None);
+                            g.Append(str.Substring(p), gloss);
                         }
                     }
                 }
                 else if (run is InlineTag)
                 {
                     var tag = (InlineTag)run;
-                    var text = tag.ToString((InlineString.Render)ShowTag);
+                    var text = tag.ToString((InlineString.Render)TagShowing);
                     if (!string.IsNullOrEmpty(text))
                     {
-                        g.Append(text, Gloss.TAG);
+                        g.Append(text, gloss | Gloss.TAG);
                     }
                 }
                 else
                 {
-                    throw new ApplicationException("internal error");
+                    throw new ApplicationException("internal error: unknown type in RWP.Run");
                 }
             }
             g.Frozen = true;
@@ -230,12 +265,12 @@ namespace disfr.UI
 
         public string TagListFromInline(InlineString text)
         {
-            if (ShowTag != TagShowing.Name && ShowTag != TagShowing.Disp) return null;
+            if (TagShowing != TagShowing.Name && TagShowing != TagShowing.Disp) return null;
             var sb = new StringBuilder();
             foreach (var tag in text.Tags)
             {
                 if (sb.Length > 0) sb.AppendLine();
-                var label = tag.ToString((InlineString.Render)ShowTag);
+                var label = tag.ToString((InlineString.Render)TagShowing);
                 var code = tag.ToString(InlineString.Render.TagCode);
                 sb.Append(label).Append(" = ").Append(code);
             }

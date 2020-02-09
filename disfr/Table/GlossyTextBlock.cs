@@ -51,7 +51,13 @@ namespace disfr.UI
             public Brush Background;
             public TextDecorationCollection Decorations;
 
-            private static TextDecorationCollection None = new TextDecorationCollection();
+            private static TextDecorationCollection None;
+
+            static GlossEntry()
+            {
+                None = new TextDecorationCollection();
+                None.Freeze();
+            }
 
             public GlossEntry(Brush foreground, Brush background, TextDecorationCollection decorations)
             {
@@ -62,7 +68,7 @@ namespace disfr.UI
 
             public static readonly GlossEntry IGNORE = new GlossEntry(null, null, null);
 
-            public static readonly GlossEntry ERROR = new GlossEntry(Brushes.Green, Brushes.Red, null);
+            public static readonly GlossEntry ERROR = new GlossEntry(Brushes.Yellow, Brushes.Red, null);
         }
 
 
@@ -83,21 +89,29 @@ namespace disfr.UI
             Brush SYM = Brushes.Gray;
 
             Brush COMBG = Brushes.Transparent;
-            Brush INSBG = Brushes.LightBlue;
+            Brush INSBG = Brushes.LightGreen;
             Brush DELBG = Brushes.LightPink;
+            Brush EMPBG = Brushes.Yellow;
+
+            var STRIKE = new TextDecorationCollection() { TextDecorations.Strikethrough };
+            STRIKE.Freeze();
 
             map[(int)(Gloss.NOR | Gloss.COM)] = new GlossEntry(NOR, COMBG, null);
             map[(int)(Gloss.NOR | Gloss.INS)] = new GlossEntry(NOR, INSBG, null);
-            map[(int)(Gloss.NOR | Gloss.DEL)] = new GlossEntry(NOR, DELBG, null);
+            map[(int)(Gloss.NOR | Gloss.DEL)] = new GlossEntry(NOR, DELBG, STRIKE);
+            map[(int)(Gloss.NOR | Gloss.EMP)] = new GlossEntry(NOR, EMPBG, null);
             map[(int)(Gloss.TAG | Gloss.COM)] = new GlossEntry(TAG, COMBG, null);
             map[(int)(Gloss.TAG | Gloss.INS)] = new GlossEntry(TAG, INSBG, null);
-            map[(int)(Gloss.TAG | Gloss.DEL)] = new GlossEntry(TAG, DELBG, null);
+            map[(int)(Gloss.TAG | Gloss.DEL)] = new GlossEntry(TAG, DELBG, STRIKE);
+            map[(int)(Gloss.TAG | Gloss.EMP)] = new GlossEntry(TAG, EMPBG, null);
             map[(int)(Gloss.SYM | Gloss.COM)] = GlossEntry.IGNORE;
             map[(int)(Gloss.SYM | Gloss.INS)] = GlossEntry.IGNORE;
             map[(int)(Gloss.SYM | Gloss.DEL)] = GlossEntry.IGNORE;
+            map[(int)(Gloss.SYM | Gloss.EMP)] = GlossEntry.IGNORE;
             map[(int)(Gloss.ALT | Gloss.COM)] = new GlossEntry(SYM, COMBG, null);
             map[(int)(Gloss.ALT | Gloss.INS)] = new GlossEntry(SYM, INSBG, null);
-            map[(int)(Gloss.ALT | Gloss.DEL)] = new GlossEntry(SYM, DELBG, null);
+            map[(int)(Gloss.ALT | Gloss.DEL)] = new GlossEntry(SYM, DELBG, STRIKE);
+            map[(int)(Gloss.ALT | Gloss.EMP)] = new GlossEntry(SYM, EMPBG, null);
 
             GlossMap = map;
         }

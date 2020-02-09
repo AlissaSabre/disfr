@@ -595,7 +595,7 @@ namespace disfr.Doc
     /// <remarks>
     /// The codes using <see cref="InlineProperty"/> assume that <see cref="None"/> is the default value (i.e., 0).
     /// You should not change it.
-    /// Also, other values relate to values of <see cref="Render"/>.
+    /// Also, other values relate to values of <see cref="InlineString.Render"/>.
     /// Be careful when you are changing them.
     /// </remarks>
     public enum InlineProperty

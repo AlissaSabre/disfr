@@ -83,13 +83,15 @@
                         <MenuItem Header="L_ong Asset Names" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowLongAssetName, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
                         <Separator/>
                         <MenuItem Header="_Inter-segment Contents" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowAll, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
-                        <MenuItem Header="_Tags" IsEnabled="{Binding HasItems, ElementName=tables}">
+                        <MenuItem Header="_Tags" IsEnabled="{Binding SelectedItem.Controller.HasTags, ElementName=tables}">
                             <local:RadioMenuItem Header="As Local Numbers" Value="{x:Static local:TagShowing.Name}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
                             <local:RadioMenuItem Header="As Labels" Value="{x:Static local:TagShowing.Disp}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
                             <local:RadioMenuItem Header="As Codes" Value="{x:Static local:TagShowing.Code}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
                             <local:RadioMenuItem Header="Hide Tags" Value="{x:Static local:TagShowing.None}" Source="{Binding SelectedItem.Controller.TagShowing, ElementName=tables}"/>
                         </MenuItem>
                         <MenuItem Header="_Special Characters" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowSpecials, ElementName=tables}" IsEnabled="{Binding HasItems, ElementName=tables}"/>
+                        <MenuItem Header="C_hanges" IsCheckable="True" IsChecked="{Binding SelectedItem.Controller.ShowChanges, ElementName=tables}" IsEnabled="{Binding SelectedItem.Controller.HasChanges, ElementName=tables}"/>
+                        <Separator/>
                         <MenuItem Header="_Font..." Command="local:Commands.Font"/>
                     </MenuItem>
                     <MenuItem Header="_Help">

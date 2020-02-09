@@ -31,7 +31,7 @@ namespace disfr.UI
         /// <summary>Indicates no glosses are applied.</summary>
         None = 0,
 
-        // Diff/edits.
+        // Diff/edits/emphasis.
         /// <summary>Indicates common/unchantes parts.</summary>
         COM = 0,
         /// <summary>Indicates right-only/inserted parts.</summary>
@@ -49,9 +49,13 @@ namespace disfr.UI
         /// <summary>Indicates special symbols in alternative presentation.</summary>
         ALT = 16,
 
+        // To be used by diagnostic tools.
+        /// <summary>Indicates emphasized texts.</summary>
+        EMP = 32,
+
         // Other
-        /// <summary>Eventually used for hit test.</summary>
-        HIT = 32,
+        /// <summary>Possibly used for hit test in the future.</summary>
+        HIT = 64,
     }
 
     /// <summary>

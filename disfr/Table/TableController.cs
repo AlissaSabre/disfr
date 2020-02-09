@@ -249,14 +249,42 @@ namespace disfr.UI
         }
 
         /// <summary>
+        /// Indicates whether the contents of this table include tags.
+        /// </summary>
+        public bool HasTags
+        {
+            get { return true; } // XXX
+        }
+
+        /// <summary>
         /// Defines how inline tags included in the contents of this table will be presented.
         /// </summary>
         public TagShowing TagShowing
         {
-            get { return Renderer.ShowTag; }
-            set { Renderer.ShowTag = value; _Rows.Reset(); }
+            get { return Renderer.TagShowing; }
+            set { Renderer.TagShowing = value; if (HasTags) _Rows.Reset(); }
         }
 
+        /// <summary>
+        /// Indicates whether the contents of this table include tracked changes.
+        /// </summary>
+        public bool HasChanges
+        {
+            get { return true; } // XXX
+        }
+
+        /// <summary>
+        /// Defines whether the tracked changes are presented.
+        /// </summary>
+        public bool ShowChanges
+        {
+            get { return Renderer.ShowChanges; }
+            set { Renderer.ShowChanges = value; if (HasChanges) _Rows.Reset(); }
+        }
+
+        /// <summary>
+        /// Returns an estimation how an <see cref="InlineString"/> in the contents are presented.
+        /// </summary>
         public object InlineStringRenderMode
         {
             get { return Renderer.InlineStringRenderingMode; }
