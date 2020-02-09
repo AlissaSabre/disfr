@@ -27,10 +27,10 @@ namespace disfr.Writer
             return ContentHandler(pair);
         }
 
-        public static IColumnDesc Create(string header, string path = null, IList<PropInfo> props = null)
+        public static IColumnDesc Create(string path, string header = null, IList<PropInfo> props = null)
         {
-            if (header == null) throw new ArgumentNullException("header");
-            if (path == null) path = header;
+            if (path == null) throw new ArgumentNullException("path");
+            if (header == null) header = path;
 
             switch (path)
             {
