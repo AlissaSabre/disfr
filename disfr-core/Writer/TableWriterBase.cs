@@ -22,7 +22,7 @@ namespace disfr.Writer
 
             // We make ins/del sections glossy only if both sections are shown (i.e., neither is hidden).
             var properties_mask = (render_options & (InlineString.Render.HideIns | InlineString.Render.HideDel)) == 0
-                ? 0
+                ? ~0
                 : ~(int)(InlineProperty.Ins | InlineProperty.Del);
 
             return new XElement(D + "Tree",
