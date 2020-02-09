@@ -77,17 +77,18 @@
     <Compile Include="Writer\TmxWriter.cs" />
     <Compile Include="Writer\WriterManager.cs" />
     <Compile Include="Writer\XmlssWriter.cs" />
-    <Compile Include="Writer\XmlTableWriter.cs" />
+    <Compile Include="Writer\HtmlWriter.cs" />
+    <Compile Include="Writer\XmlDebugTreeWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Writer\table.xslt">
+    <None Include="Writer\html5.xslt">
       <SubType>Designer</SubType>
-    </Resource>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Writer\xmlss.xslt">
+    <None Include="Writer\xmlss.xslt">
       <SubType>Designer</SubType>
-    </Resource>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

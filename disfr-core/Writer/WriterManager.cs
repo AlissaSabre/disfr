@@ -27,8 +27,8 @@ namespace disfr.Writer
 
                     // Add standard writers.
                     manager.Add(new TmxWriter());
+                    manager.Add(new HtmlWriter());
                     manager.Add(new XmlssWriter());
-                    manager.Add(new XmlTableWriter());
 
                     // Add plugin writers.
                     manager.AddRange(PluginManager.Current.Writers.Cast<IPairsWriter>());
