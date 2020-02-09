@@ -172,6 +172,20 @@ namespace disfr.Doc
             return;
         }
 
+        /// <summary>
+        /// Extracts a series of <see cref="XliffTransPair"/>s from a single MQ tu element.
+        /// </summary>
+        /// <param name="tu">MQ trans-unit element.</param>
+        /// <returns>Extracted <see cref="XliffTransPair"/>s.</returns>
+        /// <remarks>
+        /// <para>
+        /// MQ Xliff doesn't use xliff segmentation,
+        /// so a single trans-unit element is always turned into a single TransPair.
+        /// However, there may be some inter-segment texts before and/or after it,
+        /// most of which are stored in skeleton.
+        /// We return them together with the trans-unit content in appropriate order.
+        /// </para>
+        /// </remarks>
         protected override IEnumerable<XliffTransPair> ExtractPairs(XElement tu)
         {
             // Take care of preceding inter-segment contents if we have a skeleton
@@ -198,8 +212,15 @@ namespace disfr.Doc
             var startingws = (string)tu.Element(MQ + "startingws");
             if (!string.IsNullOrEmpty(startingws)) yield return InterSegmentPair(startingws);
 
-            // return the trans-unit.
-            yield return ExtractSinglePair(tu);
+            // return the trans-unit content.
+            {
+                // in MQ Xliff, a locked segment has its trans-unit/@translate set to "no",
+                // and XliffAsset.ExtractSinglePair turns it into an inter segment trans pair.
+                // We take it back to an ordinary trans pair before returning it.
+                var pair = base.ExtractSinglePair(tu);
+                pair.Serial = 1;
+                yield return pair;
+            }
 
             // Take care of hidden white spaces after segment text.
             var endingws = (string)tu.Element(MQ + "endingws");
@@ -223,7 +244,7 @@ namespace disfr.Doc
         }
 
         /// <summary>
-        /// Wraps an inter-segment text in an XliffTransPair.
+        /// Wraps a text in an XliffTransPair as an inter-segment text.
         /// </summary>
         /// <param name="text">Inter-segment text to wrap.</param>
         /// <returns>XliffTransPair instance that wraps the given text.</returns>
