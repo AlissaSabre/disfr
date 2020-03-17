@@ -220,7 +220,7 @@ namespace disfr.sdltm
         protected static InlineString GetInlineString(string text)
         {
             var inline = new InlineBuilder();
-            foreach (var elem in XElement.Parse(text).Elements("Elements").Elements())
+            foreach (var elem in XElement.Parse(text, LoadOptions.PreserveWhitespace).Elements("Elements").Elements())
             {
                 switch (elem.Name.LocalName)
                 {
@@ -291,8 +291,8 @@ namespace disfr.sdltm
                 var st = source.Tags.ToList();
                 var tt = target.Tags.ToList();
 
-                var sx = XElement.Parse(source_xml).Elements(ELEM).Elements(TAG).ToList();
-                var tx = XElement.Parse(target_xml).Elements(ELEM).Elements(TAG).ToList();
+                var sx = XElement.Parse(source_xml, LoadOptions.PreserveWhitespace).Elements(ELEM).Elements(TAG).ToList();
+                var tx = XElement.Parse(target_xml, LoadOptions.PreserveWhitespace).Elements(ELEM).Elements(TAG).ToList();
 
                 for (int i = 0; i < st.Count; i++)
                 {

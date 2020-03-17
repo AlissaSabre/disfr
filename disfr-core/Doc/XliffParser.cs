@@ -42,7 +42,7 @@ namespace disfr.Doc
                 };
                 using (var rd = XmlReader.Create(stream, settings))
                 {
-                    xliff = XElement.Load(rd);
+                    xliff = XElement.Load(rd, LoadOptions.PreserveWhitespace);
                 }
             }
             catch (XmlException)
@@ -64,7 +64,7 @@ namespace disfr.Doc
             {
                 // If we get an exception of other type,
                 // I believe it is an indication of some unexpected error.
-                // However, the API document of XElement.Load(Strream) is too vague,
+                // However, the API document of XElement.Load(Strream, LoadOptions) is too vague,
                 // and I don't know what we should do.
                 return null;
             }

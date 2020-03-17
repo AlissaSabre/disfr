@@ -68,7 +68,7 @@ namespace disfr.Doc
                 XElement skeleton;
                 try
                 {
-                    skeleton = XElement.Load(stream).Element(MQX + "skeleton");
+                    skeleton = XElement.Load(stream, LoadOptions.PreserveWhitespace).Element(MQX + "skeleton");
                     if (skeleton == null) return;
                 }
                 catch (Exception)
@@ -99,7 +99,7 @@ namespace disfr.Doc
                 }
                 using (var stream = conv.Open())
                 {
-                    interseg_count = XElement.Load(stream).Elements("Item").Count() + 1;
+                    interseg_count = XElement.Load(stream, LoadOptions.PreserveWhitespace).Elements("Item").Count() + 1;
                 }
                 conv = null;
 
