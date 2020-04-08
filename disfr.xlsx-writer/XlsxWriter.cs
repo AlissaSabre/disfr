@@ -15,13 +15,20 @@ using disfr.Writer;
 
 namespace disfr.xlsx_writer
 {
-    public class XlsxWriterPlugin : IWriterPlugin
+    public class XlsxWriterPlugin : IWriterPlugin, IPluginStatus
     {
         public string Name { get { return "XlsxWriter"; } }
 
+        private static bool HasExcel = Type.GetTypeFromProgID("Excel.Application") != null;
+
         public IWriter CreateWriter()
         {
-            return new XlsxWriter();
+            return HasExcel ? new XlsxWriter() : null;
+        }
+
+        public string Status
+        {
+            get { return HasExcel ? null : "Excel not found on this computer"; }
         }
     }
 
@@ -29,7 +36,7 @@ namespace disfr.xlsx_writer
     {
         public string Name { get { return "Xlsx Writer"; } }
 
-        private readonly IList<string> _FilterString = new string[]
+        private static readonly IList<string> _FilterString = new string[]
         {
             "Microsoft Excel File|*.xlsx",
         };
