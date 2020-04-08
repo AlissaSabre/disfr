@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("disfr.xlsx-writer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("disfr plugin for xlsx")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("disfr.xlsx-writer")]
+[assembly: AssemblyCompany("Alissa Sabre")]
+[assembly: AssemblyProduct("disfr")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

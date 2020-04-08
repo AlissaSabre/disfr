@@ -75,8 +75,8 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WpfColorFontDialog, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WpfColorFontDialog.1.0.6\lib\WpfColorFontDialog.dll</HintPath>
+    <Reference Include="WpfColorFontDialog, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfColorFontDialog.1.0.7\lib\net40\WpfColorFontDialog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
