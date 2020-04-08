@@ -9,21 +9,34 @@ using System.Threading.Tasks;
 
 namespace disfr.Plugin
 {
+    /// <summary>
+    /// A base interface for classes to read a bilingual file.
+    /// </summary>
     public interface IReader
     {
     }
 
+    /// <summary>
+    /// A base interface for classes to write a bilingual file out.
+    /// </summary>
     public interface IWriter
     {
     }
 
+    /// <summary>
+    /// Loads all available plugins and provides them to the application.
+    /// </summary>
+    /// <remarks>
+    /// This class has no public constructor.
+    /// Use <see cref="Current"/> to get its instance.
+    /// </remarks>
     public class PluginManager
     {
         private static PluginManager _Current = null;
 
         public static PluginManager Current { get { return _Current ?? (_Current = new PluginManager()); } }
 
-        public PluginManager()
+        private PluginManager()
         {
             var reader_plugins = new List<IReader>();
             var writer_plugins = new List<IWriter>();
@@ -49,7 +62,9 @@ namespace disfr.Plugin
                         {
                             writer_plugins.Add(((IWriterPlugin)plugin).CreateWriter());
                         }
-                        plugin_names.Add(string.Format("{0} {1}", ((IPlugin)plugin).Name, version.FileVersion));
+                        var status = (plugin as IPluginStatus)?.Status;
+                        var format = (status == null) ? "{0} {1}" : "{0} {1} - {2}";
+                        plugin_names.Add(string.Format(format, ((IPlugin)plugin).Name, version.FileVersion, status));
                     }
                 }
                 catch (Exception e)
