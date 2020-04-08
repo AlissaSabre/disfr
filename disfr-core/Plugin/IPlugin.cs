@@ -11,14 +11,21 @@ namespace disfr.Plugin
     /// </summary>
     /// <remarks>
     /// <para>
+    /// This is an interface that all disfr plugins provide an implementation of.
+    /// With this interface,
+    /// <see cref="PluginManager"/> creates an instance of a plugin class
+    /// and an instance of actual <see cref="disfr.Doc.IAssetReader"/>,
+    /// for example, too.
+    /// </para>
+    /// <para>
     /// A plugin is often a <i>bridge</i> to an external program
-    /// and requires that program to be installed on the PC.
+    /// and requires that program to be available on the PC.
     /// There may be other circumstances that a plugin can't work property.
     /// We have two ways to handle such conditions.
     /// </para>
     /// <para>
     /// Under the older plugin API (up to disfr 0.4.0),
-    /// the case was handled through <see cref="Exception"/>,
+    /// the case was handled through throwing an <see cref="Exception"/>,
     /// either upon the instanciation of an <see cref="IPlugin"/>
     /// or upon the actual use of the plugin
     /// (e.g., through <see cref="disfr.Doc.IAssetReader.Read(string, int)"/>.)
@@ -26,7 +33,9 @@ namespace disfr.Plugin
     /// <para>
     /// The newer plugin API provides <see cref="IPluginStatus"/> interface
     /// that all plugins may (and should) implement.
-    /// A plugin 
+    /// A plugin that implements <see cref="IPluginStatus"/> may return null
+    /// from <see cref="IReaderPlugin.CreateReader"/> or <see cref="IWriterPlugin.CreateWriter"/>,
+    /// indicating the cause of the failure through <see cref="IPluginStatus.Status"/>.
     /// </para>
     /// </remarks>
     public interface IPlugin

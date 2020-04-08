@@ -53,16 +53,21 @@ namespace disfr.Plugin
                     var assembly = Assembly.LoadFile(dll);
                     foreach (var type in assembly.ExportedTypes.Where(t => typeof(IPlugin).IsAssignableFrom(t)))
                     {
+                        bool success = false;
                         var plugin = assembly.CreateInstance(type.ToString());
-                        if (plugin is IReaderPlugin)
+                        var reader = (plugin as IReaderPlugin)?.CreateReader();
+                        if (reader != null)
                         {
-                            reader_plugins.Add(((IReaderPlugin)plugin).CreateReader());
+                            reader_plugins.Add(reader);
+                            success = true;
                         }
-                        if (plugin is IWriterPlugin)
+                        var writer = (plugin as IWriterPlugin)?.CreateWriter();
+                        if (writer != null)
                         {
-                            writer_plugins.Add(((IWriterPlugin)plugin).CreateWriter());
+                            writer_plugins.Add(writer);
+                            success = true;
                         }
-                        var status = (plugin as IPluginStatus)?.Status;
+                        var status = (plugin as IPluginStatus)?.Status ?? (success ? null : "Defunct");
                         var format = (status == null) ? "{0} {1}" : "{0} {1} - {2}";
                         plugin_names.Add(string.Format(format, ((IPlugin)plugin).Name, version.FileVersion, status));
                     }
