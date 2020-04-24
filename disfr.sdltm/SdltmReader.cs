@@ -28,9 +28,9 @@ namespace disfr.sdltm
     /// </summary>
     public class SdltmReader : IAssetReader
     {
-        private static readonly string[] _FIlterString = { "Studio Translation Memory|*.sdltm" };
+        private static readonly string[] _FilterString = { "Studio Translation Memory|*.sdltm" };
 
-        public IList<string> FilterString { get { return _FIlterString; } }
+        public IList<string> FilterString { get { return _FilterString; } }
 
         public string Name { get { return "SdltmReader"; } }
 
