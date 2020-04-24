@@ -36,7 +36,7 @@ namespace disfr.ExcelGlossary
             var excel = new Excel() { Visible = false, Interactive = false, DisplayAlerts = false };
             try
             {
-                var book = excel.Workbooks.Open(filename);
+                var book = excel.Workbooks.Open(filename, XlUpdateLinks.xlUpdateLinksNever, true);
                 var sheets = book.Worksheets;
                 for (int i = 1; i <= sheets.Count; i++)
                 {
