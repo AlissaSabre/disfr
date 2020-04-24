@@ -78,8 +78,8 @@ namespace disfr.ExcelGlossary
                 var content = cells[1, 1 + i]?.ToString();
                 if (string.IsNullOrWhiteSpace(content))
                 {
-                    var address = sheet.Cells[1, i + 1].Address(false, true, XlReferenceStyle.xlA1);
-                    var column_name = address.Substring(address.IndexOf('$'));
+                    var address = sheet.Cells[1, i + 1].Address(true, true, XlReferenceStyle.xlA1);
+                    var column_name = address.Substring(0, address.LastIndexOf('$'));
                     header[i] = column_name;
                 }
                 else
