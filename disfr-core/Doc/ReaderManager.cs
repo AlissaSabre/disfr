@@ -80,7 +80,7 @@ namespace disfr.Doc
             else
             {
                 return ANY_FILES + "|" +
-                    string.Join(";", Readers.SelectMany(r => r.FilterString).SelectMany(s => s.Substring(s.IndexOf("|") + 1).Split(';', ',')).Distinct()) +
+                    string.Join(";", Readers.Where(r => r.Priority > 0).SelectMany(r => r.FilterString).SelectMany(s => s.Substring(s.IndexOf("|") + 1).Split(';', ',')).Distinct()) +
                     "|" +
                     string.Join("|", Readers.SelectMany(r => r.FilterString)) +
                     "|" + 
