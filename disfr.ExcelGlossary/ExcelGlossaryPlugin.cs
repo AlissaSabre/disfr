@@ -16,7 +16,7 @@ namespace disfr.ExcelGlossary
     /// </remarks>
     public class ExcelGlossaryPlugin : IReaderPlugin, IWriterPlugin, IPluginStatus
     {
-        public string Name { get { return "ExcelGlossaryReader"; } }
+        public string Name { get { return "ExcelGlossary"; } }
 
         private static bool HasExcel = Type.GetTypeFromProgID("Excel.Application") != null;
 

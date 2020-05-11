@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,13 +10,12 @@ using NetOffice.ExcelApi.Enums;
 using Excel = NetOffice.ExcelApi.Application;
 
 using disfr.Doc;
-using System.Globalization;
 
 namespace disfr.ExcelGlossary
 {
     class ExcelGlossaryReader : IAssetReader
     {
-        private static readonly string[] _FilterString = { "Glossary on Excel files|*.xlsx;*.xls" };
+        private static readonly string[] _FilterString = { "Excel glossary files|*.xlsx;*.xls" };
 
         public IList<string> FilterString { get { return _FilterString; } }
 
