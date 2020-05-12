@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using NetOffice.ExcelApi;
 using NetOffice.ExcelApi.Enums;
 using Excel = NetOffice.ExcelApi.Application;
-
 
 namespace disfr.ExcelGlossary
 {
@@ -23,8 +23,14 @@ namespace disfr.ExcelGlossary
 
         private readonly object[,] CachedCellValues;
 
+        /// <summary>
+        /// The number of effective rows on the worksheet.
+        /// </summary>
         public readonly int Rows;
 
+        /// <summary>
+        /// The number of effective columns on the worksheet.
+        /// </summary>
         public readonly int Columns;
 
         /// <summary>
@@ -58,6 +64,9 @@ namespace disfr.ExcelGlossary
             if (bottom_right != "$A$1")
             {
                 // The normal case.
+                // I expect that most cells on a glossary worksheet contain text data,
+                // and their Value2 property usually return a string object.
+                // We will utilize them at maximum to reduce the COM overhead.
                 CachedCellValues = Cells.Range("$A$1", bottom_right).Value2 as object[,];
             }
             else if (string.IsNullOrWhiteSpace(Cells.Range("$A$1").Text as string))
@@ -119,9 +128,11 @@ namespace disfr.ExcelGlossary
 
                 string text;
                 
+                // If the corresponding data is cached, use it.
                 text = CachedCellValues[row, column] as string;
                 if (text != null) return text;
 
+                // Otherwise, get the formatted text value of the cell and cache it.
                 using (var cell = Cells[row, column])
                 {
                     text = cell?.Text as string ?? string.Empty;
