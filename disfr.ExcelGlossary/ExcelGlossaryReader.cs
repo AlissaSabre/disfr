@@ -153,11 +153,11 @@ namespace disfr.ExcelGlossary
             for (int column = 1; column <= cells.Columns; column++)
             {
                 var label = headers[column];
-                if (source_label.Equals(label, StringComparison.InvariantCultureIgnoreCase))
+                if (source_label?.Equals(label, StringComparison.InvariantCultureIgnoreCase) == true)
                 {
                     source_columns.Add(column);
                 }
-                else if (target_label.Equals(label, StringComparison.InvariantCultureIgnoreCase))
+                else if (target_label?.Equals(label, StringComparison.InvariantCultureIgnoreCase) == true)
                 {
                     target_columns.Add(column);
                 }

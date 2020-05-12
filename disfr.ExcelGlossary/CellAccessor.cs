@@ -200,9 +200,10 @@ namespace disfr.ExcelGlossary
         /// <returns>A string like "A", "B", ..., "Z", "AA", "AB", ...</returns>
         public string GetColumnName(int column)
         {
-            using (var cells_in_column = Cells.Columns[column])
+            using (var cell = Cells[1, column])
             {
-                return cells_in_column.Address(false);
+                var address = cell.Address(false, false, XlReferenceStyle.xlA1);
+                return address.Substring(0, address.Length - 1);
             }
         }
     }
