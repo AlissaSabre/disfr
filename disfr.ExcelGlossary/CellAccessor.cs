@@ -15,12 +15,27 @@ namespace disfr.ExcelGlossary
     /// </summary>
     public class CellAccessor
     {
+        /// <summary>
+        /// The Application that the worksheet is in.
+        /// </summary>
+        /// <remarks>
+        /// We need this object to use <see cref="Excel.Intersect"/> method.
+        /// </remarks>
         private readonly Excel ExcelApp;
 
+        /// <summary>
+        /// The range object containing all effective cells.
+        /// </summary>
         private readonly Range Cells;
 
+        /// <summary>
+        /// The range object containing all visible cells.
+        /// </summary>
         private readonly Range VisibleCells;
 
+        /// <summary>
+        /// Two dimensional array to cache all formatted texts of cells.
+        /// </summary>
         private readonly object[,] CachedCellValues;
 
         /// <summary>
