@@ -21,9 +21,17 @@ namespace disfr.ExcelGlossary
 
         public string Name { get { return "ExcelGlossaryReader"; } }
 
-        public int Priority { get { return 7; } }
+        /// <summary>
+        /// The priority of <see cref="ExcelGlossaryReader"/> in auto-detection.
+        /// </summary>
+        /// <remarks>
+        /// Because Excel can read almost anything,
+        /// its priority is set to the minimum positive value, i.e., 1,
+        /// so that it doesn't consume a file intended for another plugin.
+        /// </remarks>
+        public int Priority { get { return 1; } }
 
-        public IAssetBundle Read(string filename, int filterindex_NOTUSED)
+        public IAssetBundle Read(string filename, int filterindex)
         {
             return LoaderAssetBundle.Create(
                 ReaderManager.FriendlyFilename(filename),
