@@ -48,7 +48,7 @@ namespace disfr.sdltm
             // An sdltm file is an SQLite database.
             // Quickly check the signature will accelerate auto-detection processes.
             // (I know the following code looks silly.)
-            using (var s = File.OpenRead(filename))
+            using (var s = FileUtils.OpenRead(filename))
             {
                 if (s.ReadByte() != 'S' || 
                     s.ReadByte() != 'Q' ||

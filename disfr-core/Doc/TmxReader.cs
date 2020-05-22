@@ -29,7 +29,7 @@ namespace disfr.Doc
 
         private IEnumerable<IAsset> ReadAssets(string filename, int filterindex)
         {
-            using (var stream = File.OpenRead(filename))
+            using (var stream = FileUtils.OpenRead(filename))
             {
                 return ReadAssets(stream, filename);
             }

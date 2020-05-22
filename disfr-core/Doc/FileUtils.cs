@@ -112,5 +112,35 @@ namespace disfr.Doc
                 }
             }
         }
+
+        /// <summary>
+        /// Opens an existing file for reading with a tweak.
+        /// </summary>
+        /// <param name="filename">The file to be opened for reading.</param>
+        /// <returns>A read-only FileStream object.</returns>
+        /// <exception cref="IOException">The method is unable to open <paramref name="filename"/>.</exception>
+        /// <remarks>
+        /// This method provides a similar functionality to <see cref="File.OpenRead(string)"/>,
+        /// but it has a tweak to live with Microsoft Office (and other similar) products.
+        /// This method first try to open the file in a same way as <see cref="File.OpenRead(string)"/>,
+        /// but if it failed, it then automatically tries to use another sharing mode
+        /// that is compatible with Microsoft Office to reduce the chance to get a sharing violation error.
+        /// It is useful in disfr and its plugins, because,
+        /// when a user opens an Excel file with difr using auto-detection,
+        /// various <see cref="IAssetReader"/>s try to open the file before <see cref="ReaderManager"/> gets to the
+        /// correct plugin.
+        /// Throwing an IOException causes a bad experience if the user is viewing the file with Excel.
+        /// </remarks>
+        public static FileStream OpenRead(string filename)
+        {
+            try
+            {
+                return new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+            }
+            catch (IOException e)
+            {
+                return new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            }
+        }
     }
 }

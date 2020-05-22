@@ -48,7 +48,7 @@ namespace disfr.Doc
 
         private IEnumerable<IAsset> ReadAssets(string filename, Flavour flavour)
         {
-            using (var file = File.OpenRead(filename))
+            using (var file = FileUtils.OpenRead(filename))
             {
                 if (file.IsZip())
                 {
