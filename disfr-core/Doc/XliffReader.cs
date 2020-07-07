@@ -18,6 +18,7 @@ namespace disfr.Doc
             Trados = 1,
             Idiom = 2,
             MemoQ = 3,
+            Wordfast = 4,
         }
 
         private static readonly string[] _FilterString =
@@ -26,6 +27,7 @@ namespace disfr.Doc
             "Trados Studio|*.sdlxliff;*.sdlppx;*.sdlrpx;*.wsxz",
             "Idiom WorldServer|*.xlz;*.wsxz",
             "memoQ|*.mqxlz;*.mqxliff",
+            "Wordfast|*.txlf",
         };
 
         public IList<string> FilterString { get { return _FilterString; } }

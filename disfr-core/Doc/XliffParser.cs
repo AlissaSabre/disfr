@@ -97,6 +97,7 @@ namespace disfr.Doc
                 if (ns == TradosXliffAsset.SDL) return XliffReader.Flavour.Trados;
                 if (ns == IdiomXliffAsset.IWS) return XliffReader.Flavour.Idiom;
                 if (ns == MemoQXliffAsset.MQ) return XliffReader.Flavour.MemoQ;
+                if (ns == WordfastXliffAsset.GS) return XliffReader.Flavour.Wordfast;
                 return XliffReader.Flavour.Generic;
             }).FirstOrDefault(f => f != XliffReader.Flavour.Generic);
         }
@@ -117,6 +118,9 @@ namespace disfr.Doc
                     break;
                 case XliffReader.Flavour.MemoQ:
                     asset = new MemoQXliffAsset(file, ZipEntry);
+                    break;
+                case XliffReader.Flavour.Wordfast:
+                    asset = new WordfastXliffAsset(file);
                     break;
                 default:
                     throw new ApplicationException("internal error");

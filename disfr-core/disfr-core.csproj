@@ -62,6 +62,7 @@
     <Compile Include="Doc\StringPool.cs" />
     <Compile Include="Doc\TmxReader.cs" />
     <Compile Include="Doc\TradosXliffAsset.cs" />
+    <Compile Include="Doc\WordfastXliffAsset.cs" />
     <Compile Include="Doc\XliffAsset.cs" />
     <Compile Include="Doc\XliffParser.cs" />
     <Compile Include="Doc\XliffReader.cs" />
