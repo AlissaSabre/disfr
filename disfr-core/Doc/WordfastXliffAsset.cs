@@ -20,9 +20,8 @@ namespace disfr.Doc
         protected override InlineTag BuildNativeCodeTag(Tag type, XElement element, bool has_code)
         {
             // It looks like that a Wordfast XLIFF consistently uses ctype attributes on inline tags,
-            // which is suitable for InlineTag.Display, but only on start tags.
-            // If we see an end tag, try to find the paired start tag to know its ctype.
-            // XLIFF spec says 
+            // which is suitable for InlineTag.Display, but they are only on start tags.
+            // When seeing an end tag, try to find the paired start tag to know its ctype.
             var display = (string)element.Attribute("ctype");
             if (display == null && type == Tag.E)
             {
@@ -34,14 +33,16 @@ namespace disfr.Doc
             }
 
             // It looks like that a Wordfast XLIFF often has equiv-text attributes on inline tags.
+            // It is useful for an alternative text if one is missing.
+            var equiv = (string)element.Attribute("equiv-text");
             return new InlineTag(
                 type: type,
                 id: (string)element.Attribute("id"),
                 rid: (string)element.Attribute("rid") ?? (string)element.Attribute("id"),
                 name:  element.Name.LocalName,
                 ctype: (string)element.Attribute("ctype"),
-                display: display,
-                code: has_code ? element.Value : (string)element.Attribute("equiv-text"));
+                display: display ?? equiv,
+                code: has_code ? element.Value : equiv);
         }
     }
 }
