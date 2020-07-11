@@ -181,8 +181,8 @@ namespace disfr.Doc
             pair.AddNotes(GetNotes(tu));
             AddTuAttrProps(pair, tu);
             AddContextProps(pair, tu);
-            AddSourceAttrProps(pair, source);
-            AddTargetAttrProps(pair, target);
+            if (source != null) AddSourceAttrProps(pair, source);
+            if (target != null) AddTargetAttrProps(pair, target);
             return pair;
         }
 
@@ -204,7 +204,6 @@ namespace disfr.Doc
 
         protected virtual void AddSourceAttrProps(XliffTransPair pair, XElement source)
         {
-            if (source == null) return;
             foreach (var attr in source.Attributes()
                 .Where(a => a.Name.Namespace != XNamespace.Xml && a.Name.Namespace != XNamespace.Xmlns))
             {
@@ -214,7 +213,6 @@ namespace disfr.Doc
 
         protected virtual void AddTargetAttrProps(XliffTransPair pair, XElement target)
         {
-            if (target == null) return;
             foreach (var attr in target.Attributes()
                 .Where(a => a.Name.Namespace != XNamespace.Xml && a.Name.Namespace != XNamespace.Xmlns))
             {
