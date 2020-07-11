@@ -44,5 +44,27 @@ namespace disfr.Doc
                 display: display ?? equiv,
                 code: has_code ? element.Value : equiv);
         }
+
+        protected override void AddTargetAttrProps(XliffTransPair pair, XElement target)
+        {
+            // Wordfast XLIFF puts multiple segment metadata in a single attribute target/@gs4tr:seginfo
+            // in a _unique_ format.
+            var seginfo = target.Attribute(GS + "seginfo");
+            if (seginfo != null)
+            {
+                try
+                {
+                    foreach (var attr in XElement.Parse((string)seginfo).Attributes())
+                    {
+                        AddProp(pair, attr.Name.LocalName, attr.Value);
+                    }
+                    seginfo.Remove();
+                }
+                catch (Exception)
+                {
+                }
+            }
+            base.AddTargetAttrProps(pair, target);
+        }
     }
 }
