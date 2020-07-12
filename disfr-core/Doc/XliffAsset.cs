@@ -36,7 +36,7 @@ namespace disfr.Doc
 
         protected StringPool Pool = new StringPool();
 
-        protected readonly XNamespace X;
+        protected XNamespace X;
 
         protected bool SegmentationAllowed = true;
 
