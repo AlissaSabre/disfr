@@ -28,7 +28,6 @@ namespace disfr.Doc
         protected void ParseSkeleton(XElement file)
         {
             // See if this file has a skeleton.
-            var X = file.Name.Namespace;
             var skeleton = file.Element(X + "header")?.Element(X + "skl")?.Element(X + "internal-file")?.Value;
             if (skeleton == null) return;
 
@@ -45,6 +44,10 @@ namespace disfr.Doc
                 if (q < 0) continue;
                 if (q > p)
                 {
+                    // An inter-segment content is placed after all segments in the group.
+                    // (Primarily because Wordfast places subflow segments before segments
+                    // they belong to.)
+                    // We use the id of the last trans-unit in the group as a key.
                     var tuid = (string)group.Descendants(X + "trans-unit").LastOrDefault()?.Attribute("id");
                     if (tuid == null) continue;
                     intersegments[last_tuid] = skeleton.Substring(p, q - p);
@@ -92,7 +95,9 @@ namespace disfr.Doc
             // Add the _white_spaces_ *before* the segment content.
             foreach (var ws in tu.Elements(GS + "ws").Where(ws => (string)ws.Attribute("pos") == "before"))
             {
-                pairs.Add(InterSegmentPair(GetInline(ws)));
+                X = GS;
+                pairs.Add(InterSegmentPair(GetWSContent(ws)));
+                X = tu.Name.Namespace;
             }
 
             // Add the segment content.
@@ -103,7 +108,9 @@ namespace disfr.Doc
             // Add the _white_spaces_ *after* the segment content.
             foreach (var ws in tu.Elements(GS + "ws").Where(ws => (string)ws.Attribute("pos") == "after"))
             {
-                pairs.Add(InterSegmentPair(GetInline(ws)));
+                X = GS;
+                pairs.Add(InterSegmentPair(GetWSContent(ws)));
+                X = tu.Name.Namespace;
             }
 
             // Add the inter-segment content from the skeleton if any.
@@ -117,8 +124,26 @@ namespace disfr.Doc
             return pairs;
         }
 
+        protected InlineString GetWSContent(XElement ws)
+        {
+            // I suspect that having default namespace declarataion on gs4tr:ws element is a bug of Wordfast.
+            // The switching of X here is a hack to overcome it.
+            var x = X;
+            X = GS;
+            var inline = GetInline(ws);
+            X = x;
+            return inline;
+        }
+
         protected XliffTransPair InterSegmentPair(InlineString inline)
         {
+            // Give local numbers to tags in the inter-segment content.
+            int i = 0;
+            foreach (var tag in inline.Tags)
+            {
+                tag.Number = ++i;
+            }
+
             return new XliffTransPair()
             {
                 Serial = -1,
@@ -145,6 +170,44 @@ namespace disfr.Doc
                     .FirstOrDefault(s => s != null);
             }
 
+            // Wordfast XLIFF sometimes uses XLIFF sub elements in a native-code content
+            // of an it and bpt (and possibly of ept) element.
+            // disfr actually can't handle sub elements embedded in it/bpt/ept elements,
+            // so we need a trick here.
+            string code;
+            if (!has_code)
+            {
+                code = null;
+            }
+            else if (!element.HasElements)
+            {
+                code = element.Value;
+            }
+            else
+            {
+                var sb = new StringBuilder();
+                foreach (var n in element.Nodes())
+                {
+                    if (n is XText)
+                    {
+                        sb.Append((n as XText).Value);
+                    }
+                    else if (n is XElement)
+                    {
+                        // We can't express details of sub tag.
+                        // Embed a more or less distinct string as an alternative.
+                        // The choice of the current string is arbitrary.
+                        sb.Append("{*}");
+                    }
+                    else
+                    {
+                        // Ignore anything else including PIs that Wordfast often (always?)
+                        // puts before a sub element.
+                    }
+                }
+                code = sb.ToString();
+            }
+
             // It looks like that a Wordfast XLIFF often has equiv-text attributes on inline tags.
             // It is useful for an alternative text if one is missing.
             var equiv = (string)element.Attribute("equiv-text");
@@ -155,13 +218,14 @@ namespace disfr.Doc
                 name:  element.Name.LocalName,
                 ctype: (string)element.Attribute("ctype"),
                 display: display ?? equiv,
-                code: has_code ? element.Value : equiv);
+                code: code ?? equiv);
         }
 
         protected override void AddTargetAttrProps(XliffTransPair pair, XElement target)
         {
             // Wordfast XLIFF puts multiple segment metadata in a single attribute target/@gs4tr:seginfo
             // in a _unique_ format.
+            // We parse it into a set of multiple properties.
             var seginfo = target.Attribute(GS + "seginfo");
             if (seginfo != null)
             {
