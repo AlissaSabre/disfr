@@ -3,6 +3,12 @@
 
   <?define Version = "!(bind.FileVersion.disfr.exe)"?>
 
+  <!-- Being honest I (Alissa) don't fully understand the differences
+       between various update/upgrade types that Windows Installer distinguishes.
+       Going on a safe side, all disfr updates are marked as major upgrades.
+       So, everytime a new release would come, the product GUID should change.
+       Setting Product/@Id to '*' is very suitable for the purpose.  -->
+
   <Product Id='*'
       Name='disfr $(var.Version)'
       UpgradeCode='{EDCE634C-06E4-4F94-BE3C-56771B0C00F9}'
@@ -33,6 +39,8 @@
     <Media Id='1' Cabinet='disfr.cab' EmbedCab='yes' DiskPrompt='Disk 1' />
     <Property Id='DiskPrompt' Value="disfr $(var.Version) (1/1)" />
 
+    <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
+
     <Directory Id='TARGETDIR' Name='SourceDir'>
 
       <Directory Id='ProgramFilesFolder'>
@@ -58,6 +66,7 @@
 
         <Component Id='disfr.exe' Directory='INSTALLDIR' Guid='{76840A5F-2A32-48D6-A7FF-4D1BD297C4DA}'>
           <File Name='disfr.exe' Source='disfr.exe' KeyPath='yes'>
+            <!-- The following two shortcuts are actually of non-advertise by DISABLEADVTSHORTCUTS. -->
             <Shortcut Id="DesktopFolder.disfr.exe" Directory="DesktopFolder" Advertise='yes'
                       Name="disfr" WorkingDirectory='INSTALLDIR'
                       Icon='disfr.icon.exe'/>
@@ -90,6 +99,7 @@
 
         <Component Id='Readme.htm' Directory='INSTALLDIR' Guid='{A156536D-81B0-42B1-98E3-4525D724D533}'>
           <File Source='Readme.htm' KeyPath='yes'>
+            <!-- The following shortcut is actually of non-advertise by DISABLEADVTSHORTCUTS. -->
             <Shortcut Id='AppMenuDir.Readme.htm' Name='Readme.htm' Directory='AppMenuDir' Advertise='yes' />
           </File>
           <RemoveFolder Id='Readme.htm' Directory='AppMenuDir' On='uninstall' />
