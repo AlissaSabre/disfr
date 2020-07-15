@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0" 
-      DefaultTargets="Build"
-      InitialTargets="EnsureWixToolsetInstalled">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled">
   <PropertyGroup>
     <!-- This WiX project (.wixproj) pretends a C# project (.csproj) in .sln file,
          because I'm using Visual Studio Express Edition, and it doesn't allow
@@ -34,16 +32,22 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="disfr.wxs" />
+    <Compile Include="disfr.wxs">
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme.htm" />
+    <None Include="Readme.md" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
-	<Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
-		<Error Text="The WiX Toolset v3.11 build tools must be installed to build this project." />
-	</Target>
+  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
+    <Error Text="The WiX Toolset v3.11 build tools must be installed to build this project." />
+  </Target>
   <Target Name="VersionOutputFile" AfterTargets="Link">
     <GetAssemblyIdentity AssemblyFiles="..\disfr\bin\$(Configuration)\disfr.exe">
-      <Output TaskParameter="Assemblies" ItemName="DisfrIdentity"/>
+      <Output TaskParameter="Assemblies" ItemName="DisfrIdentity" />
     </GetAssemblyIdentity>
-    <Copy SourceFiles="$(OutputPath)$(TargetFilename)" DestinationFiles="$(OutputPath)disfr-%(DisfrIdentity.Version)-setup.msi" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="$(OutputPath)$(TargetFilename)" DestinationFiles="$(OutputPath)disfr-%(DisfrIdentity.Version)-setup.msi" SkipUnchangedFiles="true" />
   </Target>
 </Project>
