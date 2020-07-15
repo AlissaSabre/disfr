@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>3.0</ProductVersion>
+    <ProjectGuid>{29705759-0F3A-4E3C-8D13-7730FBAA79EE}</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>disfr-X.X.X-setup</OutputName>
+    <OutputType>Package</OutputType>
+    <BindInputPaths>@(ProjectReference-&gt;DirectoryName());..\$(Configuration)</BindInputPaths>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets')">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(ProgramFiles)\MSBuild\Microsoft\WiX\v3.x\Wix.targets')">$(ProgramFiles)\MSBuild\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="disfr.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\disfr-core\disfr-core.csproj">
+      <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
+      <Name>disfr-core</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\disfr.ExcelGlossary\disfr.ExcelGlossary.csproj">
+      <Project>{6845e146-ec88-4bae-bfd8-3922c37e861e}</Project>
+      <Name>disfr.ExcelGlossary</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\disfr.sdltm\disfr.sdltm.csproj">
+      <Project>{38ba914a-deea-4590-8168-ac31c9480797}</Project>
+      <Name>disfr.sdltm</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\disfr.xlsx-writer\disfr.xlsx-writer.csproj">
+      <Project>{86bd6774-a1e6-4d90-a390-bd2ffd6a2814}</Project>
+      <Name>disfr.xlsx-writer</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\disfr\disfr.csproj">
+      <Project>{1a3654b0-0f44-4ced-a7a2-e7835ffdea49}</Project>
+      <Name>disfr</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+</Project>

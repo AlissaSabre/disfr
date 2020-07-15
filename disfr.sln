@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr.xlsx-writer", "disfr.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr.ExcelGlossary", "disfr.ExcelGlossary\disfr.ExcelGlossary.csproj", "{6845E146-EC88-4BAE-BFD8-3922C37E861E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.wixproj", "{29705759-0F3A-4E3C-8D13-7730FBAA79EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -176,6 +178,17 @@ Global
 		{6845E146-EC88-4BAE-BFD8-3922C37E861E}.Release|x64.Build.0 = Release|Any CPU
 		{6845E146-EC88-4BAE-BFD8-3922C37E861E}.Release|x86.ActiveCfg = Release|Any CPU
 		{6845E146-EC88-4BAE-BFD8-3922C37E861E}.Release|x86.Build.0 = Release|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Debug|x64.Build.0 = Debug|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Debug|x86.Build.0 = Debug|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Release|x64.ActiveCfg = Release|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Release|x64.Build.0 = Release|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Release|x86.ActiveCfg = Release|Any CPU
+		{29705759-0F3A-4E3C-8D13-7730FBAA79EE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

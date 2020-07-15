@@ -65,8 +65,8 @@
       <Feature Id="disfr.UI" Level="1">
 
         <Component Id='disfr.exe' Directory='INSTALLDIR' Guid='{76840A5F-2A32-48D6-A7FF-4D1BD297C4DA}'>
-          <File Name='disfr.exe' Source='disfr.exe' KeyPath='yes'>
-            <!-- The following two shortcuts are actually of non-advertise by DISABLEADVTSHORTCUTS. -->
+          <File Name='disfr.exe' Source='$(var.disfr.TargetDir)disfr.exe' KeyPath='yes'>
+            <!-- The following two shortcuts are actually non-advertised by DISABLEADVTSHORTCUTS=1. -->
             <Shortcut Id="DesktopFolder.disfr.exe" Directory="DesktopFolder" Advertise='yes'
                       Name="disfr" WorkingDirectory='INSTALLDIR'
                       Icon='disfr.icon.exe'/>
@@ -78,28 +78,28 @@
         </Component>
 
         <Component Id='disfr.exe.config' Directory='INSTALLDIR' Guid='{5C84C31D-BF8C-4433-B4ED-291D57A6C1BF}'>
-          <File Source='disfr.exe.config' KeyPath='yes' />
+          <File Source='$(var.disfr.TargetDir)disfr.exe.config' KeyPath='yes' />
         </Component>
 
         <Component Id='Dragablz.dll' Directory='INSTALLDIR' Guid='{165EDB7C-BAF8-4DE5-8B8B-E915CA6C5B5A}'>
-          <File Source='Dragablz.dll' KeyPath='yes' />
+          <File Source='$(var.disfr.TargetDir)Dragablz.dll' KeyPath='yes' />
         </Component>
 
         <Component Id="Microsoft.WindowsAPICodePack.dll" Directory="INSTALLDIR" Guid="{4F144BEE-5AF3-47D1-945A-7BE66710254D}">
-          <File Source="Microsoft.WindowsAPICodePack.dll" KeyPath="yes" />
+          <File Source="$(var.disfr.TargetDir)Microsoft.WindowsAPICodePack.dll" KeyPath="yes" />
         </Component>
 
         <Component Id="Microsoft.WindowsAPICodePack.Shell.dll" Directory="INSTALLDIR" Guid="{94A94E1D-5E8C-4C99-930E-CB208F54E664}">
-          <File Source="Microsoft.WindowsAPICodePack.Shell.dll" KeyPath="yes" />
+          <File Source="$(var.disfr.TargetDir)Microsoft.WindowsAPICodePack.Shell.dll" KeyPath="yes" />
         </Component>
 
         <Component Id='WpfColorFontDialog.dll' Directory='INSTALLDIR' Guid='{BAE1B4DF-4764-44FC-8237-405FBDA62D21}'>
-          <File Source='WpfColorFontDialog.dll' KeyPath='yes' />
+          <File Source='$(var.disfr.TargetDir)WpfColorFontDialog.dll' KeyPath='yes' />
         </Component>
 
         <Component Id='Readme.htm' Directory='INSTALLDIR' Guid='{A156536D-81B0-42B1-98E3-4525D724D533}'>
           <File Source='Readme.htm' KeyPath='yes'>
-            <!-- The following shortcut is actually of non-advertise by DISABLEADVTSHORTCUTS. -->
+            <!-- The following shortcut is actually non-advertised with DISABLEADVTSHORTCUTS=1. -->
             <Shortcut Id='AppMenuDir.Readme.htm' Name='Readme.htm' Directory='AppMenuDir' Advertise='yes' />
           </File>
           <RemoveFolder Id='Readme.htm' Directory='AppMenuDir' On='uninstall' />
@@ -110,15 +110,15 @@
       <Feature Id="disfr_core" Level="1">
 
         <Component Id="disfr_core.dll" Directory='INSTALLDIR' Guid='{b0ee5991-a5ab-4473-9773-d74d862e6328}'>
-          <File Source='disfr-core.dll' KeyPath='yes' />
+          <File Source='$(var.disfr-core.TargetDir)disfr-core.dll' KeyPath='yes' />
         </Component>
 
         <Component Id='xmlss.xslt' Directory='INSTALLDIR' Guid='{E6E57EE8-0B1B-464E-8942-6EBC7D8BFB3A}'>
-          <File Source='xmlss.xslt' KeyPath='yes' />
+          <File Source='$(var.disfr-core.TargetDir)xmlss.xslt' KeyPath='yes' />
         </Component>
 
         <Component Id='html5.xslt' Directory='INSTALLDIR' Guid='{5f2ced66-2919-4799-a6d7-85ca4f6eeb26}'>
-          <File Source='html5.xslt' KeyPath='yes' />
+          <File Source='$(var.disfr-core.TargetDir)html5.xslt' KeyPath='yes' />
         </Component>
 
       </Feature>
@@ -126,19 +126,19 @@
       <Feature Id="disfr.sdltm" Level="1">
 
         <Component Id="disfr.sdltm.dll" Directory='INSTALLDIR' Guid='{a90aefec-8168-4b5b-85d1-8616bc478ab9}'>
-          <File Source='disfr.sdltm.dll' KeyPath='yes' />
+          <File Source='$(var.disfr.sdltm.TargetDir)disfr.sdltm.dll' KeyPath='yes' />
         </Component>
 
         <Component Id="System.Data.SQLite.dll" Directory='INSTALLDIR' Guid='{A6792548-D48E-4EC1-830A-2C1E2F119DD3}' >
-          <File Source="System.Data.SQLite.dll" KeyPath='yes' />
+          <File Source="$(var.disfr.sdltm.TargetDir)System.Data.SQLite.dll" KeyPath='yes' />
         </Component>
 
         <Component Id="x86.SQLite.Interop.dll" Directory='InstallDirX86' Guid='{34EAC1D2-D140-4C7A-96CD-72115A47E899}'>
-          <File Id="x86.SQLite.Interop.dll" Source="x86\SQLite.Interop.dll" KeyPath='yes' />
+          <File Id="x86.SQLite.Interop.dll" Source="$(var.disfr.sdltm.TargetDir)x86\SQLite.Interop.dll" KeyPath='yes' />
         </Component>
 
         <Component Id="x64.SQLite.Interop.dll" Directory='InstallDirX64' Guid='{8CF347E2-4694-4015-955E-8F8458C32AF1}'>
-          <File Id="x64.SQLite.Interop.dll" Source="x64\SQLite.Interop.dll" KeyPath='yes' />
+          <File Id="x64.SQLite.Interop.dll" Source="$(var.disfr.sdltm.TargetDir)x64\SQLite.Interop.dll" KeyPath='yes' />
         </Component>
 
       </Feature>
@@ -146,23 +146,23 @@
       <Feature Id="disfr.xlsx_writer" Level="1">
 
         <Component Id="disfr.xlsx_writer.dll" Directory='INSTALLDIR' Guid='{6677aea2-ade9-48af-ab25-b2652f4176d6}'>
-          <File Source='disfr.xlsx-writer.dll' KeyPath='yes' />
+          <File Source='$(var.disfr.xlsx-writer.TargetDir)disfr.xlsx-writer.dll' KeyPath='yes' />
         </Component>
 
         <Component Id='NetOffice.dll' Directory='INSTALLDIR' Guid='{7C442F5A-B25A-4FEA-A811-9DA84A2519DA}'>
-          <File Source='NetOffice.dll' KeyPath='yes' />
+          <File Source='$(var.disfr.xlsx-writer.TargetDir)NetOffice.dll' KeyPath='yes' />
         </Component>
 
         <Component Id='OfficeApi.dll' Directory='INSTALLDIR' Guid='{43124856-B13B-42C6-BBCA-57BABAD91AAB}'>
-          <File Source='OfficeApi.dll' KeyPath='yes' />
+          <File Source='$(var.disfr.xlsx-writer.TargetDir)OfficeApi.dll' KeyPath='yes' />
         </Component>
 
         <Component Id='ExcelApi.dll' Directory='INSTALLDIR' Guid='{B17CFBC1-D246-47C7-8840-097E2D4330A2}'>
-          <File Source='ExcelApi.dll' KeyPath='yes' />
+          <File Source='$(var.disfr.xlsx-writer.TargetDir)ExcelApi.dll' KeyPath='yes' />
         </Component>
 
         <Component Id='VBIDEApi.dll' Directory='INSTALLDIR' Guid='{07696046-6877-4AD7-A356-4E4F37D4F6EB}'>
-          <File Source='VBIDEApi.dll' KeyPath='yes' />
+          <File Source='$(var.disfr.xlsx-writer.TargetDir)VBIDEApi.dll' KeyPath='yes' />
         </Component>
 
       </Feature>
