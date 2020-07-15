@@ -71,6 +71,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y /E /I  "$(TargetDir)." "$(ProjectDir)..\disfr\$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y /E /I  /D "$(TargetDir)." "$(ProjectDir)..\disfr\$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
