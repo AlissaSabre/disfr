@@ -182,6 +182,8 @@
 
       <Feature Id="registry_settings" Level="1">
       
+        <!-- Registering disfr program -->
+        
         <Component Id="REG.InstallDir" Directory="TARGETDIR" Guid="{A7CF610F-C416-4A85-8D29-6341DCF262FF}">
           <RegistryKey Root="HKLM" Key="Software\Alissa Sabre\disfr">
             <RegistryValue Type="string" Name="InstallDir" Value="[INSTALLDIR]" KeyPath="yes" />
@@ -206,6 +208,8 @@
           </RegistryKey>
         </Component>
 
+        <!-- Registering the Open With file type association -->
+        
         <Component Id="REG.xlf" Directory="TARGETDIR" Guid="{D312BF7B-8EF8-4774-93BA-BDB39143BCC7}">
           <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
             <RegistryValue Type="string" Name=".xlf" Value="" KeyPath="yes" />
@@ -287,6 +291,15 @@
           </RegistryKey>
         </Component>
 
+        <Component Id="REG.txlf" Directory="TARGETDIR" Guid="{7CC1124C-5143-44BD-897A-02D3ABD274A9}">
+          <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+            <RegistryValue Type="string" Name=".txlf" Value="" KeyPath="yes" />
+          </RegistryKey>
+          <RegistryKey Root="HKLM" Key="Software\Classes\.txlf\OpenWithProgIds">
+            <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+          </RegistryKey>
+        </Component>
+
         <Component Id="REG.tmx" Directory="TARGETDIR" Guid="{A22F6D80-D2FC-44EA-B0F1-3C5799DA18E8}">
           <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
             <RegistryValue Type="string" Name=".tmx" Value="" KeyPath="yes" />
@@ -304,7 +317,25 @@
             <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
           </RegistryKey>
         </Component>
-      
+
+        <Component Id="REG.sdltm" Directory="TARGETDIR" Guid="{F0FEC107-09C1-4BBA-BF45-92F20F2E35AA}">
+          <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+            <RegistryValue Type="string" Name=".xlsx" Value="" KeyPath="yes" />
+          </RegistryKey>
+          <RegistryKey Root="HKLM" Key="Software\Classes\.xlsx\OpenWithProgIds">
+            <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+          </RegistryKey>
+        </Component>
+
+        <Component Id="REG.sdltm" Directory="TARGETDIR" Guid="{6E195F36-7884-4D2F-AB25-D1124C42048B}">
+          <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+            <RegistryValue Type="string" Name=".xls" Value="" KeyPath="yes" />
+          </RegistryKey>
+          <RegistryKey Root="HKLM" Key="Software\Classes\.xls\OpenWithProgIds">
+            <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+          </RegistryKey>
+        </Component>
+
       </Feature>
 
       <!-- obsolete comopents and their GUIDs -->
