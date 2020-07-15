@@ -167,6 +167,19 @@
 
       </Feature>
 
+      <Feature Id="disfr.ExcelGlossary" Level="1">
+
+        <Component Id="disfr.ExcelGlossary.dll" Directory="INSTALLDIR" Guid="{cb4ab996-f079-4948-a76d-a7f9d8ba8440}">
+          <File Source="disfr.ExcelGlossary.dll" KeyPath="yes" />
+        </Component>
+
+        <ComponentRef Id="NetOffice.dll" />
+        <ComponentRef Id="OfficeApi.dll" />
+        <ComponentRef Id="ExcelApi.dll" />
+        <ComponentRef Id="VBIDEApi.dll" />
+        
+      </Feature>
+
       <Feature Id="registry_settings" Level="1">
       
         <Component Id="REG.InstallDir" Directory="TARGETDIR" Guid="{A7CF610F-C416-4A85-8D29-6341DCF262FF}">
