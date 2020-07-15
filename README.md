@@ -47,11 +47,11 @@ It may be capable of reading the following file formats in the future:
 It can also _write_ portions of contents out to the following file formats (without editing):
 * TMX files.
 * Microsoft Excel (.xlsx) files.
+* A simple bilingual table in HTML5 (similar to _external review_ files produced by CAT tools).
 
 It may be capable of _writing_ the contents out to the following file formats in the future:
 * So-called CSV.
 * Office OpenXML WordProcessing document (aka .docx) as a so-called bilingual table.
-* HTML bilingual table.
 
 ## Other features
 
