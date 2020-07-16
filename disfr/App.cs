@@ -114,35 +114,58 @@ namespace disfr
                     try
                     {
                         // Try to be an IPC server.
-                        var server_channel = new IpcServerChannel(ipc_port);
-                        ChannelServices.RegisterChannel(server_channel, true);
-                        RemotingConfiguration.RegisterWellKnownServiceType(typeof(SingleInstance), uri, WellKnownObjectMode.Singleton);
-
-                        // We've got a server-side IPC channel.  Run as a server.
+                        var server_channel = new IpcServerChannel(null, ipc_port);
                         try
                         {
-                            var app = new App();
-                            app.Run();
+                            ChannelServices.RegisterChannel(server_channel, true);
+                            try
+                            {
+                                RemotingConfiguration.RegisterWellKnownServiceType(typeof(SingleInstance), uri, WellKnownObjectMode.Singleton);
+
+                                // We've got a server-side IPC channel.  Run as a server.
+                                try
+                                {
+                                    var app = new App();
+                                    app.Exit += (s, e) => server_channel.StopListening(null);
+                                    app.Run();
+                                }
+                                catch (Exception)
+                                {
+                                    // The program may got an exception and terminates, due to a bug.
+                                    // We SHOULD NOT retry IPC connection in the case.  Just terminate.
+                                }
+                                return;
+                            }
+                            finally
+                            {
+                                ChannelServices.UnregisterChannel(server_channel);
+                            }
                         }
-                        catch (Exception)
+                        finally
                         {
-                            // The program may got an exception and terminates, due to a bug.
-                            // We SHOULD NOT retry IPC connection in the case.  Just terminate.
+                            server_channel.StopListening(null);
                         }
-                        return;
                     }
                     catch (Exception) { }
 
-                    // When we got here, it is very likely that an IPC server is already running.
+                    // When we got here, it is very likely that an IPC server
+                    // (another disfr process with UI) is already running.
                     Thread.Sleep(50);
 
                     try
                     {
                         // Try to be an IPC client.
-                        var client_channel = new IpcClientChannel();
+                        var client_channel = new IpcClientChannel((string)null, null);
                         ChannelServices.RegisterChannel(client_channel, true);
-                        var instance = Activator.GetObject(typeof(SingleInstance), "ipc://" + ipc_port + "/" + uri) as SingleInstance;
-                        if (instance.Run(args)) return;
+                        try
+                        {
+                            var instance = Activator.GetObject(typeof(SingleInstance), "ipc://" + ipc_port + "/" + uri) as SingleInstance;
+                            if (instance?.Run(args) == true) return;
+                        }
+                        finally
+                        {
+                            ChannelServices.UnregisterChannel(client_channel);
+                        }
                     }
                     catch (Exception) { }
 
@@ -152,6 +175,11 @@ namespace disfr
 
                 MessageBox.Show("Appliation failed: Couldn't establish remoting.", "Error - disfr");
             }
+        }
+
+        private static void App_Exit(object sender, ExitEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private static string CreateUniquePort(Assembly assembly)
