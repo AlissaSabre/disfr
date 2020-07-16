@@ -344,10 +344,17 @@
 
     </Feature>
 
+    <!-- Placing RemoveExistingProducts action in an early stage makes
+         the upgrade from older versions more or less inefficient by causing 
+         unnecessary copying of unchanged files, for example.
+         However, the value of DISABLEADVTSHORTCUTS has been changed from 0 to 1
+         between versions 0.4.0 and 0.4.1 of disfr, and if RemoveExistingProducts action
+         is placed after InstallFinalize as usual (and as recommended by Microsoft),
+         shortcuts disappear when making update from 0.4.0 or earlier to 0.4.1 or later. -->
     <InstallExecuteSequence>
-      <RemoveExistingProducts After="InstallFinalize" />
+      <RemoveExistingProducts After="InstallValidate" />
       <Custom Action='NewerProductFound' After='FindRelatedProducts'>NEWERFOUND</Custom>
-      <Custom Action='ChangeNotify' After='WriteRegistryValues' />
+      <Custom Action='ChangeNotify' After='InstallFinalize' />
     </InstallExecuteSequence>
 
     <CustomAction Id='NewerProductFound' Error='A same or newer version of this program appears installed.  Please remove it first if you want to install this version ($(var.Version)).' />
