@@ -72,10 +72,12 @@ namespace disfr.Plugin
                         plugin_names.Add(string.Format(format, ((IPlugin)plugin).Name, version.FileVersion, status));
                     }
                 }
+#pragma warning disable 168
                 catch (Exception e)
                 {
                     // Just ignore.
                 }
+#pragma warning restore 168
             }
 
             Readers = reader_plugins.ToArray();
