@@ -15,7 +15,7 @@
     <ProjectGuid>{29705759-0F3A-4E3C-8D13-7730FBAA79EE}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>disfr</OutputName>
-    <BindInputPaths>..\disfr\bin\$(Configuration);..\$(Configuration)</BindInputPaths>
+    <BindInputPaths>..\disfr\bin\$(Configuration);..\$(Configuration);..</BindInputPaths>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets')">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets')">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(ProgramFiles)\MSBuild\Microsoft\WiX\v3.x\Wix.targets')">$(ProgramFiles)\MSBuild\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
