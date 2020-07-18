@@ -48,6 +48,11 @@
     <GetAssemblyIdentity AssemblyFiles="..\disfr\bin\$(Configuration)\disfr.exe">
       <Output TaskParameter="Assemblies" ItemName="DisfrIdentity" />
     </GetAssemblyIdentity>
-    <Copy SourceFiles="$(OutputPath)$(TargetFilename)" DestinationFiles="$(OutputPath)disfr-%(DisfrIdentity.Version)-setup.msi" SkipUnchangedFiles="true" />
+    <PropertyGroup>
+      <DisfrVersion>%(DisfrIdentity.Version)</DisfrVersion>
+      <!-- Remove the revision component in the version string if it is of revision zero. -->
+      <DisfrVersion Condition=" $(DisfrVersion.EndsWith('.0')) ">$(DisfrVersion.Substring(0, $([MSBuild]::Subtract($(DisfrVersion.Length), 2))))</DisfrVersion>
+    </PropertyGroup>
+    <Copy SourceFiles="$(OutputPath)$(TargetFilename)" DestinationFiles="$(OutputPath)disfr-$(DisfrVersion)-setup.msi" SkipUnchangedFiles="true" />
   </Target>
 </Project>
