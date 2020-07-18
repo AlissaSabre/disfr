@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled">
+  <PropertyGroup>
+    <!-- This WiX project (.wixproj) pretends a C# project (.csproj) in .sln file,
+         because I'm using Visual Studio Express Edition, and it doesn't allow
+         installing WiX Extension (VSIX).  As a result, Visual Studio emits a warning
+         "Load of property 'OutputType' failed.", because "Package" is not an OutputType
+         that the C# compiler (CSC) can handle.  Please simply ignore the message.  -->
+    <OutputType>Package</OutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>3.10</ProductVersion>
+    <ProjectGuid>{29705759-0F3A-4E3C-8D13-7730FBAA79EE}</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>disfr</OutputName>
+    <BindInputPaths>..\disfr\bin\$(Configuration);..\$(Configuration)</BindInputPaths>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets')">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets')">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(ProgramFiles)\MSBuild\Microsoft\WiX\v3.x\Wix.targets')">$(ProgramFiles)\MSBuild\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildProgramFiles32)\MSBuild\Microsoft\WiX\v3.x\Wix.targets')">$(MSBuildProgramFiles32)\MSBuild\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <DefineSolutionProperties>false</DefineSolutionProperties>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="disfr.wxs">
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme.htm" />
+    <None Include="Readme.md" />
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
+    <Error Text="The WiX Toolset v3.11 build tools must be installed to build this project." />
+  </Target>
+  <Target Name="VersionOutputFile" AfterTargets="Link">
+    <GetAssemblyIdentity AssemblyFiles="..\disfr\bin\$(Configuration)\disfr.exe">
+      <Output TaskParameter="Assemblies" ItemName="DisfrIdentity" />
+    </GetAssemblyIdentity>
+    <Copy SourceFiles="$(OutputPath)$(TargetFilename)" DestinationFiles="$(OutputPath)disfr-%(DisfrIdentity.Version)-setup.msi" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

@@ -3,6 +3,12 @@
 
   <?define Version = "!(bind.FileVersion.disfr.exe)"?>
 
+  <!-- Being honest I (Alissa) don't fully understand the differences
+       between various update/upgrade types that Windows Installer distinguishes.
+       Going on a safe side, all disfr updates are marked as major upgrades.
+       So, everytime a new release would come, the product GUID should change.
+       Setting Product/@Id to '*' is very suitable for the purpose.  -->
+
   <Product Id='*'
       Name='disfr $(var.Version)'
       UpgradeCode='{EDCE634C-06E4-4F94-BE3C-56771B0C00F9}'
@@ -33,6 +39,8 @@
     <Media Id='1' Cabinet='disfr.cab' EmbedCab='yes' DiskPrompt='Disk 1' />
     <Property Id='DiskPrompt' Value="disfr $(var.Version) (1/1)" />
 
+    <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
+
     <Directory Id='TARGETDIR' Name='SourceDir'>
 
       <Directory Id='ProgramFilesFolder'>
@@ -58,6 +66,7 @@
 
         <Component Id='disfr.exe' Directory='INSTALLDIR' Guid='{76840A5F-2A32-48D6-A7FF-4D1BD297C4DA}'>
           <File Name='disfr.exe' Source='disfr.exe' KeyPath='yes'>
+            <!-- The following two shortcuts are actually non-advertised by DISABLEADVTSHORTCUTS=1. -->
             <Shortcut Id="DesktopFolder.disfr.exe" Directory="DesktopFolder" Advertise='yes'
                       Name="disfr" WorkingDirectory='INSTALLDIR'
                       Icon='disfr.icon.exe'/>
@@ -90,6 +99,7 @@
 
         <Component Id='Readme.htm' Directory='INSTALLDIR' Guid='{A156536D-81B0-42B1-98E3-4525D724D533}'>
           <File Source='Readme.htm' KeyPath='yes'>
+            <!-- The following shortcut is actually non-advertised with DISABLEADVTSHORTCUTS=1. -->
             <Shortcut Id='AppMenuDir.Readme.htm' Name='Readme.htm' Directory='AppMenuDir' Advertise='yes' />
           </File>
           <RemoveFolder Id='Readme.htm' Directory='AppMenuDir' On='uninstall' />
@@ -157,8 +167,23 @@
 
       </Feature>
 
+      <Feature Id="disfr.ExcelGlossary" Level="1">
+
+        <Component Id="disfr.ExcelGlossary.dll" Directory="INSTALLDIR" Guid="{cb4ab996-f079-4948-a76d-a7f9d8ba8440}">
+          <File Source="disfr.ExcelGlossary.dll" KeyPath="yes" />
+        </Component>
+
+        <ComponentRef Id="NetOffice.dll" />
+        <ComponentRef Id="OfficeApi.dll" />
+        <ComponentRef Id="ExcelApi.dll" />
+        <ComponentRef Id="VBIDEApi.dll" />
+        
+      </Feature>
+
       <Feature Id="registry_settings" Level="1">
       
+        <!-- Registering disfr program -->
+        
         <Component Id="REG.InstallDir" Directory="TARGETDIR" Guid="{A7CF610F-C416-4A85-8D29-6341DCF262FF}">
           <RegistryKey Root="HKLM" Key="Software\Alissa Sabre\disfr">
             <RegistryValue Type="string" Name="InstallDir" Value="[INSTALLDIR]" KeyPath="yes" />
@@ -183,6 +208,8 @@
           </RegistryKey>
         </Component>
 
+        <!-- Registering the Open With file type association -->
+        
         <Component Id="REG.xlf" Directory="TARGETDIR" Guid="{D312BF7B-8EF8-4774-93BA-BDB39143BCC7}">
           <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
             <RegistryValue Type="string" Name=".xlf" Value="" KeyPath="yes" />
@@ -264,6 +291,15 @@
           </RegistryKey>
         </Component>
 
+        <Component Id="REG.txlf" Directory="TARGETDIR" Guid="{7CC1124C-5143-44BD-897A-02D3ABD274A9}">
+          <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+            <RegistryValue Type="string" Name=".txlf" Value="" KeyPath="yes" />
+          </RegistryKey>
+          <RegistryKey Root="HKLM" Key="Software\Classes\.txlf\OpenWithProgIds">
+            <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+          </RegistryKey>
+        </Component>
+
         <Component Id="REG.tmx" Directory="TARGETDIR" Guid="{A22F6D80-D2FC-44EA-B0F1-3C5799DA18E8}">
           <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
             <RegistryValue Type="string" Name=".tmx" Value="" KeyPath="yes" />
@@ -281,7 +317,25 @@
             <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
           </RegistryKey>
         </Component>
-      
+
+        <Component Id="REG.xlsx" Directory="TARGETDIR" Guid="{F0FEC107-09C1-4BBA-BF45-92F20F2E35AA}">
+          <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+            <RegistryValue Type="string" Name=".xlsx" Value="" KeyPath="yes" />
+          </RegistryKey>
+          <RegistryKey Root="HKLM" Key="Software\Classes\.xlsx\OpenWithProgIds">
+            <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+          </RegistryKey>
+        </Component>
+
+        <Component Id="REG.xls" Directory="TARGETDIR" Guid="{6E195F36-7884-4D2F-AB25-D1124C42048B}">
+          <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+            <RegistryValue Type="string" Name=".xls" Value="" KeyPath="yes" />
+          </RegistryKey>
+          <RegistryKey Root="HKLM" Key="Software\Classes\.xls\OpenWithProgIds">
+            <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+          </RegistryKey>
+        </Component>
+
       </Feature>
 
       <!-- obsolete comopents and their GUIDs -->
@@ -290,10 +344,17 @@
 
     </Feature>
 
+    <!-- Placing RemoveExistingProducts action in an early stage makes
+         the upgrade from older versions more or less inefficient by causing 
+         unnecessary copying of unchanged files, for example.
+         However, the value of DISABLEADVTSHORTCUTS has been changed from 0 to 1
+         between versions 0.4.0 and 0.4.1 of disfr, and if RemoveExistingProducts action
+         is placed after InstallFinalize as usual (and as recommended by Microsoft),
+         shortcuts disappear when making update from 0.4.0 or earlier to 0.4.1 or later. -->
     <InstallExecuteSequence>
-      <RemoveExistingProducts After="InstallFinalize" />
+      <RemoveExistingProducts After="InstallValidate" />
       <Custom Action='NewerProductFound' After='FindRelatedProducts'>NEWERFOUND</Custom>
-      <Custom Action='ChangeNotify' After='WriteRegistryValues' />
+      <Custom Action='ChangeNotify' After='InstallFinalize' />
     </InstallExecuteSequence>
 
     <CustomAction Id='NewerProductFound' Error='A same or newer version of this program appears installed.  Please remove it first if you want to install this version ($(var.Version)).' />

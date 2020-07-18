@@ -36,7 +36,7 @@ namespace disfr.Doc
 
         protected StringPool Pool = new StringPool();
 
-        protected readonly XNamespace X;
+        protected XNamespace X;
 
         protected bool SegmentationAllowed = true;
 
@@ -179,15 +179,45 @@ namespace disfr.Doc
             };
             MatchTags(pair.Source, pair.Target);
             pair.AddNotes(GetNotes(tu));
+            AddTuAttrProps(pair, tu);
+            AddContextProps(pair, tu);
+            if (source != null) AddSourceAttrProps(pair, source);
+            if (target != null) AddTargetAttrProps(pair, target);
+            return pair;
+        }
+
+        protected virtual void AddTuAttrProps(XliffTransPair pair, XElement tu)
+        {
             foreach (var attr in tu.Attributes().Where(a => a.Name != "id"))
             {
                 AddProp(pair, attr.Name.LocalName, attr.Value);
             }
+        }
+
+        protected virtual void AddContextProps(XliffTransPair pair, XElement tu)
+        {
             foreach (var context in tu.Elements(X + "context-group").Elements(X + "context"))
             {
                 AddProp(pair, "context/" + ((string)context.Attribute("context-type") ?? ""), (string)context ?? "");
             }
-            return pair;
+        }
+
+        protected virtual void AddSourceAttrProps(XliffTransPair pair, XElement source)
+        {
+            foreach (var attr in source.Attributes()
+                .Where(a => a.Name.Namespace != XNamespace.Xml && a.Name.Namespace != XNamespace.Xmlns))
+            {
+                AddProp(pair, attr.Name.LocalName, attr.Value);
+            }
+        }
+
+        protected virtual void AddTargetAttrProps(XliffTransPair pair, XElement target)
+        {
+            foreach (var attr in target.Attributes()
+                .Where(a => a.Name.Namespace != XNamespace.Xml && a.Name.Namespace != XNamespace.Xmlns))
+            {
+                AddProp(pair, attr.Name.LocalName, attr.Value);
+            }
         }
 
         protected virtual IEnumerable<ITransPair> ExtractAltPairs(XElement alt)

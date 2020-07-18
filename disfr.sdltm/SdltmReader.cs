@@ -28,9 +28,9 @@ namespace disfr.sdltm
     /// </summary>
     public class SdltmReader : IAssetReader
     {
-        private static readonly string[] _FIlterString = { "Studio Translation Memory|*.sdltm" };
+        private static readonly string[] _FilterString = { "Studio Translation Memory|*.sdltm" };
 
-        public IList<string> FilterString { get { return _FIlterString; } }
+        public IList<string> FilterString { get { return _FilterString; } }
 
         public string Name { get { return "SdltmReader"; } }
 
@@ -48,7 +48,7 @@ namespace disfr.sdltm
             // An sdltm file is an SQLite database.
             // Quickly check the signature will accelerate auto-detection processes.
             // (I know the following code looks silly.)
-            using (var s = File.OpenRead(filename))
+            using (var s = FileUtils.OpenRead(filename))
             {
                 if (s.ReadByte() != 'S' || 
                     s.ReadByte() != 'Q' ||
@@ -220,7 +220,7 @@ namespace disfr.sdltm
         protected static InlineString GetInlineString(string text)
         {
             var inline = new InlineBuilder();
-            foreach (var elem in XElement.Parse(text).Elements("Elements").Elements())
+            foreach (var elem in XElement.Parse(text, LoadOptions.PreserveWhitespace).Elements("Elements").Elements())
             {
                 switch (elem.Name.LocalName)
                 {
@@ -291,8 +291,8 @@ namespace disfr.sdltm
                 var st = source.Tags.ToList();
                 var tt = target.Tags.ToList();
 
-                var sx = XElement.Parse(source_xml).Elements(ELEM).Elements(TAG).ToList();
-                var tx = XElement.Parse(target_xml).Elements(ELEM).Elements(TAG).ToList();
+                var sx = XElement.Parse(source_xml, LoadOptions.PreserveWhitespace).Elements(ELEM).Elements(TAG).ToList();
+                var tx = XElement.Parse(target_xml, LoadOptions.PreserveWhitespace).Elements(ELEM).Elements(TAG).ToList();
 
                 for (int i = 0; i < st.Count; i++)
                 {

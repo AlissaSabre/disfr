@@ -310,5 +310,57 @@ namespace disfr.UI
         #endregion
 
         #endregion
+
+        #region Drag-n-Drop
+
+        private void this_PreviewDragEnter(object sender, DragEventArgs e)
+        {
+            DragEnterOver(e);
+        }
+
+        private void this_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            DragEnterOver(e);
+        }
+
+        private void DragEnterOver(DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // We can only handle FileDrop (CF_HDROP) clipboard format.
+                e.Effects = DragDropEffects.Copy;
+                e.Handled = true;
+            }
+            else if (e.Data.GetDataPresent("FileGroupDescriptorW")
+                || e.Data.GetDataPresent("Shell IDList Array"))
+            {
+                // Some apps try to pass us files in
+                // CFSTR_FILEDESCRIPTOR ("FileGroupDescriptorW") and/or
+                // CFSTR_SHELLIDLIST ("Shell IDList Array") clipboard formats,
+                // which we can't handle.
+                // I believe it's better to explicitly reject such drag-n-drop,
+                // because the difference between CFSTR_FILEDESCRIPTOR and CF_HDROP
+                // is not apparent to end users.
+                // ... ah, yes, ideally, we SHOULD accept CFSTR_FILEDESCRIPTOR.  FIXME.
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+            }
+        }
+
+        private void this_PreviewDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Handled = true;
+
+                var single_tab = (e.KeyStates & DragDropKeyStates.ControlKey) != 0;
+                var filenames = e.Data.GetData(DataFormats.FileDrop) as string[];
+
+                Controller.Busy = true;
+                Controller.OpenCommand.Execute(filenames, -1, single_tab, this);
+            }
+        }
+
+        #endregion
     }
 }
