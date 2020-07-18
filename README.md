@@ -14,6 +14,8 @@ or showing non-translatable portion of the source document.
 Moreover, it may allow you comparing differences between versions in the future.
 It has no way to edit/change the contents, however.
 
+![screenshot](Documents/screenshot.jpg)
+
 disfr is a Windows .NET Framework program written in C# using WPF.
 (And, no, it does not strictly adhere the MVVM doctrine...  In fact, it heavily uses _code behinds_.  This note is for programmers.) 
 
@@ -57,19 +59,27 @@ It may be capable of _writing_ the contents out to the following file formats in
 
 Major features of disfr (other than supported file formats) are:
 * **Lightweight**: disfr usually starts up and reads a file faster than ordinary CAT tools.
-* **Simple table view**: disfr shows everything in a simple two-dimentional table format with no frills.
-* **Detailed metadata**: XLIFF or other bilingual files contain rich segment metatata, though large parts of them are consumed by CAT tools themselves and not exposed to users.  disfr presents a lot more of those metadata to users for handy inspection.
+* **Simple table view**: disfr shows everything in a simple two-dimensional table format with no frills.
+* **Detailed metadata**: XLIFF or other bilingual files contain rich segment metadata, though large parts of them are consumed by CAT tools themselves and not exposed to users.  disfr presents a lot more of those metadata to users for handy inspection.
 * **Filter as you type**: disfr supports filtering of segments by its unique _filter as you type_ UI.
 * **Extensibility**: disfr has a simple _plugin_ mechanism so that you can add support for more file formats easily.  In particular, supports for sdltm and Excel files are implemented as respective plugins (though we have no API/SPI document for plugin authors yet).
 
 ## Legalese
 
+### Credits and licenses
+
+disfr is written by Alissa Sabre.  It is distributed under a _BSD License_.
+
 disfr uses and its binary distribution includes [Dragablz – Dragable and Tearable TabControl for WPF](https://dragablz.net/) by ButchersBoy (James Willock) distributed under the MIT License.
 
-disfr uses and its binary distribution includes [WpfColorFontDialog](https://www.nuget.org/packages/WpfColorFontDialog/) by Sverre Kristoffer Skodje distributed under the MIT License, based on an article [A WPF Font Picker (with Color)](https://www.codeproject.com/Articles/368070/A-WPF-Font-Picker-with-Color) by Alessio Saltarin posted on CodeProject published under COPL.
+disfr uses and its binary distribution includes [WpfColorFontDialog](https://www.nuget.org/packages/WpfColorFontDialog/) by Sverre Kristoffer Skodje distributed under the MIT License, based on an article [A WPF Font Picker (with Color)](https://www.codeproject.com/Articles/368070/A-WPF-Font-Picker-with-Color) by Alessio Saltarin posted on CodeProject and published under COPL.
 
-disfr uses and its binary distribution includes Windows API Code Pack for microsoft .NET Framework by Microsoft Corporation distributed under [its own license](https://github.com/aybe/Windows-API-Code-Pack-1.1/blob/master/LICENCE) packaged by aybe.
+disfr uses and its binary distribution includes Windows API Code Pack for Microsoft .NET Framework by Microsoft Corporation distributed under [its own license](https://github.com/aybe/Windows-API-Code-Pack-1.1/blob/master/LICENCE) packaged by aybe.
 
 disfr uses and its binary distribution includes portions of NetOffice by Sebastian Lange distributed under the MIT license.
 
 disfr uses and its binary distribution includes [SQLite](https://www.sqlite.org) and [System.Data.SQLite](https://system.data.sqlite.org) by SQLite Development team.
+
+### Trademarks
+
+Each of names and marks may be a trademark, a service mark, or a similar intellectual property of its owner under certain jurisdictions.

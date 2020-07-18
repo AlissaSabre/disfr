@@ -11,6 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestTemporary", "UnitTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{765CCCBC-AE76-4440-8B92-F17506709561}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
 		README.md = README.md
 		Roadmap.md = Roadmap.md
 	EndProjectSection
@@ -34,6 +35,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr.xlsx-writer", "disfr.xlsx-writer\disfr.xlsx-writer.csproj", "{86BD6774-A1E6-4D90-A390-BD2FFD6A2814}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr.ExcelGlossary", "disfr.ExcelGlossary\disfr.ExcelGlossary.csproj", "{6845E146-EC88-4BAE-BFD8-3922C37E861E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{DB80F2D5-3045-447B-BDA0-8D4D82641C7A}"
+	ProjectSection(SolutionItems) = preProject
+		Documents\screenshot.jpg = Documents\screenshot.jpg
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
