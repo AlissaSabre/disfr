@@ -76,7 +76,7 @@ disfr uses and its binary distribution includes [WpfColorFontDialog](https://www
 
 disfr uses and its binary distribution includes Windows API Code Pack for Microsoft .NET Framework by Microsoft Corporation distributed under [its own license](https://github.com/aybe/Windows-API-Code-Pack-1.1/blob/master/LICENCE) packaged by aybe.
 
-disfr uses and its binary distribution includes portions of NetOffice by Sebastian Lange distributed under the MIT license.
+disfr uses and its binary distribution includes portions of [NetOffice](https://osdn.net/projects/netoffice/) by Sebastian Lange distributed under the MIT license.
 
 disfr uses and its binary distribution includes [SQLite](https://www.sqlite.org) and [System.Data.SQLite](https://system.data.sqlite.org) by SQLite Development team.
 
