@@ -105,6 +105,10 @@
           <RemoveFolder Id='Readme.htm' Directory='AppMenuDir' On='uninstall' />
         </Component>
 
+        <Component Id="LICENSE" Directory="INSTALLDIR" Guid="{621F973C-72E4-4AE7-B0A5-B92AFD4B1821}">
+          <File Source="LICENSE" KeyPath="yes" />
+        </Component>
+
       </Feature>
 
       <Feature Id="disfr_core" Level="1">
