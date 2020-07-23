@@ -217,14 +217,20 @@ namespace disfr
         public bool OpenNewWindow(string[] args)
         {
             var options = Options.Parse(args);
-            return Dispatcher.Invoke(() =>
+            MainWindow window = null;
+            Dispatcher.Invoke(() =>
             {
-                var window = new MainWindow() { DataContext = MainController };
+                window = new MainWindow() { DataContext = MainController };
+                window.Topmost = true;
                 window.OpenFiles(options.Files, options.ReadIntoSingleTab);
                 window.Show();
-                window.Activate();
-                return true;
             }, DispatcherPriority.ApplicationIdle);
+            Dispatcher.Invoke(() =>
+            {
+                window.Topmost = false;
+                //window.Activate();
+            }, DispatcherPriority.ApplicationIdle);
+            return true;
         }
 
         /// <summary>
