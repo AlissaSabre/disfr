@@ -1,35 +1,80 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <title>disfr readme</title>
-  </head>
-  <body>
-
-    <h1>disfr readme</h1>
-
-    <p>disfr is a program to view/examine XLIFF file contents, or a wannabe of such.  It is still under development, and no end-user documentation exists.  For the moment, see <a href="https://github.com/AlissaSabre/disfr">the source repository</a> for its features and developers' information.</p>
-
-    <h2>Legalease</h2>
-
-    <h3>Trademark</h3>
-    <p>Each of names and/or marks may be a trademark and/or a servicemark of its owner under certain legislation.</p>
-
-    <h3>Dragablz</h3>
-    <p>disfr distribution includes <a href="https://dragablz.net">Dragablz</a>.  It is distributed under <a href="https://raw.githubusercontent.com/ButchersBoy/Dragablz/master/LICENSE">the MIT License</a>.  Dragablz: Copyright (c) James Willock, Mulholland Software and Contributors.</p>
-
-    <h3>NetOffice</h3>
-    <p>disfr distribution includes <a href="https://osdn.net/projects/netoffice/">NetOffice</a>.  It is distributed under <a href="https://github.com/NetOffice/NetOffice-NuGet#user-content-license">the MIT License</a>.  NetOffice: Copyright © 2012 Sebastian Lange.</p>
-
-    <h3>WpfColorFont</h3>
-    <p>disfr distribution includes <a href="https://github.com/sskodje/WpfColorFont">WpfColorFont</a>.  It is published by Sverre Kristoffer Skodje under <a href="https://github.com/sskodje/WpfColorFont/blob/master/LICENSE">the MIT License</a>, based on <a href="http://www.codeproject.com/Articles/368070/A-WPF-Font-Picker-with-Color">a project by Alessio Saltarin</a>, which was distributed under The Code Project Open License (CPOL).</p>
-
-    <h3>System.Data.SQLite</h3>
-    <p>disfr distribution includes <a href="https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki">System.Data.SQLite</a>, An <a href="https://www.sqlite.org/index.html">SQLite</a> database engine for .NET along with the ADO.NET provider, which is made Public Domain.</p>
-
-    <h3>Windows API Code Pack for Microsoft .NET Framework</h3>
-    <p>disfr distribution includes <a href="https://github.com/aybe/Windows-API-Code-Pack-1.1">Windows API Code Pack for Microsoft .NET Framework</a>, originally developed and distributed by Microsoft, under its own generous <a href="https://github.com/aybe/Windows-API-Code-Pack-1.1/blob/master/LICENCE">license terms</a>.</p>
-
-  </body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>disfr readme</title>
+</head>
+<body>
+<h1>disfr</h1>
+<p>A Windows program to view/examine XLIFF and other bilingual contents.</p>
+<h2>Summary</h2>
+<p><a href="http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html">XLIFF</a> is an OASIS standard XML file format for bilingual documents.
+It is used in most (if not all) of modern <a href="https://en.wikipedia.org/wiki/Computer-assisted_translation">CAT</a> environments.</p>
+<p>disfr is a handy tool to show the contents of XLIFF and similar/related bilingual files.
+It has some features to further examine the files,
+e.g., filtering and sorting segments, inspecting tags,
+or showing non-translatable portion of the source document.
+Moreover, it may allow you comparing differences between versions in the future.
+It has no way to edit/change the contents, however.</p>
+<p>disfr is a Windows .NET Framework program written in C# using WPF.
+(And, no, it does not strictly adhere the MVVM doctrine...  In fact, it heavily uses <em>code behinds</em>.  This note is for programmers.)</p>
+<p>For the moment, disfr is under development.
+You can consider it is in a sort of an alpha stage.
+Ready-to-run Windows Installer (*.msi) files are available on the <a href="https://github.com/AlissaSabre/disfr/releases">Releases</a> page.
+If you are a programmer, you should also be able to build the source files on HEAD of master branch always.</p>
+<h2>File formats</h2>
+<p>It supports reading of the following file formats, which are more or less based on XLIFF standard:</p>
+<ul>
+<li>Standard XLIFF 1.2 files (*.xlf, *.xliff.)</li>
+<li>Zipped XLIFF 1.1 and 1.2 files.</li>
+<li>SDL Idiom WorldServer translation kit and return packages (*.xlz, *.wsxz.)</li>
+<li>SDL Trados Studio files (*.sdlxliff.)</li>
+<li>memoQ bilingual files (*.mqxlz, *.mqxliff.)</li>
+<li>Wordfast (WFA/WFP5) files (*.txlf.)</li>
+<li>Any other XLIFF 1.2 based bilingual files (by ignoring some unknown portions of contents.)</li>
+</ul>
+<p>It can also read the following related file formats, which are not based on XLIFF:</p>
+<ul>
+<li>TMX translation memory exchange files (*.tmx.)</li>
+<li>SDL Trados Studio Translation Memories (*.sdltm.)</li>
+<li>Common bilingual glossaries on Microsoft Excel file (*.xls, *.xlsx)</li>
+</ul>
+<p>It may be capable of reading the following file formats in the future:</p>
+<ul>
+<li>Standard XLIFF 2.0 and packages containing it.</li>
+<li>.po files for GNU gettext.</li>
+<li>.string files for iOS Apps.</li>
+<li>Common glossaries on so-called CSV files.</li>
+</ul>
+<p>It can also <em>write</em> portions of contents out to the following file formats (without editing):</p>
+<ul>
+<li>TMX files.</li>
+<li>Microsoft Excel (.xlsx) files.</li>
+<li>A simple bilingual table in HTML5 (similar to <em>external review</em> files produced by CAT tools).</li>
+</ul>
+<p>It may be capable of <em>writing</em> the contents out to the following file formats in the future:</p>
+<ul>
+<li>So-called CSV.</li>
+<li>Office OpenXML WordProcessing document (aka .docx) as a so-called bilingual table.</li>
+</ul>
+<h2>Other features</h2>
+<p>Major features of disfr (other than supported file formats) are:</p>
+<ul>
+<li><strong>Lightweight</strong>: disfr usually starts up and reads a file faster than ordinary CAT tools.</li>
+<li><strong>Simple table view</strong>: disfr shows everything in a simple two-dimensional table format with no frills.</li>
+<li><strong>Detailed metadata</strong>: XLIFF or other bilingual files contain rich segment metadata, though large parts of them are consumed by CAT tools themselves and not exposed to users.  disfr presents a lot more of those metadata to users for handy inspection.</li>
+<li><strong>Filter as you type</strong>: disfr supports filtering of segments by its unique <em>filter as you type</em> UI.</li>
+<li><strong>Extensibility</strong>: disfr has a simple <em>plugin</em> mechanism so that you can add support for more file formats easily.  In particular, supports for sdltm and Excel files are implemented as respective plugins (though we have no API/SPI document for plugin authors yet).</li>
+</ul>
+<h2>Legalese</h2>
+<h3>Credits and licenses</h3>
+<p>disfr is written by Alissa Sabre.  It is distributed under a <em>BSD License</em>.</p>
+<p>disfr uses and its binary distribution includes <a href="https://dragablz.net/">Dragablz – Dragable and Tearable TabControl for WPF</a> by ButchersBoy (James Willock) distributed under the MIT License.</p>
+<p>disfr uses and its binary distribution includes <a href="https://www.nuget.org/packages/WpfColorFontDialog/">WpfColorFontDialog</a> by Sverre Kristoffer Skodje distributed under the MIT License, based on an article <a href="https://www.codeproject.com/Articles/368070/A-WPF-Font-Picker-with-Color">A WPF Font Picker (with Color)</a> by Alessio Saltarin posted on CodeProject and published under COPL.</p>
+<p>disfr uses and its binary distribution includes Windows API Code Pack for Microsoft .NET Framework by Microsoft Corporation distributed under <a href="https://github.com/aybe/Windows-API-Code-Pack-1.1/blob/master/LICENCE">its own license</a> packaged by aybe.</p>
+<p>disfr uses and its binary distribution includes portions of <a href="https://osdn.net/projects/netoffice/">NetOffice</a> by Sebastian Lange distributed under the MIT license.</p>
+<p>disfr uses and its binary distribution includes <a href="https://www.sqlite.org">SQLite</a> and <a href="https://system.data.sqlite.org">System.Data.SQLite</a> by SQLite Development team.</p>
+<h3>Trademarks</h3>
+<p>Each of names and marks may be a trademark, a service mark, or a similar intellectual property of its owner under certain jurisdictions.</p>
+</body>
 </html>

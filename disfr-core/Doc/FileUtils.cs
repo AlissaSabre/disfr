@@ -137,7 +137,7 @@ namespace disfr.Doc
             {
                 return new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
             }
-            catch (IOException e)
+            catch (IOException)
             {
                 return new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             }
