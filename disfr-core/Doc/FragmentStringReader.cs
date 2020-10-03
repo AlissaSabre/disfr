@@ -22,13 +22,16 @@ namespace disfr.Doc
 
         private int ReadIndex;
 
+        private readonly bool ForceBlocking;
+
         private bool Disposed;
 
         /// <summary>Creates an instance.</summary>
         /// <param name="fragments">An iteration of objects whose <see cref="Object.ToString()"/> values are read.</param>
-        public FragmentStringReader(IEnumerable<object> fragments)
+        public FragmentStringReader(IEnumerable<object> fragments, bool force_blocking = false)
         {
             FragmentEnumerator = fragments.GetEnumerator();
+            ForceBlocking = force_blocking;
         }
 
         protected override void Dispose(bool disposing)
@@ -59,7 +62,7 @@ namespace disfr.Doc
 
         public override int Read(char[] buffer, int index, int count)
         {
-            return ReadImpl(buffer, index, count, false);
+            return ReadImpl(buffer, index, count, ForceBlocking);
         }
 
         public override int ReadBlock(char[] buffer, int index, int count)
