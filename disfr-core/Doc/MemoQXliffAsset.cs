@@ -28,6 +28,9 @@ namespace disfr.Doc
 
             // segment status column is made initially visible by popular demand.
             PropMan.MarkVisible("status");
+
+            // "locked" attribute should be visible (if any) for a kind of compatilibity for older versions of disfr.
+            PropMan.MarkVisible("locked");
         }
 
         private const string DOC_MRD = "doc.mrd";
@@ -241,6 +244,16 @@ namespace disfr.Doc
                     yield return InterSegmentPair(InterSegments[InterSegments.Length - 1]);
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks if a trans-unit is for an inter-segment content.
+        /// </summary>
+        /// <param name="tu">A trans-unit element.</param>
+        /// <returns>Always true, because memoQ never holds inter-segment contents in trans-unit elements.</returns>
+        protected override bool IsInterSegment(XElement tu)
+        {
+            return false;
         }
 
         /// <summary>
