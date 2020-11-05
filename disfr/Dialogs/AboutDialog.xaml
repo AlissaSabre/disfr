@@ -6,17 +6,17 @@
         xmlns:local="clr-namespace:disfr.UI"
         mc:Ignorable="d"
         Title="About"
-        Height="200" Width="500" MinWidth="500" MinHeight="200"
+        Height="200" Width="560" MinWidth="560" MinHeight="200"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
     <Grid>
         <local:XamlControl Source="../AppIcon.xaml" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" Width="80" Margin="10,10,0,0"/>
-        <TextBlock x:Name="appName" HorizontalAlignment="Left" Margin="110,20,0,0" TextWrapping="Wrap" Text="(appName)" VerticalAlignment="Top"/>
-        <TextBlock x:Name="appDesc" HorizontalAlignment="Left" Margin="110,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="(appDesc)"/>
-        <TextBlock x:Name="appAuth" HorizontalAlignment="Left" Margin="110,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="(appAuth)"/>
+        <TextBlock x:Name="appName" HorizontalAlignment="Left" Margin="110,10,0,0" TextWrapping="Wrap" Text="(appName)" VerticalAlignment="Top"/>
+        <TextBlock x:Name="appDesc" HorizontalAlignment="Left" Margin="110,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="(appDesc)"/>
+        <TextBlock x:Name="appAuth" HorizontalAlignment="Left" Margin="110,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="(appAuth)"/>
         <Button Content="OK" Margin="0,10,10,0" HorizontalAlignment="Right" Width="75" IsDefault="True" Click="ok_Click" Height="24" VerticalAlignment="Top"/>
-        <TextBox x:Name="plugin" Margin="110,95,10,10" Text="(plugin)" IsReadOnly="True" IsUndoEnabled="False" Background="{x:Null}"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,95,0,0" TextWrapping="Wrap" Text="Plugins:" VerticalAlignment="Top" Width="89" TextAlignment="Right"/>
+        <TextBox x:Name="plugin" Margin="124,94,90,10" Text="(plugin)" IsReadOnly="True" IsUndoEnabled="False" Background="{x:Null}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+        <TextBlock HorizontalAlignment="Left" Margin="110,73,0,0" TextWrapping="NoWrap" Text="Plugins:" VerticalAlignment="Top" Width="53" TextAlignment="Left"/>
     </Grid>
 </Window>
