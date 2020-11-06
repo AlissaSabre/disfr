@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -65,86 +66,39 @@ namespace disfr.Doc
 
         private static readonly XName LANG = "lang";
 
-        private class PairStore
-        {
-            private readonly Dictionary<string, List<ITransPair>> Store
-                = new Dictionary<string, List<ITransPair>>(StringComparer.OrdinalIgnoreCase);
-
-            public void Add(int index, string tlang, ITransPair pair)
-            {
-                List<ITransPair> list;
-                if (!Store.TryGetValue(tlang, out list))
-                {
-                    list = new List<ITransPair>();
-                    Store.Add(tlang, list);
-                }
-                list.Add(pair);
-            }
-
-            public void AddAll(PairStore another)
-            {
-                List<ITransPair> list;
-                foreach (var kvp in another.Store)
-                {
-                    var tlang = kvp.Key;
-                    if (Store.TryGetValue(tlang, out list))
-                    {
-                        list.AddRange(kvp.Value);
-                    }
-                    else
-                    {
-                        list = new List<ITransPair>(kvp.Value);
-                        Store.Add(tlang, list);
-                    }
-                }
-            }
-
-            private IEnumerable<string> TargetLanguages;
-
-            public IEnumerable<string> GetTargetLanguages()
-            {
-                if (TargetLanguages != null) return TargetLanguages;
-
-                var all_tlangs = Store.Keys.ToArray();
-                var unique_tlangs = all_tlangs.Where(t => !all_tlangs.Any(v => v != t && Covers(v, t))).ToList();
-                unique_tlangs.Sort(StringComparer.OrdinalIgnoreCase);
-
-                foreach (var u in unique_tlangs)
-                {
-                    foreach (var v in all_tlangs)
-                    {
-                        if (u != v && Covers(u, v))
-                        {
-                            Store[u].AddRange(Store[v]);
-                            Store.Remove(v);
-                        }
-                    }
-                }
-
-                foreach (var list in Store.Values)
-                {
-                    list.Sort((x, y) => x == y
-                        ? StringComparer.OrdinalIgnoreCase.Compare(x.TargetLang, y.TargetLang)
-                        : Comparer<int>.Default.Compare(x.Serial, y.Serial));
-                }
-
-                TargetLanguages = unique_tlangs;
-                return TargetLanguages;
-            }
-
-            public IEnumerable<ITransPair> GetPairs(string tlang)
-            {
-                return Store[tlang];
-            }
-        }
-
         public IAssetBundle Read(XmlReader reader, string package, string filename)
         {
             var assets = ReadAssets(reader, package);
             if (assets == null) return null;
             return new SimpleAssetBundle(assets, filename);
         }
-            
+
+        class LanguagePair
+        {
+            public readonly string Source;
+            public readonly string Target;
+
+            private LanguagePair(string source, string target)
+            {
+                Source = source;
+                Target = target;
+            }
+
+            public static IEnumerable<LanguagePair> Enumerate(string[] slangs, string[] tlangs)
+            {
+                foreach (var s in slangs)
+                {
+                    foreach (var t in tlangs)
+                    {
+                        if (!LangCode.Equals(s, t))
+                        {
+                            yield return new LanguagePair(s, t);
+                        }
+                    }
+                }
+            }
+        }
+
         private IEnumerable<IAsset> ReadAssets(XmlReader reader, string package)
         {
             XElement header;
@@ -152,120 +106,115 @@ namespace disfr.Doc
             if (!ParseEnumerateTmx(reader, out header, out tus)) return null;
 
             var X = header.Name.Namespace;
-            var pool = new ConcurrentStringPool();
 
-            var slang = DetectSourceLanguage(header);
-            if (slang == null) return null;
+            //if (slang == null) return null;
 
-            var propman = new PropertiesManager(true);
-            var pair_store_pool = new ConcurrentStack<PairStore>();
+            var locker = new object();
+            var all_tus = new List<TuEntry>();
 
-            Parallel.ForEach(tus,
+            Local.ForEach(tus,
                 new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
                 // Local Init
-                () =>
-                {
-                    PairStore pairs;
-                    return pair_store_pool.TryPop(out pairs) ? pairs : new PairStore();
-                },
+                () => new List<TuEntry>(),
                 // Body
-                (tu, state, index_long, pairs) =>
+                (tu, state_UNUSED, index_long, local_tus) =>
                 {
                     var index = (int)index_long;
-
-                    // collect tu info.
-                    var id = (string)tu.Attribute("tuid") ?? "";
-                    var tu_props = CollectProps(tu);
-                    var tu_notes = CollectNotes(tu);
-
-                    var source_tuv = tu.Elements(X + "tuv").FirstOrDefault(tuv => Covers(slang, Lang(tuv)));
-                    if (source_tuv != null)
-                    {
-                        // collec source tuv info.
-                        var source_lang = Lang(source_tuv);
-                        var source_inline = GetInline(source_tuv.Element(X + "seg"), X);
-                        var source_props = CollectProps(source_tuv);
-                        var source_notes = CollectNotes(source_tuv);
-
-                        var tag_pool = NumberTags(source_inline);
-
-                        foreach (var target_tuv in tu.Elements(X + "tuv"))
-                        {
-                            if (Covers(slang, Lang(target_tuv))) continue;
-
-                            // collet target tuv info.
-                            var target_lang = Lang(target_tuv);
-                            var target_inline = MatchTags(tag_pool, GetInline(target_tuv.Element(X + "seg"), X));
-                            var target_props = CollectProps(target_tuv);
-                            var target_notes = CollectNotes(target_tuv);
-
-                            var pair = new TmxPair()
-                            {
-                                Serial = index + 1,
-                                Id = id,
-                                Source = source_inline,
-                                Target = target_inline,
-                                SourceLang = source_lang,
-                                TargetLang = target_lang,
-                            };
-                            pair.SetProps(propman, pool, tu_props, source_props, target_props);
-                            pair.SetNotes(tu_notes, source_notes, target_notes);
-
-                            pairs.Add(index, target_lang, pair);
-                        }
-                    }
-                    return pairs;
+                    local_tus.Add(new TuEntry(tu, index));
+                    return local_tus;
                 },
                 // Local Finally
-                pairs =>
+                (local_tus) =>
                 {
-                    pair_store_pool.Push(pairs);
+                    lock (locker)
+                    {
+                        all_tus.AddRange(local_tus);
+                    }
                 }
             );
 
-            // Merge pairs in pair_store_pool into a single PairStore.
-            PairStore all_pairs;
-            pair_store_pool.TryPop(out all_pairs);
-            while (!pair_store_pool.IsEmpty)
-            {
-                PairStore pairs;
-                pair_store_pool.TryPop(out pairs);
-                all_pairs.AddAll(pairs);
-            }
+            var tlangs = DetectTargetLanguages(all_tus);
+            var slangs = DetectSourceLanguages(all_tus, header);
+            if (slangs.Length == 0) slangs = tlangs;
 
-            // Wrap pairs in assets and return them.
-            if (all_pairs == null)
-            {
-                return Enumerable.Empty<IAsset>();
-            }
-            else
-            {
-                return all_pairs.GetTargetLanguages().Select(tlang => new TmxAsset()
+            var assets = new List<IAsset>(slangs.Length * tlangs.Length);
+            Local.ForEach(LanguagePair.Enumerate(slangs, tlangs),
+                new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
+                (lang_pair) => 
                 {
-                    Package = package,
-                    Original = string.Format("{0} - {1}", slang, tlang),
-                    SourceLang = slang,
-                    TargetLang = tlang,
-                    TransPairs = all_pairs.GetPairs(tlang),
-                    Properties = propman.Properties,
-                }).ToList();
-            }
+                    var asset = CreateAsset(package, lang_pair, all_tus);
+                    if (asset != null)
+                    {
+                        lock (locker)
+                        {
+                            assets.Add(asset);
+                        }
+                    }
+                }
+            );
+
+            return assets;
         }
 
-        /// <summary>
-        /// Detect the source language and target languages. 
-        /// </summary>
-        /// <param name="tmx">The &lt;tmx&gt; element.</param>
-        /// <returns>An array of language codes, whose element at [0] is the source language.</returns>
-        /// <remarks>
-        /// Language codes are defined being case insensitive.
-        /// This method takes care of that feature.
-        /// </remarks>
-        private string DetectSourceLanguage(XElement header)
+        private IAsset CreateAsset(string package, LanguagePair lang_pair, List<TuEntry> all_tus)
         {
-            var slang = (string)header.Attribute("srclang");
-            if (string.Equals(slang, "*all*", StringComparison.OrdinalIgnoreCase)) return null;
-            return slang;
+            var slang = lang_pair.Source;
+            var tlang = lang_pair.Target;
+            var propman = new PropertiesManager(false);
+
+            var pairs = new List<ITransPair>();
+            foreach (var tu in all_tus)
+            {
+                var pair = tu.GetTransPair(slang, tlang, propman);
+                if (pair != null)
+                {
+                    pairs.Add(pair);
+                }
+            }
+            if (pairs.Count == 0) return null;
+
+            return new TmxAsset
+            {
+                Package = package,
+                Original = string.Format("{0} - {1}", slang, tlang),
+                SourceLang = slang,
+                TargetLang = tlang,
+                TransPairs = pairs,
+                Properties = propman.Properties,
+            };
+        }
+
+        /// <summary>Detects one or more source languages of a TMX file.</summary>
+        /// <param name="header">The TMX:header element.</param>
+        /// <param name="tus">List of TU entries.</param>
+        /// <returns>List of source language code.</returns>
+        /// <remarks>The return value may be an empty array but won't be null.</remarks>
+        private string[] DetectSourceLanguages(List<TuEntry> tus, XElement header)
+        {
+            var langs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var tu in tus)
+            {
+                if (tu.SourceLang != null) langs.Add(tu.SourceLang);
+            }
+
+            var header_slang = LangCode.NoAll((string)header.Attribute("srclang"));
+            if (header_slang != null) langs.Add(header_slang);
+
+            // We should reduce the languages by eliminating more specific language code covered by a generic language code in langs.  FIXME.
+            return langs.ToArray();
+        }
+
+        private string[] DetectTargetLanguages(List<TuEntry> tus)
+        {
+            var langs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var tu in tus)
+            {
+                foreach (var lang in tu.Languages)
+                {
+                    if (!LangCode.Equals(lang, tu.SourceLang)) langs.Add(lang);
+                }
+            }
+            return langs.ToArray();
         }
 
         private bool ParseEnumerateTmx(XmlReader reader, out XElement header, out IEnumerable<XElement> tus)
@@ -305,7 +254,7 @@ namespace disfr.Doc
 
         private IEnumerable<XElement> EnumerateTUs(XmlReader reader, string tmx_uri)
         {
-            for (;;)
+            for (; ; )
             {
                 reader.MoveToContent();
                 if (reader.NodeType == XmlNodeType.Element &&
@@ -324,10 +273,11 @@ namespace disfr.Doc
                 }
             }
         }
+    }
 
-        /// <summary>
-        /// Checks a language code covers another.
-        /// </summary>
+    static class LangCode
+    {
+        /// <summary>Checks a language code covers another.</summary>
         /// <param name="parent">A language code that may cover <paramref name="code"/>.</param>
         /// <param name="code">A language code that may be covered by <paramref name="parent"/>.</param>
         /// <returns>
@@ -342,7 +292,7 @@ namespace disfr.Doc
         /// "en" covers "en" itself, "en-GB", "en-US", and "en-US-VA", but it doesn't cover "fr".
         /// "en-US" covers "en-US-VA" but doesn't cover "en" or "en-GB".
         /// </example>
-        private static bool Covers(string parent, string code)
+        public static bool Covers(string parent, string code)
         {
             if (parent.Length == code.Length)
             {
@@ -358,23 +308,184 @@ namespace disfr.Doc
             }
         }
 
-        /// <summary>
-        /// Get the language code of a tuv element.
-        /// </summary>
-        /// <param name="tuv">tuv element.</param>
-        /// <returns>Language code as specified by xml:lang attribute or lang.</returns>
-        private static string Lang(XElement tuv)
+        /// <summary>Checks if two language codes are equivalent.</summary>
+        /// <param name="x">A language code.</param>
+        /// <param name="y">A language code.</param>
+        /// <returns>True if the two language codes are equivalent.</returns>
+        public static bool Equals(string x, string y)
         {
-            return (string)tuv.Attribute(XML_LANG) ?? (string)tuv.Attribute(LANG);
+            return string.Equals(x, y, StringComparison.OrdinalIgnoreCase);
         }
 
-        private static InlineString GetInline(XElement elem, XNamespace X)
+        /// <summary>Turns "*all*" (to mean "all/any languages" in TMX) to null.</summary>
+        /// <param name="lang">A TMX language code.</param>
+        /// <returns>Null if <paramref name="lang"/> equals "*all*".  Otherwise, <paramref name="lang"/>.</returns>
+        public static string NoAll(string lang)
+        {
+            return string.Equals(lang, "*all*", StringComparison.OrdinalIgnoreCase) ? null : lang;
+        }
+    }
+
+    class TuEntry
+    {
+        private static readonly XName XML_LANG = XNamespace.Xml + "lang";
+
+        private static readonly XName TMXLANG = "lang"; // Alternative xml:lang attribute defined by TMX spec.
+
+        private class TuvEntry
+        {
+            public string Lang;
+
+            public InlineString Inline;
+
+            public IEnumerable<KeyValuePair<string, string>> Props;
+
+            public IEnumerable<string> Notes;
+        }
+
+        private int Index;
+
+        private string Id;
+
+        private IEnumerable<KeyValuePair<string, string>> TuProps;
+
+        private IEnumerable<string> TuNotes;
+
+        private readonly List<TuvEntry> Tuvs = new List<TuvEntry>();
+
+        public TuEntry(XElement tu, int index)
+        {
+            var X = tu.Name.Namespace;
+            Index = index;
+
+            // collect tu info.
+            Id = (string)tu.Attribute("tuid") ?? "";
+            SourceLang = (string)tu.Attribute("srclang");
+            TuProps = CollectProps(tu);
+            TuNotes = CollectNotes(tu);
+
+            // collect tuv's
+            foreach (var tuv in tu.Elements(X + "tuv"))
+            {
+                // collet target tuv info.
+                Tuvs.Add(new TuvEntry
+                {
+                    Lang = GetLanguage(tuv),
+                    Inline = GetInline(tuv.Element(X + "seg")),
+                    Props = CollectProps(tuv),
+                    Notes = CollectNotes(tuv),
+                });
+            }
+        }
+
+        public string SourceLang { get; }
+
+        public IEnumerable<string> Languages { get { return Tuvs.Select(tuv => tuv.Lang); } }
+
+        public TmxPair GetTransPair(string source_lang, string target_lang, PropertiesManager propman)
+        {
+            if (SourceLang != null && SourceLang != source_lang) return null;
+
+            var source_tuv = GetTuv(source_lang);
+            if (source_tuv == null) return null;
+            var target_tuv = GetTuv(target_lang);
+            if (target_tuv == null) return null;
+
+            TagPool pool;
+            var source_inline = NumberTags(source_tuv.Inline, out pool);
+            var target_inline = MatchTags(target_tuv.Inline, pool);
+
+            var pair = new TmxPair
+            {
+                Serial = Index + 1,
+                Id = Id,
+                Source = source_inline,
+                Target = target_inline,
+                SourceLang = source_lang, // or source_tuv.Lang?  FIXME.
+                TargetLang = target_lang, // or target_tuv.Lang?  FIXME.
+            };
+            pair.SetProps(propman, TuProps, source_tuv.Props, target_tuv.Props);
+            pair.SetNotes(TuNotes, source_tuv.Notes, target_tuv.Notes);
+            return pair;
+        }
+
+        /// <summary>Gets a TuvEntry whose language matches a given language.</summary>
+        /// <param name="lang">A language code.</param>
+        /// <returns>A TuvEntry or null if none found.</returns>
+        /// <remarks>This method first looks for a same language, then for any language that is covered by <paramref name="lang"/>.</remarks>
+        private TuvEntry GetTuv(string lang)
+        {
+            foreach (var tuv in Tuvs)
+            {
+                if (LangCode.Equals(lang, tuv.Lang)) return tuv;
+            }
+            foreach (var tuv in Tuvs)
+            {
+                if (LangCode.Covers(lang, tuv.Lang)) return tuv;
+            }
+            return null;
+        }
+
+        /// <summary>Get the language code of a tuv element.</summary>
+        /// <param name="tuv">tuv element.</param>
+        /// <returns>Language code as specified by xml:lang attribute or lang, or null if neither is specified.</returns>
+        private static string GetLanguage(XElement tuv)
+        {
+            return (string)(tuv.Attribute(XML_LANG) ?? tuv.Attribute(TMXLANG));
+        }
+
+        /// <summary>Returns an enumerable containing all properties of a TMX:tu or TMX:tuv element.</summary>
+        /// <param name="elem">Either a TMX:tu or TMX:tuv element.</param>
+        /// <returns>An enumerable containing all properties.</returns>
+        /// <remarks>
+        /// Returned enumerable contains both standard and non-standard (per TMX spec.) properties
+        /// expressed both as attribute and as TMX:prop element,
+        /// but it excludes attributes defined by XML spec. and those for language codes.
+        /// </remarks>
+        private static IEnumerable<KeyValuePair<string, string>> CollectProps(XElement elem)
+        {
+            var X = elem.Name.Namespace;
+            var properties = new List<KeyValuePair<string, string>>();
+            foreach (var attr in elem.Attributes())
+            {
+                if (attr.Name.Namespace == XNamespace.Xml) continue;
+                if (attr.Name.Namespace == XNamespace.Xmlns) continue;
+                if (attr.Name == TMXLANG) continue;
+                properties.Add(new KeyValuePair<string, string>(attr.Name.LocalName, attr.Value));
+            }
+            foreach (var prop in elem.Elements(X + "prop"))
+            {
+                var type = (string)prop.Attribute("type");
+                if (type == null) continue;
+                properties.Add(new KeyValuePair<string, string>(type, prop.Value));
+            }
+            return properties;
+        }
+
+        /// <summary>Returns an enumerable containing notes of a TMX:tu or TMX:tuv element.</summary>
+        /// <param name="elem">Either a TMX:tu or TMX:tuv element.</param>
+        /// <returns>An enumerable containing notes.</returns>
+        private static IEnumerable<string> CollectNotes(XElement elem)
+        {
+            var X = elem.Name.Namespace;
+            var notes = elem.Elements(X + "note").Select(n => n.Value).ToList();
+            return notes.Count > 0 ? notes : Enumerable.Empty<string>();
+        }
+
+        /// <summary>Returns contents of a TMX:seg element as an InlineString.</summary>
+        /// <param name="elem">A seg element.</param>
+        /// <returns>An inline string.</returns>
+        private static InlineString GetInline(XElement elem)
         {
             var inline = new InlineBuilder();
-            BuildInline(inline, elem, X);
+            BuildInline(inline, elem, elem.Name.Namespace);
             return inline.ToInlineString();
         }
 
+        /// <summary>Recursively builds an inline string from an XML element.</summary>
+        /// <param name="inline">An inline builder to append partial contents.</param>
+        /// <param name="elem">An XML element whose contnets are appended to <paramref name="inline"/> to build an inline string.</param>
+        /// <param name="X">The namespace the TMX elements are in.</param>
         private static void BuildInline(InlineBuilder inline, XElement elem, XNamespace X)
         {
             foreach (var node in elem.Nodes())
@@ -441,6 +552,11 @@ namespace disfr.Doc
             }
         }
 
+        /// <summary>Builds a corresponding native code tag from a TMX inline element.</summary>
+        /// <param name="type">Tag type.</param>
+        /// <param name="elem">TMX element.</param>
+        /// <param name="has_code">Whether the contents of <paramref name="elem"/> is a native code.</param>
+        /// <returns>An inline tag.</returns>
         private static InlineTag BuildNativeCodeTag(Tag type, XElement elem, bool has_code)
         {
             return new InlineTag(
@@ -453,69 +569,71 @@ namespace disfr.Doc
                 code: has_code ? elem.Value : null);
         }
 
-        private static Dictionary<InlineTag, int> NumberTags(InlineString source)
+        private class TagPool : Dictionary<InlineTag, int>
         {
-            if (!source.HasTags) return null;
-            var pool = new Dictionary<InlineTag, int>();
-            int n = 0;
-            foreach (var tag in source.Tags)
-            {
-                pool[tag] = tag.Number = ++n;
-            }
-            return pool;
         }
 
-        private static InlineString MatchTags(Dictionary<InlineTag, int> pool, InlineString target)
-        {
-            if (pool != null)
-            {
-                foreach (var tag in target.Tags)
-                {
-                    int m;
-                    pool.TryGetValue(tag, out m);
-                    tag.Number = m;
-                }
-            }
-            return target;
-        }
-
-        /// <summary>
-        /// Returns an enumerable containing all properties of a TMX:tu or TMX:tuv element.
-        /// </summary>
-        /// <param name="elem">Either a TMX:tu or TMX:tuv element.</param>
-        /// <returns>An enumerable containing all properties.</returns>
+        /// <summary>Assigns local numbers to tags in an inline string, producing a tag pool.</summary>
+        /// <param name="source">An inline string.</param>
+        /// <param name="pool">The produced tag pool.</param>
+        /// <returns>An inline string with tag numbers assigned.</returns>
         /// <remarks>
-        /// Returned enumerable contains both standard and non-standard (per TMX spec.) properties
-        /// expressed both as attribute and as TMX:prop element,
-        /// but it excludes attributes defined by XML spec. and those for language codes.
+        /// This method never updates <paramref name="source"/>.
+        /// If it contained any tags, a new inline string containing tag numbers would be produced and returned.
+        /// If it contained no tags, <paramref name="source"/> would be returned.
+        /// <paramref name="pool"/> would be null when <paramref name="source"/> contained no tags.
         /// </remarks>
-        private static IEnumerable<KeyValuePair<string, string>> CollectProps(XElement elem)
+        private static InlineString NumberTags(InlineString source, out TagPool pool)
         {
-            var X = elem.Name.Namespace;
-            foreach (var attr in elem.Attributes())
+            if (source.HasTags)
             {
-                if (attr.Name.Namespace == XNamespace.Xml) continue;
-                if (attr.Name.Namespace == XNamespace.Xmlns) continue;
-                if (attr.Name == LANG) continue;
-                yield return new KeyValuePair<string, string>(attr.Name.LocalName, attr.Value);
+                var inline = new InlineString(source);
+                var p = new TagPool();
+                int n = 0;
+                foreach (var tag in inline.Tags)
+                {
+                    p[tag] = tag.Number = ++n;
+                }
+                pool = p;
+                return inline;
             }
-            foreach (var prop in elem.Elements(X + "prop"))
+            else
             {
-                var type = (string)prop.Attribute("type");
-                if (type == null) continue;
-                yield return new KeyValuePair<string, string>(type, prop.Value);
+                pool = null;
+                return source;
             }
         }
 
-        private static IEnumerable<string> CollectNotes(XElement elem)
+        /// <summary>Assigns local numbers to matching tags in an inline string, referring to a tag pool.</summary>
+        /// <param name="target">An inline string.</param>
+        /// <param name="pool">The tag pool.</param>
+        /// <returns>An inline string with tag numberes assigned.</returns>
+        /// <remarks>
+        /// This method never updates <paramref name="target"/>.
+        /// If it contained any tags, a new inline string containing tag numbers would be produced and returned.
+        /// If it contained no tags, <paramref name="target"/> would be returned.
+        /// </remarks>
+        private static InlineString MatchTags(InlineString target, TagPool pool)
         {
-            var X = elem.Name.Namespace;
-            foreach (var note in elem.Elements(X + "note"))
+            if (target.HasTags)
             {
-                yield return note.Value;
+                var inline = new InlineString(target);
+                if (pool != null)
+                {
+                    foreach (var tag in inline.Tags)
+                    {
+                        int n;
+                        pool.TryGetValue(tag, out n);
+                        tag.Number = n;
+                    }
+                }
+                return inline;
+            }
+            else
+            {
+                return target;
             }
         }
-
     }
 
     class TmxAsset : IAsset
@@ -581,15 +699,142 @@ namespace disfr.Doc
             }
         }
 
-        internal void SetProps(PropertiesManager manager, IStringPool pool, params IEnumerable<KeyValuePair<string, string>>[] propses)
+        internal void SetProps(PropertiesManager manager, params IEnumerable<KeyValuePair<string, string>>[] propses)
         {
             foreach (var props in propses)
             {
                 foreach (var kvp in props)
                 {
-                    manager.Put(ref _Props, kvp.Key, pool.Intern(kvp.Value));
+                    manager.Put(ref _Props, kvp.Key, kvp.Value);
                 }
             }
         }
+    }
+
+    static class Local
+    {
+#if false
+
+        public static void ForEach<TSource, TLocal>(
+            IEnumerable<TSource> source,
+            ParallelOptions options,
+            Func<TLocal> initial,
+            Func<TSource, ParallelLoopState, long, TLocal, TLocal> body,
+            Action<TLocal> final)
+        {
+            Parallel.ForEach(source, options, initial, body, final);
+        }
+
+        public static void ForEach<TSource>(
+            IEnumerable<TSource> source,
+            ParallelOptions options,
+            Action<TSource> body)
+        {
+            Parallel.ForEach(source, options, body);
+        }
+
+#elif false
+
+        public static void ForEach<TSource, TLocal>(
+            IEnumerable<TSource> source, 
+            ParallelOptions options,
+            Func<TLocal> initial,
+            Func<TSource, ParallelLoopState, long, TLocal, TLocal> body,
+            Action<TLocal> final)
+        {
+            TLocal local = initial();
+            long index = 0;
+            foreach (TSource item in source)
+            {
+                local = body(item, null, index++, local);
+            }
+            final(local);
+        }
+
+        public static void ForEach<TSource>(
+            IEnumerable<TSource> source,
+            ParallelOptions options,
+            Action<TSource> body)
+        {
+            foreach (TSource item in source)
+            {
+                body(item);
+            }
+        }
+
+#elif true
+        
+        struct IndexAndItem<T>
+        {
+            public readonly T Item;
+
+            public readonly long Index;
+
+            public IndexAndItem(T item, long index)
+            {
+                Item = item;
+                Index = index;
+            }
+        }
+
+        public static void ForEach<TSource, TLocal>(
+            IEnumerable<TSource> source,
+            ParallelOptions options,
+            Func<TLocal> initial,
+            Func<TSource, ParallelLoopState, long, TLocal, TLocal> body,
+            Action<TLocal> final)
+        {
+            using (var queue = new BlockingCollection<IndexAndItem<TSource>>(Environment.ProcessorCount))
+            {
+                var task = Task.Run(() =>
+                {
+                    var tasks = new Task[Environment.ProcessorCount];
+                    for (int i = 0; i < tasks.Length; i++)
+                    {
+                        tasks[i] = Task.Run(() =>
+                        {
+                            TLocal local = initial();
+                            while (!queue.IsCompleted)
+                            {
+                                try
+                                {
+                                    var index_and_item = queue.Take();
+                                    local = body(index_and_item.Item, null, index_and_item.Index, local);
+                                }
+                                catch (InvalidOperationException)
+                                {
+                                }
+                            }
+                            final(local);
+                        });
+                    }
+                    Task.WaitAll(tasks);
+                });
+
+                long index = 0;
+                foreach (TSource item in source)
+                {
+                    queue.Add(new IndexAndItem<TSource>(item, index++));
+                }
+                queue.CompleteAdding();
+
+                task.Wait();
+            }
+        }
+
+        public static void ForEach<TSource>(
+            IEnumerable<TSource> source,
+            ParallelOptions options,
+            Action<TSource> body)
+        {
+            ForEach<TSource, object>(
+                source,
+                options,
+                () => null,
+                (item, state, index, local) => { body(item); return null; },
+                (local) => { });
+        }
+
+#endif
     }
 }
