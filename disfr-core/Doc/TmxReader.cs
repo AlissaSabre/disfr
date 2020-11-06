@@ -107,10 +107,12 @@ namespace disfr.Doc
 
             var X = header.Name.Namespace;
 
-            //if (slang == null) return null;
+            //var header_source_language = LangCode.NoAll((string)header.Attribute("srclang"));
 
             var locker = new object();
             var all_tus = new List<TuEntry>();
+            //var source_languages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            //var target_languages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             Local.ForEach(tus,
                 new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
@@ -132,6 +134,8 @@ namespace disfr.Doc
                     }
                 }
             );
+
+            all_tus.Sort((x, y) => x.Index - y.Index);
 
             var tlangs = DetectTargetLanguages(all_tus);
             var slangs = DetectSourceLanguages(all_tus, header);
@@ -343,13 +347,13 @@ namespace disfr.Doc
             public IEnumerable<string> Notes;
         }
 
-        private int Index;
+        public readonly int Index;
 
-        private string Id;
+        private readonly string Id;
 
-        private IEnumerable<KeyValuePair<string, string>> TuProps;
+        private readonly IEnumerable<KeyValuePair<string, string>> TuProps;
 
-        private IEnumerable<string> TuNotes;
+        private readonly IEnumerable<string> TuNotes;
 
         private readonly List<TuvEntry> Tuvs = new List<TuvEntry>();
 
@@ -376,6 +380,13 @@ namespace disfr.Doc
                     Notes = CollectNotes(tuv),
                 });
             }
+
+            // assign local tag numbers.
+            TagPool pool = new TagPool();
+            foreach (var tuv in Tuvs)
+            {
+                pool.AssignTagNumbers(tuv.Inline);
+            }
         }
 
         public string SourceLang { get; }
@@ -391,16 +402,12 @@ namespace disfr.Doc
             var target_tuv = GetTuv(target_lang);
             if (target_tuv == null) return null;
 
-            TagPool pool;
-            var source_inline = NumberTags(source_tuv.Inline, out pool);
-            var target_inline = MatchTags(target_tuv.Inline, pool);
-
             var pair = new TmxPair
             {
                 Serial = Index + 1,
                 Id = Id,
-                Source = source_inline,
-                Target = target_inline,
+                Source = source_tuv.Inline,
+                Target = target_tuv.Inline,
                 SourceLang = source_lang, // or source_tuv.Lang?  FIXME.
                 TargetLang = target_lang, // or target_tuv.Lang?  FIXME.
             };
@@ -568,70 +575,24 @@ namespace disfr.Doc
                 display: null,
                 code: has_code ? elem.Value : null);
         }
+    }
 
-        private class TagPool : Dictionary<InlineTag, int>
-        {
-        }
+    class TagPool
+    {
+        private Dictionary<InlineTag, int> Dict = null;
 
-        /// <summary>Assigns local numbers to tags in an inline string, producing a tag pool.</summary>
-        /// <param name="source">An inline string.</param>
-        /// <param name="pool">The produced tag pool.</param>
-        /// <returns>An inline string with tag numbers assigned.</returns>
-        /// <remarks>
-        /// This method never updates <paramref name="source"/>.
-        /// If it contained any tags, a new inline string containing tag numbers would be produced and returned.
-        /// If it contained no tags, <paramref name="source"/> would be returned.
-        /// <paramref name="pool"/> would be null when <paramref name="source"/> contained no tags.
-        /// </remarks>
-        private static InlineString NumberTags(InlineString source, out TagPool pool)
+        public void AssignTagNumbers(InlineString inline)
         {
-            if (source.HasTags)
+            foreach (var tag in inline.Tags)
             {
-                var inline = new InlineString(source);
-                var p = new TagPool();
-                int n = 0;
-                foreach (var tag in inline.Tags)
+                if (Dict == null) Dict = new Dictionary<InlineTag, int>();
+                int number;
+                if (!Dict.TryGetValue(tag, out number))
                 {
-                    p[tag] = tag.Number = ++n;
+                    number = Dict.Count + 1;
+                    Dict.Add(tag.Clone(), number);
                 }
-                pool = p;
-                return inline;
-            }
-            else
-            {
-                pool = null;
-                return source;
-            }
-        }
-
-        /// <summary>Assigns local numbers to matching tags in an inline string, referring to a tag pool.</summary>
-        /// <param name="target">An inline string.</param>
-        /// <param name="pool">The tag pool.</param>
-        /// <returns>An inline string with tag numberes assigned.</returns>
-        /// <remarks>
-        /// This method never updates <paramref name="target"/>.
-        /// If it contained any tags, a new inline string containing tag numbers would be produced and returned.
-        /// If it contained no tags, <paramref name="target"/> would be returned.
-        /// </remarks>
-        private static InlineString MatchTags(InlineString target, TagPool pool)
-        {
-            if (target.HasTags)
-            {
-                var inline = new InlineString(target);
-                if (pool != null)
-                {
-                    foreach (var tag in inline.Tags)
-                    {
-                        int n;
-                        pool.TryGetValue(tag, out n);
-                        tag.Number = n;
-                    }
-                }
-                return inline;
-            }
-            else
-            {
-                return target;
+                tag.Number = number;
             }
         }
     }
@@ -786,30 +747,26 @@ namespace disfr.Doc
         {
             using (var queue = new BlockingCollection<IndexAndItem<TSource>>(Environment.ProcessorCount))
             {
-                var task = Task.Run(() =>
+                var tasks = new Task[Environment.ProcessorCount];
+                for (int i = 0; i < tasks.Length; i++)
                 {
-                    var tasks = new Task[Environment.ProcessorCount];
-                    for (int i = 0; i < tasks.Length; i++)
+                    tasks[i] = Task.Run(() =>
                     {
-                        tasks[i] = Task.Run(() =>
+                        TLocal local = initial();
+                        while (!queue.IsCompleted)
                         {
-                            TLocal local = initial();
-                            while (!queue.IsCompleted)
+                            try
                             {
-                                try
-                                {
-                                    var index_and_item = queue.Take();
-                                    local = body(index_and_item.Item, null, index_and_item.Index, local);
-                                }
-                                catch (InvalidOperationException)
-                                {
-                                }
+                                var index_and_item = queue.Take();
+                                local = body(index_and_item.Item, null, index_and_item.Index, local);
                             }
-                            final(local);
-                        });
-                    }
-                    Task.WaitAll(tasks);
-                });
+                            catch (InvalidOperationException)
+                            {
+                            }
+                        }
+                        final(local);
+                    });
+                }
 
                 long index = 0;
                 foreach (TSource item in source)
@@ -818,7 +775,7 @@ namespace disfr.Doc
                 }
                 queue.CompleteAdding();
 
-                task.Wait();
+                Task.WaitAll(tasks);
             }
         }
 
