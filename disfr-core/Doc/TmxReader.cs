@@ -181,13 +181,13 @@ namespace disfr.Doc
             return assets;
         }
 
-        private IAsset CreateAsset(string package, LangPair lang_pair, IEnumerable<TuEntry> all_tus)
+        private IAsset CreateAsset(string package, LangPair lang_pair, ICollection<TuEntry> all_tus)
         {
             var slang = lang_pair.Source;
             var tlang = lang_pair.Target;
             var propman = new PropertiesManager(false);
 
-            var pairs = new List<ITransPair>();
+            var pairs = new List<ITransPair>(all_tus.Count);
             foreach (var tu in all_tus)
             {
                 var pair = tu.GetTransPair(slang, tlang, propman);
@@ -204,7 +204,7 @@ namespace disfr.Doc
                 Original = string.Format("{0} - {1}", slang, tlang),
                 SourceLang = slang,
                 TargetLang = tlang,
-                TransPairs = pairs,
+                TransPairs = pairs.ToArray(),
                 Properties = propman.Properties,
             };
         }
