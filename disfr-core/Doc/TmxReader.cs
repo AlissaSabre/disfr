@@ -432,11 +432,8 @@ namespace disfr.Doc
             private class TuvEntry
             {
                 public string Lang;
-
                 public InlineString Inline;
-
                 public IEnumerable<KeyValuePair<string, string>> Props;
-
                 public IEnumerable<string> Notes;
             }
 
@@ -558,7 +555,7 @@ namespace disfr.Doc
                     if (type == null) continue;
                     properties.Add(new KeyValuePair<string, string>(type, prop.Value));
                 }
-                return properties;
+                return properties.ToArray();
             }
 
             /// <summary>Returns an enumerable containing notes of a TMX:tu or TMX:tuv element.</summary>
@@ -566,9 +563,12 @@ namespace disfr.Doc
             /// <returns>An enumerable containing notes.</returns>
             private static IEnumerable<string> CollectNotes(XElement elem)
             {
+                // The following code is optimized for the case with no notes at all,
+                // because it is not very frequent that a TMX TU has any note,
+                // at least in my own private experiences...
                 var X = elem.Name.Namespace;
-                var notes = elem.Elements(X + "note").Select(n => n.Value).ToList();
-                return notes.Count > 0 ? notes : Enumerable.Empty<string>();
+                var notes = elem.Elements(X + "note").Select(n => n.Value);
+                return notes.Any() ? notes.ToList() : Enumerable.Empty<string>();
             }
 
             /// <summary>Returns contents of a TMX:seg element as an InlineString.</summary>
@@ -899,7 +899,10 @@ namespace disfr.Doc
                         // Let the current thread do the job.
                         work();
                     }
+
+#if DEBUG
                     Console.WriteLine($"ForEach: Tasks = {tasks.Count}");
+#endif
                 }
             }
 
@@ -915,6 +918,6 @@ namespace disfr.Doc
             }
 
 #endif
-        }
-    }
+                }
+            }
 }
