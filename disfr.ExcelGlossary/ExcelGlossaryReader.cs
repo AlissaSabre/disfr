@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using NetOffice.ExcelApi;
 using NetOffice.ExcelApi.Enums;
+// using NetOffice.OfficeApi.Enums;
 using Excel = NetOffice.ExcelApi.Application;
 
 using disfr.Doc;
@@ -49,7 +50,10 @@ namespace disfr.ExcelGlossary
             var excel = new Excel() { Visible = false, Interactive = false, DisplayAlerts = false };
             try
             {
+                // excel.AutomationSecurity = MsoAutomationSecurity.msoAutomationSecurityForceDisable;
                 var book = excel.Workbooks.Open(filename, XlUpdateLinks.xlUpdateLinksNever, true);
+                // excel.AutomationSecurity = MsoAutomationSecurity.msoAutomationSecurityForceDisable;
+
                 var sheets = book.Worksheets;
                 for (int i = 1; i <= sheets.Count; i++)
                 {
