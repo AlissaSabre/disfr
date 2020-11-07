@@ -29,6 +29,14 @@ namespace UnitTestDisfrDoc
             " adminlang='en' srclang='en' datatype='unknown'/>" +
             "<body>";
 
+        private const string PREAMBLE_ALL =
+            "<?xml version='1.0'?>" +
+            "<tmx version='1.4'>" +
+            "<header creationtool='none' creationtoolversion='0' segtype='sentence' o-tmf='x'" +
+            " adminlang='en' srclang='*all*' datatype='unknown'/>" +
+            "<body>";
+
+
         private const string POSTAMBLE =
             "</body></tmx>";
 
@@ -145,6 +153,112 @@ namespace UnitTestDisfrDoc
                 a[1].SourceLang.Is("en");
                 a[1].TargetLang.Is("ko");
             }
+        }
+
+        [TestMethod]
+        public void language_detection_srclang_all_1()
+        {
+            {
+                var a = new TmxReader().Read(new StringStream(
+                    PREAMBLE_ALL
+                    + "<tu><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='fr'><seg>b</seg></tuv><tuv xml:lang='de'><seg>c</seg></tuv></tu>"
+                    + POSTAMBLE), "test", "test").Assets.ToArray();
+                a.Length.Is(6);
+                a[0].SourceLang.Is("de");
+                a[0].TargetLang.Is("en");
+                a[1].SourceLang.Is("de");
+                a[1].TargetLang.Is("fr");
+                a[2].SourceLang.Is("en");
+                a[2].TargetLang.Is("de");
+                a[3].SourceLang.Is("en");
+                a[3].TargetLang.Is("fr");
+                a[4].SourceLang.Is("fr");
+                a[4].TargetLang.Is("de");
+                a[5].SourceLang.Is("fr");
+                a[5].TargetLang.Is("en");
+            }
+        }
+
+        [TestMethod]
+        public void language_detection_srclang_all_2()
+        {
+            {
+                var a = new TmxReader().Read(new StringStream(
+                    PREAMBLE_ALL
+                    + "<tu srclang='en'><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='fr'><seg>b</seg></tuv><tuv xml:lang='de'><seg>c</seg></tuv></tu>"
+                    + POSTAMBLE), "test", "test").Assets.ToArray();
+                a.Length.Is(2);
+                a[0].SourceLang.Is("en");
+                a[0].TargetLang.Is("de");
+                a[1].SourceLang.Is("en");
+                a[1].TargetLang.Is("fr");
+            }
+        }
+
+        [TestMethod]
+        public void language_detection_srclang_all_3()
+        {
+            {
+                var a = new TmxReader().Read(new StringStream(
+                    PREAMBLE_ALL
+                    + "<tu><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='fr'><seg>b</seg></tuv><tuv xml:lang='de'><seg>c</seg></tuv></tu>"
+                    + "<tu><tuv xml:lang='de'><seg>a</seg></tuv><tuv xml:lang='fr'><seg>b</seg></tuv><tuv xml:lang='de'><seg>c</seg></tuv></tu>"
+                    + POSTAMBLE), "test", "test").Assets.ToArray();
+                a.Length.Is(6);
+                a[0].SourceLang.Is("de");
+                a[0].TargetLang.Is("en");
+                a[1].SourceLang.Is("de");
+                a[1].TargetLang.Is("fr");
+                a[2].SourceLang.Is("en");
+                a[2].TargetLang.Is("de");
+                a[3].SourceLang.Is("en");
+                a[3].TargetLang.Is("fr");
+            }
+        }
+
+        [TestMethod]
+        public void language_detection_mixed_srclang_0()
+        {
+            // srclang is not actually mixed in this test case.
+            var a = new TmxReader().Read(new StringStream(
+                PREAMBLE_EN
+                + "<tu><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='fr'><seg>b</seg></tuv><tuv xml:lang='de'><seg>c</seg></tuv></tu>"
+                + POSTAMBLE), "test", "test").Assets.ToArray();
+            a.Length.Is(2);
+            a[0].SourceLang.Is("en");
+            a[0].TargetLang.Is("de");
+            a[1].SourceLang.Is("en");
+            a[1].TargetLang.Is("fr");
+        }
+
+        [TestMethod]
+        public void language_detection_mixed_srclang_1()
+        {
+            // srclang is not actually mixed in this test case.
+            var a = new TmxReader().Read(new StringStream(
+                PREAMBLE_EN
+                + "<tu srclang='en'><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='fr'><seg>b</seg></tuv><tuv xml:lang='de'><seg>c</seg></tuv></tu>"
+                + POSTAMBLE), "test", "test").Assets.ToArray();
+            a.Length.Is(2);
+            a[0].SourceLang.Is("en");
+            a[0].TargetLang.Is("de");
+            a[1].SourceLang.Is("en");
+            a[1].TargetLang.Is("fr");
+        }
+
+        [TestMethod]
+        public void language_detection_mixed_srclang_2()
+        {
+            // srclang is not actually mixed in this test case.
+            var a = new TmxReader().Read(new StringStream(
+                PREAMBLE_EN
+                + "<tu srclang='de'><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='fr'><seg>b</seg></tuv><tuv xml:lang='de'><seg>c</seg></tuv></tu>"
+                + POSTAMBLE), "test", "test").Assets.ToArray();
+            a.Length.Is(2);
+            a[0].SourceLang.Is("de");
+            a[0].TargetLang.Is("en");
+            a[1].SourceLang.Is("de");
+            a[1].TargetLang.Is("fr");
         }
     }
 }
