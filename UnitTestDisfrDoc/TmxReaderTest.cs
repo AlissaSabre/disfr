@@ -16,7 +16,7 @@ namespace UnitTestDisfrDoc
         }
 
         [TestMethod]
-        [Ignore]
+        //[Ignore]
         public void XuanZang_tmx_Test()
         {
             Comprehensive(new TmxReader(), "XuanZang.tmx");
