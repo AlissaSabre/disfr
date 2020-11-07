@@ -99,6 +99,39 @@ namespace disfr.Doc
             }
         }
 
+        private class TuEntryList
+        {
+            public readonly List<TuEntry> Tus = new List<TuEntry>();
+            public readonly HashSet<string> SourceLanguages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            public readonly HashSet<string> TargetLanguages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            public void Add(TuEntry tu)
+            {
+                Tus.Add(tu);
+                var slang = LangCode.NoAll(tu.SourceLang);
+                if (slang != null) SourceLanguages.Add(slang);
+                foreach (var tlang in tu.Languages)
+                {
+                    if (!LangCode.Equals(tlang, slang)) TargetLanguages.Add(tlang);
+                }
+            }
+
+            public void AddRange(TuEntryList another)
+            {
+                Tus.AddRange(another.Tus);
+                SourceLanguages.UnionWith(another.SourceLanguages);
+                TargetLanguages.UnionWith(another.TargetLanguages);
+            }
+
+            public void Sort()
+            {
+                // TU index is a zero or positive integer (effectively 31 bit)
+                // so we can simply make a subtraction to produce a comparison value
+                // without worrying about overflow.
+                Tus.Sort((x, y) => x.Index - y.Index);
+            }
+        }
+
         private IEnumerable<IAsset> ReadAssets(XmlReader reader, string package)
         {
             XElement header;
@@ -107,17 +140,12 @@ namespace disfr.Doc
 
             var X = header.Name.Namespace;
 
-            //var header_source_language = LangCode.NoAll((string)header.Attribute("srclang"));
-
             var locker = new object();
-            var all_tus = new List<TuEntry>();
-            //var source_languages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            //var target_languages = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var all_tus = new TuEntryList();
 
-            Local.ForEach(tus,
-                new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
+            AltParallel.ForEach(tus,
                 // Local Init
-                () => new List<TuEntry>(),
+                () => new TuEntryList(),
                 // Body
                 (tu, state_UNUSED, index_long, local_tus) =>
                 {
@@ -135,18 +163,22 @@ namespace disfr.Doc
                 }
             );
 
-            all_tus.Sort((x, y) => x.Index - y.Index);
+            all_tus.Sort();
 
-            var tlangs = DetectTargetLanguages(all_tus);
-            var slangs = DetectSourceLanguages(all_tus, header);
+            var header_source_language = LangCode.NoAll((string)header.Attribute("srclang"));
+            if (header_source_language != null)
+            {
+                all_tus.SourceLanguages.Add(header_source_language);
+            }
+            var slangs = all_tus.SourceLanguages.ToArray();
+            var tlangs = all_tus.TargetLanguages.ToArray();
             if (slangs.Length == 0) slangs = tlangs;
 
             var assets = new List<IAsset>(slangs.Length * tlangs.Length);
-            Local.ForEach(LanguagePair.Enumerate(slangs, tlangs),
-                new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount - 1 },
+            AltParallel.ForEach(LanguagePair.Enumerate(slangs, tlangs),
                 (lang_pair) => 
                 {
-                    var asset = CreateAsset(package, lang_pair, all_tus);
+                    var asset = CreateAsset(package, lang_pair, all_tus.Tus);
                     if (asset != null)
                     {
                         lock (locker)
@@ -156,11 +188,17 @@ namespace disfr.Doc
                     }
                 }
             );
-
+            assets.Sort((x, y) =>
+            {
+                var s = string.Compare(x.SourceLang, y.SourceLang, StringComparison.OrdinalIgnoreCase);
+                if (s != 0) return s;
+                var t = string.Compare(x.TargetLang, y.TargetLang, StringComparison.OrdinalIgnoreCase);
+                return t;
+            });
             return assets;
         }
 
-        private IAsset CreateAsset(string package, LanguagePair lang_pair, List<TuEntry> all_tus)
+        private IAsset CreateAsset(string package, LanguagePair lang_pair, IEnumerable<TuEntry> all_tus)
         {
             var slang = lang_pair.Source;
             var tlang = lang_pair.Target;
@@ -186,39 +224,6 @@ namespace disfr.Doc
                 TransPairs = pairs,
                 Properties = propman.Properties,
             };
-        }
-
-        /// <summary>Detects one or more source languages of a TMX file.</summary>
-        /// <param name="header">The TMX:header element.</param>
-        /// <param name="tus">List of TU entries.</param>
-        /// <returns>List of source language code.</returns>
-        /// <remarks>The return value may be an empty array but won't be null.</remarks>
-        private string[] DetectSourceLanguages(List<TuEntry> tus, XElement header)
-        {
-            var langs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var tu in tus)
-            {
-                if (tu.SourceLang != null) langs.Add(tu.SourceLang);
-            }
-
-            var header_slang = LangCode.NoAll((string)header.Attribute("srclang"));
-            if (header_slang != null) langs.Add(header_slang);
-
-            // We should reduce the languages by eliminating more specific language code covered by a generic language code in langs.  FIXME.
-            return langs.ToArray();
-        }
-
-        private string[] DetectTargetLanguages(List<TuEntry> tus)
-        {
-            var langs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var tu in tus)
-            {
-                foreach (var lang in tu.Languages)
-                {
-                    if (!LangCode.Equals(lang, tu.SourceLang)) langs.Add(lang);
-                }
-            }
-            return langs.ToArray();
         }
 
         private bool ParseEnumerateTmx(XmlReader reader, out XElement header, out IEnumerable<XElement> tus)
@@ -369,23 +374,17 @@ namespace disfr.Doc
             TuNotes = CollectNotes(tu);
 
             // collect tuv's
+            TagPool pool = new TagPool();
             foreach (var tuv in tu.Elements(X + "tuv"))
             {
                 // collet target tuv info.
                 Tuvs.Add(new TuvEntry
                 {
                     Lang = GetLanguage(tuv),
-                    Inline = GetInline(tuv.Element(X + "seg")),
+                    Inline = pool.AssignTagNumbers(GetInline(tuv.Element(X + "seg"))),
                     Props = CollectProps(tuv),
                     Notes = CollectNotes(tuv),
                 });
-            }
-
-            // assign local tag numbers.
-            TagPool pool = new TagPool();
-            foreach (var tuv in Tuvs)
-            {
-                pool.AssignTagNumbers(tuv.Inline);
             }
         }
 
@@ -395,7 +394,7 @@ namespace disfr.Doc
 
         public TmxPair GetTransPair(string source_lang, string target_lang, PropertiesManager propman)
         {
-            if (SourceLang != null && SourceLang != source_lang) return null;
+            if (SourceLang != null && !LangCode.Covers(source_lang, SourceLang)) return null;
 
             var source_tuv = GetTuv(source_lang);
             if (source_tuv == null) return null;
@@ -581,7 +580,7 @@ namespace disfr.Doc
     {
         private Dictionary<InlineTag, int> Dict = null;
 
-        public void AssignTagNumbers(InlineString inline)
+        public InlineString AssignTagNumbers(InlineString inline)
         {
             foreach (var tag in inline.Tags)
             {
@@ -594,6 +593,7 @@ namespace disfr.Doc
                 }
                 tag.Number = number;
             }
+            return inline;
         }
     }
 
@@ -672,41 +672,51 @@ namespace disfr.Doc
         }
     }
 
-    static class Local
+    static class AltParallel
     {
 #if false
 
+        // System.Parallel versions.  Doesn't work efficiently for this program.
+
         public static void ForEach<TSource, TLocal>(
             IEnumerable<TSource> source,
-            ParallelOptions options,
             Func<TLocal> initial,
             Func<TSource, ParallelLoopState, long, TLocal, TLocal> body,
             Action<TLocal> final)
         {
-            Parallel.ForEach(source, options, initial, body, final);
+            Parallel.ForEach(source, initial, body, final);
         }
 
         public static void ForEach<TSource>(
             IEnumerable<TSource> source,
-            ParallelOptions options,
             Action<TSource> body)
         {
-            Parallel.ForEach(source, options, body);
+            Parallel.ForEach(source, body);
         }
 
 #elif false
 
+        // Sequential versions.  Primarily for debugging.
+
+        private const int Slice = 6000; // An arbitrary number
+
         public static void ForEach<TSource, TLocal>(
             IEnumerable<TSource> source, 
-            ParallelOptions options,
             Func<TLocal> initial,
             Func<TSource, ParallelLoopState, long, TLocal, TLocal> body,
             Action<TLocal> final)
         {
             TLocal local = initial();
             long index = 0;
+            int slicer = 0;
             foreach (TSource item in source)
             {
+                if (++slicer > Slice)
+                {
+                    final(local);
+                    local = initial();
+                    slicer = 0;
+                }
                 local = body(item, null, index++, local);
             }
             final(local);
@@ -714,7 +724,6 @@ namespace disfr.Doc
 
         public static void ForEach<TSource>(
             IEnumerable<TSource> source,
-            ParallelOptions options,
             Action<TSource> body)
         {
             foreach (TSource item in source)
@@ -725,13 +734,15 @@ namespace disfr.Doc
 
 #elif true
         
-        struct IndexAndItem<T>
+        // Custom versions.
+
+        private struct ItemWithIndex<T>
         {
             public readonly T Item;
 
             public readonly long Index;
 
-            public IndexAndItem(T item, long index)
+            public ItemWithIndex(T item, long index)
             {
                 Item = item;
                 Index = index;
@@ -740,12 +751,11 @@ namespace disfr.Doc
 
         public static void ForEach<TSource, TLocal>(
             IEnumerable<TSource> source,
-            ParallelOptions options,
             Func<TLocal> initial,
             Func<TSource, ParallelLoopState, long, TLocal, TLocal> body,
             Action<TLocal> final)
         {
-            using (var queue = new BlockingCollection<IndexAndItem<TSource>>(Environment.ProcessorCount))
+            using (var queue = new BlockingCollection<ItemWithIndex<TSource>>(Environment.ProcessorCount))
             {
                 var tasks = new Task[Environment.ProcessorCount];
                 for (int i = 0; i < tasks.Length; i++)
@@ -753,16 +763,9 @@ namespace disfr.Doc
                     tasks[i] = Task.Run(() =>
                     {
                         TLocal local = initial();
-                        while (!queue.IsCompleted)
+                        foreach (var item_with_index in queue.GetConsumingEnumerable())
                         {
-                            try
-                            {
-                                var index_and_item = queue.Take();
-                                local = body(index_and_item.Item, null, index_and_item.Index, local);
-                            }
-                            catch (InvalidOperationException)
-                            {
-                            }
+                            local = body(item_with_index.Item, null, item_with_index.Index, local);
                         }
                         final(local);
                     });
@@ -771,7 +774,7 @@ namespace disfr.Doc
                 long index = 0;
                 foreach (TSource item in source)
                 {
-                    queue.Add(new IndexAndItem<TSource>(item, index++));
+                    queue.Add(new ItemWithIndex<TSource>(item, index++));
                 }
                 queue.CompleteAdding();
 
@@ -781,12 +784,10 @@ namespace disfr.Doc
 
         public static void ForEach<TSource>(
             IEnumerable<TSource> source,
-            ParallelOptions options,
             Action<TSource> body)
         {
             ForEach<TSource, object>(
                 source,
-                options,
                 () => null,
                 (item, state, index, local) => { body(item); return null; },
                 (local) => { });
