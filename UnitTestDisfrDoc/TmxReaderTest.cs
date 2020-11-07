@@ -43,7 +43,10 @@ namespace UnitTestDisfrDoc
                 a.Length.Is(2);
                 a[0].SourceLang.Is("en");
                 a[0].TargetLang.Is("zh-cn");
+                a[0].TransPairs.Count().Is(1);
+                a[1].SourceLang.Is("en");
                 a[1].TargetLang.Is("zh-tw");
+                a[1].TransPairs.Count().Is(1);
             }
             {
                 var a = new TmxReader().Read(new StringStream(
@@ -54,7 +57,10 @@ namespace UnitTestDisfrDoc
                 a.Length.Is(2);
                 a[0].SourceLang.Is("en");
                 a[0].TargetLang.Is("zh-cn");
+                a[0].TransPairs.Count().Is(1);
+                a[1].SourceLang.Is("en");
                 a[1].TargetLang.Is("zh-tw");
+                a[1].TransPairs.Count().Is(1);
             }
             {
                 var a = new TmxReader().Read(new StringStream(
@@ -63,9 +69,20 @@ namespace UnitTestDisfrDoc
                     + "<tu><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='zh-cn'><seg>a</seg></tuv></tu>"
                     + "<tu><tuv xml:lang='en'><seg>a</seg></tuv><tuv xml:lang='zh-tw'><seg>a</seg></tuv></tu>"
                     + POSTAMBLE), "test", "test").Assets.ToArray();
-                a.Length.Is(1);
+                // The feature to merge target language variants is removed on 71ceb78e93289b2468bf8e4f2813795269106d6c
+                // a.Length.Is(1);
+                // a[0].SourceLang.Is("en");
+                // a[0].TargetLang.Is("zh");
+                a.Length.Is(3);
                 a[0].SourceLang.Is("en");
                 a[0].TargetLang.Is("zh");
+                a[0].TransPairs.Count().Is(1);
+                a[1].SourceLang.Is("en");
+                a[1].TargetLang.Is("zh-cn");
+                a[1].TransPairs.Count().Is(1);
+                a[2].SourceLang.Is("en");
+                a[2].TargetLang.Is("zh-tw");
+                a[2].TransPairs.Count().Is(1);
             }
             {
                 var a = new TmxReader().Read(new StringStream(
@@ -76,7 +93,10 @@ namespace UnitTestDisfrDoc
                 a.Length.Is(2);
                 a[0].SourceLang.Is("en");
                 a[0].TargetLang.Is("zh-cn");
+                a[0].TransPairs.Count().Is(1);
+                a[1].SourceLang.Is("en");
                 a[1].TargetLang.Is("zh-tw");
+                a[1].TransPairs.Count().Is(1);
             }
             {
                 var a = new TmxReader().Read(new StringStream(
@@ -87,6 +107,7 @@ namespace UnitTestDisfrDoc
                 a.Length.Is(1);
                 a[0].SourceLang.Is("en");
                 a[0].TargetLang.Is("zh");
+                a[0].TransPairs.Count().Is(2);
             }
             {
                 var a = new TmxReader().Read(new StringStream(
@@ -98,8 +119,13 @@ namespace UnitTestDisfrDoc
                 a.Length.Is(3);
                 a[0].SourceLang.Is("en");
                 a[0].TargetLang.Is("de");
+                a[0].TransPairs.Count().Is(1);
+                a[1].SourceLang.Is("en");
                 a[1].TargetLang.Is("fr");
+                a[1].TransPairs.Count().Is(1);
+                a[2].SourceLang.Is("en");
                 a[2].TargetLang.Is("zh");
+                a[2].TransPairs.Count().Is(1);
             }
         }
 

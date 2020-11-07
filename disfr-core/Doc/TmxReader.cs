@@ -484,12 +484,14 @@ namespace disfr.Doc
 
             public TmxPair GetTransPair(string source_lang, string target_lang, PropertiesManager propman)
             {
-                if (SourceLang != null && !LangCode.Covers(source_lang, SourceLang)) return null;
+                // if (SourceLang != null && !LangCode.Covers(source_lang, SourceLang)) return null;
+                if (SourceLang != null && !LangCode.Equals(source_lang, SourceLang)) return null;
 
-                var source_tuv = GetTuv(source_lang);
+                var source_tuv = GetTuv(source_lang, true);
                 if (source_tuv == null) return null;
-                var target_tuv = GetTuv(target_lang);
+                var target_tuv = GetTuv(target_lang, false);
                 if (target_tuv == null) return null;
+                if (source_tuv == target_tuv) return null;
 
                 var pair = new TmxPair
                 {
@@ -507,14 +509,20 @@ namespace disfr.Doc
 
             /// <summary>Gets a TuvEntry whose language matches a given language.</summary>
             /// <param name="lang">A language code.</param>
-            /// <returns>A TuvEntry or null if none found.</returns>
-            /// <remarks>This method first looks for a same language, then for any language that is covered by <paramref name="lang"/>.</remarks>
-            private TuvEntry GetTuv(string lang)
+            /// <param name="allow_variants">True to search for a variant language.  False to make a strict match.</param>
+            /// <returns>A TuvEntry if found or null if none found.</returns>
+            /// <remarks>
+            /// This method first looks for a TUV with an identical language code.
+            /// Then, if no match is found,
+            /// it looks for any language that is covered by <paramref name="lang"/> if <paramref name="allow_variants"/> is true.
+            /// </remarks>
+            private TuvEntry GetTuv(string lang, bool allow_variants)
             {
                 foreach (var tuv in Tuvs)
                 {
                     if (LangCode.Equals(lang, tuv.Lang)) return tuv;
                 }
+                if (!allow_variants) return null;
                 foreach (var tuv in Tuvs)
                 {
                     if (LangCode.Covers(lang, tuv.Lang)) return tuv;
