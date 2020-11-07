@@ -11,24 +11,53 @@ using System.Xml.Linq;
 
 namespace disfr.Doc
 {
+    /// <summary>Reader for TMX files.</summary>
+    /// <remarks>
+    /// <para>
+    /// TmxReader doesn't directly support reading of a ZIP archive containing tmx files (in this version.)
+    /// </para>
+    /// <para>
+    /// TMX is a multi-language file in its nature, while disfr is designed for handling bilingual files.
+    /// TmxReader breaks a single multi-language TMX file into multiple assets, 
+    /// each of which contains pairs of a single source language and a single target language.
+    /// </para>
+    /// <para>
+    /// TMX specification allows a file to not indicate a source language (by setting srclang="*all*").
+    /// The current version of TmxReader produces all possible combinations of source and target languages
+    /// based on the contained TUs in the case.
+    /// It means the returned asset bundle as a whole will contain all the _flipped_ translation pairs
+    /// (becuase we have no way to know which of the segment data was really a source.)
+    /// </para>
+    /// </remarks>
     public class TmxReader : IAssetReader
     {
         private static readonly string[] _FilterString = { "TMX Translation Memory|*.tmx" };
 
+        /// <summary>The filter string for TMX files.</summary>
         public IList<string> FilterString { get { return _FilterString; } }
 
+        /// <summary>The name of TMX reader.</summary>
         public string Name { get { return "TmxReader"; } }
 
+        /// <summary>The auto-detect priority.</summary>
+        /// <remarks>It is 7 so that it comes almost next to XLIFF, still preserving some space for external plugins.</remarks>
         public int Priority { get { return 7; } }
 
-        public IAssetBundle Read(string filename, int filterindex)
+        /// <summary>Reads a TMX file to create a reloadable asset bundle.</summary>
+        /// <param name="filename">A full path name of a TMX file.</param>
+        /// <param name="filterindex_UNUSED">Ignored.</param>
+        /// <returns>An asset bundle.</returns>
+        public IAssetBundle Read(string filename, int filterindex_UNUSED)
         {
             return LoaderAssetBundle.Create(
                 ReaderManager.FriendlyFilename(filename),
-                () => ReadAssets(filename, filterindex));
+                () => ReadAssets(filename));
         }
 
-        private IEnumerable<IAsset> ReadAssets(string filename, int filterindex)
+        /// <summary>Reads a TMX file to return a series of assets.</summary>
+        /// <param name="filename">A full path name of a TMX file.</param>
+        /// <returns>A series of assets.</returns>
+        private IEnumerable<IAsset> ReadAssets(string filename)
         {
             using (var stream = FileUtils.OpenRead(filename))
             {
@@ -36,6 +65,11 @@ namespace disfr.Doc
             }
         }
 
+        /// <summary>Reads a TMX from a stream to create a non-reloadable asset bundle.</summary>
+        /// <param name="stream">A stream to read TMX document instance from.</param>
+        /// <param name="package">The name of the package the stream belongs to.</param>
+        /// <param name="filename">The name of the file the stream belongs to.</param>
+        /// <returns>An asset bundle.</returns>
         public IAssetBundle Read(Stream stream, string package, string filename)
         {
             var assets = ReadAssets(stream, package);
@@ -43,6 +77,10 @@ namespace disfr.Doc
             return new SimpleAssetBundle(assets, filename);
         }
 
+        /// <summary>Reads a TMX stream to return a series of assets.</summary>
+        /// <param name="stream">A stream.</param>
+        /// <param name="package">The name of package the stream belongs to.</param>
+        /// <returns>A series of assets.</returns>
         private IEnumerable<IAsset> ReadAssets(Stream stream, string package)
         {
             using (var reader = XmlReader.Create(stream, new XmlReaderSettings()
@@ -60,15 +98,11 @@ namespace disfr.Doc
             }
         }
 
-        /// <summary>The TMX namespace.</summary>
-        private static readonly XNamespace TMX = XNamespace.Get("http://www.lisa.org/tmx14");
-
-        /// <summary>The xml:lang attribute name.</summary>
-        private static readonly XName XML_LANG = XNamespace.Xml + "lang";
-
-        /// <summary>Alternative xml:lang attribute name defined by TMX spec.</summary>
-        private static readonly XName TMXLANG = "lang";
-
+        /// <summary>Reads a TMX document from an XmlReader to return a non-reloadable asset bundle.</summary>
+        /// <param name="reader">An XmlReader object.</param>
+        /// <param name="package">The name of package the XmlReader reads data from.</param>
+        /// <param name="filename">The name of file the XmlReader reads data from.</param>
+        /// <returns>A non-reloadable asset bundle.</returns>
         public IAssetBundle Read(XmlReader reader, string package, string filename)
         {
             var assets = ReadAssets(reader, package);
@@ -76,6 +110,10 @@ namespace disfr.Doc
             return new SimpleAssetBundle(assets, filename);
         }
 
+        /// <summary>Reads a TMX document from an XmlReader to return a series of assets.</summary>
+        /// <param name="reader">An XmlReader object.</param>
+        /// <param name="package">The name of package the XmlReader reads data from.</param>
+        /// <returns>A series of assets.</returns>
         private IEnumerable<IAsset> ReadAssets(XmlReader reader, string package)
         {
             XElement header;
@@ -132,6 +170,7 @@ namespace disfr.Doc
                     }
                 }
             );
+            // Sort the assets with language codes so that the result is predicatble.
             assets.Sort((x, y) =>
             {
                 var s = string.Compare(x.SourceLang, y.SourceLang, StringComparison.OrdinalIgnoreCase);
@@ -169,6 +208,15 @@ namespace disfr.Doc
                 Properties = propman.Properties,
             };
         }
+
+        /// <summary>The TMX namespace.</summary>
+        private static readonly XNamespace TMX = XNamespace.Get("http://www.lisa.org/tmx14");
+
+        /// <summary>The xml:lang attribute name.</summary>
+        private static readonly XName XML_LANG = XNamespace.Xml + "lang";
+
+        /// <summary>Alternative xml:lang attribute name defined by TMX spec.</summary>
+        private static readonly XName TMXLANG = "lang";
 
         private bool ParseEnumerateTmx(XmlReader reader, out XElement header, out IEnumerable<XElement> tus)
         {
