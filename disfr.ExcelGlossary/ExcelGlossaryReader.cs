@@ -16,6 +16,8 @@ namespace disfr.ExcelGlossary
 {
     class ExcelGlossaryReader : IAssetReader
     {
+        private static readonly string[] PrimaryExtensions = { ".xlsx", ".xls" };
+
         private static readonly string[] _FilterString = { "Excel glossary files|*.xlsx;*.xls" };
 
         public IList<string> FilterString { get { return _FilterString; } }
@@ -34,6 +36,22 @@ namespace disfr.ExcelGlossary
 
         public IAssetBundle Read(string filename, int filterindex)
         {
+            if (filterindex < 0)
+            {
+                // Excel can open virtually any text-based file formats,
+                // but it could take incredibly long time if the file is not suitable for a table.
+                // If a user opened an unknown file with disfr using "All files" file types,
+                // assuming it is an XLIFF, but it was actually not,
+                // disfr's automatic file detection scheme eventually passes the file to this method
+                // (unless another reader accepts it), and the file could occupy Excel for long,
+                // causing disfr to appear as though it hanged up.
+                // I think we should avoid such a behaviour.
+                if (!PrimaryExtensions.Any(ext => filename.EndsWith(ext, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    return null;
+                }
+            }
+
             return LoaderAssetBundle.Create(
                 ReaderManager.FriendlyFilename(filename),
                 () => ReadAssets(filename));
