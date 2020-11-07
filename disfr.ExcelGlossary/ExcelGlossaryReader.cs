@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using NetOffice.ExcelApi;
 using NetOffice.ExcelApi.Enums;
-// using NetOffice.OfficeApi.Enums;
+using NetOffice.OfficeApi.Enums;
 using Excel = NetOffice.ExcelApi.Application;
 
 using disfr.Doc;
@@ -50,9 +50,19 @@ namespace disfr.ExcelGlossary
             var excel = new Excel() { Visible = false, Interactive = false, DisplayAlerts = false };
             try
             {
-                // excel.AutomationSecurity = MsoAutomationSecurity.msoAutomationSecurityForceDisable;
+                // We should avoid execution of macros included in an Excel file,
+                // because it could contain some malicious operation.
+                // Excel enables macros by default when invoked via automation API (read "NetOffice"),
+                // so we should disable it by ourselves.
+                // Microsoft's documentation on AutomationSecurity says:
+                //     this property should be set immediately before and after opening a file programmatically
+                //     to avoid malicious subversion
+                // I'm not very sure what it means exactly,
+                // but it sounds to me we should use a code like following, though it looks silly...
+                // Anyway it seems working for me.
+                excel.AutomationSecurity = MsoAutomationSecurity.msoAutomationSecurityForceDisable;
                 var book = excel.Workbooks.Open(filename, XlUpdateLinks.xlUpdateLinksNever, true);
-                // excel.AutomationSecurity = MsoAutomationSecurity.msoAutomationSecurityForceDisable;
+                excel.AutomationSecurity = MsoAutomationSecurity.msoAutomationSecurityForceDisable;
 
                 var sheets = book.Worksheets;
                 for (int i = 1; i <= sheets.Count; i++)
