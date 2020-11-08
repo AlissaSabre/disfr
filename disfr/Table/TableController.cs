@@ -35,7 +35,7 @@ namespace disfr.UI
         /// </remarks>
         protected TableController(PairRenderer renderer, IAssetBundle bundle)
         {
-            DelegateCommandHelper.GetHelp(this);
+            DelegateCommandHelper.GetHelp(this, StaleExceptionEventHandler);
 
             Renderer = renderer;
             Bundle = bundle;
@@ -46,6 +46,11 @@ namespace disfr.UI
             ShowSpecials = true;
 
             UpdateFilter();
+        }
+
+        private void StaleExceptionEventHandler(object sender, DelegateCommand.StaleExceptionEventArgs e)
+        {
+            throw new AggregateException(e.Exception);
         }
 
         /// <summary>
@@ -227,20 +232,10 @@ namespace disfr.UI
 
         public DelegateCommand RefreshCommand { get; private set; }
 
-        private void RefreshCommand_Execute()
+        private async Task RefreshCommand_ExecuteAsync()
         {
-            Task.Run(() =>
-            {
-                Bundle.Refresh();
-            }).ContinueWith(worker =>
-            {
-                if (worker.IsFaulted)
-                {
-                    var e = worker.Exception;
-                    Dispatcher.FromThread(Thread.CurrentThread)?.BeginInvoke((Action)delegate { throw e; });
-                }
-                ReloadBilingualAssets();
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            await Task.Run((Action)Bundle.Refresh);
+            ReloadBilingualAssets();
         }
 
         private bool RefreshCommand_CanExecute()

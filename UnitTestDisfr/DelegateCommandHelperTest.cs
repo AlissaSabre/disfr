@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using disfr.UI;
@@ -9,6 +10,8 @@ namespace UnitTestDisfr
     [TestClass]
     public class DelegateCommandHelperTest
     {
+        private static readonly Task CompletedTask = Task.FromResult<object>(null);
+
         [TestMethod]
         public void GetHelp_OneParam_1()
         {
@@ -40,9 +43,10 @@ namespace UnitTestDisfr
         {
             public DelegateCommand<string> DummyCommand { get; private set; }
 
-            private void DummyCommand_Execute(string dummy)
+            private Task DummyCommand_ExecuteAsync(string dummy)
             {
                 DummyCommand_Execute_Param = dummy;
+                return CompletedTask;
             }
 
             private bool DummyCommand_CanExecute(string dummy)
@@ -85,9 +89,10 @@ namespace UnitTestDisfr
         {
             public DelegateCommand<string> DummyCommand { get; private set; }
 
-            private void DummyCommand_Execute(string dummy)
+            private Task DummyCommand_ExecuteAsync(string dummy)
             {
                 DummyCommand_Execute_Param = dummy;
+                return CompletedTask;
             }
         }
 
@@ -104,8 +109,9 @@ namespace UnitTestDisfr
         {
             public DelegateCommand<string> DummyCommand { get; private set; }
 
-            private void DummyCommand_Execute(string dummy)
+            private Task DummyCommand_ExecuteAsync(string dummy)
             {
+                return CompletedTask;
             }
 
             // wrong parameter type
@@ -149,9 +155,10 @@ namespace UnitTestDisfr
             public DelegateCommand<string> DummyCommand { get; private set; }
 
             // different but assignable parameter type
-            private void DummyCommand_Execute(object dummy)
+            private Task DummyCommand_ExecuteAsync(object dummy)
             {
                 DummyCommand_Execute_Param = (string)dummy;
+                return CompletedTask;
             }
 
             // different but assignable parameter type
@@ -175,8 +182,9 @@ namespace UnitTestDisfr
         {
             public DelegateCommand<object> DummyCommand { get; private set; }
 
-            private void DummyCommand_Execute(object dummy)
+            private Task DummyCommand_ExecuteAsync(object dummy)
             {
+                return CompletedTask;
             }
 
             // wrong parameter type with reverse assignable combination
@@ -199,8 +207,9 @@ namespace UnitTestDisfr
         {
             public DelegateCommand<string> DummyCommand { get; private set; }
 
-            private void DummyCommand_Execute(string dummy)
+            private Task DummyCommand_ExecuteAsync(string dummy)
             {
+                return CompletedTask;
             }
 
             // wrong return type
@@ -224,8 +233,9 @@ namespace UnitTestDisfr
             public DelegateCommand<string> DummyCommand { get; private set; }
 
             // wrong parameter type
-            private void DummyCommand_Execute(int dummy)
+            private Task DummyCommand_ExecuteAsync(int dummy)
             {
+                return CompletedTask;
             }
         }
 
@@ -242,12 +252,13 @@ namespace UnitTestDisfr
         {
             public DelegateCommand<string> DummyCommand { get; private set; }
 
-            private void DummyCommand_Execute(string dummy)
+            private Task DummyCommand_ExecuteAsync(string dummy)
             {
+                return CompletedTask;
             }
 
             // extra overloaded method
-            private void DummyCommand_Execute(int dummy)
+            private void DummyCommand_ExecuteAsync(int dummy)
             {
             }
         }
@@ -275,23 +286,5 @@ namespace UnitTestDisfr
             DummyCommand_CanExecute_Param2 = "";
             DummyCommand_CanExecute_Value = can_execute_value;
         }
-    }
-
-    class DummyViewModel_ZeroParam_1 : DummyViewModelBase
-    {
-        public DelegateCommand DummyCommand { get; private set; }
-
-        private void DummyCommand_Execute()
-        {
-            DummyCommand_Execute_Param = "executed";
-        }
-
-        private bool DummyCommand_CanExecute()
-        {
-            DummyCommand_CanExecute_Param = "canexecuted";
-            return DummyCommand_CanExecute_Value;
-        }
-
-
     }
 }

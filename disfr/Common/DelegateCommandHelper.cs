@@ -15,9 +15,9 @@ namespace disfr.UI
     /// {
     ///     public DelegateCommand&lt;string> SampleCommand { get; private set; }
     /// 
-    ///     private void SampleCommand_Execute(string arg)
+    ///     private async Task SampleCommand_ExecuteAsync(string arg)
     ///     {
-    ///         DoSomethingUseful(arg);
+    ///         return DoSomethingUsefulAsync(arg);
     ///     }
     /// 
     ///     private bool SampleCommand_CanExecute(string arg)
@@ -35,7 +35,7 @@ namespace disfr.UI
     /// <para>
     /// <see cref="DelegateCommandHelper"/> relys on a set of conventions:
     /// The property for a command should have a public getter and a private setter, and its name should end with "Command".
-    /// Execute handler method must have a name "*_Execute".
+    /// Execute handler method must have a name "*_ExecuteAsync".
     /// CanExecute handler method must have a name "*_CanExecute" if any.
     /// (You can omit *_CanExecute to indicate the command is always can-execute.)
     /// The corresponding methods must have compatible signature.
@@ -63,7 +63,7 @@ namespace disfr.UI
     {
         private const string COMMAND_SUFFIX = "Command";
 
-        private const string EXECUTE_SUFFIX = "_Execute";
+        private const string EXECUTE_SUFFIX = "_ExecuteAsync";
 
         private const string CANEXECUTE_SUFFIX = "_CanExecute";
 
@@ -72,7 +72,7 @@ namespace disfr.UI
         /// </summary>
         /// <param name="obj">An object with DelegateCommand properties to initialize.</param>
         /// <exception cref="DelegateCommandHelperException">Something is wrong.</exception>
-        public static void GetHelp(object obj)
+        public static void GetHelp(object obj, EventHandler<DelegateCommandBase.StaleExceptionEventArgs> stale_exception_handler = null)
         {
             var type = obj.GetType();
             foreach (var property in type.GetProperties())
@@ -102,7 +102,7 @@ namespace disfr.UI
                     continue;
                 }
 
-                // A sanity check.
+                // A soundness check.
                 if (property.PropertyType == typeof(DelegateCommandBase))
                 {
                     Throw("A command property {0}.{1} has type {2}, which is inappropriate.",
@@ -136,6 +136,12 @@ namespace disfr.UI
 
                 var command = ctors[0].Invoke(new object[] { execute_delegate, can_execute_delegate });
                 property.SetValue(obj, command);
+
+                if (stale_exception_handler != null)
+                {
+                    var delegate_command = command as DelegateCommandBase;
+                    delegate_command.StaleException += stale_exception_handler;
+                }
             }
         }
 

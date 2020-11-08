@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -43,6 +44,86 @@ namespace disfr.UI
         /// Whether this instance has a CanExecute delegate.
         /// </summary>
         protected readonly bool HasCanExecute;
+
+        #region StaleException event
+
+        /// <summary>
+        /// Provides Exception data for <see cref="StaleException"/> events.
+        /// </summary>
+        public class StaleExceptionEventArgs : EventArgs
+        {
+            /// <summary>
+            /// The captured exception.
+            /// </summary>
+            public Exception Exception { get; private set; }
+
+            /// <summary>
+            /// Creates an instance.
+            /// </summary>
+            /// <param name="exception">An exception.</param>
+            public StaleExceptionEventArgs(Exception exception)
+            {
+                Exception = exception;
+            }
+        }
+
+        /// <summary>
+        /// Occurs when the asynchronous execution of _execute_ delegate invoked through an Execute method throws an exception. 
+        /// </summary>
+        public event EventHandler<StaleExceptionEventArgs> StaleException;
+
+        /// <summary>
+        /// Raises an <see cref="StaleException"/> event.
+        /// </summary>
+        /// <param name="e">An StaleExceptionEventArgs instance containing a captured exception.</param>
+        protected void RaiseStaleException(StaleExceptionEventArgs e)
+        {
+            StaleException?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Raises an <see cref="StaleException"/> event using a captured exception.
+        /// </summary>
+        /// <param name="e">A captured exception.</param>
+        protected void OnStaleException(Exception e)
+        {
+            RaiseStaleException(new StaleExceptionEventArgs(e));
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Invokes an asynchronous delegate, preparing to capture any exception.
+        /// </summary>
+        /// <param name="execute">An asynchronous delegate.</param>
+        /// <remarks>
+        /// If the delegate threw an exception, a <see cref="StaleException"/> event would be raised.
+        /// The event handler would be executed by the same synchronization context
+        /// as the thread that called this method.
+        /// </remarks>
+        protected void ExecuteDetached(Func<Task> execute)
+        {
+            var context = SynchronizationContext.Current;
+            try
+            {
+                execute().ContinueWith(task =>
+                    {
+                        if (context != null)
+                        {
+                            context.Post(_ => OnStaleException(task.Exception), null);
+                        }
+                        else
+                        {
+                            OnStaleException(task.Exception);
+                        }
+                    },
+                    TaskContinuationOptions.OnlyOnFaulted);
+            }
+            catch (Exception exception)
+            {
+                OnStaleException(exception);
+            }
+        }
     }
 
     /// <summary>
@@ -61,9 +142,9 @@ namespace disfr.UI
     public class DelegateCommand : DelegateCommandBase, ICommand
     {
         /// <summary>
-        /// The Execute delegate.
+        /// The Execute async delegate.
         /// </summary>
-        private readonly Action _Execute;
+        private readonly Func<Task> _ExecuteAsyc;
 
         /// <summary>
         /// The CanExecute delegate, or null if always true.
@@ -73,33 +154,47 @@ namespace disfr.UI
         /// <summary>
         /// Creates an ICommand object from two delegates.
         /// </summary>
-        /// <param name="execute">Action to perform when this command is executed.</param>
+        /// <param name="executeAsync">asynchronous delegate to perform when this command is executed.</param>
         /// <param name="canExecute">Returns whether this command can be executed.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="execute"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="executeAsync"/> is null.</exception>
         /// <remarks>
         /// <paramref name="canExecute"/> may be null if this command can always be executed.
         /// </remarks>
-        public DelegateCommand(Action execute, Func<bool> canExecute = null)
+        public DelegateCommand(Func<Task> executeAsync, Func<bool> canExecute = null)
             : base(canExecute != null)
         {
-            if (execute == null)
+            if (executeAsync == null)
             {
                 throw new ArgumentNullException("execute");
             }
 
-            _Execute = execute;
+            _ExecuteAsyc = executeAsync;
             _CanExecute = canExecute;
         }
 
         /// <summary>
-        /// Executes this command.
+        /// Execute this command without waiting for completion.
         /// </summary>
         /// <remarks>
-        /// It simply invokes the <see cref="Action"/> delegate passed to the constructor.
+        /// This method simply invokes the execute delegate passed to the constructor.
+        /// The caller has no way to know the completion of the command.
+        /// Any Exception raised by the delegate fires <see cref="StaleException"/> event.
         /// </remarks>
         public void Execute()
         {
-            _Execute();
+            ExecuteDetached(_ExecuteAsyc);
+        }
+
+        /// <summary>
+        /// Execute this command asynchronously.
+        /// </summary>
+        /// <returns>
+        /// This method simply invokes the execute delegate passed to the constructor.
+        /// You can await this method to know the completion of the command.
+        /// </returns>
+        public Task ExecuteAsync()
+        {
+            return _ExecuteAsyc();
         }
 
         /// <summary>
@@ -116,7 +211,7 @@ namespace disfr.UI
         }
 
         /// <summary>
-        /// Executes this command.
+        /// Executes this command detached.
         /// </summary>
         /// <param name="parameter">Must be a null.</param>
         /// <exception cref="ArgumentException"><paramref name="parameter"/> is not null.</exception>
@@ -155,7 +250,7 @@ namespace disfr.UI
         /// <summary>
         /// The Execute delegate.
         /// </summary>
-        private readonly Action<T> _Execute;
+        private readonly Func<T, Task> _ExecuteAsync;
 
         /// <summary>
         /// The CanExecute delegate, or null if always true.
@@ -165,21 +260,21 @@ namespace disfr.UI
         /// <summary>
         /// Creates an ICommand object from two delegates.
         /// </summary>
-        /// <param name="execute">Action to perform when this command is executed.</param>
+        /// <param name="executeAsync">Action to perform when this command is executed.</param>
         /// <param name="canExecute">Returns whether this command can be executed.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="execute"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="executeAsync"/> is null.</exception>
         /// <remarks>
         /// <paramref name="canExecute"/> may be null if this command can always be executed.
         /// </remarks>
-        public DelegateCommand(Action<T> execute, Func<T, bool> canExecute = null)
+        public DelegateCommand(Func<T, Task> executeAsync, Func<T, bool> canExecute = null)
             : base(canExecute != null)
         {
-            if (execute == null)
+            if (executeAsync == null)
             {
                 throw new ArgumentNullException("execute");
             }
 
-            _Execute = execute;
+            _ExecuteAsync = executeAsync;
             _CanExecute = canExecute;
         }
 
@@ -192,7 +287,12 @@ namespace disfr.UI
         /// </remarks>
         public void Execute(T parameter)
         {
-            _Execute(parameter);
+            ExecuteDetached(() => _ExecuteAsync(parameter));
+        }
+
+        public Task ExecuteAsync(T parameter)
+        {
+            return _ExecuteAsync(parameter);
         }
 
         /// <summary>
@@ -253,7 +353,7 @@ namespace disfr.UI
         /// <summary>
         /// The Execute delegate.
         /// </summary>
-        private readonly Action<T1, T2> _Execute;
+        private readonly Func<T1, T2, Task> _ExecuteAsync;
 
         /// <summary>
         /// The CanExecute delegate, or null if always true.
@@ -263,21 +363,21 @@ namespace disfr.UI
         /// <summary>
         /// Creates an ICommand object from two delegates.
         /// </summary>
-        /// <param name="execute">Action to perform when this command is executed.</param>
+        /// <param name="executeAsync">Action to perform when this command is executed.</param>
         /// <param name="canExecute">Returns whether this command can be executed.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="execute"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="executeAsync"/> is null.</exception>
         /// <remarks>
         /// <paramref name="canExecute"/> may be null if this command can always be executed.
         /// </remarks>
-        public DelegateCommand(Action<T1, T2> execute, Func<T1, T2, bool> canExecute = null)
+        public DelegateCommand(Func<T1, T2, Task> executeAsync, Func<T1, T2, bool> canExecute = null)
             : base(canExecute != null)
         {
-            if (execute == null)
+            if (executeAsync == null)
             {
                 throw new ArgumentNullException("execute");
             }
 
-            _Execute = execute;
+            _ExecuteAsync = executeAsync;
             _CanExecute = canExecute;
         }
 
@@ -291,7 +391,12 @@ namespace disfr.UI
         /// </remarks>
         public void Execute(T1 parameter1, T2 parameter2)
         {
-            _Execute(parameter1, parameter2);
+            ExecuteDetached(() => _ExecuteAsync(parameter1, parameter2));
+        }
+
+        public Task ExecuteAsync(T1 parameter1, T2 parameter2)
+        {
+            return _ExecuteAsync(parameter1, parameter2);
         }
 
         /// <summary>
@@ -361,7 +466,7 @@ namespace disfr.UI
         /// <summary>
         /// The Execute delegate.
         /// </summary>
-        private readonly Action<T1, T2, T3> _Execute;
+        private readonly Func<T1, T2, T3, Task> _ExecuteAsync;
 
         /// <summary>
         /// The CanExecute delegate, or null if always true.
@@ -371,21 +476,21 @@ namespace disfr.UI
         /// <summary>
         /// Creates an ICommand object from two delegates.
         /// </summary>
-        /// <param name="execute">Action to perform when this command is executed.</param>
+        /// <param name="executeAsync">Action to perform when this command is executed.</param>
         /// <param name="canExecute">Returns whether this command can be executed.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="execute"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="executeAsync"/> is null.</exception>
         /// <remarks>
         /// <paramref name="canExecute"/> may be null if this command can always be executed.
         /// </remarks>
-        public DelegateCommand(Action<T1, T2, T3> execute, Func<T1, T2, T3, bool> canExecute = null)
+        public DelegateCommand(Func<T1, T2, T3, Task> executeAsync, Func<T1, T2, T3, bool> canExecute = null)
             : base(canExecute != null)
         {
-            if (execute == null)
+            if (executeAsync == null)
             {
                 throw new ArgumentNullException("execute");
             }
 
-            _Execute = execute;
+            _ExecuteAsync = executeAsync;
             _CanExecute = canExecute;
         }
 
@@ -400,7 +505,12 @@ namespace disfr.UI
         /// </remarks>
         public void Execute(T1 parameter1, T2 parameter2, T3 parameter3)
         {
-            _Execute(parameter1, parameter2, parameter3);
+            ExecuteDetached(() => _ExecuteAsync(parameter1, parameter2, parameter3));
+        }
+
+        public Task ExecuteAsync(T1 parameter1, T2 parameter2, T3 parameter3)
+        {
+            return _ExecuteAsync(parameter1, parameter2, parameter3);
         }
 
         /// <summary>
@@ -472,7 +582,7 @@ namespace disfr.UI
         /// <summary>
         /// The Execute delegate.
         /// </summary>
-        private readonly Action<T1, T2, T3, T4> _Execute;
+        private readonly Func<T1, T2, T3, T4, Task> _ExecuteAsync;
 
         /// <summary>
         /// The CanExecute delegate, or null if always true.
@@ -482,21 +592,21 @@ namespace disfr.UI
         /// <summary>
         /// Creates an ICommand object from two delegates.
         /// </summary>
-        /// <param name="execute">Action to perform when this command is executed.</param>
+        /// <param name="executeAsync">Action to perform when this command is executed.</param>
         /// <param name="canExecute">Returns whether this command can be executed.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="execute"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="executeAsync"/> is null.</exception>
         /// <remarks>
         /// <paramref name="canExecute"/> may be null if this command can always be executed.
         /// </remarks>
-        public DelegateCommand(Action<T1, T2, T3, T4> execute, Func<T1, T2, T3, T4, bool> canExecute = null)
+        public DelegateCommand(Func<T1, T2, T3, T4, Task> executeAsync, Func<T1, T2, T3, T4, bool> canExecute = null)
             : base(canExecute != null)
         {
-            if (execute == null)
+            if (executeAsync == null)
             {
                 throw new ArgumentNullException("execute");
             }
 
-            _Execute = execute;
+            _ExecuteAsync = executeAsync;
             _CanExecute = canExecute;
         }
 
@@ -512,7 +622,12 @@ namespace disfr.UI
         /// </remarks>
         public void Execute(T1 parameter1, T2 parameter2, T3 parameter3, T4 parameter4)
         {
-            _Execute(parameter1, parameter2, parameter3, parameter4);
+            ExecuteDetached(() => _ExecuteAsync(parameter1, parameter2, parameter3, parameter4));
+        }
+
+        public Task ExecuteAsync(T1 parameter1, T2 parameter2, T3 parameter3, T4 parameter4)
+        {
+            return _ExecuteAsync(parameter1, parameter2, parameter3, parameter4);
         }
 
         /// <summary>
@@ -561,5 +676,4 @@ namespace disfr.UI
             return CanExecute((T1)array[0], (T2)array[1], (T3)array[2], (T4)array[3]);
         }
     }
-
 }

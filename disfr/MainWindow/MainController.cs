@@ -20,11 +20,16 @@ namespace disfr.UI
     {
         public MainController()
         {
-            DelegateCommandHelper.GetHelp(this);
+            DelegateCommandHelper.GetHelp(this, StaleExceptionEventHandler);
             Scheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
 
         private readonly TaskScheduler Scheduler;
+
+        private void StaleExceptionEventHandler(object sender, DelegateCommand.StaleExceptionEventArgs e)
+        {
+            throw new AggregateException(e.Exception);
+        }
 
         #region INotifyPropertyChanged
 
@@ -78,40 +83,24 @@ namespace disfr.UI
 
         public DelegateCommand<string[], int, bool, object> OpenCommand { get; private set; }
 
-        private void OpenCommand_Execute(string[] filenames, int index, bool single_tab, object tag)
+        private async Task OpenCommand_ExecuteAsync(string[] filenames, int index, bool single_tab, object tag)
         {
             Busy = true;
-            Task.Run(() =>
+            try
             {
-                ITableController[] result;
-                if (single_tab && filenames.Length > 1)
-                {
-                    result = new[]
-                    {
-                        TableController.LoadBilingualAssets(ReaderManager.Read(filenames, index))
-                    };
-                }
-                else
-                {
-                    result = filenames.Select(f =>
-                        TableController.LoadBilingualAssets(ReaderManager.Read(f, index))
-                    ).ToArray();
-                }
-                Array.ForEach(result, tc => { tc.Tag = tag; });
-                return result;
-            }).ContinueWith(worker =>
+                IAssetBundle[] bundles = await Task.Run(() =>
+                    (single_tab && filenames.Length > 1)
+                        ? new[] { ReaderManager.Read(filenames, index) }
+                        : filenames.Select(f => ReaderManager.Read(f, index)).ToArray());
+                var new_tables = bundles.Select(b => TableController.LoadBilingualAssets(b)).ToArray();
+                Array.ForEach(new_tables, t => { t.Tag = tag; });
+                _Tables.AddRange(new_tables);
+                RaisePropertyChanged("Tables");
+            }
+            finally
             {
-                if (worker.IsFaulted)
-                {
-                    InvokeThrowTaskException(worker);
-                }
-                else
-                {
-                    _Tables.AddRange(worker.Result);
-                    RaisePropertyChanged("Tables");
-                }
                 Busy = false;
-            }, Scheduler);
+            }
         }
 
         #endregion
@@ -124,20 +113,18 @@ namespace disfr.UI
 
         public DelegateCommand<string, int, ITableController, IColumnDesc[]> SaveAsCommand { get; private set; }
 
-        private void SaveAsCommand_Execute(string filename, int index, ITableController table, IColumnDesc[] columns)
+        private async Task SaveAsCommand_ExecuteAsync(string filename, int index, ITableController table, IColumnDesc[] columns)
         {
             Busy = true;
-            Task.Run(() =>
+            try
             {
-                WriterManager.Write(filename, index, table.Rows, columns, (InlineString.Render)table.InlineStringRenderMode);
-            }).ContinueWith(worker =>
+                await Task.Run(() =>
+                    WriterManager.Write(filename, index, table.Rows, columns, (InlineString.Render)table.InlineStringRenderMode));
+            }
+            finally
             {
-                if (worker.IsFaulted)
-                {
-                    InvokeThrowTaskException(worker);
-                }
                 Busy = false;
-            }, Scheduler);
+            }
         }
 
         private bool SaveAsCommand_CanExecute(string filename, int index, ITableController table, IColumnDesc[] columns)
@@ -151,10 +138,11 @@ namespace disfr.UI
 
         public DelegateCommand<ITableController> CloseCommand { get; private set; }
 
-        private void CloseCommand_Execute(ITableController table)
+        private Task CloseCommand_ExecuteAsync(ITableController table)
         {
             _Tables.Remove(table);
             RaisePropertyChanged("Tables");
+            return Task.FromResult<object>(null);
         }
 
         private bool CloseCommand_CanExecute(ITableController table)
@@ -173,11 +161,12 @@ namespace disfr.UI
 
         public DelegateCommand<ITableController> CloseExceptCommand { get; private set; }
 
-        private void CloseExceptCommand_Execute(ITableController table)
+        private Task CloseExceptCommand_ExecuteAsync(ITableController table)
         {
             _Tables.Clear();
             _Tables.Add(table);
             RaisePropertyChanged("Tables");
+            return Task.FromResult<object>(0);
         }
 
         private bool CloseExceptCommand_CanExecute(ITableController table)
@@ -192,27 +181,23 @@ namespace disfr.UI
 
         public DelegateCommand<ITableController, string[], object> OpenAltCommand { get; private set; }
 
-        private void OpenAltCommand_Execute(ITableController table, string[] origins, object tag)
+        private async Task OpenAltCommand_ExecuteAsync(ITableController table, string[] origins, object tag)
         {
             Busy = true;
-            Task.Run(() =>
+            try
             {
-                var result = table.LoadAltAssets(origins);
+                // It is questionable to invoke LoadAltAssets by a worker thread,
+                // though that's what disfr has been doing for several years already.
+                // FIXME!
+                var result = await Task.Run(() => table.LoadAltAssets(origins));
                 result.Tag = tag;
-                return result;
-            }).ContinueWith(worker =>
+                _Tables.Add(result);
+                RaisePropertyChanged("Tables");
+            }
+            finally
             {
-                if (worker.IsFaulted)
-                {
-                    InvokeThrowTaskException(worker);
-                }
-                else
-                {
-                    _Tables.Add(worker.Result);
-                    RaisePropertyChanged("Tables");
-                }
                 Busy = false;
-            }, Scheduler);
+            }
         }
 
         private bool OpenAltCommand_CanExecute(ITableController table, string[] origins, object tag)
@@ -226,18 +211,14 @@ namespace disfr.UI
 
         public DelegateCommand ExitCommand { get; private set; }
 
-        private void ExitCommand_Execute()
+        private Task ExitCommand_ExecuteAsync()
         {
             App.Current.Shutdown();
+            // I'm not sure the Shutdown method ever returns...
+            return Task.FromResult<object>(null);
         }
 
         #endregion
-
-        private static void InvokeThrowTaskException(Task worker)
-        {
-            var e = worker.Exception;
-            Dispatcher.FromThread(Thread.CurrentThread)?.BeginInvoke((Action)delegate { throw e; });
-        }
 
     }
 }

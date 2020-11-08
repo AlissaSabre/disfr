@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using disfr.UI;
-using System.Windows.Input;
 
 namespace UnitTestDisfr
 {
     [TestClass]
     public class DelegateCommandTest
     {
+        private static readonly Task CompletedTask = Task.FromResult<object>(null);
+
         [TestMethod]
         public void ZeroParameter_1()
         {
             int x, y;
             bool z = false;
 
-            var dc = new DelegateCommand(() => { x = 1; }, () => { y = 2; return z; });
+            var dc = new DelegateCommand(() => { x = 1; return CompletedTask; }, () => { y = 2; return z; });
 
             x = y = 0; z = false;
             dc.CanExecute().Is(false);
@@ -38,7 +41,7 @@ namespace UnitTestDisfr
         {
             int x;
 
-            var dc = new DelegateCommand(() => { x = 1; }, null);
+            var dc = new DelegateCommand(() => { x = 1; return CompletedTask; }, null);
 
             x = 0;
             dc.CanExecute().Is(true);
@@ -54,7 +57,7 @@ namespace UnitTestDisfr
         {
             int x;
 
-            var dc = new DelegateCommand(() => { x = 1; });
+            var dc = new DelegateCommand(() => { x = 1; return CompletedTask; });
 
             x = 0;
             dc.CanExecute().Is(true);
@@ -71,7 +74,7 @@ namespace UnitTestDisfr
             int x, y;
             bool z = false;
 
-            ICommand ic = new DelegateCommand(() => { x = 1; }, () => { y = 2; return z; });
+            ICommand ic = new DelegateCommand(() => { x = 1; return CompletedTask; }, () => { y = 2; return z; });
 
             x = y = 0; z = false;
             ic.CanExecute(null).Is(false);
@@ -107,7 +110,7 @@ namespace UnitTestDisfr
             int x, y;
             bool z = false;
 
-            var dc = new DelegateCommand<int>(p => { x = p; }, p => { y = p; return z; });
+            var dc = new DelegateCommand<int>(p => { x = p; return CompletedTask; }, p => { y = p; return z; });
 
             x = y = 0; z = false;
             dc.CanExecute(33).Is(false);
@@ -130,7 +133,7 @@ namespace UnitTestDisfr
         {
             int x;
 
-            var dc = new DelegateCommand<int>(p => { x = p; }, null);
+            var dc = new DelegateCommand<int>(p => { x = p; return CompletedTask; }, null);
 
             x = 0;
             dc.CanExecute(33).Is(true);
@@ -146,7 +149,7 @@ namespace UnitTestDisfr
         {
             int x;
 
-            var dc = new DelegateCommand<int>(p => { x = p; });
+            var dc = new DelegateCommand<int>(p => { x = p; return CompletedTask; });
 
             x = 0;
             dc.CanExecute(33).Is(true);
@@ -163,7 +166,7 @@ namespace UnitTestDisfr
             int x, y;
             bool z = false;
 
-            ICommand ic = new DelegateCommand<int>(p => { x = p; }, p => { y = p; return z; });
+            ICommand ic = new DelegateCommand<int>(p => { x = p; return CompletedTask; }, p => { y = p; return z; });
 
             x = y = 0; z = false;
             ic.CanExecute(33).Is(false);
@@ -200,7 +203,7 @@ namespace UnitTestDisfr
             int x, y;
             bool z = false;
 
-            var dc = new DelegateCommand<string, int>((p, q) => { s = p; x = q; }, (p, q) => { t = p; y = q; return z; });
+            var dc = new DelegateCommand<string, int>((p, q) => { s = p; x = q; return CompletedTask; }, (p, q) => { t = p; y = q; return z; });
 
             s = t = ""; x = y = 0; z = false;
             dc.CanExecute("a", 33).Is(false);
@@ -230,7 +233,7 @@ namespace UnitTestDisfr
             string s;
             int x;
 
-            var dc = new DelegateCommand<string, int>((p, q) => { s = p; x = q; }, null);
+            var dc = new DelegateCommand<string, int>((p, q) => { s = p; x = q; return CompletedTask; }, null);
 
             s = ""; x = 0;
             dc.CanExecute("a", 33).Is(true);
@@ -249,7 +252,7 @@ namespace UnitTestDisfr
             string s;
             int x;
 
-            var dc = new DelegateCommand<string, int>((p, q) => { s = p; x = q; });
+            var dc = new DelegateCommand<string, int>((p, q) => { s = p; x = q; return CompletedTask; });
 
             s = ""; x = 0;
             dc.CanExecute("a", 33).Is(true);
@@ -269,7 +272,7 @@ namespace UnitTestDisfr
             int x, y;
             bool z = false;
 
-            ICommand ic = new DelegateCommand<string, int>((p, q) => { s = p; x = q; }, (p, q) => { t = p; y = q; return z; });
+            ICommand ic = new DelegateCommand<string, int>((p, q) => { s = p; x = q; return CompletedTask; }, (p, q) => { t = p; y = q; return z; });
 
             s = t = ""; x = y = 0; z = false;
             ic.CanExecute(new object[] { "a", 33 }).Is(false);
@@ -294,6 +297,129 @@ namespace UnitTestDisfr
 
             AssertEx.Catch<NullReferenceException>(() => ic.CanExecute(null));
             AssertEx.Catch<NullReferenceException>(() => ic.Execute(null));
+        }
+
+        [TestMethod]
+        public void StaleExceptionEvent_1()
+        {
+            bool event_raised = false;
+            object event_sender = null;
+
+            var command = new DelegateCommand(() => throw new ArgumentException("xyzzy"));
+            command.StaleException += (sender, e) =>
+            {
+                event_raised = true;
+                event_sender = sender;
+            };
+
+            // normal (detached) execution
+            event_raised = false;
+            command.Execute();
+            event_raised.IsTrue();
+            event_sender.Is(command);
+
+            // async execution
+            event_raised = false;
+            AssertEx.Throws<ArgumentException>(() => command.ExecuteAsync());
+            event_raised.IsFalse();
+        }
+
+        [TestMethod]
+        public void StaleExceptionEvent_2()
+        {
+            var test_task = Task.Run(async () =>
+            {
+                TaskCompletionSource<object> ts1a = null, ts1b = null, ts2a = null, ts2b = null, ts3a = null;
+                int step = 0;
+                bool event_raised = false;
+                object event_sender = null;
+
+                var command = new DelegateCommand(async () =>
+                {
+                    step = 1;
+
+                    ts1a.SetResult(null);
+                    await ts1b.Task;
+
+                    step = 2;
+
+                    ts2a.SetResult(null);
+                    await ts2b.Task;
+
+                    step = 3;
+
+                    throw new ArgumentException("xyzzy");
+                });
+                command.StaleException += (sender, e) =>
+                {
+                    event_raised = true;
+                    event_sender = sender;
+                    ts3a.SetResult(null);
+                };
+
+                // normal (detached) execution.
+
+                ts1a = new TaskCompletionSource<object>();
+                ts1b = new TaskCompletionSource<object>();
+                ts2a = new TaskCompletionSource<object>();
+                ts2b = new TaskCompletionSource<object>();
+                ts3a = new TaskCompletionSource<object>();
+                step = 0;
+                event_raised = false;
+
+                command.Execute();
+
+                await ts1a.Task;
+                step.Is(1);
+                event_raised.IsFalse();
+
+                ts1b.SetResult(null);
+
+                await ts2a.Task;
+                step.Is(2);
+                event_raised.IsFalse();
+
+                ts2b.SetResult(null);
+
+                await ts3a.Task;
+                step.Is(3);
+                event_raised.IsTrue();
+                event_sender.Is(command);
+
+                // async execution.
+
+                ts1a = new TaskCompletionSource<object>();
+                ts1b = new TaskCompletionSource<object>();
+                ts2a = new TaskCompletionSource<object>();
+                ts2b = new TaskCompletionSource<object>();
+                ts3a = new TaskCompletionSource<object>();
+                step = 0;
+                event_raised = false;
+
+                var task = command.ExecuteAsync();
+
+                await ts1a.Task;
+                step.Is(1);
+                task.IsCompleted.IsFalse();
+                event_raised.IsFalse();
+
+                ts1b.SetResult(null);
+
+                await ts2a.Task;
+                step.Is(2);
+                task.IsCompleted.IsFalse();
+                event_raised.IsFalse();
+
+                ts2b.SetResult(null);
+
+                AssertEx.Catch<Exception>(() => { task.Wait(); });
+                step.Is(3);
+                task.IsFaulted.IsTrue();
+                event_raised.IsFalse();
+
+            });
+            test_task.Wait();
+            test_task.IsFaulted.IsFalse();
         }
     }
 }
