@@ -91,39 +91,6 @@ namespace disfr.UI
         }
 
         #endregion
-
-        /// <summary>
-        /// Invokes an asynchronous delegate, preparing to capture any exception.
-        /// </summary>
-        /// <param name="execute">An asynchronous delegate.</param>
-        /// <remarks>
-        /// If the delegate threw an exception, a <see cref="StaleException"/> event would be raised.
-        /// The event handler would be executed by the same synchronization context
-        /// as the thread that called this method.
-        /// </remarks>
-        protected void ExecuteDetached(Func<Task> execute)
-        {
-            var context = SynchronizationContext.Current;
-            try
-            {
-                execute().ContinueWith(task =>
-                    {
-                        if (context != null)
-                        {
-                            context.Post(_ => OnStaleException(task.Exception), null);
-                        }
-                        else
-                        {
-                            OnStaleException(task.Exception);
-                        }
-                    },
-                    TaskContinuationOptions.OnlyOnFaulted);
-            }
-            catch (Exception exception)
-            {
-                OnStaleException(exception);
-            }
-        }
     }
 
     /// <summary>
@@ -144,7 +111,7 @@ namespace disfr.UI
         /// <summary>
         /// The Execute async delegate.
         /// </summary>
-        private readonly Func<Task> _ExecuteAsyc;
+        private readonly Func<Task> _ExecuteAsync;
 
         /// <summary>
         /// The CanExecute delegate, or null if always true.
@@ -168,7 +135,7 @@ namespace disfr.UI
                 throw new ArgumentNullException("execute");
             }
 
-            _ExecuteAsyc = executeAsync;
+            _ExecuteAsync = executeAsync;
             _CanExecute = canExecute;
         }
 
@@ -180,9 +147,16 @@ namespace disfr.UI
         /// The caller has no way to know the completion of the command.
         /// Any Exception raised by the delegate fires <see cref="StaleException"/> event.
         /// </remarks>
-        public void Execute()
+        public async void Execute()
         {
-            ExecuteDetached(_ExecuteAsyc);
+            try
+            {
+                await _ExecuteAsync();
+            }
+            catch (Exception exception)
+            {
+                OnStaleException(exception);
+            }
         }
 
         /// <summary>
@@ -194,7 +168,7 @@ namespace disfr.UI
         /// </returns>
         public Task ExecuteAsync()
         {
-            return _ExecuteAsyc();
+            return _ExecuteAsync();
         }
 
         /// <summary>
@@ -285,9 +259,16 @@ namespace disfr.UI
         /// <remarks>
         /// It simply invokes the <see cref="Action{T}"/> delegate passed to the constructor.
         /// </remarks>
-        public void Execute(T parameter)
+        public async void Execute(T parameter)
         {
-            ExecuteDetached(() => _ExecuteAsync(parameter));
+            try
+            {
+                await _ExecuteAsync(parameter);
+            }
+            catch (Exception exception)
+            {
+                OnStaleException(exception);
+            }
         }
 
         public Task ExecuteAsync(T parameter)
@@ -389,9 +370,16 @@ namespace disfr.UI
         /// <remarks>
         /// It simply invokes the <see cref="Action{T1, T2}"/> delegate passed to the constructor.
         /// </remarks>
-        public void Execute(T1 parameter1, T2 parameter2)
+        public async void Execute(T1 parameter1, T2 parameter2)
         {
-            ExecuteDetached(() => _ExecuteAsync(parameter1, parameter2));
+            try
+            {
+                await _ExecuteAsync(parameter1, parameter2);
+            }
+            catch (Exception exception)
+            {
+                OnStaleException(exception);
+            }
         }
 
         public Task ExecuteAsync(T1 parameter1, T2 parameter2)
@@ -503,9 +491,16 @@ namespace disfr.UI
         /// <remarks>
         /// It simply invokes the <see cref="Action{T1, T2, T3}"/> delegate passed to the constructor.
         /// </remarks>
-        public void Execute(T1 parameter1, T2 parameter2, T3 parameter3)
+        public async void Execute(T1 parameter1, T2 parameter2, T3 parameter3)
         {
-            ExecuteDetached(() => _ExecuteAsync(parameter1, parameter2, parameter3));
+            try
+            {
+                await _ExecuteAsync(parameter1, parameter2, parameter3);
+            }
+            catch (Exception exception)
+            {
+                OnStaleException(exception);
+            }
         }
 
         public Task ExecuteAsync(T1 parameter1, T2 parameter2, T3 parameter3)
@@ -620,9 +615,16 @@ namespace disfr.UI
         /// <remarks>
         /// It simply invokes the <see cref="Action{T1, T2, T3, T4}"/> delegate passed to the constructor.
         /// </remarks>
-        public void Execute(T1 parameter1, T2 parameter2, T3 parameter3, T4 parameter4)
+        public async void Execute(T1 parameter1, T2 parameter2, T3 parameter3, T4 parameter4)
         {
-            ExecuteDetached(() => _ExecuteAsync(parameter1, parameter2, parameter3, parameter4));
+            try
+            {
+                await _ExecuteAsync(parameter1, parameter2, parameter3, parameter4);
+            }
+            catch (Exception exception)
+            {
+                OnStaleException(exception);
+            }
         }
 
         public Task ExecuteAsync(T1 parameter1, T2 parameter2, T3 parameter3, T4 parameter4)
