@@ -84,7 +84,6 @@ namespace disfr.UI
             Task.Run(() =>
             {
                 ITableController[] result;
-                var started = DateTime.UtcNow;
                 if (single_tab && filenames.Length > 1)
                 {
                     result = new[]

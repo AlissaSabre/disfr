@@ -61,13 +61,13 @@
     <Compile Include="XlsxWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\disfr-core\disfr-core.csproj">
       <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
       <Name>disfr-core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -401,6 +401,27 @@ namespace disfr.Doc
             _Contents = contents.ToArray();
         }
 
+        /// <summary>
+        /// Creates a new InlineString instance whose contents are identical to anohter inline string.
+        /// </summary>
+        /// <param name="another">Another inline string.</param>
+        /// <remarks><see cref="InlineTag"/> contained in <paramref name="another"/> are cloned.</remarks>
+        public InlineString(InlineString another)
+        {
+            var contents = (InlineRunWithProperty[])another._Contents.Clone();
+            for (int i = 0; i < contents.Length; i++)
+            {
+                var rwp = contents[i];
+                var tag = rwp.Run as InlineTag;
+                if (!ReferenceEquals(tag, null))
+                {
+                    // Clone this InlineTag.
+                    contents[i] = new InlineRunWithProperty(rwp.Property, tag.Clone());
+                }
+            }
+            _Contents = contents;
+        }
+
         private readonly InlineRunWithProperty[] _Contents;
 
         /// <summary>
@@ -809,6 +830,11 @@ namespace disfr.Doc
             }
 
             return OPAR + CPAR;
+        }
+
+        public InlineTag Clone()
+        {
+            return (InlineTag)MemberwiseClone();
         }
 
         /// <summary>
