@@ -30,6 +30,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Label="YltParsers">
+    <Names>Po</Names>
+  </PropertyGroup>
+  <PropertyGroup Label="YltProperties">
+    <YltTools>$(SolutionDir)packages\YaccLexTools.0.2.2\tools\</YltTools>
+    <GplexTool>"$(YltTools)gplex.exe"</GplexTool>
+    <GppgTool>"$(YltTools)gppg.exe"</GppgTool>
+  </PropertyGroup>
+  <PropertyGroup Label="GeneratePoProperties">
+    <PoParser>$(ProjectDir)Po</PoParser>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,11 +53,50 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GplexBuffers.cs" />
+    <Compile Include="ISink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShiftReduceParserCode.cs" />
+    <Compile Include="YYException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup Label="PoFiles">
+    <Compile Include="Po.Parser.cs">
+      <DependentUpon>Po.parser</DependentUpon>
+    </Compile>
+    <Compile Include="Po.Parser.Generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Po.Language.grammar.y</DependentUpon>
+    </Compile>
+    <Compile Include="Po.Scanner.cs">
+      <DependentUpon>Po.parser</DependentUpon>
+    </Compile>
+    <Compile Include="Po.Scanner.Generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Po.Language.analyzer.lex</DependentUpon>
+    </Compile>
+    <None Include="Po.Language.analyzer.lex">
+      <DependentUpon>Po.parser</DependentUpon>
+    </None>
+    <None Include="Po.Language.grammar.y">
+      <DependentUpon>Po.parser</DependentUpon>
+    </None>
+    <None Include="Po.parser" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="BeforeBuild" DependsOnTargets="YltBuildGen" />
+  <Target Name="YltBuildGen" DependsOnTargets="GeneratePo" />
+  <Target Name="GeneratePo" Inputs="$(PoParser).Language.analyzer.lex;$(PoParser).Language.grammar.y" Outputs="$(PoParser).Scanner.Generated.cs;$(PoParser).Parser.Generated.cs">
+    <Message Text="Generating scanner for $(PoParser) ..." />
+    <Exec Command="$(GplexTool) /listing /summary &quot;/out:$(PoParser).Scanner.Generated.cs&quot; &quot;$(PoParser).Language.analyzer.lex&quot;" WorkingDirectory="$(ProjectDir)" Outputs="$(GenDir)Scanner.cs">
+      <Output TaskParameter="Outputs" ItemName="PoScanner" />
+    </Exec>
+    <Message Text="Generating parser for $(PoParser) ..." />
+    <Exec Command="$(GppgTool) /conflicts /listing /no-lines /gplex &quot;$(PoParser).Language.grammar.y&quot; &gt; &quot;$(PoParser).Parser.Generated.cs&quot;" WorkingDirectory="$(ProjectDir)" Outputs="$(PoParser).Parser.Generated.cs">
+      <Output TaskParameter="Outputs" ItemName="Po" />
+    </Exec>
+  </Target>
 </Project>
