@@ -37,9 +37,9 @@ namespace disfr.po
 
         protected string MessageId;
 
-        protected string MessageStr0;
-
         protected string MessageIdPlural;
+
+        protected string MessageStr0;
 
         protected readonly List<string> MessageStrPlural = new List<string>();
 
