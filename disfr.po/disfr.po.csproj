@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectorSinkBase.cs" />
     <Compile Include="GplexBuffers.cs" />
     <Compile Include="ISink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
