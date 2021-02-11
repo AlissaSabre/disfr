@@ -39,7 +39,7 @@ namespace disfr.po
 
         protected string MessageIdPlural;
 
-        protected string MessageStr0;
+        protected string MessageStr;
 
         protected readonly List<string> MessageStrPlural = new List<string>();
 
@@ -110,29 +110,22 @@ namespace disfr.po
 
         public void SetMsgStr(string target)
         {
-            MessageStr0 = target;
+            MessageStr = target;
         }
 
         public void SetMsgStrPlural(string ordinal, string target)
         {
             // What we should do with an overflow?  FIXME.
             var n = int.Parse(ordinal, NumberStyles.None, CultureInfo.InvariantCulture);
-            if (n == 0)
+            var p = MessageStrPlural;
+            while (p.Count < n) p.Add(null);
+            if (p.Count == n)
             {
-                MessageStr0 = target;
+                p.Add(target);
             }
             else
             {
-                var p = MessageStrPlural;
-                while (p.Count < n) p.Add(null);
-                if (p.Count == n)
-                {
-                    p.Add(target);
-                }
-                else
-                {
-                    p[n] = target;
-                }
+                p[n] = target;
             }
         }
     }
