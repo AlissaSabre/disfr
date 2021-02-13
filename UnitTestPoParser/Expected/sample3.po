@@ -1,8 +1,8 @@
 
 # A copy of this file in UnitTestPoParser/Samples
 # is encoded in ISO-8859-1 (Latin 1) for a testing purpose.
-# Please don't convert it to other charset, e.g., UTF-8.
-#
+# Please don't convert it to another charset, e.g., UTF-8.
+# 
 # Another version of this file in UnitTestPoParser/Expected
 # is in UTF-8, though its metadata (as po) says "charset=ISO-8859-1".
 # Please don't convert it to another charset, e.g., ISO-8859-1.

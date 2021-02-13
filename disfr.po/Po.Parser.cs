@@ -13,7 +13,21 @@ namespace disfr.po
         {
             using (var stream = File.OpenRead(filename))
             {
-                Scanner = new PoScanner(stream, "UTF-8") { SourceFileName = filename };
+                Scanner = new PoScanner(stream, "ISO-8859-1");
+                var detector = new EncodingDetectorSink();
+                Sink = detector;
+                try
+                {
+                    Parse();
+                }
+                catch (EncodingDetectorSink.DetectionTerminatedException)
+                {
+                    // do nothing.
+                }
+                var charset = detector.Charset ?? "UTF-8";
+
+                stream.Seek(0, SeekOrigin.Begin);
+                Scanner = new PoScanner(stream, charset) { SourceFileName = filename };
                 Sink = sink;
                 Parse();
             }

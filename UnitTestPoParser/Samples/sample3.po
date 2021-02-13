@@ -54,19 +54,19 @@
 # Larlet David <david@larlet.fr>, 2008
 # fgallaire <fgallaire@gmail.com>, 2010
 # fgallaire <fgallaire@gmail.com>, 2010
-# Franï¿½ois Poirotte <clicky@erebot.net>, 2016-2017
+# François Poirotte <clicky@erebot.net>, 2016-2017
 # Georg Brandl <g.brandl@gmx.net>, 2014
 # Jean-Daniel Browne <jeandaniel.browne@gmail.com>, 2010
-# Jean-Franï¿½ois B. <jfbu@free.fr>, 2017-2019
+# Jean-François B. <jfbu@free.fr>, 2017-2019
 # Julien Palard <github@mandark.fr>, 2017
 # Julien Malard <julien.malard@mail.mcgill.ca>, 2019
 # Kim Sylvestre <kim.sylvestre@gmail.com>, 2019
 # Larlet David <david@larlet.fr>, 2008
-# LAURENT Raphaï¿½l <laurent@ined.fr>, 2018-2019
+# LAURENT Raphaël <laurent@ined.fr>, 2018-2019
 # Lilian Besson <inactive+Naereen@transifex.com>, 2013-2014
 # Nikolaj van Omme <nikolaj.van.omme@gmail.com>, 2014-2015
 # Olivier Bonaventure <bonaventure@acm.org>, 2019
-# Pierre Grï¿½pon <pgrepon@yahoo.fr>, 2016
+# Pierre Grépon <pgrepon@yahoo.fr>, 2016
 # Sebastien Douche <sdouche@gmail.com>, 2008
 # Takeshi KOMIYA <i.tkomiya@gmail.com>, 2016,2020
 msgid ""
@@ -87,21 +87,21 @@ msgstr ""
 #: sphinx/application.py:159
 #, python-format
 msgid "config directory doesn't contain a conf.py file (%s)"
-msgstr "Le rï¿½pertoire de configuration ne contient pas de fichier conf.py (%s)"
+msgstr "Le répertoire de configuration ne contient pas de fichier conf.py (%s)"
 
 #: sphinx/application.py:163
 #, python-format
 msgid "Cannot find source directory (%s)"
-msgstr "Impossible de trouver le rï¿½pertoire source (%s)"
+msgstr "Impossible de trouver le répertoire source (%s)"
 
 #: sphinx/application.py:167
 msgid "Source directory and destination directory cannot be identical"
-msgstr "Les rï¿½pertoires source et destination ne doivent pas ï¿½tre identiques."
+msgstr "Les répertoires source et destination ne doivent pas être identiques."
 
 #: sphinx/application.py:198
 #, python-format
 msgid "Running Sphinx v%s"
-msgstr "Sphinx v%s en cours d'exï¿½cution"
+msgstr "Sphinx v%s en cours d'exécution"
 
 #: sphinx/application.py:226
 #, python-format
@@ -109,12 +109,12 @@ msgid ""
 "This project needs at least Sphinx v%s and therefore cannot be built with "
 "this version."
 msgstr ""
-"Ce projet nï¿½cessite au minimum Sphinx v%s et ne peut donc ï¿½tre construit avec "
+"Ce projet nécessite au minimum Sphinx v%s et ne peut donc être construit avec "
 "cette version."
 
 #: sphinx/application.py:246
 msgid "making output directory"
-msgstr "crï¿½ation du rï¿½pertoire de sortie"
+msgstr "création du répertoire de sortie"
 
 #: sphinx/application.py:251 sphinx/registry.py:399
 #, python-format
@@ -128,8 +128,8 @@ msgstr "lors de l'initialisation de l'extension %s :"
 #: sphinx/application.py:313
 #, python-format
 #~ msgid "failed: %s"
-#~ msgstr "ï¿½chec : %s"
+#~ msgstr "échec : %s"
 
 #: sphinx/application.py:321
 #~ msgid "No builder selected, using default: html"
-#~ msgstr "Aucun constructeur sï¿½lectionnï¿½, utilisation du dï¿½faut : html"
+#~ msgstr "Aucun constructeur sélectionné, utilisation du défaut : html"
