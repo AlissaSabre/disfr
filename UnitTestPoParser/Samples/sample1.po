@@ -1,4 +1,4 @@
-﻿
+
 # Sample PO file #1
 #
 msgid ""

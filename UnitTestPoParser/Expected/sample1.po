@@ -32,4 +32,4 @@ msgstr[1] "Deleted %d files.\n"
 
 #: index.html:23
 #~ msgid "Congraturations! It's working!"
-#~ msgsgr "Congraturations! It's working!"
+#~ msgstr "Congraturations! It's working!"
