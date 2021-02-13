@@ -88,6 +88,12 @@
     </None>
     <None Include="Po.parser" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\disfr\disfr-core\disfr-core.csproj">
+      <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
+      <Name>disfr-core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild" DependsOnTargets="YltBuildGen" />
   <Target Name="YltBuildGen" DependsOnTargets="GeneratePo" />
