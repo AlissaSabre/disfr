@@ -57,6 +57,10 @@ namespace disfr.po
             PreviousMessageContext = null;
             PreviousMessageId = null;
             PreviousMessageIdPlural = null;
+            MessageContext = null;
+            MessageId = null;
+            MessageIdPlural = null;
+            MessageStr = null;
             MessageStrPlural.Clear();
         }
 
@@ -91,6 +95,9 @@ namespace disfr.po
             PreviousMessageContext = MessageContext;
             PreviousMessageId = MessageId;
             PreviousMessageIdPlural = MessageIdPlural;
+            MessageContext = null;
+            MessageId = null;
+            MessageIdPlural = null;
         }
 
         public void SetMsgCtxt(string context)

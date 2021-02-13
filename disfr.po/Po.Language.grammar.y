@@ -37,8 +37,8 @@ comments	: /* empty */						{ Sink.Reset(); }
 			| comments FLAGS					{ Sink.AddFlags($2); }
 			;
 
-prev		: opt_msgctxt p_msgid opt_msgid_plural
-												{ Sink.MakePrevious(); }
+prev		: opt_msgctxt p_msgid				{ Sink.MakePrevious(); }
+			| opt_msgctxt p_msgid msgid_plural	{ Sink.MakePrevious(); }
 			;
 
 msg			: opt_msgctxt msgid msgstr
@@ -49,7 +49,7 @@ o_msg		: opt_msgctxt o_msgid msgstr
 			| opt_msgctxt o_msgid msgid_plural msgstr_plural_list
 			;
 
-opt_msgctxt	: /* empty */						{ Sink.SetMsgCtxt(null); }
+opt_msgctxt	: /* empty */
 			| MSGCTXT text						{ Sink.SetMsgCtxt($2); }
 			;
 
@@ -60,11 +60,6 @@ p_msgid		: P_MSGID text						{ Sink.SetMsgId($2); }
 			;
 
 o_msgid		: O_MSGID text						{ Sink.SetMsgId($2); }
-			;
-
-opt_msgid_plural
-			: /* empty */						{ Sink.SetMsgIdPlural(null); }
-			| MSGID_PLURAL text					{ Sink.SetMsgIdPlural($2); }
 			;
 
 msgid_plural
