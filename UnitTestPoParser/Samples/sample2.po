@@ -36,6 +36,8 @@ msgid
 "bar"
 msgstr
 "bar"
+msgid "xyzzy" msgstr "xyzzy" #| msgid "Nope!"
+msgid "nope!" msgstr "nope!" #~ msgid "goo" msgstr "goo"
 #~ msgid "Foofoo" msgstr "Foo" msgctxt "oops" msgid "Bar" msgstr "Bar"
 #~ msgctxt
 #~ "context"
