@@ -38,7 +38,7 @@ namespace UnitTestPoParser
 
             var prefix = IsObsolete ? "#~ " : "";
             EmitString(prefix, "msgctxt", MessageContext);
-            if (MessageIdPlural == null)
+            if (!HasPlural)
             {
                 EmitString(prefix, "msgid",  MessageId);
                 EmitString(prefix, "msgstr", MessageStr);

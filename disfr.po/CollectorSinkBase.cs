@@ -43,6 +43,8 @@ namespace disfr.po
 
         protected readonly List<string> MessageStrPlural = new List<string>();
 
+        protected bool HasPlural { get { return !(MessageIdPlural is null); } }
+
         public void SetDomain(string domain)
         {
             Domain = domain;
