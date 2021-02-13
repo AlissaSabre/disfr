@@ -31,6 +31,10 @@ namespace UnitTestPoParser
         [TestMethod]
         public void TestMethod3()
         {
+            // This test case is for a PO file with charset=ISO-8859-1.
+            // Please don't convert the file "Samples/sample3.po" to UTF-8.
+            // "Expected/sample3.po" is in UTF-8, though, becuase
+            // FileSink writes everything in UTF-8.
             Run(SamplesDir + "sample3.po", ReferencesDir + "sample3.po");
         }
 
