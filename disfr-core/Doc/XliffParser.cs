@@ -69,7 +69,16 @@ namespace disfr.Doc
                 return null;
             }
 
-            // We are probably seeing a wellformed XML document.
+            // We are seeing a wellformed XML document.
+            // Parse it and return the result.
+            return Parse(xliff);
+        }
+
+        /// <summary>Parses an xliff element.</summary>
+        /// <param name="xliff">An XML element that is supposed to be an xliff element.</param>
+        /// <returns>List of assets.</returns>
+        public IEnumerable<IAsset> Parse(XElement xliff)
+        {
             // Check if it is an XLIFF document.
             var X = xliff.Name.Namespace;
             if (X != XliffAsset.XLIFF && X != XNamespace.None) return null;

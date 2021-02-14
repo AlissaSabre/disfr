@@ -184,6 +184,14 @@
         
       </Feature>
 
+      <Feature Id="disfr.po" Level="1">
+
+        <Component Id="disfr.po.dll" Directory="INSTALLDIR" Guid="{6DB8E4C0-A8DA-481D-9F51-EB657A0E6ED1}">
+          <File Source="disfr.po.dll" KeyPath="yes" />
+        </Component>
+        
+      </Feature>
+
       <Feature Id="registry_settings" Level="1">
       
         <!-- Registering disfr program -->
@@ -336,6 +344,15 @@
             <RegistryValue Type="string" Name=".xls" Value="" KeyPath="yes" />
           </RegistryKey>
           <RegistryKey Root="HKLM" Key="Software\Classes\.xls\OpenWithProgIds">
+            <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
+          </RegistryKey>
+        </Component>
+
+        <Component Id="REG.po" Directory="TARGETDIR" Guid="{EF1BBA74-4424-4829-9C95-55F66F827D36}">
+          <RegistryKey Root="HKLM" Key="Software\Classes\Applications\disfr.exe\SupportedTypes">
+            <RegistryValue Type="string" Name=".po" Value="" KeyPath="yes" />
+          </RegistryKey>
+          <RegistryKey Root="HKLM" Key="Software\Classes\.po\OpenWithProgIds">
             <RegistryValue Type="string" Name="disfr.viewer.0" Value="" />
           </RegistryKey>
         </Component>

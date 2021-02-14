@@ -116,6 +116,24 @@ namespace disfr.Doc
             return parser.Read(file);
         }
 
+        /// <summary>Parses an xliff (root) element into an asset bundle.</summary>
+        /// <param name="xliff">An XML element that is supposed to be an xliff element.</param>
+        /// <param name="filename">The (full path) name of the file <paramref name="xliff"/> was taken from.</param>
+        /// <param name="flavour">The flavour of XLIFF to assume.</param>
+        /// <returns>An asset bundle from <see cref="xliff"/>.</returns>
+        /// <remarks>The returned bundle's <see cref="IAssetBundle.CanRefresh"/> will be false.</remarks>
+        public IAssetBundle Parse(XElement xliff, string filename, Flavour flavour = Flavour.Auto)
+        {
+            if (xliff == null) throw new ArgumentNullException("xliff");
+            if (filename == null) throw new ArgumentNullException("filename");
+            var parser = new XliffParser();
+            parser.Filename = filename;
+            parser.Flavour = flavour;
+            var assets = parser.Parse(xliff);
+            if (assets == null) throw new ArgumentException("Not a valid <xliff> element", "xliff");
+            return new SimpleAssetBundle(assets, ReaderManager.FriendlyFilename(filename));
+        }
+
         private static bool IsXliff(Stream file, bool read = false)
         {
             var root = file.PeekElementWithoutChildren(read);

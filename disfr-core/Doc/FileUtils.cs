@@ -67,6 +67,35 @@ namespace disfr.Doc
             var position = read ? -1 : file.Position;
             try
             {
+                return PeekElementWithoutChildrenImpl(settings => XmlReader.Create(file, settings));
+            }
+            finally
+            {
+                if (!read) file.Position = position;
+            }
+        }
+
+        /// <summary>
+        /// Quickly checks and returns the first XML element in a <see cref="TextReader"/>,
+        /// ignoring any child nodes.
+        /// </summary>
+        /// <param name="reader">A TextReader that likely contains an XML document.</param>
+        /// <returns>An <see cref="XElement"/> instance with no children,
+        /// or null if the first part of <paramref name="file"/> does not form an XML document fragment.</returns>
+        /// <remarks>
+        /// As <see cref="TextReader"/> can't seek, this method always consumes first part of the given text reader.
+        /// The caller will need a way to rewind the text reader to make some useful processing on it,
+        /// e.g., to re-create the same text reader after positioning the underlying stream to the beginning.
+        /// </remarks>
+        public static XElement PeekElementWithoutChildren(this TextReader reader)
+        {
+            return PeekElementWithoutChildrenImpl(settings => XmlReader.Create(reader, settings));
+        }
+
+        private static XElement PeekElementWithoutChildrenImpl(Func<XmlReaderSettings, XmlReader> create_xml_reader)
+        {
+            try
+            {
                 // I experienced that some import filter (used with some CAT software) 
                 // produces some illegal entity references, e.g., "&#x1F;".
                 // Although it is NOT a wellformed XML in theory, we need to take care of them.
@@ -81,7 +110,7 @@ namespace disfr.Doc
                     XmlResolver = null,
                     CloseInput = false,
                 };
-                using (var reader = XmlReader.Create(file, settings))
+                using (var reader = create_xml_reader(settings))
                 {
                     reader.MoveToContent();
                     var element = new XElement(XName.Get(reader.LocalName, reader.NamespaceURI));
@@ -103,13 +132,6 @@ namespace disfr.Doc
             catch (XmlException)
             {
                 return null;
-            }
-            finally
-            {
-                if (position >= 0)
-                {
-                    file.Position = position;
-                }
             }
         }
 
