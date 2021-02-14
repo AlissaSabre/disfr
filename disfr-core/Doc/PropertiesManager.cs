@@ -80,16 +80,16 @@ namespace disfr.Doc
             if (v == null || v.Length <= index)
             {
                 // A sort of a silly workaround... FIXME. 
-                vector = new string[Math.Max(index + 1, KeyCount)];
+                var u = new string[Math.Max(index + 1, KeyCount)];
                 if (v != null)
                 {
+                    //Array.Copy(v, 0, u, 0, v.Length);
                     for (int i = 0; i < v.Length; i++)
                     {
-                        var p = v[i];
-                        if (p != null) vector[i] = p;
+                        u[i] = v[i];
                     }
                 }
-                v = vector;
+                vector = v = u;
             }
             v[index] = value;
         }

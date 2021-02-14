@@ -164,13 +164,18 @@ namespace disfr.Doc
             return pair;
         }
 
+        /// <summary>
+        /// Extracts a single TransPair from a trans-unit element.
+        /// </summary>
+        /// <param name="tu">A trans-unit element.</param>
+        /// <returns>A TransPair.</returns>
         protected virtual XliffTransPair ExtractSinglePair(XElement tu)
         {
             var source = tu.Element(X + "source");
             var target = tu.Element(X + "target");
             var pair = new XliffTransPair()
             {
-                Serial = ((string)tu.Attribute("translate") == "no") ? -1 : 1,
+                Serial = IsInterSegment(tu) ? -1 : 1,
                 Id = (string)tu.Attribute("id"),
                 Source = GetInline(source) ?? InlineString.Empty,
                 Target = GetInline(target) ?? InlineString.Empty,
@@ -184,6 +189,16 @@ namespace disfr.Doc
             if (source != null) AddSourceAttrProps(pair, source);
             if (target != null) AddTargetAttrProps(pair, target);
             return pair;
+        }
+
+        /// <summary>
+        /// Checks if a trans-unit is NOT for translation but contains an inter-segment content.
+        /// </summary>
+        /// <param name="tu">A trans-unit element.</param>
+        /// <returns>True if the given trans-unit is for an inter-segment content.</returns>
+        protected virtual bool IsInterSegment(XElement tu)
+        {
+            return (string)tu.Attribute("translate") == "no";
         }
 
         protected virtual void AddTuAttrProps(XliffTransPair pair, XElement tu)

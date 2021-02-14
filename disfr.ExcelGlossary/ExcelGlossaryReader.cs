@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using NetOffice.ExcelApi;
 using NetOffice.ExcelApi.Enums;
+using NetOffice.OfficeApi.Enums;
 using Excel = NetOffice.ExcelApi.Application;
 
 using disfr.Doc;
@@ -15,6 +16,8 @@ namespace disfr.ExcelGlossary
 {
     class ExcelGlossaryReader : IAssetReader
     {
+        private static readonly string[] PrimaryExtensions = { ".xlsx", ".xls" };
+
         private static readonly string[] _FilterString = { "Excel glossary files|*.xlsx;*.xls" };
 
         public IList<string> FilterString { get { return _FilterString; } }
@@ -33,6 +36,22 @@ namespace disfr.ExcelGlossary
 
         public IAssetBundle Read(string filename, int filterindex)
         {
+            if (filterindex < 0)
+            {
+                // Excel can open virtually any text-based file formats,
+                // but it could take incredibly long time if the file is not suitable for a table.
+                // If a user opened an unknown file with disfr using "All files" file types,
+                // assuming it is an XLIFF, but it was actually not,
+                // disfr's automatic file detection scheme eventually passes the file to this method
+                // (unless another reader accepts it), and the file could occupy Excel for long,
+                // causing disfr to appear as though it hanged up.
+                // I think we should avoid such a behaviour.
+                if (!PrimaryExtensions.Any(ext => filename.EndsWith(ext, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    return null;
+                }
+            }
+
             return LoaderAssetBundle.Create(
                 ReaderManager.FriendlyFilename(filename),
                 () => ReadAssets(filename));
@@ -49,7 +68,20 @@ namespace disfr.ExcelGlossary
             var excel = new Excel() { Visible = false, Interactive = false, DisplayAlerts = false };
             try
             {
+                // We should avoid execution of macros included in an Excel file,
+                // because it could contain some malicious operation.
+                // Excel enables macros by default when invoked via automation API (read "NetOffice"),
+                // so we should disable it by ourselves.
+                // Microsoft's documentation on AutomationSecurity says:
+                //     this property should be set immediately before and after opening a file programmatically
+                //     to avoid malicious subversion
+                // I'm not very sure what it means exactly,
+                // but it sounds to me we should use a code like following, though it looks silly...
+                // Anyway it seems working for me.
+                excel.AutomationSecurity = MsoAutomationSecurity.msoAutomationSecurityForceDisable;
                 var book = excel.Workbooks.Open(filename, XlUpdateLinks.xlUpdateLinksNever, true);
+                excel.AutomationSecurity = MsoAutomationSecurity.msoAutomationSecurityForceDisable;
+
                 var sheets = book.Worksheets;
                 for (int i = 1; i <= sheets.Count; i++)
                 {

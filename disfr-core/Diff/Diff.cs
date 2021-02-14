@@ -24,7 +24,7 @@ namespace Diff
     public static class Diff
     {
         /// <summary>
-        /// The <see cref="IDiffer"/> instance we are using.
+        /// Creates a new <see cref="IDiffer"/> instance of its default implementation.
         /// </summary>
         /// <returns></returns>
         private static IDiffer Differ() { return new GreedyDiffer2(); }
@@ -36,7 +36,7 @@ namespace Diff
         /// <param name="src">Source sequence of elements.</param>
         /// <param name="dst">Destination sequence of elements.</param>
         /// <returns>The <i>edit path</i> from <paramref name="src"/> to <paramref name="dst"/>.</returns>
-        /// <remarks>This method is NOT thread safe.</remarks>
+        /// <remarks>This method is thread safe.</remarks>
         public static string Compare<T>(IList<T> src, IList<T> dst) { return Differ().Compare(src, dst).Reorder().Changes; }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Diff
         /// <param name="dst">Destination sequence of elements.</param>
         /// <param name="comp">Equality for use to produce <i>edit path</i>.</param>
         /// <returns>The <i>edit path</i> from <paramref name="src"/> to <paramref name="dst"/>.</returns>
-        /// <remarks>This method is NOT thread safe.</remarks>
+        /// <remarks>This method is thread safe.</remarks>
         public static string Compare<T>(IList<T> src, IList<T> dst, Comparison<T> comp) { return Differ().Compare(src, dst, comp).Reorder().Changes; }
     }
 }
