@@ -1,0 +1,135 @@
+
+# A copy of this file in UnitTestPoParser/Samples
+# is encoded in ISO-8859-1 (Latin 1) for a testing purpose.
+# Please don't convert it to another charset, e.g., UTF-8.
+#
+# Another version of this file in UnitTestPoParser/Expected
+# is in UTF-8, though its metadata (as po) says "charset=ISO-8859-1".
+# Please don't convert it to another charset, e.g., ISO-8859-1.
+#
+# This file is a modified version of a file 
+# from the source repository of Sphinx documentation tool
+# (https://github.com/sphinx-doc/sphinx)
+# and is covered by the following licensing terms:
+#
+# License for Sphinx
+# ==================
+# 
+# Copyright (c) 2007-2021 by the Sphinx team (see AUTHORS file).
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 
+# * Redistributions of source code must retain the above copyright
+#   notice, this list of conditions and the following disclaimer.
+# 
+# * Redistributions in binary form must reproduce the above copyright
+#   notice, this list of conditions and the following disclaimer in the
+#   documentation and/or other materials provided with the distribution.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#
+#
+# Translations template for Sphinx.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the Sphinx project.
+#
+# Translators:
+# Christophe CHAUVET <christophe.chauvet@gmail.com>, 2017
+# Christophe CHAUVET <christophe.chauvet@gmail.com>, 2013,2015
+# cyrille gachot <cyrille.gachot@smile.fr>, 2019
+# Larlet David <david@larlet.fr>, 2008
+# fgallaire <fgallaire@gmail.com>, 2010
+# fgallaire <fgallaire@gmail.com>, 2010
+# François Poirotte <clicky@erebot.net>, 2016-2017
+# Georg Brandl <g.brandl@gmx.net>, 2014
+# Jean-Daniel Browne <jeandaniel.browne@gmail.com>, 2010
+# Jean-François B. <jfbu@free.fr>, 2017-2019
+# Julien Palard <github@mandark.fr>, 2017
+# Julien Malard <julien.malard@mail.mcgill.ca>, 2019
+# Kim Sylvestre <kim.sylvestre@gmail.com>, 2019
+# Larlet David <david@larlet.fr>, 2008
+# LAURENT Raphaël <laurent@ined.fr>, 2018-2019
+# Lilian Besson <inactive+Naereen@transifex.com>, 2013-2014
+# Nikolaj van Omme <nikolaj.van.omme@gmail.com>, 2014-2015
+# Olivier Bonaventure <bonaventure@acm.org>, 2019
+# Pierre Grépon <pgrepon@yahoo.fr>, 2016
+# Sebastien Douche <sdouche@gmail.com>, 2008
+# Takeshi KOMIYA <i.tkomiya@gmail.com>, 2016,2020
+msgid ""
+msgstr ""
+"Project-Id-Version: Sphinx\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-03-14 19:50+0900\n"
+"PO-Revision-Date: 2020-03-22 14:28+0000\n"
+"Last-Translator: Takeshi KOMIYA <i.tkomiya@gmail.com>\n"
+"Language-Team: French (http://www.transifex.com/sphinx-doc/sphinx-1/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: sphinx/application.py:159
+#, python-format
+msgid "config directory doesn't contain a conf.py file (%s)"
+msgstr "Le répertoire de configuration ne contient pas de fichier conf.py (%s)"
+
+#: sphinx/application.py:163
+#, python-format
+msgid "Cannot find source directory (%s)"
+msgstr "Impossible de trouver le répertoire source (%s)"
+
+#: sphinx/application.py:167
+msgid "Source directory and destination directory cannot be identical"
+msgstr "Les répertoires source et destination ne doivent pas être identiques."
+
+#: sphinx/application.py:198
+#, python-format
+msgid "Running Sphinx v%s"
+msgstr "Sphinx v%s en cours d'exécution"
+
+#: sphinx/application.py:226
+#, python-format
+msgid ""
+"This project needs at least Sphinx v%s and therefore cannot be built with "
+"this version."
+msgstr ""
+"Ce projet nécessite au minimum Sphinx v%s et ne peut donc être construit avec "
+"cette version."
+
+#: sphinx/application.py:246
+msgid "making output directory"
+msgstr "création du répertoire de sortie"
+
+#: sphinx/application.py:251 sphinx/registry.py:399
+#, python-format
+msgid "while setting up extension %s:"
+msgstr "lors de l'initialisation de l'extension %s :"
+
+#: sphinx/application.py:296 sphinx/util/__init__.py:646
+#~ msgid "done"
+#~ msgstr "fait"
+
+#: sphinx/application.py:313
+#, python-format
+#~ msgid "failed: %s"
+#~ msgstr "échec : %s"
+
+#: sphinx/application.py:321
+#~ msgid "No builder selected, using default: html"
+#~ msgstr "Aucun constructeur sélectionné, utilisation du défaut : html"

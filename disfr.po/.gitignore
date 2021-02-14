@@ -1,0 +1,5 @@
+# GP Yacc/Lex tools create several working/listing files,
+# that we don't need in the repository.
+*.Generated.cs
+*.lst
+*.conflicts

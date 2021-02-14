@@ -1,0 +1,61 @@
+
+# Sample PO file #2; unusual breaks
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: disfr.po UnitTestPoParser 0.0\n"
+"Report-Msgid-Bugs-To: alissa_sabre@yahoo.co.jp\n"
+"POT-Creation-Date: 2021-02-13 05:12+0000\n"
+"PO-Revision-Date: 2021-02-13 05:16+0000\n"
+"Last-Translator: Alissa Sabre <alissa_sabre@yahoo.co.jp\n"
+"Language-Team: English <alissa_sabre@yahoo.co.jp>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+msgid "foofoo"
+msgstr "foo"
+
+msgctxt "oops"
+msgid "bar"
+msgstr "bar"
+
+msgctxt "context"
+msgid "foo"
+msgid_plural "foos"
+msgstr[0] "foo"
+msgstr[1] "foos"
+
+msgid "bar"
+msgstr "bar"
+
+msgid "xyzzy"
+msgstr "xyzzy"
+
+#| msgid "Nope!"
+msgid "nope!"
+msgstr "nope!"
+
+#~ msgid "goo"
+#~ msgstr "goo"
+
+#~ msgid "Foofoo"
+#~ msgstr "Foo"
+
+#~ msgctxt "oops"
+#~ msgid "Bar"
+#~ msgstr "Bar"
+
+#~ msgctxt "context"
+#~ msgid "Foo"
+#~ msgid_plural "Foos"
+#~ msgstr[0] "Foo"
+#~ msgstr[1] "Foos"
+
+#~ msgid "Bar"
+#~ msgstr "Bar"
+
+#~ msgid "BAR"
+#~ msgstr "BAR"
