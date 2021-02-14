@@ -16,8 +16,8 @@ It has no way to edit/change the contents, however.
 
 ![screenshot](Documents/screenshot.jpg)
 
-disfr is a Windows .NET Framework program written in C# using WPF.
-(And, no, it does not strictly adhere the MVVM doctrine...  In fact, it heavily uses _code behinds_.  This note is for programmers.) 
+disfr runs only on Windows OS.  (It is a .NET Framework program written in C# using WPF, 
+and, no, it does not strictly adhere the MVVM doctrine...  In fact, it heavily uses _code behinds_.  This note is for programmers.) 
 
 For the moment, disfr is under development.
 You can consider it is in a sort of an alpha stage.
@@ -38,11 +38,11 @@ It supports reading of the following file formats, which are more or less based 
 It can also read the following related file formats, which are not based on XLIFF:
 * TMX translation memory exchange files (*.tmx.)
 * SDL Trados Studio Translation Memories (*.sdltm.)
-* Common bilingual glossaries on Microsoft Excel file (*.xls, *.xlsx)
+* Common bilingual glossaries on Microsoft Excel files (*.xls, *.xlsx)
+* gettext po files (*.po) **NEW**
 
 It may be capable of reading the following file formats in the future:
 * Standard XLIFF 2.0 and packages containing it.
-* .po files for GNU gettext.
 * .string files for iOS Apps.
 * Common glossaries on so-called CSV files.
 
@@ -79,6 +79,8 @@ disfr uses and its binary distribution includes Windows API Code Pack for Micros
 disfr uses and its binary distribution includes portions of [NetOffice](https://osdn.net/projects/netoffice/) by Sebastian Lange distributed under the MIT license.
 
 disfr uses and its binary distribution includes [SQLite](https://www.sqlite.org) and [System.Data.SQLite](https://system.data.sqlite.org) by SQLite Development team.
+
+disfr uses and its binary distribution includes portions of [YaccLexTools](https://github.com/ernstc/YaccLexTools) by Ernesto Cianciotta distributed under the MIT License, that includes Gardens Point LEX and Gardens Point Parser Generator tools by Queensland University of Technology distributed under a version of 2-clause BSD license ([this](https://raw.githubusercontent.com/ernstc/YaccLexTools/master/src/NuGet/YaccLexTools/tools/GPLEXcopyright.rtf) and [this](https://raw.githubusercontent.com/ernstc/YaccLexTools/master/src/NuGet/YaccLexTools/tools/GPPGcopyright.rtf)).
 
 ### Trademarks
 
