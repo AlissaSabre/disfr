@@ -17,6 +17,8 @@ namespace disfr.po
 
         protected string Domain;
 
+        protected int LineNumber;
+
         protected bool IsObsolete;
 
         protected readonly List<string> TranslatorComments = new List<string>();
@@ -50,8 +52,11 @@ namespace disfr.po
             Domain = domain;
         }
 
+        public Func<int> GetLineNumber;
+
         public void Reset()
         {
+            LineNumber = GetLineNumber?.Invoke() ?? 0;
             TranslatorComments.Clear();
             ExtractedComments.Clear();
             References.Clear();

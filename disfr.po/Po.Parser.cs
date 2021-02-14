@@ -34,5 +34,10 @@ namespace disfr.po
         }
 
         private ISink Sink;
+
+        public int GetLineNumber()
+        {
+            return (Scanner as PoScanner).GetLineNumber();
+        }
     }
 }
