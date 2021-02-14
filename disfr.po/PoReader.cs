@@ -36,13 +36,13 @@ namespace disfr.po
         private IAsset ReadAsset(string filename)
         {
             var parser = new PoParser();
-            var sink = new PoAssetSink();
+            var sink = new PoAssetSink() { GetLineNumber = parser.GetLineNumber };
             parser.Parse(filename, sink);
             var a = sink.GetAsset();
             a.Package = filename;
-            a.Original = filename;
+            a.Original = sink.Project;
             a.SourceLang = ""; // unkown/unspecified
-            a.TargetLang = "FIXME";
+            a.TargetLang = sink.TargetLanguage;
             return a;
         }
     }
@@ -55,36 +55,42 @@ namespace disfr.po
 
         private int Serial = 0;
 
-        private int IdCounter = 0;
+        private bool FirstTime = true;
 
         protected override void Finish()
         {
-            ++IdCounter;
-            if (!HasPlural)
+            var pid = FormPairId();
+            var first_time = FirstTime;
+            FirstTime = false;
+            if (first_time && MessageId.Length == 0)
             {
-                Pairs.Add(CreatePair(MessageId, MessageStr));
+                ProcessMetadata();
+            }
+            else if (!HasPlural)
+            {
+                Pairs.Add(CreatePair(MessageId, MessageStr, pid));
             }
             else
             {
-                Pairs.Add(CreatePair(MessageId, MessageStrPlural[0], ".0"));
+                Pairs.Add(CreatePair(MessageId, MessageStrPlural[0], pid + ".0"));
                 for (int i = 1; i < MessageStrPlural.Count; i++)
                 {
-                    var id_suffix = "." + i.ToString(CultureInfo.InvariantCulture);
-                    Pairs.Add(CreatePair(MessageIdPlural, MessageStrPlural[i], id_suffix));
+                    var suffixed_pid = pid + "." + i.ToString(CultureInfo.InvariantCulture);
+                    Pairs.Add(CreatePair(MessageIdPlural, MessageStrPlural[i], suffixed_pid));
                 }
                 if (MessageStrPlural.Count <= 1)
                 {
-                    Pairs.Add(CreatePair(MessageIdPlural, String.Empty, "._"));
+                    Pairs.Add(CreatePair(MessageIdPlural, String.Empty, pid + "._"));
                 }
             }
         }
 
-        private PoTransPair CreatePair(string source, string target, string id_suffix = "")
+        private PoTransPair CreatePair(string source, string target, string pid)
         {
             var pair = new PoTransPair(Asset)
             {
                 Serial = ++Serial,
-                Id = IdCounter.ToString() + id_suffix,
+                Id = pid,
                 Source = new InlineString(source),
                 Target = new InlineString(target),
                 Notes = TranslatorComments
@@ -96,11 +102,62 @@ namespace disfr.po
             return pair;
         }
 
+        private int LastLineNumber = 0;
+
+        private int LastBranch = 0;
+
+        private string FormPairId()
+        {
+            // Use the line number (in .po) as an ID.
+            var id = LineNumber.ToString();
+
+            // A single line can have multiple mdessage defs, though.
+            // Use a, b, c, ... to distinguish them.
+            if (LineNumber > LastLineNumber)
+            {
+                LastLineNumber = LineNumber;
+                LastBranch = 0;
+            }
+            else
+            {
+                string branch = string.Empty;
+                var n = ++LastBranch;
+                while (n > 0)
+                {
+                    n--;
+                    branch = (char)('a' + n % 26) + branch;
+                    n /= 26;
+                }
+                id += branch;
+            }
+
+            return id;
+        }
+
         public PoAsset GetAsset()
         {
             var a = Asset;
             a.TransPairs = Pairs.ToArray();
             return a;
+        }
+
+        public string Project { get; protected set; } = string.Empty;
+
+        public string TargetLanguage { get; protected set; } = string.Empty;
+
+        private void ProcessMetadata()
+        {
+            foreach (var line in MessageStr.Split('\n'))
+            {
+                if (line.StartsWith("Project-Id-Version:", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Project = line.Substring("Project-Id-Version:".Length).Trim();
+                }
+                if (line.StartsWith("Language:", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    TargetLanguage = line.Substring("Language:".Length).Trim();
+                }
+            }
         }
     }
 

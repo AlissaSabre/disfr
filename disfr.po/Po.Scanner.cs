@@ -148,6 +148,11 @@ namespace disfr.po
             return p;
         }
 
+        public int GetLineNumber()
+        {
+            return yyline;
+        }
+
         public string SourceFileName { get; set; }
 
         public override void yyerror(string format, params object[] args)
