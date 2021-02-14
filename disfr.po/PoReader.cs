@@ -40,9 +40,9 @@ namespace disfr.po
             parser.Parse(filename, sink);
             var a = sink.GetAsset();
             a.Package = filename;
-            a.Original = filename;
+            a.Original = sink.Project;
             a.SourceLang = ""; // unkown/unspecified
-            a.TargetLang = "FIXME";
+            a.TargetLang = sink.TargetLanguage;
             return a;
         }
     }
@@ -101,6 +101,25 @@ namespace disfr.po
             var a = Asset;
             a.TransPairs = Pairs.ToArray();
             return a;
+        }
+
+        public string Project { get; protected set; } = string.Empty;
+
+        public string TargetLanguage { get; protected set; } = string.Empty;
+
+        private void ProcessMetadata()
+        {
+            foreach (var line in MessageStr.Split('\n'))
+            {
+                if (line.StartsWith("Project-Id-Version:", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Project = line.Substring("Project-Id-Version:".Length).Trim();
+                }
+                if (line.StartsWith("Language:", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    TargetLanguage = line.Substring("Language:".Length).Trim();
+                }
+            }
         }
     }
 
