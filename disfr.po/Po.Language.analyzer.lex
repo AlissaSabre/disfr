@@ -29,4 +29,4 @@
 
 ["]([^"\\]|[\\][^\n])*["]	yylval = DecodeEscaped(yytext); return (int)Token.STRING;
 
-.							yyerror("Invalid character U+{1:X4} '{0}'", (int)yytext[0], yytext[0]);
+.							yyerror("Invalid character U+{0:X4} '{1}'", (int)yytext[0], yytext[0]);
