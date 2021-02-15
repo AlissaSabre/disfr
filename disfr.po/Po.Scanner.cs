@@ -89,7 +89,7 @@ namespace disfr.po
                                 sb.Append(d);
                                 break;
                             default:
-                                yyerror("Invalid escape: \\{0}", c);
+                                sb.Append(c);
                                 break;
                         }
                         break;
