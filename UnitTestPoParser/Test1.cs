@@ -38,6 +38,12 @@ namespace UnitTestPoParser
             Run(SamplesDir + "sample3.po", ReferencesDir + "sample3.po");
         }
 
+        [TestMethod]
+        public void TestMethod4()
+        {
+            Run(SamplesDir + "sample4.po", ReferencesDir + "sample4.po");
+        }
+
         private void Run(string input, string expected, [CallerMemberName] string caller = "")
         {
             var parser = new PoParser();
