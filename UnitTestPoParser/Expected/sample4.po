@@ -1,9 +1,9 @@
 
 # Sample PO file #4
-#
+# 
 # This file contains several escaped characters
 # that GNU gettext tools don't accept but our parser does.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: disfr.po UnitTestPoParser 0.0\n"
