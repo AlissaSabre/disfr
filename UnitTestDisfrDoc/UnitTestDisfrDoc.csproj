@@ -64,6 +64,7 @@
     <Compile Include="InlineStringTest.cs" />
     <Compile Include="InlineStringTest_ExtensionMethods.cs" />
     <Compile Include="PairVisualizer.cs" />
+    <Compile Include="PoReaderTest.cs" />
     <Compile Include="ReaderManagerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PairVisualizerTest.cs" />
@@ -116,6 +117,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Samples\git.html_jpn.mqxlz" />
+    <None Include="Samples\issue24.po" />
     <None Include="Samples\Language_Support.doc.sdlxliff" />
     <None Include="Samples\my_memory.doc" />
     <None Include="Samples\my_memory.tmx" />
@@ -133,6 +135,10 @@
     <ProjectReference Include="..\disfr-core\disfr-core.csproj">
       <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
       <Name>disfr-core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\disfr.po\disfr.po.csproj">
+      <Project>{200c4bfe-acef-471e-b325-eb274a841e3d}</Project>
+      <Name>disfr.po</Name>
     </ProjectReference>
     <ProjectReference Include="..\disfr.sdltm\disfr.sdltm.csproj">
       <Project>{38ba914a-deea-4590-8168-ac31c9480797}</Project>
