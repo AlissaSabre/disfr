@@ -94,7 +94,8 @@ namespace disfr.po
                 Source = new InlineString(source),
                 Target = new InlineString(target),
                 Notes = TranslatorComments
-                    .Concat(ExtractedComments.Select(s => "Extracted: " + s)),
+                    .Concat(ExtractedComments.Select(s => "Extracted: " + s))
+                    .ToArray(),
                 [PoAsset.PropObsolete] = IsObsolete ? "Obsolete" : "",
                 [PoAsset.PropFlags] = string.Join(" ", Flags),
                 [PoAsset.PropReferences] = string.Join("\n", References),
