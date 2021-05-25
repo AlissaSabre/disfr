@@ -80,6 +80,7 @@
     <Compile Include="InlineRunTest.cs" />
     <Compile Include="InlineTag_LooseEqualityComparerTest.cs" />
     <Compile Include="MemoQXliffReaderTest.cs" />
+    <Compile Include="ReaderManagerAutoDetectTest.cs" />
     <Compile Include="XliffReaderBasicTest.cs" />
     <Compile Include="XliffReaderComrehensiveTest.cs" />
     <Compile Include="XliffReaderCraftedTest.cs" />
@@ -96,6 +97,7 @@
     <None Include="Expected\Xliff2.dump" />
     <None Include="Expected\XuanZang.dump" />
     <None Include="packages.config" />
+    <None Include="Samples\c-strings.po" />
     <None Include="Samples\ChangeTracking_memoQ_1.mqxliff">
       <SubType>Designer</SubType>
     </None>

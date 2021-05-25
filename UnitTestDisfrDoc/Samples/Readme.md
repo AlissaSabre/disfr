@@ -8,6 +8,7 @@ Origin of each file or its contents is as follows:
 
 | File                                      | Origin (URL to the file or a page containing the file)
 | ----------------------------------------- | ---
+| c-strings.po                              | https://raw.githubusercontent.com/rubenv/pofile/master/test/fixtures/c-strings.po
 | Configuring_Spelling_Checker.doc.sdlxliff | https://etudiants-caweb.u-strasbg.fr/1112//alexis/Trados%20-%20Chretiennot/Caweb_2011-2012/Caweb%202011-2012/Projet1/fr-FR/
 | git.html_jpn.mqxlz                        | https://en.wikipedia.org/w/index.php?title=Git_(software)&oldid=734439163
 | Language_Support.doc.sdlxliff             | https://etudiants-caweb.u-strasbg.fr/1112//alexis/Trados%20-%20Chretiennot/Caweb_2011-2012/Caweb%202011-2012/Projet1/fr-FR/
