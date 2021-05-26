@@ -118,6 +118,7 @@
     <None Include="Samples\Crafted01.xliff">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Samples\Example_Excel_Glossary.xlsx" />
     <None Include="Samples\git.html_jpn.mqxlz" />
     <None Include="Samples\issue24.po" />
     <None Include="Samples\Language_Support.doc.sdlxliff" />
@@ -129,6 +130,7 @@
     <None Include="Samples\Crafted02.xliff">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Samples\The Man in the Moon_txt.txlf" />
     <None Include="Samples\Xliff1.xliff" />
     <None Include="Samples\Xliff2.xliff" />
     <None Include="Samples\XuanZang.tmx" />

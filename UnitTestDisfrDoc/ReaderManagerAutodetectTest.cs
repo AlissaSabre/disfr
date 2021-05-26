@@ -111,5 +111,17 @@ namespace UnitTestDisfrDoc
             ReaderManager.Current.Read(Path.Combine(IDIR, "issue24.po"), -1).IsNot(null);
         }
 
+        [TestMethod]
+        public void ReaderManager_AutoDetect_txlf_1()
+        {
+            ReaderManager.Current.Read(Path.Combine(IDIR, "The Man in the Moon_txt.txlf"), -1).IsNot(null);
+        }
+
+        [TestMethod]
+        public void ReaderManager_AutoDetect_ExcelGlossary_2()
+        {
+            ReaderManager.Current.Read(Path.Combine(IDIR, "Example_Excel_Glossary.xlsx"), -1).IsNot(null);
+        }
+
     }
 }
