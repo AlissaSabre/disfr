@@ -20,7 +20,7 @@ namespace disfr.po
     {
         public string Name { get { return "PoReader"; } }
 
-        public int Priority { get { return 10; } }
+        public int Priority { get { return 7; } }
 
         private static readonly string[] _FilterString = { "gettext PO files|*.po" };
 
