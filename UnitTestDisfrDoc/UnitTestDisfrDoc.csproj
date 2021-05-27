@@ -80,6 +80,7 @@
     <Compile Include="InlineRunTest.cs" />
     <Compile Include="InlineTag_LooseEqualityComparerTest.cs" />
     <Compile Include="MemoQXliffReaderTest.cs" />
+    <Compile Include="ReaderManagerAutoDetectTest.cs" />
     <Compile Include="XliffReaderBasicTest.cs" />
     <Compile Include="XliffReaderComrehensiveTest.cs" />
     <Compile Include="XliffReaderCraftedTest.cs" />
@@ -96,6 +97,7 @@
     <None Include="Expected\Xliff2.dump" />
     <None Include="Expected\XuanZang.dump" />
     <None Include="packages.config" />
+    <None Include="Samples\c-strings.po" />
     <None Include="Samples\ChangeTracking_memoQ_1.mqxliff">
       <SubType>Designer</SubType>
     </None>
@@ -116,6 +118,7 @@
     <None Include="Samples\Crafted01.xliff">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Samples\Example_Excel_Glossary.xlsx" />
     <None Include="Samples\git.html_jpn.mqxlz" />
     <None Include="Samples\issue24.po" />
     <None Include="Samples\Language_Support.doc.sdlxliff" />
@@ -127,6 +130,7 @@
     <None Include="Samples\Crafted02.xliff">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Samples\The Man in the Moon_txt.txlf" />
     <None Include="Samples\Xliff1.xliff" />
     <None Include="Samples\Xliff2.xliff" />
     <None Include="Samples\XuanZang.tmx" />
@@ -135,6 +139,10 @@
     <ProjectReference Include="..\disfr-core\disfr-core.csproj">
       <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
       <Name>disfr-core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\disfr.ExcelGlossary\disfr.ExcelGlossary.csproj">
+      <Project>{6845e146-ec88-4bae-bfd8-3922c37e861e}</Project>
+      <Name>disfr.ExcelGlossary</Name>
     </ProjectReference>
     <ProjectReference Include="..\disfr.po\disfr.po.csproj">
       <Project>{200c4bfe-acef-471e-b325-eb274a841e3d}</Project>
