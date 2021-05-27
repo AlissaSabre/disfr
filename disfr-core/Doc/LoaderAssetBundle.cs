@@ -38,6 +38,15 @@ namespace disfr.Doc
             };
         }
 
+        public static LoaderAssetBundle Create(string name, Func<IAsset> loader)
+        {
+            return Create(name, () =>
+                {
+                    var asset = loader();
+                    return (asset == null) ? null : new[] { asset };
+                });
+        }
+
         private Func<IEnumerable<IAsset>> Loader;
 
         public string Name { get; private set; }
