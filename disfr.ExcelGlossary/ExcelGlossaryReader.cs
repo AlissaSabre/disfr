@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,8 +44,8 @@ namespace disfr.ExcelGlossary
                 // If a user opened an unknown file with disfr using "All files" file types,
                 // assuming it is an XLIFF, but it was actually not,
                 // disfr's automatic file detection scheme eventually passes the file to this method
-                // (unless another reader accepts it), and the file could occupy Excel for long,
-                // causing disfr to appear as though it hanged up.
+                // (unless another reader accepted it), and the file could occupy Excel for long,
+                // causing disfr to appear as though it hung up.
                 // I think we should avoid such a behaviour.
                 if (!PrimaryExtensions.Any(ext => filename.EndsWith(ext, StringComparison.InvariantCultureIgnoreCase)))
                 {
@@ -52,9 +53,10 @@ namespace disfr.ExcelGlossary
                 }
             }
 
+            var full_pathname = Path.GetFullPath(filename);
             return LoaderAssetBundle.Create(
                 ReaderManager.FriendlyFilename(filename),
-                () => ReadAssets(filename));
+                () => ReadAssets(full_pathname));
         }
 
         /// <summary>
