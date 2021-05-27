@@ -140,6 +140,10 @@
       <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
       <Name>disfr-core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\disfr.ExcelGlossary\disfr.ExcelGlossary.csproj">
+      <Project>{6845e146-ec88-4bae-bfd8-3922c37e861e}</Project>
+      <Name>disfr.ExcelGlossary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\disfr.po\disfr.po.csproj">
       <Project>{200c4bfe-acef-471e-b325-eb274a841e3d}</Project>
       <Name>disfr.po</Name>
