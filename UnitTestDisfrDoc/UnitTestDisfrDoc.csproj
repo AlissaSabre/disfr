@@ -98,26 +98,14 @@
     <None Include="Expected\XuanZang.dump" />
     <None Include="packages.config" />
     <None Include="Samples\c-strings.po" />
-    <None Include="Samples\ChangeTracking_memoQ_1.mqxliff">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Samples\ChangeTracking_memoQ_1.mqxliff" />
     <None Include="Samples\ChangeTracking_Trados_1.sdlxliff" />
     <None Include="Samples\Configuring_Spelling_Checker.doc.sdlxliff" />
-    <None Include="Samples\Crafted00a.xliff">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Samples\Crafted00.xliff">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Samples\Crafted04.xliff">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Samples\Crafted03.xliff">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Samples\Crafted01.xliff">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Samples\Crafted00a.xliff" />
+    <None Include="Samples\Crafted00.xliff" />
+    <None Include="Samples\Crafted04.xliff" />
+    <None Include="Samples\Crafted03.xliff" />
+    <None Include="Samples\Crafted01.xliff" />
     <None Include="Samples\Example_Excel_Glossary.xlsx" />
     <None Include="Samples\git.html_jpn.mqxlz" />
     <None Include="Samples\issue24.po" />
@@ -127,9 +115,7 @@
     <None Include="Samples\New_features.ppt.sdlxliff" />
     <None Include="Samples\Readme.md" />
     <None Include="Samples\tea-party.sdltm" />
-    <None Include="Samples\Crafted02.xliff">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Samples\Crafted02.xliff" />
     <None Include="Samples\The Man in the Moon_txt.txlf" />
     <None Include="Samples\Xliff1.xliff" />
     <None Include="Samples\Xliff2.xliff" />
@@ -186,7 +172,7 @@
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.targets')" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net45\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net45\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
