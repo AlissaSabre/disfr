@@ -1,4 +1,14 @@
-﻿Origins of sample files
+About sample files
+==================
+
+This folder contains several sample files used by various tests.
+
+These files are only for testing behaviours of disfr and/or its components
+and not intended for sample _translation_.
+The translated texts given in the sample files may be incorrect,
+and even the source or target texts may be inappropraite for the designated languages.
+
+Origins of sample files
 =======================
 
 Many files in this directory are downloaded from the Internet or are modified versions of such files.
