@@ -212,7 +212,9 @@ namespace disfr.UI
                     PropMapper = mapper,
                 };
 
-                foreach (var pair in get_pairs(asset))
+                var pairs = get_pairs(asset);
+                ad.CalculateIdTrimmer(pairs);
+                foreach (var pair in pairs)
                 {
                     rows.Add(new BilingualRowData(Renderer, ad, pair, seq++));
                     if (pair.Serial > 0) serial++;

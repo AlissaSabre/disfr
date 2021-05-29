@@ -93,6 +93,35 @@ namespace disfr.UI
 
         public int IdTrimChars { get; set; }
 
+        /// <summary>
+        /// Calculates the optimal <see cref="IdTrimChars"/> value for <see cref="ITransPair"/>s.
+        /// </summary>
+        /// <param name="pairs">A set of <see cref="ITransPair"/>s.</param>
+        public void CalculateIdTrimmer(IEnumerable<ITransPair> pairs)
+        {
+            // Assuming an ID consists of a number optinally followed by a suffix,
+            // the optimal IdTrimChars value is the minimum required length of digits
+            // to hold the prefix numbers.
+            // In other words,
+            // this method calculates the maximum length of $2
+            // when IDs are matched against a regular expression "^([0]*)([1-9][0-9]*)([^0-9].*)?$".
+            // Note that we ignore intersegment contents.
+            int chars = 0;
+            foreach (var pair in pairs)
+            {
+                if (pair.Serial > 0)
+                {
+                    var id = pair.Id;
+                    int p = 0;
+                    while (p < id.Length && id[p] == '0') p++;
+                    int q = p;
+                    while (q < id.Length && id[q] >= '0' && id[q] <= '9') q++;
+                    chars = Math.Max(chars, q - p);
+                }
+            }
+            IdTrimChars = chars;
+        }
+
         private static readonly char[] SEPARATORS = { '/', '\\' };
 
         private string Basename(string full)
