@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr.po", "disfr.po\disfr.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestPoParser", "UnitTestPoParser\UnitTestPoParser.csproj", "{A6787682-36E5-466A-8DB2-711C9429C7AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHelperDoc", "TestHelperDoc\TestHelperDoc.csproj", "{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -231,6 +233,18 @@ Global
 		{A6787682-36E5-466A-8DB2-711C9429C7AD}.Release|x64.Build.0 = Release|Any CPU
 		{A6787682-36E5-466A-8DB2-711C9429C7AD}.Release|x86.ActiveCfg = Release|Any CPU
 		{A6787682-36E5-466A-8DB2-711C9429C7AD}.Release|x86.Build.0 = Release|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Debug|x64.Build.0 = Debug|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Debug|x86.Build.0 = Debug|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Release|x64.ActiveCfg = Release|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Release|x64.Build.0 = Release|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Release|x86.ActiveCfg = Release|Any CPU
+		{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
