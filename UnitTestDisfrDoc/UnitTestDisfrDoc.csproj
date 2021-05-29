@@ -61,6 +61,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChainingAssertion.MSTest.cs" />
+    <Compile Include="EmptyFileTest.cs" />
     <Compile Include="InlineStringTest.cs" />
     <Compile Include="InlineStringTest_ExtensionMethods.cs" />
     <Compile Include="PairVisualizer.cs" />
@@ -106,6 +107,9 @@
     <None Include="Samples\Crafted04.xliff" />
     <None Include="Samples\Crafted03.xliff" />
     <None Include="Samples\Crafted01.xliff" />
+    <None Include="Samples\empty-gnupo.po" />
+    <None Include="Samples\empty-tmx.tmx" />
+    <None Include="Samples\empty-xliff12.xliff" />
     <None Include="Samples\Example_Excel_Glossary.xlsx" />
     <None Include="Samples\git.html_jpn.mqxlz" />
     <None Include="Samples\issue24.po" />
