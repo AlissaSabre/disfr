@@ -60,13 +60,17 @@
     <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Expected\issue24.po" />
     <None Include="Expected\sample1.po" />
     <None Include="Expected\sample2.po" />
     <None Include="Expected\sample3.po" />
+    <None Include="Expected\sample4.po" />
     <None Include="packages.config" />
+    <None Include="Samples\issue24.po" />
     <None Include="Samples\sample2.po" />
     <None Include="Samples\sample1.po" />
     <None Include="Samples\sample3.po" />
+    <None Include="Samples\sample4.po" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\disfr.po\disfr.po.csproj">

@@ -252,15 +252,35 @@ namespace disfr.UI
             return inline.ToString(InlineString.RenderFlat);
         }
 
-        private const char FIGURE_SPACE = '\u2007';
+        /// <summary>The character to pad numeric IDs.</summary>
+        /// <remarks>It is Unicode U+2007 FIGURE SPACE.</remarks>
+        private const char ID_PADDING_CHAR = '\u2007';
 
         private string TrimId(string id, int trim)
         {
-            if (trim < 0) return id;
-            int len = id.Length - trim;
-            var sb = new StringBuilder(id, trim, len, len);
-            for (int p = 0; p < sb.Length && sb[p] == '0'; p++) sb[p] = FIGURE_SPACE;
-            return sb.ToString();
+            if (id.Length == 0) return id;
+            if (id[0] < '0' || id[0] > '9') return id;
+
+            int p = 0;
+            while (p < id.Length && id[p] == '0') p++;
+            int q = p;
+            while (q < id.Length && id[q] >= '0' && id[q] <= '9') q++;
+
+            // See issue #6 (https://github.com/AlissaSabre/disfr/issues/6)
+            if (p > 0 && p == q) --p;
+
+            int pad = trim - (q - p);
+            if (pad <= 0)
+            {
+                return id.Substring(p);
+            }
+            else
+            {
+                var sb = new StringBuilder(id.Length - q + trim);
+                sb.Append(ID_PADDING_CHAR, pad);
+                sb.Append(id, p, id.Length - p);
+                return sb.ToString();
+            }
         }
 
         public string TagListFromInline(InlineString text)

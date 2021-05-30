@@ -61,9 +61,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChainingAssertion.MSTest.cs" />
+    <Compile Include="EmptyFileTest.cs" />
     <Compile Include="InlineStringTest.cs" />
     <Compile Include="InlineStringTest_ExtensionMethods.cs" />
     <Compile Include="PairVisualizer.cs" />
+    <Compile Include="PoReaderTest.cs" />
     <Compile Include="ReaderManagerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PairVisualizerTest.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="InlineRunTest.cs" />
     <Compile Include="InlineTag_LooseEqualityComparerTest.cs" />
     <Compile Include="MemoQXliffReaderTest.cs" />
+    <Compile Include="ReaderManagerAutoDetectTest.cs" />
     <Compile Include="XliffReaderBasicTest.cs" />
     <Compile Include="XliffReaderComrehensiveTest.cs" />
     <Compile Include="XliffReaderCraftedTest.cs" />
@@ -95,36 +98,29 @@
     <None Include="Expected\Xliff2.dump" />
     <None Include="Expected\XuanZang.dump" />
     <None Include="packages.config" />
-    <None Include="Samples\ChangeTracking_memoQ_1.mqxliff">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Samples\c-strings.po" />
+    <None Include="Samples\ChangeTracking_memoQ_1.mqxliff" />
     <None Include="Samples\ChangeTracking_Trados_1.sdlxliff" />
     <None Include="Samples\Configuring_Spelling_Checker.doc.sdlxliff" />
-    <None Include="Samples\Crafted00a.xliff">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Samples\Crafted00.xliff">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Samples\Crafted04.xliff">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Samples\Crafted03.xliff">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Samples\Crafted01.xliff">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Samples\Crafted00a.xliff" />
+    <None Include="Samples\Crafted00.xliff" />
+    <None Include="Samples\Crafted04.xliff" />
+    <None Include="Samples\Crafted03.xliff" />
+    <None Include="Samples\Crafted01.xliff" />
+    <None Include="Samples\empty-gnupo.po" />
+    <None Include="Samples\empty-tmx.tmx" />
+    <None Include="Samples\empty-xliff12.xliff" />
+    <None Include="Samples\Example_Excel_Glossary.xlsx" />
     <None Include="Samples\git.html_jpn.mqxlz" />
+    <None Include="Samples\issue24.po" />
     <None Include="Samples\Language_Support.doc.sdlxliff" />
     <None Include="Samples\my_memory.doc" />
     <None Include="Samples\my_memory.tmx" />
     <None Include="Samples\New_features.ppt.sdlxliff" />
     <None Include="Samples\Readme.md" />
     <None Include="Samples\tea-party.sdltm" />
-    <None Include="Samples\Crafted02.xliff">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Samples\Crafted02.xliff" />
+    <None Include="Samples\The Man in the Moon_txt.txlf" />
     <None Include="Samples\Xliff1.xliff" />
     <None Include="Samples\Xliff2.xliff" />
     <None Include="Samples\XuanZang.tmx" />
@@ -133,6 +129,14 @@
     <ProjectReference Include="..\disfr-core\disfr-core.csproj">
       <Project>{52c27a7f-355e-4bbc-8f0d-546fb11ef689}</Project>
       <Name>disfr-core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\disfr.ExcelGlossary\disfr.ExcelGlossary.csproj">
+      <Project>{6845e146-ec88-4bae-bfd8-3922c37e861e}</Project>
+      <Name>disfr.ExcelGlossary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\disfr.po\disfr.po.csproj">
+      <Project>{200c4bfe-acef-471e-b325-eb274a841e3d}</Project>
+      <Name>disfr.po</Name>
     </ProjectReference>
     <ProjectReference Include="..\disfr.sdltm\disfr.sdltm.csproj">
       <Project>{38ba914a-deea-4590-8168-ac31c9480797}</Project>
@@ -172,7 +176,7 @@
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.targets')" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net45\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net45\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
