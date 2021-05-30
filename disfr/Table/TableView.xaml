@@ -91,11 +91,11 @@
 
     <DataGrid x:Name="dataGrid" Margin="0,0,0,0" ItemsSource="{Binding Rows}" Style="{StaticResource DataGridStyle}" CanUserSortColumns="True" Sorting="dataGrid_Sorting" CopyingRowClipboardContent="dataGrid_CopyingRowClipboardContent" SelectedCellsChanged="dataGrid_SelectedCellsChanged">
         <DataGrid.Columns>
-            <DataGridTextColumn x:Name="Serial" Header="#" Binding="{Binding Path=Serial, StringFormat=#}"/>
+            <DataGridTextColumn x:Name="Serial" Header="#" Binding="{Binding Path=Serial, StringFormat=#}" ElementStyle="{StaticResource RightWithMargin}"/>
             <DataGridTextColumn x:Name="Asset2" Header="Old Asset" Binding="{Binding Asset2}" Width="80"/>
             <DataGridTextColumn x:Name="Asset" Header="Asset" Binding="{Binding Asset}" Width="80"/>
-            <DataGridTextColumn x:Name="Id2" Header="Old Id" Binding="{Binding Id2}"/>
-            <DataGridTextColumn x:Name="Id" Header="Id" Binding="{Binding Id}"/>
+            <DataGridTextColumn x:Name="Id2" Header="Old Id" Binding="{Binding Id2}" ElementStyle="{StaticResource LeftWithMargin}"/>
+            <DataGridTextColumn x:Name="Id" Header="Id" Binding="{Binding Id}" ElementStyle="{StaticResource LeftWithMargin}"/>
             <DataGridTemplateColumn x:Name="Source" Header="Source" ClipboardContentBinding="{Binding Source}" Width="*" CanUserSort="True" SortMemberPath="FlatSource">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
