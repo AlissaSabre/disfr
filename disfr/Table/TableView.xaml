@@ -1,11 +1,11 @@
 ﻿<!-- This XAML code is not very suitable for designer.  Use a text editor instead. -->
-    
+
 <TabItem x:Class="disfr.UI.TableView"
          x:Name="Root"
          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
          xmlns:local="clr-namespace:disfr.UI">
     <TabItem.Resources>
         <ResourceDictionary>
@@ -72,7 +72,7 @@
                         </Style>
                     </Setter.Value>
                 </Setter>
-                
+
             </Style>
 
             <Style x:Key="AdditionalColumnElementStyle" TargetType="TextBlock" BasedOn="{StaticResource TextWrap}" />
@@ -92,6 +92,7 @@
     <DataGrid x:Name="dataGrid" Margin="0,0,0,0" ItemsSource="{Binding Rows}" Style="{StaticResource DataGridStyle}" CanUserSortColumns="True" Sorting="dataGrid_Sorting" CopyingRowClipboardContent="dataGrid_CopyingRowClipboardContent" SelectedCellsChanged="dataGrid_SelectedCellsChanged">
         <DataGrid.Columns>
             <DataGridTextColumn x:Name="Serial" Header="#" Binding="{Binding Path=Serial, StringFormat=#}" ElementStyle="{StaticResource RightWithMargin}"/>
+            <DataGridTextColumn x:Name="Package" Header="Package" Binding="{Binding Package}" Width="80" />
             <DataGridTextColumn x:Name="Asset2" Header="Old Asset" Binding="{Binding Asset2}" Width="80"/>
             <DataGridTextColumn x:Name="Asset" Header="Asset" Binding="{Binding Asset}" Width="80"/>
             <DataGridTextColumn x:Name="Id2" Header="Old Id" Binding="{Binding Id2}" ElementStyle="{StaticResource LeftWithMargin}"/>
@@ -133,7 +134,7 @@
                 <MenuItem Header="Select _Nothing" Command="local:Commands.UnselectAll"/>
             </ContextMenu>
         </DataGrid.ContextMenu>
-        
+
         <DataGrid.Resources>
             <!-- This is how we can change the highlight colors of DataGrid cells... -->
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="LightBlue"/>
@@ -141,7 +142,7 @@
             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightBlue"/>
             <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.WindowTextColor}"/>
         </DataGrid.Resources>
-        
+
         <DataGrid.RowStyleSelector>
             <local:RowStyleSelector>
                 <local:RowStyleSelector.BoundaryStyle>

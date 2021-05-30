@@ -205,6 +205,7 @@ namespace disfr.UI
 
                 var ad = new AssetData()
                 {
+                    LongPackageName = asset.Package,
                     LongAssetName = asset.Original,
                     BaseSerial = serial,
                     SourceLang = asset.SourceLang,
