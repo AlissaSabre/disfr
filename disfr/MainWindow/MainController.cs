@@ -86,16 +86,24 @@ namespace disfr.UI
                 ITableController[] result;
                 if (single_tab && filenames.Length > 1)
                 {
-                    result = new[]
+                    var bundle = ReaderManager.Read(filenames, index);
+                    if (!bundle.Assets.Any(a => a.TransPairs.Any()))
                     {
-                        TableController.LoadBilingualAssets(ReaderManager.Read(filenames, index))
-                    };
+                        throw new InvalidOperationException("All files have no contents.");
+                    }
+                    result = new[] { TableController.LoadBilingualAssets(bundle) };
                 }
                 else
                 {
                     result = filenames.Select(f =>
-                        TableController.LoadBilingualAssets(ReaderManager.Read(f, index))
-                    ).ToArray();
+                    {
+                        var bundle = ReaderManager.Read(f, index);
+                        if (!bundle.Assets.Any(a => a.TransPairs.Any()))
+                        {
+                            throw new InvalidOperationException(string.Format("{0} has no contents.", f));
+                        }
+                        return TableController.LoadBilingualAssets(bundle);
+                    }).ToArray();
                 }
                 Array.ForEach(result, tc => { tc.Tag = tag; });
                 return result;
@@ -238,6 +246,5 @@ namespace disfr.UI
             var e = worker.Exception;
             Dispatcher.FromThread(Thread.CurrentThread)?.BeginInvoke((Action)delegate { throw e; });
         }
-
     }
 }
