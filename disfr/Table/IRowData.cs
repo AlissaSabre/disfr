@@ -21,6 +21,11 @@ namespace disfr.UI
         int Seq { get; }
 
         /// <summary>
+        /// Package name (the name of the bilingual file as this row data is read from).
+        /// </summary>
+        string Package { get; }
+
+        /// <summary>
         /// Asset name.
         /// </summary>
         string Asset { get; }

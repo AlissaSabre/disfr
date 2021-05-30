@@ -30,6 +30,8 @@ namespace disfr.UI
 
         public int Serial { get { return Renderer.Serial(AssetData, TransPair.Serial); } }
 
+        public string Package { get { return Renderer.PackageName(AssetData); } }
+
         public string Asset { get { return Renderer.AssetName(AssetData); } }
 
         public string Id { get { return Renderer.Id(AssetData, TransPair.Id); } }
@@ -75,9 +77,21 @@ namespace disfr.UI
     {
         public int BaseSerial { get; set; }
 
-        private string _ShortAssetName;
+        public string ShortPackageName { get; private set; }
 
-        public string ShortAssetName { get { return _ShortAssetName; } }
+        private string _LongPackageName;
+
+        public string LongPackageName
+        {
+            get { return _LongPackageName; }
+            set
+            {
+                _LongPackageName = value;
+                ShortPackageName = Basename(value);
+            }
+        }
+
+        public string ShortAssetName { get; private set; }
 
         private string _LongAssetName;
 
@@ -87,7 +101,7 @@ namespace disfr.UI
             set
             {
                 _LongAssetName = value;
-                _ShortAssetName = Basename(value);
+                ShortAssetName = Basename(value);
             }
         }
 

@@ -126,6 +126,7 @@ namespace disfr.UI
             var columns = new[]
             {
                 new StandardColumnInfo(Serial, r => true),
+                new StandardColumnInfo(Package, r => true),
                 new StandardColumnInfo(Asset, r => true),
                 new StandardColumnInfo(Id, r => !string.IsNullOrWhiteSpace(r.Id)),
                 new StandardColumnInfo(Source, r => true),
@@ -216,6 +217,13 @@ namespace disfr.UI
                 !table.AllRows.Select(r => r.Asset).Distinct().Skip(1).Any())
             {
                 Asset.Visibility = Visibility.Collapsed;
+            }
+
+            // Same thing as Asset for Package visibility.
+            if (Package.Visibility == Visibility.Visible &&
+                !table.AllRows.Select(r => r.Package).Distinct().Skip(1).Any())
+            {
+                Package.Visibility = Visibility.Collapsed;
             }
 
             // Yet another special handling of TagList column visibility.
