@@ -146,6 +146,11 @@ namespace disfr.UI
             return serial + asset.BaseSerial;
         }
 
+        public string PackageName(AssetData asset)
+        {
+            return ShowLongAssetName ? asset.LongPackageName : asset.ShortPackageName;
+        }
+
         public string AssetName(AssetData asset)
         {
             return ShowLongAssetName ? asset.LongAssetName : asset.ShortAssetName;

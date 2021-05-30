@@ -18,7 +18,8 @@ namespace disfr.Doc
             Trados = 1,
             Idiom = 2,
             MemoQ = 3,
-            Wordfast = 4,
+            MemoQHistory = 4,
+            Wordfast = 5,
         }
 
         private static readonly string[] _FilterString =
@@ -27,6 +28,7 @@ namespace disfr.Doc
             "Trados Studio|*.sdlxliff;*.sdlppx;*.sdlrpx;*.wsxz",
             "Idiom WorldServer|*.xlz;*.wsxz",
             "memoQ|*.mqxlz;*.mqxliff",
+            "memoQ major version histories|*.mqxlz",
             "Wordfast|*.txlf",
         };
 
@@ -56,9 +58,10 @@ namespace disfr.Doc
                 {
                     return ReadZip(filename, file, flavour);
                 }
-                else if (IsXliff(file))
+                else if (IsXliff(file) && flavour != Flavour.MemoQHistory)
                 {
-                    return ReadXliff(filename, file, flavour);
+                    var local_flavour = flavour;
+                    return ReadXliff(filename, file, ref flavour, null);
                 }
                 else
                 {
@@ -89,31 +92,107 @@ namespace disfr.Doc
             using (var zip = new ZipArchive(file, ZipArchiveMode.Read, true, Encoding.GetEncoding(850)))
             {
                 var assets = new List<IAsset>();
+                bool is_memoq = false;
+
+                // First collect entries in the _root_ folder in the zip
+                // to handle mqxlz files containing multiple versions of an xliff.
                 foreach (var entry in zip.Entries)
                 {
-                    // It seems the stream from ZipEntry.Open() doesn't suppoprt Seek.
-                    // We need a trick here.
-                    using (var f = entry.Open())
+                    if (entry.Name == entry.FullName)
                     {
-                        if (!IsXliff(f, true)) continue;
-                    }
-                    using (var f = entry.Open())
-                    {
-                        var a = ReadXliff(filename, f, flavour, entry);
+                        var local_flavour = flavour;
+                        if (local_flavour == Flavour.MemoQHistory) local_flavour = Flavour.Auto;
+                        var a = ReadZipEntry(filename, entry, ref local_flavour);
                         if (a != null) assets.AddRange(a);
+                        is_memoq |= local_flavour == Flavour.MemoQ;
                     }
                 }
-                return assets.Count == 0 ? null : assets;
+
+                // If memoQ histries are requested, but this is NOT a memoQ archive,
+                // We consider it is an error.
+                if (flavour == Flavour.MemoQHistory && !is_memoq)
+                {
+                    throw new FormatException("Not a memoQ mqxlz file.");
+                }
+
+                // If memoQ histries are requested, and this *IS* a memoQ archive,
+                // Read the histries, marking them appropriately.
+                else if (flavour == Flavour.MemoQHistory && is_memoq)
+                {
+                    foreach (var entry in zip.Entries)
+                    {
+                        if (entry.Name != entry.FullName)
+                        {
+                            var local_flavour = Flavour.MemoQ;
+                            var local_filename = string.Format("{0} ({1})",
+                                filename,
+                                Path.GetFileName(Path.GetDirectoryName(entry.FullName)));
+                            var a = ReadZipEntry(local_filename, entry, ref local_flavour);
+                            if (a != null) assets.AddRange(a);
+                        }
+                    }
+                }
+
+                // If memoQ histries are *NOT* requested, and this *IS* a memoQ archive,
+                // stop here to avoid reading the histories.
+                else if (flavour != Flavour.MemoQHistory && is_memoq)
+                {
+                    // Do nothing on other zip entries.
+                }
+
+                // If memoQ histries are *NOT* requested, and this is *NOT* a memoQ archive,
+                // collect other zip entries as in previous versions.
+                else
+                {
+                    foreach (var entry in zip.Entries)
+                    {
+                        if (entry.Name != entry.FullName)
+                        {
+                            var local_flavour = flavour;
+                            var a = ReadZipEntry(filename, entry, ref local_flavour);
+                            if (a != null) assets.AddRange(a);
+                        }
+                    }
+                }
+
+                if (assets.Count > 0)
+                {
+                    return assets;
+                }
+                else if (flavour == Flavour.Auto)
+                {
+                    return null;
+                }
+                else
+                {
+                    throw new FormatException(string.Format("{0}: Not in a requested format.", filename));
+                }
             }
         }
 
-        private static IEnumerable<IAsset> ReadXliff(string filename, Stream file, Flavour flavour, ZipArchiveEntry entry = null)
+        private static IEnumerable<IAsset> ReadZipEntry(string filename, ZipArchiveEntry entry, ref Flavour flavour)
+        {
+            // It seems the stream from ZipEntry.Open() doesn't suppoprt Seek.
+            // We need a trick here.
+            using (var f = entry.Open())
+            {
+                if (!IsXliff(f, true)) return null;
+            }
+            using (var f = entry.Open())
+            {
+                return ReadXliff(filename, f, ref flavour, entry);
+            }
+        }
+
+        private static IEnumerable<IAsset> ReadXliff(string filename, Stream file, ref Flavour flavour, ZipArchiveEntry entry)
         {
             var parser = new XliffParser();
             parser.Filename = filename;
             parser.Flavour = flavour;
             parser.ZipEntry = entry;
-            return parser.Read(file);
+            var assets = parser.Read(file);
+            flavour = parser.Flavour;
+            return assets;
         }
 
         /// <summary>Parses an xliff (root) element into an asset bundle.</summary>
