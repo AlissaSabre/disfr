@@ -44,8 +44,10 @@ namespace disfr.Doc
             }
         }
 
+        /// <summary>List of Readers as they are added.</summary>
         private List<IAssetReader> Readers = new List<IAssetReader>();
 
+        /// <summary>List of Readers sorted in the order of their priorities.</summary>
         private IAssetReader[] ReadersInPriority = null;
 
         public void Add(IAssetReader reader)

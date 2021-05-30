@@ -38,6 +38,18 @@ namespace UnitTestPoParser
             Run(SamplesDir + "sample3.po", ReferencesDir + "sample3.po");
         }
 
+        [TestMethod]
+        public void TestMethod4()
+        {
+            Run(SamplesDir + "sample4.po", ReferencesDir + "sample4.po");
+        }
+
+        [TestMethod]
+        public void TestMethod5() // GitHub issue #24
+        {
+            Run(SamplesDir + "issue24.po", ReferencesDir + "issue24.po");
+        }
+
         private void Run(string input, string expected, [CallerMemberName] string caller = "")
         {
             var parser = new PoParser();
