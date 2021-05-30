@@ -59,6 +59,7 @@
     <Compile Include="ChainingAssertion.MSTest.cs" />
     <Compile Include="PairRendererTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PairRendererIdTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\disfr-core\disfr-core.csproj">
@@ -68,6 +69,10 @@
     <ProjectReference Include="..\disfr\disfr.csproj">
       <Project>{1a3654b0-0f44-4ced-a7a2-e7835ffdea49}</Project>
       <Name>disfr</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestHelperDoc\TestHelperDoc.csproj">
+      <Project>{57bb0281-f4e7-416d-a9c9-6ff5697cdbf0}</Project>
+      <Name>TestHelperDoc</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
