@@ -119,7 +119,7 @@ namespace disfr.po
                 }
                 if (line.StartsWith("Language:", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    TargetLanguage = line.Substring("Language:".Length).Trim();
+                    TargetLanguage = LangUtils.PosixLocaleLabelToXmlLang(line.Substring("Language:".Length).Trim());
                 }
             }
         }
