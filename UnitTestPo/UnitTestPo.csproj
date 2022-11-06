@@ -53,11 +53,16 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PoParser.cs" />
+    <Compile Include="LangUtilsProxy.cs" />
+    <Compile Include="PoParserProxy.cs" />
     <Compile Include="FileSink.cs" />
+    <Compile Include="PosixLocaleLabelToXmlLangTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test1.cs" />
+    <Compile Include="PoParserTest.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="ParseLocaleLabelTest.cs" />
+    <Compile Include="WriteEscapedStringLineTest.cs" />
+    <Compile Include="XmlLangToPosixLocaleLabelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Expected\issue24.po" />

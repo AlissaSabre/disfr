@@ -9,7 +9,7 @@ using ISink = disfr.po.ISink;
 
 namespace UnitTestPoParser
 {
-    class PoParser
+    public class PoParserProxy
     {
         private const string AssemblyName = "disfr.po";
 
@@ -19,7 +19,7 @@ namespace UnitTestPoParser
 
         private readonly MethodInfo ParseMethod;
 
-        public PoParser()
+        public PoParserProxy()
         {
             var assembly = Assembly.Load(AssemblyName);
             var type = assembly.GetType(ClassName);
