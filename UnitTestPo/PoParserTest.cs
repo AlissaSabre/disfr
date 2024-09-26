@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace UnitTestPoParser
 {
     [TestClass]
-    public class Test1
+    public class PoParserTest
     {
         private static string SamplesDir = "../../Samples/";
 
@@ -52,7 +52,7 @@ namespace UnitTestPoParser
 
         private void Run(string input, string expected, [CallerMemberName] string caller = "")
         {
-            var parser = new PoParser();
+            var parser = new PoParserProxy();
             var output = OutputDir + GetType().FullName + "." + caller + "." + Path.GetFileName(input);
             using (var sink = new FileSink(output))
             {

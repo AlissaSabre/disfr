@@ -53,7 +53,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "disfr.po", "disfr.po\disfr.po.csproj", "{200C4BFE-ACEF-471E-B325-EB274A841E3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestPoParser", "UnitTestPoParser\UnitTestPoParser.csproj", "{A6787682-36E5-466A-8DB2-711C9429C7AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestPo", "UnitTestPo\UnitTestPo.csproj", "{A6787682-36E5-466A-8DB2-711C9429C7AD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHelperDoc", "TestHelperDoc\TestHelperDoc.csproj", "{57BB0281-F4E7-416D-A9C9-6FF5697CDBF0}"
 EndProject

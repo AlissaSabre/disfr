@@ -122,6 +122,7 @@ namespace disfr.po
             // A hexadecimal escape must have at least one digit
             // and can be arbitrarily long
             // though only the last two digits are used.
+            // I'm not sure whether this handling is correct... FIXME.
             int value = 0;
             int p = index;
             while (p < input.Length)
